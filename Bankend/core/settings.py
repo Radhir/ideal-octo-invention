@@ -108,29 +108,26 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-# Uses PostgreSQL when DATABASE_ENGINE env var is set (Docker), otherwise SQLite (local dev)
+# Database Selection
+USE_POSTGRES = os.environ.get('USE_POSTGRES', 'True').lower() in ('true', '1', 'yes')
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.environ.get('POSTGRES_DB', 'eliteshine_erp'),
+            'USER': os.environ.get('POSTGRES_USER', 'eliteshine_user'),
+            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'Elite123!ChangeMe'),
+            'HOST': os.environ.get('DB_HOST', 'db'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
     }
-}
-
-# Optional: Switch to PostgreSQL via Env Var
-if os.environ.get('USE_POSTGRES') == 'True':
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'webplot_db',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
 

@@ -5,10 +5,7 @@ services:
   db:
     image: postgres:15-alpine
     container_name: eliteshine_db
-    environment:
-      POSTGRES_DB: eliteshine_erp
-      POSTGRES_USER: eliteshine_user
-      POSTGRES_PASSWORD: Elite123!ChangeMe
+    env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -24,16 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: eliteshine_backend
     command: sh -c "python manage.py migrate && python manage.py seed_expense_accounts && python manage.py runserver 0.0.0.0:8000"
-    environment:
-      - DEBUG=False
-      - SECRET_KEY=your-secret-key-change-in-production
-      - DB_ENGINE=django.db.backends.postgresql
-      - DB_NAME=eliteshine_erp
-      - DB_USER=eliteshine_user
-      - DB_PASSWORD=Elite123!ChangeMe
-      - DB_HOST=db
-      - DB_PORT=5432
-      - ALLOWED_HOSTS=localhost,127.0.0.1,72.61.250.35,srv1306978.hstgr.cloud
+    env_file: .env
     volumes:
       - ./Bankend:/app
       - static_volume:/app/staticfiles
@@ -52,8 +40,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: eliteshine_frontend
-    environment:
-      - VITE_API_BASE_URL=http://72.61.250.35:8000/api
+    env_file: .env
     ports:
       - "80:80"
     depends_on:

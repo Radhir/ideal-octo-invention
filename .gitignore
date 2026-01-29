@@ -30,6 +30,10 @@ Thumbs.db
 ssl/
 .env*
 *.env
+postgres-data/
+pgdata/
+*.pgpass
+*.pgdata
 
 # Large files
 *.mp4

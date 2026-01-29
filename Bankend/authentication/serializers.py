@@ -70,6 +70,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def _can_view_financials(self, obj):
         request = self.context.get('request')
+        if not request:
+            return False
         user = getattr(request, 'user', None)
         if not user or not user.is_authenticated:
             return False
