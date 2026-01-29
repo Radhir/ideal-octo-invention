@@ -21,9 +21,11 @@ class ErrorHandlingMiddleware:
             self.log_error(request, e)
             
             # Return user-friendly error response
+            user = getattr(request, 'user', None)
+            show_detail = user and getattr(user, 'is_staff', False)
             return JsonResponse({
                 'error': 'An unexpected error occurred',
-                'message': str(e) if request.user.is_staff else 'Please contact support',
+                'message': str(e) if show_detail else 'Please contact support',
                 'timestamp': timezone.now().isoformat()
             }, status=500)
     

@@ -134,7 +134,7 @@ const LoginPage = () => {
                 transition={{ duration: 2, delay: 0.5 }}
                 style={{ width: '100%', maxWidth: '900px', position: 'relative', zIndex: 2 }}
             >
-                <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative' }}>
+                <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative', overflow: 'visible', padding: '0 20px' }}>
 
                     {/* Spotlight / Beam Effect */}
                     <motion.div
@@ -191,8 +191,8 @@ const LoginPage = () => {
                         src="/elite_shine_logo.png"
                         alt="Elite Shine Logo"
                         style={{
-                            width: '600px',
-                            maxWidth: '90vw',
+                            width: '450px',
+                            maxWidth: '80vw',
                             height: 'auto',
                             position: 'relative',
                             zIndex: 1,

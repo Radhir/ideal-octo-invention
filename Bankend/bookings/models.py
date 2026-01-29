@@ -66,10 +66,19 @@ class Booking(models.Model):
             total_amount=total_net,
             vat_amount=vat_amt,
             net_amount=gross_total,
-            balance_amount=gross_total
+            balance_amount=gross_total,
+            custom_fields={},
+            # New Links
+            related_booking=self,
+            related_lead=self.related_lead
         )
         
+        # Update Statuses
         self.status = 'ARRIVED'
         self.save()
         
+        if self.related_lead:
+            self.related_lead.status = 'CONVERTED'
+            self.related_lead.save()
+            
         return jc

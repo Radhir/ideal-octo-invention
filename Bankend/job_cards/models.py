@@ -21,6 +21,8 @@ class JobCard(models.Model):
     # Reception Info
     customer_name = models.CharField(max_length=255)
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
+    related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
+    related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     phone = models.CharField(max_length=20)
     address = models.TextField()
     

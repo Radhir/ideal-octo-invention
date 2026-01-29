@@ -131,38 +131,57 @@ class HRAttendanceViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def clock_in(self, request):
         if not request.user.is_authenticated:
-            return Response({"error": "Auth required"}, status=401)
-        
+            return Response({"error": "Auth required"}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             employee = request.user.hr_profile
         except Employee.DoesNotExist:
-            employee = Employee.objects.first() # Fallback for demo
-        
+            return Response(
+                {"error": "No employee profile found for this user. Please contact HR."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         today = timezone.now().date()
         attendance, created = HRAttendance.objects.get_or_create(
             employee=employee,
             date=today,
             defaults={'clock_in': timezone.now().time()}
         )
-        
+
+        if not created:
+            return Response(
+                {"error": "Already clocked in today", "attendance": HRAttendanceSerializer(attendance).data},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         return Response(HRAttendanceSerializer(attendance).data)
 
     @action(detail=False, methods=['post'])
     def clock_out(self, request):
         if not request.user.is_authenticated:
-            return Response({"error": "Auth required"}, status=401)
+            return Response({"error": "Auth required"}, status=status.HTTP_401_UNAUTHORIZED)
 
         try:
             employee = request.user.hr_profile
         except Employee.DoesNotExist:
-            employee = Employee.objects.first()
+            return Response(
+                {"error": "No employee profile found for this user. Please contact HR."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         today = timezone.now().date()
         try:
             attendance = HRAttendance.objects.get(employee=employee, date=today)
+
+            if attendance.clock_out:
+                return Response(
+                    {"error": "Already clocked out today", "attendance": HRAttendanceSerializer(attendance).data},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             attendance.clock_out = timezone.now().time()
 
-            # Calculate total hours (simplified)
+            # Calculate total hours
             if attendance.clock_in and attendance.clock_out:
                 import datetime
                 ci = datetime.datetime.combine(today, attendance.clock_in)

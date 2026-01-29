@@ -33,7 +33,9 @@ const LeadList = () => {
     const fetchLeads = async () => {
         try {
             const res = await axios.get('/forms/leads/api/list/');
-            setLeads(res.data);
+            // Handle both array and paginated response
+            const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
+            setLeads(data);
         } catch (err) {
             console.error('Error fetching leads', err);
         } finally {
@@ -44,7 +46,9 @@ const LeadList = () => {
     const fetchUsers = async () => {
         try {
             const res = await axios.get('/api/auth/users/');
-            setUsers(res.data);
+            // Handle both array and paginated response
+            const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
+            setUsers(data);
         } catch (err) {
             console.error('Error fetching users', err);
         }
@@ -59,9 +63,11 @@ const LeadList = () => {
             alert('Lead transferred successfully');
             setTransferModal({ open: false, lead: null });
             fetchLeads();
+            fetchLeads();
         } catch (err) {
             console.error('Error transferring lead', err);
-            alert('Failed to transfer lead');
+            const msg = err.response?.data?.detail || 'Failed to transfer lead. Check permissions.';
+            alert(msg);
         }
     };
 

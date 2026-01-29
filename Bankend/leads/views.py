@@ -20,6 +20,44 @@ def lead_list(request):
     leads = Lead.objects.all().order_by('-created_at')
     return render(request, 'forms/lead_list.html', {'leads': leads})
 
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
+
+from rest_framework.exceptions import PermissionDenied
+
 class LeadViewSet(viewsets.ModelViewSet):
-    queryset = Lead.objects.all().order_by('-created_at')
     serializer_class = LeadSerializer
+
+    def get_queryset(self):
+        # Default list excludes INBOX (Ghost) leads
+        return Lead.objects.exclude(status='INBOX').order_by('-created_at')
+
+    @action(detail=False, methods=['get'])
+    def inbox(self, request):
+        """Fetch only INBOX / Ghost leads"""
+        leads = Lead.objects.filter(status='INBOX').order_by('-created_at')
+        page = self.paginate_queryset(leads)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(leads, many=True)
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        # Auto-assign 'INBOX' for API created leads unless specified
+        status = serializer.validated_data.get('status', 'INBOX')
+        serializer.save(status=status)
+
+    def perform_update(self, serializer):
+        # Access Control: Only Sales Team/Admin can update status/transfer
+        user = self.request.user
+        
+        # Check if sensitive fields are being modified
+        is_sensitive_update = 'status' in serializer.validated_data or 'assigned_to' in serializer.validated_data
+        
+        if is_sensitive_update:
+            if not user.is_staff and not user.groups.filter(name='Sales').exists():
+                raise PermissionDenied("Permission Denied: Only members of the Sales Team can transfer leads or update status.")
+        
+        serializer.save()

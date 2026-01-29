@@ -1,15 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Package, Plus, Search, AlertTriangle, TrendingDown, TrendingUp, Edit2, Archive } from 'lucide-react';
+import { Package, Plus, Search, AlertTriangle, TrendingDown, TrendingUp, Edit2, Archive, X } from 'lucide-react';
 import './InventoryManagement.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+const CATEGORY_OPTIONS = [
+    { value: 'ELECTRONICS', label: 'Electronics' },
+    { value: 'TEXTILES', label: 'Textiles' },
+    { value: 'FOOD', label: 'Food & Beverages' },
+    { value: 'AUTOMOTIVE', label: 'Automotive Parts' },
+    { value: 'MACHINERY', label: 'Machinery' },
+    { value: 'CHEMICALS', label: 'Chemicals' },
+    { value: 'OTHER', label: 'Other' },
+];
 
 const InventoryManagement = () => {
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('all');
     const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [editingProduct, setEditingProduct] = useState(null);
+    const [formData, setFormData] = useState({
+        sku: '',
+        name: '',
+        category: 'OTHER',
+        description: '',
+        unit_of_measure: 'pcs',
+        current_stock: 0,
+        reorder_level: 0,
+        cost_price: 0,
+        selling_price: 0,
+    });
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         fetchProducts();
@@ -45,6 +69,77 @@ const InventoryManagement = () => {
     const totalInventoryValue = products.reduce((sum, p) => sum + (p.current_stock * p.cost_price), 0);
     const lowStockCount = products.filter(p => p.needs_reorder).length;
 
+    const openAddModal = () => {
+        setEditingProduct(null);
+        setFormData({
+            sku: '',
+            name: '',
+            category: 'OTHER',
+            description: '',
+            unit_of_measure: 'pcs',
+            current_stock: 0,
+            reorder_level: 0,
+            cost_price: 0,
+            selling_price: 0,
+        });
+        setShowModal(true);
+    };
+
+    const openEditModal = (product) => {
+        setEditingProduct(product);
+        setFormData({
+            sku: product.sku,
+            name: product.name,
+            category: product.category,
+            description: product.description || '',
+            unit_of_measure: product.unit_of_measure,
+            current_stock: product.current_stock,
+            reorder_level: product.reorder_level,
+            cost_price: product.cost_price,
+            selling_price: product.selling_price,
+        });
+        setShowModal(true);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: ['current_stock', 'reorder_level', 'cost_price', 'selling_price'].includes(name)
+                ? parseFloat(value) || 0
+                : value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSaving(true);
+        try {
+            if (editingProduct) {
+                await axios.put(`${API_BASE}/logistics/api/products/${editingProduct.id}/`, formData);
+            } else {
+                await axios.post(`${API_BASE}/logistics/api/products/`, formData);
+            }
+            setShowModal(false);
+            fetchProducts();
+        } catch (error) {
+            console.error('Error saving product:', error);
+            alert('Failed to save product. Please check all fields.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    const handleArchive = async (product) => {
+        if (!window.confirm(`Archive ${product.name}? This will mark it as inactive.`)) return;
+        try {
+            await axios.patch(`${API_BASE}/logistics/api/products/${product.id}/`, { is_active: false });
+            fetchProducts();
+        } catch (error) {
+            console.error('Error archiving product:', error);
+        }
+    };
+
     return (
         <div className="inventory-management">
             <div className="page-header">
@@ -52,7 +147,7 @@ const InventoryManagement = () => {
                     <h1 className="page-title">Inventory Management</h1>
                     <p className="page-subtitle">Track stock levels and product inventory</p>
                 </div>
-                <button className="btn-primary">
+                <button className="btn-primary" onClick={openAddModal}>
                     <Plus size={18} />
                     Add Product
                 </button>
@@ -174,10 +269,10 @@ const InventoryManagement = () => {
                                         </td>
                                         <td>
                                             <div className="action-buttons">
-                                                <button className="action-btn" title="Edit">
+                                                <button className="action-btn" title="Edit" onClick={() => openEditModal(product)}>
                                                     <Edit2 size={16} />
                                                 </button>
-                                                <button className="action-btn" title="Archive">
+                                                <button className="action-btn" title="Archive" onClick={() => handleArchive(product)}>
                                                     <Archive size={16} />
                                                 </button>
                                             </div>
@@ -195,6 +290,124 @@ const InventoryManagement = () => {
                     <Package size={64} color="#64748b" />
                     <h3>No products found</h3>
                     <p>Try adjusting your filters or add a new product</p>
+                </div>
+            )}
+
+            {/* Add/Edit Product Modal */}
+            {showModal && (
+                <div className="modal-overlay" onClick={() => setShowModal(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+                            <button className="modal-close" onClick={() => setShowModal(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-grid">
+                                <div className="form-group">
+                                    <label>SKU *</label>
+                                    <input
+                                        type="text"
+                                        name="sku"
+                                        value={formData.sku}
+                                        onChange={handleInputChange}
+                                        required
+                                        disabled={!!editingProduct}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Product Name *</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        required
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Category</label>
+                                    <select name="category" value={formData.category} onChange={handleInputChange}>
+                                        {CATEGORY_OPTIONS.map(opt => (
+                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="form-group">
+                                    <label>Unit of Measure</label>
+                                    <input
+                                        type="text"
+                                        name="unit_of_measure"
+                                        value={formData.unit_of_measure}
+                                        onChange={handleInputChange}
+                                        placeholder="pcs, kg, liters..."
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Current Stock</label>
+                                    <input
+                                        type="number"
+                                        name="current_stock"
+                                        value={formData.current_stock}
+                                        onChange={handleInputChange}
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Reorder Level</label>
+                                    <input
+                                        type="number"
+                                        name="reorder_level"
+                                        value={formData.reorder_level}
+                                        onChange={handleInputChange}
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Cost Price (AED)</label>
+                                    <input
+                                        type="number"
+                                        name="cost_price"
+                                        value={formData.cost_price}
+                                        onChange={handleInputChange}
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Selling Price (AED)</label>
+                                    <input
+                                        type="number"
+                                        name="selling_price"
+                                        value={formData.selling_price}
+                                        onChange={handleInputChange}
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group full-width">
+                                <label>Description</label>
+                                <textarea
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    rows="3"
+                                />
+                            </div>
+                            <div className="modal-actions">
+                                <button type="button" className="btn-secondary" onClick={() => setShowModal(false)}>
+                                    Cancel
+                                </button>
+                                <button type="submit" className="btn-primary" disabled={saving}>
+                                    {saving ? 'Saving...' : (editingProduct ? 'Update Product' : 'Add Product')}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
         </div>

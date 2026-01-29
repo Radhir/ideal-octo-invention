@@ -77,26 +77,30 @@ const MockInbox = () => {
         }, 800);
     };
 
-    // Fetch Automated Notifications + auto-poll when on SENT tab
+    // Fetch Automated Notifications + Inbox Leads
     useEffect(() => {
-        fetchNotifications();
+        fetchData();
     }, []);
 
     useEffect(() => {
-        if (filter === 'SENT') {
-            fetchNotifications();
-            // Auto-poll every 15 seconds while viewing alerts
-            pollRef.current = setInterval(fetchNotifications, 15000);
+        if (filter === 'SENT' || filter === 'ALL') {
+            fetchData();
+            // Auto-poll every 15 seconds
+            pollRef.current = setInterval(fetchData, 15000);
         }
         return () => {
             if (pollRef.current) clearInterval(pollRef.current);
         };
     }, [filter]);
 
-    const fetchNotifications = async () => {
+    const fetchData = async () => {
         try {
-            const res = await axios.get('/forms/notifications/api/logs/');
-            const sentLogs = res.data.map(log => ({
+            const [notifRes, leadRes] = await Promise.all([
+                axios.get('/forms/notifications/api/logs/'),
+                axios.get('/forms/leads/api/list/inbox/') // Real Inbox Leads
+            ]);
+
+            const sentLogs = notifRes.data.map(log => ({
                 id: `sent-${log.id}`,
                 channel: 'SENT',
                 sender: 'System Automation',
@@ -105,37 +109,61 @@ const MockInbox = () => {
                 notificationType: log.notification_type,
                 time: new Date(log.sent_at).toLocaleTimeString(),
                 unread: true,
-                phone: `To: ${log.recipient}`
+                phone: `To: ${log.recipient}`,
+                isLog: true
             }));
 
-            setAlertCount(sentLogs.length);
+            const inboxLeads = leadRes.data.results ? leadRes.data.results : (Array.isArray(leadRes.data) ? leadRes.data : []);
+            const mappedLeads = inboxLeads.map(l => ({
+                id: l.id,
+                channel: l.source,
+                sender: l.customer_name,
+                text: l.interested_service + (l.notes ? ` - ${l.notes}` : ''),
+                time: new Date(l.created_at).toLocaleTimeString().substring(0, 5),
+                unread: true,
+                phone: l.phone,
+                isLead: true
+            }));
 
-            // Merge with existing manual messages to avoid clearing them
+            // setAlertCount(sentLogs.length);
+
+            // Merge: Real Inbox Leads + Sent Logs + (Existing mocks if you want, but better to clear mocks for real test)
+            // For now, we prepend real leads to messages
             setMessages(prev => {
-                const manual = prev.filter(m => m.channel !== 'SENT');
-                return [...manual, ...sentLogs];
+                // Keep mocks that are not real leads or logs
+                const existingMocks = prev.filter(m => !m.isLead && !m.isLog);
+                return [...mappedLeads, ...sentLogs, ...existingMocks];
             });
         } catch (err) {
-            console.error("Failed to fetch notification logs", err);
+            console.error("Failed to fetch inbox data", err);
         }
     };
 
     const convertToLead = async (msg) => {
         try {
-            const leadData = {
-                customer_name: msg.sender,
-                phone: msg.phone,
-                source: msg.channel === 'GMAIL' ? 'WEBSITE' : msg.channel,
-                interested_service: msg.text.substring(0, 50),
-                notes: `Automatically converted from Mock Inbox (${msg.channel}). Original message: ${msg.text}`,
-                status: 'NEW',
-                priority: 'MEDIUM'
-            };
-            await axios.post('/forms/leads/api/list/', leadData);
+            if (msg.isLead) {
+                // It's a real lead in INBOX, just update status to NEW
+                await axios.patch(`/forms/leads/api/list/${msg.id}/`, { status: 'NEW' });
+                alert(`Lead "${msg.sender}" moved to Sales Pipeline!`);
+            } else {
+                // It's a mock lead, create it
+                const leadData = {
+                    customer_name: msg.sender,
+                    phone: msg.phone,
+                    source: msg.channel === 'GMAIL' ? 'WEBSITE' : msg.channel,
+                    interested_service: msg.text.substring(0, 50),
+                    notes: `Converted from Mock Inbox. ${msg.text}`,
+                    status: 'NEW',
+                    priority: 'MEDIUM'
+                };
+                await axios.post('/forms/leads/api/list/', leadData);
+                alert(`Succesfully captured ${msg.sender} as a CRM Lead!`);
+            }
+            // Remove from inbox view locally
             setMessages(prev => prev.filter(m => m.id !== msg.id));
-            alert(`Succesfully captured ${msg.sender} as a CRM Lead!`);
         } catch (err) {
-            alert("Conversion failed. Check console.");
+            console.error(err);
+            alert("Conversion failed.");
         }
     };
 

@@ -121,6 +121,9 @@ class HRAttendance(models.Model):
     clock_out = models.TimeField(null=True, blank=True)
     total_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
 
+    class Meta:
+        unique_together = ('employee', 'date')
+
     def __str__(self):
         return f"{self.employee} - {self.date}"
 

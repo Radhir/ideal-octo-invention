@@ -49,6 +49,7 @@ const JobCreate = () => {
                 customer_name: lead.customer_name || '',
                 phone_number: lead.phone || '',
                 job_description: lead.notes || '',
+                lead_id: lead.id // Capture Lead ID
             }));
         } else if (location.state && location.state.booking) {
             // New: Handle booking pre-fill if navigating from Booking List
@@ -60,6 +61,8 @@ const JobCreate = () => {
                 license_plate: b.v_registration_no || '',
                 date: b.booking_date || new Date().toISOString().split('T')[0],
                 service_advisor: b.advisor_name || 'Admin',
+                booking_id: b.id, // Capture Booking ID
+                lead_id: b.related_lead || '' // Propagate Lead ID from Booking if available
             }));
         }
     }, [location.state]);

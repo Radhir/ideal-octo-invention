@@ -59,8 +59,8 @@ def meta_webhook(request):
                                 source='WHATSAPP',
                                 interested_service=message_text[:100],
                                 notes=f"Automated Lead from WhatsApp Webhook.\nMessage: {message_text}",
-                                status='NEW',
-                                priority='MEDIUM'
+                                priority='MEDIUM',
+                                status='INBOX'
                             )
                             logger.info(f"Lead created from WhatsApp: {sender_name}")
 
@@ -78,7 +78,7 @@ def meta_webhook(request):
                             source='INSTAGRAM',
                             interested_service=message_text[:100],
                             notes=f"Automated Lead from Instagram Webhook.\nMessage: {message_text}",
-                            status='NEW',
+                            status='INBOX',
                             priority='HOT'
                         )
                         logger.info(f"Lead created from Instagram: {sender_id}")

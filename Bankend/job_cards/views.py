@@ -110,6 +110,27 @@ class JobCardViewSet(viewsets.ModelViewSet):
     queryset = JobCard.objects.all().order_by('-created_at')
     serializer_class = JobCardSerializer
 
+    def perform_create(self, serializer):
+        lead_id = self.request.data.get('lead_id')
+        booking_id = self.request.data.get('booking_id')
+        
+        extras = {}
+        if lead_id:
+             extras['related_lead_id'] = lead_id
+        if booking_id:
+             extras['related_booking_id'] = booking_id
+             
+        job_card = serializer.save(**extras)
+        
+        # Post-save updates
+        if lead_id:
+            from leads.models import Lead
+            Lead.objects.filter(id=lead_id).update(status='CONVERTED')
+            
+        if booking_id:
+            from bookings.models import Booking
+            Booking.objects.filter(id=booking_id).update(status='ARRIVED')
+
     @action(detail=True, methods=['post'])
     def advance_status(self, request, pk=None):
         job_card = self.get_object()
@@ -140,7 +161,7 @@ class JobCardViewSet(viewsets.ModelViewSet):
         job_card = self.get_object()
         if hasattr(job_card, 'invoice'):
             return Response({'error': 'Invoice already exists'}, status=status.HTTP_400_BAD_REQUEST)
-        
+
         invoice = Invoice.objects.create(
             job_card=job_card,
             invoice_number=f"INV-{job_card.job_card_number}",
@@ -153,6 +174,43 @@ class JobCardViewSet(viewsets.ModelViewSet):
             payment_status='PENDING'
         )
         return Response({'invoice_id': invoice.id, 'invoice_number': invoice.invoice_number})
+
+    @action(detail=True, methods=['post'])
+    def update_signoff(self, request, pk=None):
+        """Update individual QC sign-off fields"""
+        job_card = self.get_object()
+        signoff_fields = [
+            'qc_sign_off', 'pre_work_head_sign_off', 'post_work_tl_sign_off',
+            'post_work_head_sign_off', 'floor_incharge_sign_off'
+        ]
+        updated = []
+        for field in signoff_fields:
+            if field in request.data:
+                setattr(job_card, field, request.data[field])
+                updated.append(field)
+
+        if updated:
+            job_card.save()
+            return Response({
+                'updated': updated,
+                'signoffs': {f: getattr(job_card, f) for f in signoff_fields}
+            })
+        return Response({'error': 'No valid sign-off fields provided'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'])
+    def signoff_status(self, request, pk=None):
+        """Get current sign-off status for a job card"""
+        job_card = self.get_object()
+        signoff_fields = [
+            'qc_sign_off', 'pre_work_head_sign_off', 'post_work_tl_sign_off',
+            'post_work_head_sign_off', 'floor_incharge_sign_off'
+        ]
+        return Response({
+            'job_card_number': job_card.job_card_number,
+            'status': job_card.status,
+            'signoffs': {f: getattr(job_card, f) for f in signoff_fields},
+            'all_signed': all(getattr(job_card, f) for f in signoff_fields)
+        })
 
 class JobCardTaskViewSet(viewsets.ModelViewSet):
     queryset = JobCardTask.objects.all()

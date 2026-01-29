@@ -15,6 +15,7 @@ class Lead(models.Model):
         ('EXISTING', 'Existing Customer'),
     ]
     STATUS_CHOICES = [
+        ('INBOX', 'Inbox / Ghost'),
         ('NEW', 'New Lead'),
         ('CONTACTED', 'First Contact'),
         ('NEGOTIATION', 'Negotiation'),
