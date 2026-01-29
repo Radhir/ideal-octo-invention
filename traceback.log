@@ -1,0 +1,2061 @@
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+Traceback (most recent call last):
+  File "R:\webplot\Bankend\test_serialization.py", line 27, in <module>
+    data = UserSerializer(u, context={'request': request}).data
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 555, in data
+    ret = super().data
+          ^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 253, in data
+    self._data = self.to_representation(self.instance)
+                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\serializers.py", line 522, in to_representation
+    ret[field.field_name] = field.to_representation(attribute)
+                            ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\ravit\AppData\Local\Programs\Python\Python314\Lib\site-packages\rest_framework\fields.py", line 1838, in to_representation
+    return method(value)
+  File "R:\webplot\Bankend\authentication\serializers.py", line 72, in get_basic_salary
+    if not self._can_view_financials(obj):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "R:\webplot\Bankend\authentication\serializers.py", line 57, in _can_view_financials
+    if not request or not request.user.is_authenticated:
+                          ^^^^^^^^^^^^
+AttributeError: 'WSGIRequest' object has no attribute 'user'
+--- Testing Users ---
+User admin: ERROR: 'WSGIRequest' object has no attribute 'user'
+User abdul.saboor: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ali.ahmed.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ali.shan: ERROR: 'WSGIRequest' object has no attribute 'user'
+User azan.idrees: ERROR: 'WSGIRequest' object has no attribute 'user'
+User brijinder: ERROR: 'WSGIRequest' object has no attribute 'user'
+User dhiraj.kumar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User emmanuel.botwe: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ghulam.farid: ERROR: 'WSGIRequest' object has no attribute 'user'
+User iftikhar.muhammad: ERROR: 'WSGIRequest' object has no attribute 'user'
+User jahan.uddin: ERROR: 'WSGIRequest' object has no attribute 'user'
+User jalal.ahmed.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User jan.said.awranag.zaib: ERROR: 'WSGIRequest' object has no attribute 'user'
+User maznzul.ahmed.choudhury: ERROR: 'WSGIRequest' object has no attribute 'user'
+User masuk.ahmed.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammed.imran: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.ibrar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.latif: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.rahim.malik: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mursaleen: ERROR: 'WSGIRequest' object has no attribute 'user'
+User nizam.uddin.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User nur.ahmed.choudhury: ERROR: 'WSGIRequest' object has no attribute 'user'
+User saddam.hussain: ERROR: 'WSGIRequest' object has no attribute 'user'
+User stephan.nii.boye: ERROR: 'WSGIRequest' object has no attribute 'user'
+User yahaya.salisu: ERROR: 'WSGIRequest' object has no attribute 'user'
+User zareen.mohd: ERROR: 'WSGIRequest' object has no attribute 'user'
+User akhma.jan: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ashok.kumar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User bhola.singh: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mera.rao: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammed.sahedul.haque.chowdhury: ERROR: 'WSGIRequest' object has no attribute 'user'
+User rajen.pradhan: ERROR: 'WSGIRequest' object has no attribute 'user'
+User siddappa: ERROR: 'WSGIRequest' object has no attribute 'user'
+User sudhir.kumar.singh: ERROR: 'WSGIRequest' object has no attribute 'user'
+User anish: ERROR: 'WSGIRequest' object has no attribute 'user'
+User elmma.song.yoh: ERROR: 'WSGIRequest' object has no attribute 'user'
+User farhan.ali: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammad.usman: ERROR: 'WSGIRequest' object has no attribute 'user'
+User nomaanuddin.mohammed: ERROR: 'WSGIRequest' object has no attribute 'user'
+User rashid.abdulrahman: ERROR: 'WSGIRequest' object has no attribute 'user'
+User suraj.upadhya: ERROR: 'WSGIRequest' object has no attribute 'user'
+User tamer: ERROR: 'WSGIRequest' object has no attribute 'user'
+User tariq.abdullah: ERROR: 'WSGIRequest' object has no attribute 'user'
+User abid.hussain.tanveer.hussain: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ahmed.allah. ditta: ERROR: 'WSGIRequest' object has no attribute 'user'
+User alex.osei: ERROR: 'WSGIRequest' object has no attribute 'user'
+User amimuddin.shaikh: ERROR: 'WSGIRequest' object has no attribute 'user'
+User atif.ehsan: ERROR: 'WSGIRequest' object has no attribute 'user'
+User fahad.azeem: ERROR: 'WSGIRequest' object has no attribute 'user'
+User habibullah: ERROR: 'WSGIRequest' object has no attribute 'user'
+User irfan.khan.ejaj: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammad.iliash: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammad.sohrab: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammad.ushman: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohammed.asif: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohd.imran.ansari: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mohd.irfan.siraj.ahmed: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.imran.akram: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.iqbal: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.nadeem: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.qasim: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.saleem: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muhammad.shafiq: ERROR: 'WSGIRequest' object has no attribute 'user'
+User pervez: ERROR: 'WSGIRequest' object has no attribute 'user'
+User rahul.prakash: ERROR: 'WSGIRequest' object has no attribute 'user'
+User rey: ERROR: 'WSGIRequest' object has no attribute 'user'
+User shaikh.sharfuddin: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ajig.ahmed.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User aminul.islam: ERROR: 'WSGIRequest' object has no attribute 'user'
+User amzadul.haque.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User azad.hussain.barbhuiya: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ikbal.hussain.barbhuiya: ERROR: 'WSGIRequest' object has no attribute 'user'
+User jalal.uddin: ERROR: 'WSGIRequest' object has no attribute 'user'
+User jayed.ahmed.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User kajal.ahmed: ERROR: 'WSGIRequest' object has no attribute 'user'
+User mazumder.suhed.alom: ERROR: 'WSGIRequest' object has no attribute 'user'
+User moin.uddin: ERROR: 'WSGIRequest' object has no attribute 'user'
+User musim.khan: ERROR: 'WSGIRequest' object has no attribute 'user'
+User muzafar.hussain: ERROR: 'WSGIRequest' object has no attribute 'user'
+User rahul.phodder: ERROR: 'WSGIRequest' object has no attribute 'user'
+User sahid.hussain.laskar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User shamim: ERROR: 'WSGIRequest' object has no attribute 'user'
+User thuvan.asith.thuvanaheel: ERROR: 'WSGIRequest' object has no attribute 'user'
+User test_payroll_user: ERROR: 'WSGIRequest' object has no attribute 'user'
+User radhir: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ruchika: ERROR: 'WSGIRequest' object has no attribute 'user'
+User afsar: ERROR: 'WSGIRequest' object has no attribute 'user'
+User ankit: ERROR: 'WSGIRequest' object has no attribute 'user'
+User noman: ERROR: 'WSGIRequest' object has no attribute 'user'
+
+--- Testing Job Cards ---
+JobCard JC-7001: OK
+JobCard JC-7002: OK
+JobCard JC-SEED-112757-1: OK
+JobCard JC-SEED-112757-2: OK
+JobCard JC-SEED-112821-1: OK
+JobCard JC-SEED-112821-2: OK
+JobCard JC-9999: OK
+JobCard JC-4445: OK
+JobCard JC-6942: OK
+JobCard JC-20260127-003: OK
+JobCard JC-2438: OK

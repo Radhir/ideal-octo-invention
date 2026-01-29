@@ -1,0 +1,50 @@
+# Core Django
+Django>=5.0,<5.1
+djangorestframework
+djangorestframework-simplejwt
+
+# Database
+psycopg2-binary
+dj-database-url
+
+# Django Extensions
+django-cors-headers
+django-filter
+django-crispy-forms
+crispy-bootstrap5
+whitenoise
+
+# Authentication
+django-allauth
+
+# Configuration
+python-decouple
+python-dotenv
+
+# PDF Generation
+reportlab
+weasyprint
+pypdf
+xhtml2pdf
+html5lib
+cssselect2
+tinycss2
+
+# Server
+gunicorn
+
+# QR Code & Barcode
+qrcode
+barcode
+
+# Other utilities
+Pillow
+requests
+pandas
+arabic-reshaper
+python-bidi
+python-dateutil
+pycairo
+pkgconfig
+svglib
+lxml
