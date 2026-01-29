@@ -1,57 +1,30 @@
-# Backend Dockerfile - Django Application
-FROM python:3.11-slim
+# Frontend Dockerfile - React/Vite Application
+FROM node:18-alpine AS builder
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
-
-# Set work directory
 WORKDIR /app
 
-# Install system dependencies for Python packages
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    make \
-    postgresql-client \
-    libpq-dev \
-    python3-dev \
-    libcairo2-dev \
-    pkg-config \
-    # For Pillow/PIL
-    libjpeg-dev \
-    zlib1g-dev \
-    libfreetype6-dev \
-    liblcms2-dev \
-    libwebp-dev \
-    # For OpenCV
-    libopencv-dev \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    libgomp1 \
-    # For numpy/scipy
-    libopenblas-dev \
-    liblapack-dev \
-    gfortran \
-    # For other packages
-    libffi-dev \
-    libssl-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Copy package files
+COPY package*.json ./
 
-# Copy requirements
-COPY requirements_docker.txt requirements.txt
+# Install dependencies
+RUN npm ci
 
-# Install Python dependencies  
-RUN pip install --upgrade pip setuptools wheel
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy project
+# Copy source code
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput || echo "Static files collection skipped"
+# Build for production
+RUN npm run build
 
-# Run migrations and start server
-CMD ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+# Production stage - Nginx
+FROM nginx:alpine
+
+# Copy built files from builder
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
