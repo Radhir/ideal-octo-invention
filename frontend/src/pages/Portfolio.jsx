@@ -33,7 +33,7 @@ const Portfolio = () => {
             name: user.full_name || user.username,
             role: user.role || "Elite Professional",
             bio: user.bio || `Dedicated member of the Elite Shine team.`,
-            image: user.profile_image || "/logo_dark.png",
+            image: user.profile_image || "/elite_shine_logo.png",
             accent: user.accent_color || "#b08d57",
             label: "MY PROFILE",
             // New Fields
@@ -235,7 +235,7 @@ const Portfolio = () => {
                             {/* Card Design */}
                             <div style={{ padding: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
                                 <div style={{ marginBottom: '30px' }}>
-                                    <img src="/elite_shine_logo.png" alt="Logo" style={{ width: '150px' }} />
+                                    <img src="/elite_shine_logo.png" alt="Logo" style={{ width: '160px', filter: 'drop-shadow(0 0 10px rgba(176, 141, 87, 0.4))' }} />
                                 </div>
 
                                 <div style={{ width: '120px', height: '120px', borderRadius: '50%', border: `4px solid ${current.accent}`, padding: '5px', marginBottom: '30px' }}>

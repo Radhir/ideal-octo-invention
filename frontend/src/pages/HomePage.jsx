@@ -163,7 +163,12 @@ const HomePage = () => {
                         <img
                             src="/elite_shine_logo.png"
                             alt="Elite Shine Group"
-                            style={{ width: '100%', maxWidth: '280px', filter: 'drop-shadow(0 0 20px rgba(176, 141, 87, 0.2))' }}
+                            style={{
+                                width: '100%',
+                                maxWidth: '300px',
+                                filter: 'drop-shadow(0 0 15px rgba(176, 141, 87, 0.3)) drop-shadow(0 0 30px rgba(212, 175, 55, 0.15))',
+                                transition: 'filter 0.3s ease'
+                            }}
                         />
                     </motion.div>
 

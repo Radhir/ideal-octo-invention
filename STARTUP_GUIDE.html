@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Shine ERP - Startup Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background: #fff;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #b08d57;
+            padding-bottom: 30px;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            color: #b08d57;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        h2 {
+            color: #b08d57;
+            font-size: 22px;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eee;
+        }
+        h3 {
+            color: #444;
+            font-size: 16px;
+            margin: 20px 0 10px 0;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #b08d57;
+        }
+        .command {
+            background: #1e1e1e;
+            color: #4ec9b0;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .command-label {
+            color: #b08d57;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        ul {
+            margin: 10px 0 10px 25px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .note-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 5px;
+        }
+        .warning {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .warning-title {
+            font-weight: bold;
+            color: #721c24;
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #b08d57;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        @media print {
+            body {
+                padding: 20px;
+            }
+            .section {
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ELITE SHINE ERP</h1>
+        <p>System Startup & Shutdown Guide</p>
+        <p style="margin-top: 10px; color: #999;">Version 1.0 | January 2026</p>
+    </div>
+
+    <h2>1. Prerequisites</h2>
+    <div class="section">
+        <p>Before starting the application, ensure you have the following installed:</p>
+        <ul>
+            <li><strong>Docker Desktop</strong> - For containerized deployment</li>
+            <li><strong>Node.js 18+</strong> - For local frontend development</li>
+            <li><strong>Python 3.11+</strong> - For local backend development</li>
+            <li><strong>PostgreSQL 15</strong> - Database (or use Docker)</li>
+        </ul>
+    </div>
+
+    <h2>2. Environment Setup</h2>
+    <div class="section">
+        <h3>Step 1: Create Environment File</h3>
+        <p>Copy the example environment file and configure it:</p>
+        <div class="command-label">Command</div>
+        <div class="command">copy .env.example .env</div>
+
+        <h3>Step 2: Edit .env File</h3>
+        <p>Configure these variables in your <code>.env</code> file:</p>
+        <table>
+            <tr>
+                <th>Variable</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td>POSTGRES_DB</td>
+                <td>Database name</td>
+                <td>eliteshine_erp</td>
+            </tr>
+            <tr>
+                <td>POSTGRES_USER</td>
+                <td>Database username</td>
+                <td>eliteshine_user</td>
+            </tr>
+            <tr>
+                <td>POSTGRES_PASSWORD</td>
+                <td>Database password</td>
+                <td>YourSecurePassword123!</td>
+            </tr>
+            <tr>
+                <td>SECRET_KEY</td>
+                <td>Django secret key</td>
+                <td>your-random-secret-key</td>
+            </tr>
+            <tr>
+                <td>VITE_API_BASE_URL</td>
+                <td>API endpoint URL</td>
+                <td>http://localhost:8000/api</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>3. Starting the Application</h2>
+
+    <div class="section">
+        <h3>Option A: Using Docker (Recommended for Production)</h3>
+        <p>This starts all services (Database, Backend, Frontend) together:</p>
+
+        <div class="command-label">Start All Services</div>
+        <div class="command">docker-compose up -d</div>
+
+        <div class="command-label">View Logs</div>
+        <div class="command">docker-compose logs -f</div>
+
+        <div class="note">
+            <div class="note-title">Note</div>
+            First run may take several minutes to build images and download dependencies.
+        </div>
+
+        <table>
+            <tr>
+                <th>Service</th>
+                <th>Port</th>
+                <th>URL</th>
+            </tr>
+            <tr>
+                <td>Frontend</td>
+                <td>80</td>
+                <td>http://localhost</td>
+            </tr>
+            <tr>
+                <td>Backend API</td>
+                <td>8000</td>
+                <td>http://localhost:8000</td>
+            </tr>
+            <tr>
+                <td>Database</td>
+                <td>5432</td>
+                <td>localhost:5432</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>Option B: Manual Start (Development)</h3>
+
+        <h4 style="color: #b08d57; margin-top: 15px;">Step 1: Start Database</h4>
+        <div class="command-label">Using Docker for Database Only</div>
+        <div class="command">docker-compose up -d db</div>
+
+        <h4 style="color: #b08d57; margin-top: 20px;">Step 2: Start Backend</h4>
+        <div class="command-label">Navigate to Backend Directory</div>
+        <div class="command">cd Bankend</div>
+
+        <div class="command-label">Create Virtual Environment (First Time Only)</div>
+        <div class="command">python -m venv venv</div>
+
+        <div class="command-label">Activate Virtual Environment</div>
+        <div class="command">venv\Scripts\activate</div>
+
+        <div class="command-label">Install Dependencies (First Time Only)</div>
+        <div class="command">pip install -r requirements.txt</div>
+
+        <div class="command-label">Run Migrations</div>
+        <div class="command">python manage.py migrate</div>
+
+        <div class="command-label">Start Backend Server</div>
+        <div class="command">python manage.py runserver 0.0.0.0:8000</div>
+
+        <h4 style="color: #b08d57; margin-top: 20px;">Step 3: Start Frontend (New Terminal)</h4>
+        <div class="command-label">Navigate to Frontend Directory</div>
+        <div class="command">cd frontend</div>
+
+        <div class="command-label">Install Dependencies (First Time Only)</div>
+        <div class="command">npm install</div>
+
+        <div class="command-label">Start Development Server</div>
+        <div class="command">npm run dev</div>
+
+        <p style="margin-top: 15px;">Frontend will be available at: <strong>http://localhost:5173</strong></p>
+    </div>
+
+    <h2>4. Stopping the Application</h2>
+
+    <div class="section">
+        <h3>Option A: Stop Docker Services</h3>
+
+        <div class="command-label">Stop All Services (Keep Data)</div>
+        <div class="command">docker-compose down</div>
+
+        <div class="command-label">Stop and Remove All Data</div>
+        <div class="command">docker-compose down -v</div>
+
+        <div class="warning">
+            <div class="warning-title">Warning</div>
+            Using <code>-v</code> flag will delete all database data permanently!
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Option B: Stop Manual Services</h3>
+
+        <div class="command-label">Stop Backend</div>
+        <div class="command">Press Ctrl + C in the backend terminal</div>
+
+        <div class="command-label">Deactivate Virtual Environment</div>
+        <div class="command">deactivate</div>
+
+        <div class="command-label">Stop Frontend</div>
+        <div class="command">Press Ctrl + C in the frontend terminal</div>
+
+        <div class="command-label">Stop Database Container</div>
+        <div class="command">docker-compose stop db</div>
+    </div>
+
+    <h2>5. Quick Reference Commands</h2>
+    <div class="section">
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>Command</th>
+            </tr>
+            <tr>
+                <td>Start all (Docker)</td>
+                <td><code>docker-compose up -d</code></td>
+            </tr>
+            <tr>
+                <td>Stop all (Docker)</td>
+                <td><code>docker-compose down</code></td>
+            </tr>
+            <tr>
+                <td>View logs</td>
+                <td><code>docker-compose logs -f</code></td>
+            </tr>
+            <tr>
+                <td>Restart backend</td>
+                <td><code>docker-compose restart backend</code></td>
+            </tr>
+            <tr>
+                <td>Rebuild containers</td>
+                <td><code>docker-compose up -d --build</code></td>
+            </tr>
+            <tr>
+                <td>Check running containers</td>
+                <td><code>docker ps</code></td>
+            </tr>
+            <tr>
+                <td>Backend shell</td>
+                <td><code>docker exec -it eliteshine_backend bash</code></td>
+            </tr>
+            <tr>
+                <td>Database shell</td>
+                <td><code>docker exec -it eliteshine_db psql -U eliteshine_user -d eliteshine_erp</code></td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>6. Updating After Changes</h2>
+
+    <div class="section">
+        <h3>Option A: Update with Docker (Production)</h3>
+        <p>After making code changes, follow these steps to deploy updates:</p>
+
+        <div class="command-label">Step 1: Pull Latest Changes (if using Git)</div>
+        <div class="command">git pull origin main</div>
+
+        <div class="command-label">Step 2: Rebuild and Restart Containers</div>
+        <div class="command">docker-compose up -d --build</div>
+
+        <div class="note">
+            <div class="note-title">Quick Update Commands</div>
+            <ul style="margin-top: 10px;">
+                <li><strong>Frontend only:</strong> <code>docker-compose up -d --build frontend</code></li>
+                <li><strong>Backend only:</strong> <code>docker-compose up -d --build backend</code></li>
+                <li><strong>Both without rebuild:</strong> <code>docker-compose restart</code></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Option B: Update Manual Development</h3>
+
+        <h4 style="color: #b08d57; margin-top: 15px;">Update Backend</h4>
+        <div class="command-label">Pull Changes</div>
+        <div class="command">git pull origin main</div>
+
+        <div class="command-label">Install New Dependencies (if requirements.txt changed)</div>
+        <div class="command">cd Bankend && pip install -r requirements.txt</div>
+
+        <div class="command-label">Run New Migrations (if models changed)</div>
+        <div class="command">python manage.py migrate</div>
+
+        <div class="command-label">Restart Backend Server</div>
+        <div class="command">Press Ctrl + C then: python manage.py runserver 0.0.0.0:8000</div>
+
+        <h4 style="color: #b08d57; margin-top: 20px;">Update Frontend</h4>
+        <div class="command-label">Pull Changes</div>
+        <div class="command">git pull origin main</div>
+
+        <div class="command-label">Install New Dependencies (if package.json changed)</div>
+        <div class="command">cd frontend && npm install</div>
+
+        <div class="command-label">Restart Dev Server</div>
+        <div class="command">Press Ctrl + C then: npm run dev</div>
+
+        <div class="note">
+            <div class="note-title">Hot Reload</div>
+            Frontend changes are automatically detected during development. No restart needed for most changes.
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>Git Workflow for Updates</h3>
+
+        <h4 style="color: #b08d57; margin-top: 15px;">Save Your Changes</h4>
+        <div class="command-label">Check What Changed</div>
+        <div class="command">git status</div>
+
+        <div class="command-label">Add All Changes</div>
+        <div class="command">git add .</div>
+
+        <div class="command-label">Commit Changes</div>
+        <div class="command">git commit -m "Description of your changes"</div>
+
+        <div class="command-label">Push to Remote</div>
+        <div class="command">git push origin main</div>
+
+        <h4 style="color: #b08d57; margin-top: 20px;">On Production Server</h4>
+        <div class="command-label">Pull and Deploy</div>
+        <div class="command">git pull origin main && docker-compose up -d --build</div>
+    </div>
+
+    <h2>7. Troubleshooting</h2>
+    <div class="section">
+        <h3>Port Already in Use</h3>
+        <div class="command">netstat -ano | findstr :8000</div>
+        <div class="command">taskkill /PID &lt;PID&gt; /F</div>
+
+        <h3>Database Connection Failed</h3>
+        <p>Ensure the database container is running:</p>
+        <div class="command">docker-compose ps db</div>
+
+        <h3>Frontend Not Loading</h3>
+        <p>Clear npm cache and reinstall:</p>
+        <div class="command">cd frontend && rm -rf node_modules && npm install</div>
+
+        <h3>Reset Everything</h3>
+        <div class="command">docker-compose down -v && docker-compose up -d --build</div>
+    </div>
+
+    <h2>8. Convert to PDF</h2>
+    <div class="section">
+        <p>To save this guide as a PDF file:</p>
+        <ul>
+            <li><strong>Method 1:</strong> Open this HTML file in Chrome/Edge browser, press <code>Ctrl + P</code>, select "Save as PDF"</li>
+            <li><strong>Method 2:</strong> Right-click → Print → Save as PDF</li>
+            <li><strong>Method 3:</strong> Use online converter like <code>html2pdf.com</code></li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p><strong>Elite Shine Group of Companies</strong></p>
+        <p>ERP System Documentation | Generated January 2026</p>
+        <p style="margin-top: 10px; font-size: 10px;">File: STARTUP_GUIDE.html</p>
+    </div>
+</body>
+</html>

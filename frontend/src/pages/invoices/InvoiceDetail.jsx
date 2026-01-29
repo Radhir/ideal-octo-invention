@@ -80,13 +80,12 @@ const InvoiceDetail = () => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '50px' }}>
                     <div>
                         <img
-                            src="/logo_light.png"
+                            src="/elite_shine_logo.png"
                             alt="Elite Shine Logo"
                             style={{
-                                width: '220px',
+                                width: '200px',
                                 height: 'auto',
-                                marginBottom: '5px',
-                                mixBlendMode: 'multiply'
+                                marginBottom: '5px'
                             }}
                         />
                         <p style={{ margin: '5px 0 0 0', color: '#666', fontSize: '12px', fontWeight: 'bold' }}>Dubai, UAE | TRN: 100345678900003</p>

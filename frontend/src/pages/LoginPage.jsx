@@ -10,6 +10,8 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [error, setError] = useState('');
+    const [videoEnded, setVideoEnded] = useState(false);
+    const videoRef = useRef(null);
 
     const handleLogin = async (e) => {
         if (e) e.preventDefault();
@@ -48,27 +50,32 @@ const LoginPage = () => {
         width: '100%',
         background: 'transparent',
         border: 'none',
-        borderBottom: '2px solid var(--gold)', // 2px solid glow
-        boxShadow: '0 4px 15px -2px rgba(176, 141, 87, 0.6)', // Glow effect for the bottom border
-        padding: '12px 0',
-        color: '#fff',
-        fontSize: '18px',
+        borderTop: 'none',
+        borderLeft: 'none',
+        borderRight: 'none',
+        borderBottom: '1px solid rgba(176, 141, 87, 0.4)',
+        borderRadius: 0,
+        padding: '10px 0',
+        color: 'rgba(255, 255, 255, 0.7)',
+        fontSize: '15px',
         outline: 'none',
-        transition: 'all 0.5s ease',
+        transition: 'border-color 0.3s ease',
         textAlign: 'center',
-        letterSpacing: '2px',
-        fontFamily: 'Outfit, sans-serif'
+        letterSpacing: '3px',
+        fontFamily: 'Outfit, sans-serif',
+        caretColor: 'var(--gold)',
+        boxShadow: 'none'
     };
 
     const labelStyle = {
         display: 'block',
-        fontSize: '10px',
-        color: 'var(--gold)',
-        letterSpacing: '4px',
+        fontSize: '9px',
+        color: 'rgba(176, 141, 87, 0.6)',
+        letterSpacing: '5px',
         textTransform: 'uppercase',
-        marginBottom: '8px',
-        opacity: 0.5,
-        textAlign: 'center'
+        marginBottom: '5px',
+        textAlign: 'center',
+        fontWeight: '500'
     };
 
     return (
@@ -78,15 +85,56 @@ const LoginPage = () => {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '20px',
-            background: 'transparent'
+            background: '#000',
+            position: 'relative',
+            overflow: 'hidden'
         }}>
+            {/* Background Video - plays once */}
+            <video
+                ref={videoRef}
+                autoPlay
+                muted
+                playsInline
+                onEnded={() => setVideoEnded(true)}
+                style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    minWidth: '100%',
+                    minHeight: '100%',
+                    width: 'auto',
+                    height: 'auto',
+                    objectFit: 'cover',
+                    opacity: videoEnded ? 0 : 1,
+                    transition: 'opacity 1s ease',
+                    zIndex: 0
+                }}
+            >
+                <source src="/bglogin.mp4" type="video/mp4" />
+            </video>
+
+            {/* Dark overlay */}
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: videoEnded
+                    ? 'radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%)'
+                    : 'rgba(0,0,0,0.3)',
+                transition: 'background 1s ease',
+                zIndex: 1
+            }} />
+
             <motion.div
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 2.5 }}
-                style={{ width: '100%', maxWidth: '900px' }}
+                animate={{ opacity: videoEnded ? 1 : 0 }}
+                transition={{ duration: 2, delay: 0.5 }}
+                style={{ width: '100%', maxWidth: '900px', position: 'relative', zIndex: 2 }}
             >
-                <div style={{ textAlign: 'center', marginBottom: '60px', position: 'relative' }}>
+                <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative' }}>
 
                     {/* Spotlight / Beam Effect */}
                     <motion.div
@@ -125,12 +173,17 @@ const LoginPage = () => {
                     <motion.img
                         initial={{ opacity: 0, y: -20 }}
                         animate={{
-                            opacity: [0, 0.8, 0.6, 0.9],
-                            scale: [0.95, 1, 0.98, 1],
-                            filter: ['brightness(1) drop-shadow(0 0 10px rgba(176, 141, 87, 0.3))', 'brightness(1.5) drop-shadow(0 0 25px rgba(176, 141, 87, 0.6))', 'brightness(1.2) drop-shadow(0 0 15px rgba(176, 141, 87, 0.4))', 'brightness(1.5) drop-shadow(0 0 25px rgba(176, 141, 87, 0.6))']
+                            opacity: [0.85, 1, 0.9, 1],
+                            scale: [0.98, 1, 0.99, 1],
+                            filter: [
+                                'brightness(1.1) drop-shadow(0 0 20px rgba(176, 141, 87, 0.4)) drop-shadow(0 0 40px rgba(212, 175, 55, 0.2))',
+                                'brightness(1.3) drop-shadow(0 0 35px rgba(176, 141, 87, 0.6)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.3))',
+                                'brightness(1.2) drop-shadow(0 0 25px rgba(176, 141, 87, 0.5)) drop-shadow(0 0 50px rgba(212, 175, 55, 0.25))',
+                                'brightness(1.3) drop-shadow(0 0 35px rgba(176, 141, 87, 0.6)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.3))'
+                            ]
                         }}
                         transition={{
-                            duration: 4,
+                            duration: 5,
                             repeat: Infinity,
                             repeatType: "reverse",
                             ease: "easeInOut"
@@ -138,17 +191,18 @@ const LoginPage = () => {
                         src="/elite_shine_logo.png"
                         alt="Elite Shine Logo"
                         style={{
-                            width: '650px', // Increased size
+                            width: '600px',
+                            maxWidth: '90vw',
                             height: 'auto',
                             position: 'relative',
                             zIndex: 1,
-                            filter: 'drop-shadow(0 0 30px rgba(176, 141, 87, 0.5))'
+                            filter: 'drop-shadow(0 0 30px rgba(176, 141, 87, 0.5)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.2))'
                         }}
                     />
                 </div>
 
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-end', justifyContent: 'center', position: 'relative', zIndex: 2, width: '100%' }}>
-                    <div className="input-field" style={{ width: '280px', position: 'relative' }}>
+                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'row', gap: '60px', alignItems: 'flex-end', justifyContent: 'center', position: 'relative', zIndex: 2, width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+                    <div className="input-field" style={{ flex: 1, position: 'relative' }}>
                         <label style={labelStyle}>NAME</label>
                         <input
                             type="text"
@@ -157,12 +211,11 @@ const LoginPage = () => {
                             style={inputStyle}
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            // Removed focus/blur styles for cleaner look
                             required
                         />
                     </div>
 
-                    <div className="input-field" style={{ width: '280px', position: 'relative' }}>
+                    <div className="input-field" style={{ flex: 1, position: 'relative' }}>
                         <label style={labelStyle}>ID</label>
                         <input
                             type="password"
@@ -171,7 +224,6 @@ const LoginPage = () => {
                             style={inputStyle}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            // Removed focus/blur styles for cleaner look
                             required
                         />
                     </div>

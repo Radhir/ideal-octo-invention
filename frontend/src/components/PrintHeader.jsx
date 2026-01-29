@@ -18,9 +18,9 @@ const PrintHeader = ({ title }) => {
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                 <img
-                    src="/logo_dark.png"
+                    src="/elite_shine_logo.png"
                     alt="Elite Shine Logo"
-                    style={{ height: '60px', width: 'auto' }}
+                    style={{ height: '55px', width: 'auto' }}
                 />
                 <div>
                     <h1 style={{

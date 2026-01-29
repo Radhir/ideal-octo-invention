@@ -66,14 +66,13 @@ const RegisterPage = () => {
         <GlassCard style={{ padding: '40px', maxWidth: '450px', width: '100%' }}>
             <div style={{ textAlign: 'center', marginBottom: '30px' }}>
                 <img
-                    src="/logo_dark.png"
+                    src="/elite_shine_logo.png"
                     alt="Elite Shine Logo"
                     style={{
-                        width: '220px',
+                        width: '240px',
                         height: 'auto',
                         marginBottom: '10px',
-                        mixBlendMode: 'screen',
-                        filter: 'contrast(120%)'
+                        filter: 'drop-shadow(0 0 15px rgba(176, 141, 87, 0.3))'
                     }}
                 />
                 <h2 style={{ color: '#fff', fontSize: '1.3rem', margin: '10px 0 5px 0', fontFamily: 'Outfit, sans-serif' }}>Create Account</h2>

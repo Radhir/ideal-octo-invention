@@ -8,6 +8,8 @@ const BackgroundCarousel = () => {
     const assets = [
         { type: 'video', src: '/bg_vid1.mp4' },
         { type: 'video', src: '/bg_vid2.mp4' },
+        { type: 'video', src: '/bg_vid3.mp4' },
+        { type: 'video', src: '/bg_vid5.mp4' },
     ];
 
     const [currentIndex, setCurrentIndex] = useState(0);
