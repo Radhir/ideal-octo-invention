@@ -27,6 +27,7 @@ from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 
 class LeadViewSet(viewsets.ModelViewSet):
+    queryset = Lead.objects.all()
     serializer_class = LeadSerializer
 
     def get_queryset(self):
