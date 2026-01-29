@@ -1,0 +1,46 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}OPERATIONS LOG / TASK SHEET{% endblock %}
+
+{% block content %}
+<div class="section-header">Operation Brief</div>
+<div class="field-row">
+    <span class="field-label">Operation :</span>
+    <span class="field-value">{{ object.operation_name }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Assigned To :</span>
+    <span class="field-value">{{ object.assigned_to }}</span>
+</div>
+
+<div class="section-header">Timing & Schedule</div>
+<div style="display: flex; justify-content: space-between;">
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Start Date :</span>
+        <span class="field-value">{{ object.start_date }}</span>
+    </div>
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Completion :</span>
+        <span class="field-value">{{ object.end_date|default:'---' }}</span>
+    </div>
+</div>
+
+<div class="section-header">Status & Performance</div>
+<div class="field-row">
+    <span class="field-label">Current Status :</span>
+    <span class="field-value" style="font-weight: bold; background-color: #f2f2f2; padding: 2px 10px;">{{
+        object.get_status_display }}</span>
+</div>
+
+<div class="section-header">Supervisor Remarks</div>
+<div style="min-height: 200px; border: 1px solid #ddd; padding: 15px; font-style: italic;">
+    {{ object.remarks|linebreaks|default:'Awaiting final remarks.' }}
+</div>
+
+<div class="signature-row">
+    <div>
+        <span class="field-label">Operation Lead :</span>
+        <span style="border-bottom: 1px solid #000; display: inline-block; width: 250px;"></span>
+    </div>
+</div>
+{% endblock %}

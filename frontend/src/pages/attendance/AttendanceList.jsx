@@ -1,0 +1,278 @@
+import React, { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
+import GlassCard from '../../components/GlassCard';
+import {
+    UserCheck, Clock, CheckCircle2, AlertCircle,
+    Calendar, Play, Square, Timer,
+    Zap, Activity, LayoutDashboard, Printer
+} from 'lucide-react';
+
+const AttendanceList = () => {
+    const [attendance, setAttendance] = useState(null);
+    const [roster, setRoster] = useState(null);
+    const [allLogs, setAllLogs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [elapsedTime, setElapsedTime] = useState('00:00:00');
+    const timerRef = useRef(null);
+
+    useEffect(() => {
+        fetchInitialData();
+        return () => clearInterval(timerRef.current);
+    }, []);
+
+    const fetchInitialData = async () => {
+        setLoading(true);
+        try {
+            // Fetch roster for today (simulated)
+            const rostersRes = await axios.get('/hr/api/roster/');
+            // Find roster for today or use a default 10-hour shift
+            const todayStr = new Date().toISOString().split('T')[0];
+            const myRoster = rostersRes.data.length > 0 ? rostersRes.data[0] : {
+                shift_start: `${todayStr}T08:00:00`,
+                shift_end: `${todayStr}T18:00:00`,
+                task_notes: "Elite Shine Standard 10-Hour Shift"
+            };
+            setRoster(myRoster);
+
+            // Fetch current attendance
+            const attendRes = await axios.get('/hr/api/attendance/');
+            const todayAttend = attendRes.data.find(a => a.date === todayStr);
+            setAttendance(todayAttend);
+            setAllLogs(attendRes.data);
+
+            if (todayAttend && todayAttend.clock_in && !todayAttend.clock_out) {
+                startTimer(todayAttend.clock_in);
+            }
+        } catch (err) {
+            console.error('Error fetching HR data', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const startTimer = (startTimeStr) => {
+        clearInterval(timerRef.current);
+        const [h, m, s] = startTimeStr.split(':').map(Number);
+        const start = new Date();
+        start.setHours(h, m, s, 0);
+
+        timerRef.current = setInterval(() => {
+            const now = new Date();
+            const diff = now - start;
+            if (diff < 0) return;
+
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
+            const seconds = Math.floor((diff % 60000) / 1000);
+
+            setElapsedTime(
+                `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+            );
+        }, 1000);
+    };
+
+    const handleClockIn = async () => {
+        try {
+            const res = await axios.post('/hr/api/attendance/clock_in/');
+            setAttendance(res.data);
+            startTimer(res.data.clock_in);
+            fetchInitialData();
+        } catch (err) {
+            console.error('Clock in failed', err);
+        }
+    };
+
+    const handleClockOut = async () => {
+        try {
+            const res = await axios.post('/hr/api/attendance/clock_out/');
+            setAttendance(res.data);
+            clearInterval(timerRef.current);
+            fetchInitialData();
+        } catch (err) {
+            console.error('Clock out failed', err);
+        }
+    };
+
+    // Calculate progress based on a 10-hour workday (36000 seconds)
+    const getWorkProgress = () => {
+        if (!attendance || !attendance.clock_in) return 0;
+        if (attendance.clock_out) return (attendance.total_hours / 10) * 100;
+
+        const [h, m, s] = attendance.clock_in.split(':').map(Number);
+        const start = new Date();
+        start.setHours(h, m, s, 0);
+        const diffInSeconds = (new Date() - start) / 1000;
+        return Math.min((diffInSeconds / 36000) * 100, 100);
+    };
+
+    if (loading) return <div style={{ color: '#fff', padding: '100px', textAlign: 'center' }}>Synchronizing Personnel Nodes...</div>;
+
+    return (
+        <div style={{ padding: '40px 30px', background: '#0a0a0a', minHeight: '100vh' }}>
+            <header style={{ marginBottom: '40px' }}>
+                <div style={{ color: '#b08d57', fontWeight: '900', letterSpacing: '4px', fontSize: '12px', marginBottom: '10px' }}>WORKFORCE LOGISTICS</div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <div>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Attendance Hub</h1>
+                        <p style={{ color: '#94a3b8', fontSize: '18px', marginTop: '10px' }}>Live monitoring of the 10-hour industrial shift lifecycle.</p>
+                    </div>
+                    <button
+                        onClick={() => window.print()}
+                        className="glass-card"
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
+                    >
+                        <Printer size={20} /> Print Logs
+                    </button>
+                </div>
+            </header>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(400px, 1fr) 450px', gap: '30px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+
+                    {/* Live Tracking Card */}
+                    <GlassCard style={{ padding: '40px', position: 'relative', overflow: 'hidden' }}>
+                        <div style={{ position: 'absolute', top: 0, right: 0, padding: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: attendance && !attendance.clock_out ? '#10b981' : '#64748b' }}>
+                                <Activity size={16} className={attendance && !attendance.clock_out ? 'pulse-anim' : ''} />
+                                <span style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '1px' }}>
+                                    {attendance && !attendance.clock_out ? 'SESSION ACTIVE' : 'NO ACTIVE SESSION'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '30px' }}>
+                            <div style={{ fontSize: '14px', color: '#b08d57', fontWeight: '800', marginBottom: '5px' }}>CURRENT SESSION</div>
+                            <div style={{
+                                fontSize: '5rem',
+                                fontWeight: '900',
+                                color: '#fff',
+                                fontFamily: 'monospace',
+                                letterSpacing: '-2px'
+                            }}>
+                                {attendance && !attendance.clock_out ? elapsedTime : attendance?.clock_out ? `${attendance.total_hours} hrs` : '00:00:00'}
+                            </div>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', position: 'relative', marginBottom: '20px' }}>
+                            <div style={{
+                                height: '100%',
+                                width: `${getWorkProgress()}%`,
+                                background: 'linear-gradient(to right, #b08d57, #fff)',
+                                borderRadius: '4px',
+                                boxShadow: '0 0 15px rgba(176,141,87,0.3)',
+                                transition: 'width 1s ease-in-out'
+                            }} />
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748b', fontSize: '12px', fontWeight: '800' }}>
+                            <span>SHIFT START</span>
+                            <span>10 HOUR TARGET</span>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '20px', marginTop: '40px' }}>
+                            {!attendance || !attendance.clock_in ? (
+                                <button onClick={handleClockIn} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(176,141,87,0.1)', border: '1px solid #b08d57', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
+                                    <Play size={20} /> INITIATE SHIFT
+                                </button>
+                            ) : !attendance.clock_out ? (
+                                <button onClick={handleClockOut} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(244,63,94,0.1)', border: '1px solid #f43f5e', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
+                                    <Square size={20} /> TERMINATE SHIFT
+                                </button>
+                            ) : (
+                                <div style={{ flex: 1, padding: '20px', background: 'rgba(16,185,129,0.1)', border: '1px solid #10b981', color: '#10b981', borderRadius: '15px', textAlign: 'center', fontWeight: '800' }}>
+                                    DAILY CYCLE COMPLETED
+                                </div>
+                            )}
+                        </div>
+                    </GlassCard>
+
+                    {/* Today's Logs */}
+                    <div>
+                        <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', marginBottom: '20px' }}>TODAY'S FLEET STATUS</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            {allLogs.map(log => (
+                                <GlassCard key={log.id} style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <UserCheck size={18} color="#b08d57" />
+                                        </div>
+                                        <div>
+                                            <div style={{ fontWeight: '700', color: '#fff' }}>{log.employee_name}</div>
+                                            <div style={{ fontSize: '11px', color: '#64748b' }}>Shift active since {log.clock_in}</div>
+                                        </div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '14px', fontWeight: '800', color: log.clock_out ? '#10b981' : '#f59e0b' }}>
+                                            {log.clock_out ? 'COMPLETED' : 'IN_TRANSIT'}
+                                        </div>
+                                        <div style={{ fontSize: '11px', color: '#64748b' }}>{log.total_hours} hrs logged</div>
+                                    </div>
+                                </GlassCard>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Panel: Roster Context */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                    <GlassCard style={{ padding: '30px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '25px' }}>
+                            <Calendar size={20} color="#b08d57" />
+                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800' }}>Active Roster</h3>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <RosterItem icon={Timer} label="Shift Window" value={`${new Date(roster.shift_start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(roster.shift_end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`} />
+                            <RosterItem icon={Zap} label="Work Order" value={roster.task_notes} />
+                            <RosterItem icon={LayoutDashboard} label="Compliance" value="10-Hour Standard Applied" />
+                        </div>
+
+                        <div style={{ marginTop: '30px', padding: '20px', background: 'rgba(176,141,87,0.05)', borderRadius: '15px', border: '1px dashed rgba(176,141,87,0.2)' }}>
+                            <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: '1.6' }}>
+                                Employee must log a minimum of 9.5 hours to satisfy the industrial performance metric. Breaks are calculated automatically.
+                            </div>
+                        </div>
+                    </GlassCard>
+
+                    <GlassCard style={{ padding: '30px', background: 'linear-gradient(135deg, rgba(176,141,87,0.05), transparent)' }}>
+                        <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '2px', marginBottom: '15px' }}>SYSTEM ANALYTICS</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                            <div style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>
+                                <div style={{ fontSize: '11px', color: '#64748b' }}>Load Balance</div>
+                                <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>Optimal</div>
+                            </div>
+                            <div style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>
+                                <div style={{ fontSize: '11px', color: '#64748b' }}>OT Projected</div>
+                                <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>1.2 hrs</div>
+                            </div>
+                        </div>
+                    </GlassCard>
+                </div>
+            </div>
+            <style>{`
+                @media print {
+                    body { background: #fff !important; color: #000 !important; }
+                    .glass-card { border: 1px solid #eee !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }
+                    button, .nav-action-btn, .pulse-anim, header > div:last-child { display: none !important; }
+                    h1 { color: #b08d57 !important; }
+                    div[style*="grid"] { display: block !important; }
+                    .glass-card { margin-bottom: 20px !important; page-break-inside: avoid; }
+                }
+            `}</style>
+        </div>
+    );
+};
+
+const RosterItem = ({ icon: Icon, label, value }) => (
+    <div style={{ display: 'flex', gap: '15px', alignItems: 'flex-start' }}>
+        <div style={{ marginTop: '3px' }}>
+            <Icon size={16} color="#b08d57" />
+        </div>
+        <div>
+            <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
+            <div style={{ fontSize: '15px', fontWeight: '700', color: '#fff', marginTop: '2px' }}>{value}</div>
+        </div>
+    </div>
+);
+
+export default AttendanceList;

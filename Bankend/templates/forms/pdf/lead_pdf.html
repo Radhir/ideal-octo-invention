@@ -1,0 +1,48 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}CRM LEAD REPORT{% endblock %}
+
+{% block content %}
+<div class="section-header">Lead Overview</div>
+<div class="field-row">
+    <span class="field-label">Customer Name :</span>
+    <span class="field-value">{{ object.customer_name }}</span>
+</div>
+<div style="display: flex; justify-content: space-between;">
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Phone :</span>
+        <span class="field-value">{{ object.phone }}</span>
+    </div>
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Email :</span>
+        <span class="field-value">{{ object.email|default:'N/A' }}</span>
+    </div>
+</div>
+
+<div class="section-header">Lead Information</div>
+<div class="field-row">
+    <span class="field-label">Lead Source :</span>
+    <span class="field-value">{{ object.get_source_display }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Interested Service :</span>
+    <span class="field-value">{{ object.interested_service }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Budget Estimate :</span>
+    <span class="field-value">{{ object.budget|default:'Not Specified' }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Current Status :</span>
+    <span class="field-value" style="color: #b08d57; font-weight: bold;">{{ object.status }}</span>
+</div>
+
+<div class="section-header">Conversation Notes</div>
+<div style="min-height: 150px; border: 1px solid #ddd; padding: 15px; background-color: #fcfcfc;">
+    {{ object.notes|linebreaks|default:'No notes provided.' }}
+</div>
+
+<div style="margin-top: 30px; font-size: 10px; font-style: italic;">
+    Generated on: {{ object.created_at|date:"F j, Y, g:i a" }}
+</div>
+{% endblock %}

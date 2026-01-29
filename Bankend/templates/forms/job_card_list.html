@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Job Cards - Elite Shine Group{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title m-0">Workshop Job Cards</h2>
+        <a href="{% url 'job_card_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>New Job Card
+        </a>
+    </div>
+
+    <div class="glass-card p-4">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" style="color: white; border-color: rgba(255,255,255,0.1);">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Job Card #</th>
+                        <th>Customer</th>
+                        <th>Vehicle</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in job_cards %}
+                    <tr>
+                        <td class="fw-bold text-gold">{{ job.job_card_number }}</td>
+                        <td>{{ job.customer_name }}</td>
+                        <td>{{ job.brand }} {{ job.model }}</td>
+                        <td>
+                            <span
+                                class="badge {% if job.status == 'CLOSED' %}bg-success{% else %}bg-primary{% endif %} p-2">
+                                {{ job.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ job.date }}</td>
+                        <td>{{ job.net_amount }}</td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a href="{% url 'generate_pdf' 'jobcard' job.pk %}" class="btn btn-sm btn-outline-light"
+                                    title="Print PDF">
+                                    <i class="fas fa-print"></i>
+                                </a>
+                                <a href="{% url 'job_card_detail' job.pk %}" class="btn btn-sm btn-outline-gold"
+                                    title="View/Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 opacity-50">
+                            No job cards found. Start by creating one!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-gold {
+        color: var(--gold);
+    }
+
+    .btn-outline-gold {
+        border-color: var(--gold);
+        color: var(--gold);
+    }
+
+    .btn-outline-gold:hover {
+        background: var(--gold);
+        color: #000;
+    }
+</style>
+{% endblock %}

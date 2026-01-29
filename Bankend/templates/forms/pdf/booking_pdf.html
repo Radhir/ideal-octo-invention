@@ -1,0 +1,50 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}BOOKING CONFIRMATION{% endblock %}
+
+{% block content %}
+<div class="section-header">Booking Details</div>
+<div class="field-row">
+    <span class="field-label">Customer Name :</span>
+    <span class="field-value">{{ object.customer_name }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Phone :</span>
+    <span class="field-value">{{ object.phone }}</span>
+</div>
+
+<div class="section-header">Appointment Schedule</div>
+<div style="display: flex; justify-content: space-between;">
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Date :</span>
+        <span class="field-value">{{ object.booking_date }}</span>
+    </div>
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Time :</span>
+        <span class="field-value">{{ object.booking_time }}</span>
+    </div>
+</div>
+
+<div class="section-header">Service Summary</div>
+<div class="field-row">
+    <span class="field-label">Vehicle Info :</span>
+    <span class="field-value">{{ object.vehicle_details }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Requested Service :</span>
+    <span class="field-value">{{ object.service_type }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Booking Status :</span>
+    <span class="field-value" style="font-weight: bold;">{{ object.status }}</span>
+</div>
+
+<div class="terms" style="margin-top: 40px; border-top: 1px dashed #b08d57; padding-top: 20px;">
+    <strong>Please Note:</strong>
+    <ul>
+        <li>Please arrive 15 minutes before your scheduled appointment.</li>
+        <li>Cancellations should be made at least 24 hours in advance.</li>
+        <li>Final cost estimation will be provided upon vehicle inspection.</li>
+    </ul>
+</div>
+{% endblock %}

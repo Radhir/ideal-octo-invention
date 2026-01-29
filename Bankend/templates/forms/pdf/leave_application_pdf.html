@@ -1,0 +1,53 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}LEAVE APPLICATION FORM{% endblock %}
+
+{% block content %}
+<div class="section-header">Employee Details</div>
+<div class="field-row">
+    <span class="field-label">Employee Name :</span>
+    <span class="field-value">{{ object.employee_name }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Position :</span>
+    <span class="field-value">{{ object.position }}</span>
+</div>
+
+<div class="section-header">Leave Details</div>
+<div class="field-row">
+    <span class="field-label">Leave Type :</span>
+    <span class="field-value">{{ object.get_leave_type_display }}</span>
+</div>
+<div style="display: flex; justify-content: space-between;">
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">From :</span>
+        <span class="field-value">{{ object.leave_period_from }}</span>
+    </div>
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">To :</span>
+        <span class="field-value">{{ object.leave_period_to }}</span>
+    </div>
+</div>
+<div class="field-row">
+    <span class="field-label">Total Days :</span>
+    <span class="field-value">{{ object.total_days }}</span>
+</div>
+
+<div class="section-header">Approvals</div>
+<div style="display: flex; justify-content: space-between; margin-top: 30px;">
+    <div style="text-align: center; width: 45%;">
+        <div
+            style="border: 2px solid {% if object.manager_approval %}green{% else %}red{% endif %}; padding: 10px; margin-bottom: 5px;">
+            {% if object.manager_approval %}APPROVED{% else %}PENDING{% endif %}
+        </div>
+        <p>Department Manager</p>
+    </div>
+    <div style="text-align: center; width: 45%;">
+        <div
+            style="border: 2px solid {% if object.hr_approval %}green{% else %}red{% endif %}; padding: 10px; margin-bottom: 5px;">
+            {% if object.hr_approval %}APPROVED{% else %}PENDING{% endif %}
+        </div>
+        <p>HR Department</p>
+    </div>
+</div>
+{% endblock %}

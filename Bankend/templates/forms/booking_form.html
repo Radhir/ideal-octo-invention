@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header text-center">
+            <h1 class="mb-0">BOOKING FORM</h1>
+            <p class="mb-0 mt-2">ELITE SHINE CAR POLISH SERVICES LLC</p>
+        </div>
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">Create Booking</button>
+                <a href="{% url 'booking_list' %}" class="btn btn-secondary btn-lg ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

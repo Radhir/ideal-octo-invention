@@ -1,0 +1,52 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}STOCK MOVEMENT/REQUEST FORM{% endblock %}
+
+{% block content %}
+<div class="section-header">Department Request</div>
+<div class="field-row">
+    <span class="field-label">Department :</span>
+    <span class="field-value">{{ object.department }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Requested By :</span>
+    <span class="field-value">{{ object.request_by }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Date :</span>
+    <span class="field-value">{{ object.date }}</span>
+</div>
+
+<div class="section-header">Allocation Details</div>
+<div class="field-row">
+    <span class="field-label">Vehicle/Car Type :</span>
+    <span class="field-value">{{ object.car_type }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Plate Number :</span>
+    <span class="field-value">{{ object.plate_number }}</span>
+</div>
+
+<div class="section-header">Request Details</div>
+<div class="field-row">
+    <span class="field-label">Estimated Amount :</span>
+    <span class="field-value">{{ object.amount }} ({{ object.payment_type }})</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Item Description :</span>
+</div>
+<div style="min-height: 100px; border: 1px solid #ddd; padding: 15px;">
+    {{ object.item_description|linebreaks }}
+</div>
+
+<div class="signature-row">
+    <div style="width: 45%;">
+        <span class="field-label">Requester :</span>
+        <span style="border-bottom: 1px solid #000; display: inline-block; width: 100%;"></span>
+    </div>
+    <div style="width: 45%;">
+        <span class="field-label">Authorized By :</span>
+        <span style="border-bottom: 1px solid #000; display: inline-block; width: 100%;"></span>
+    </div>
+</div>
+{% endblock %}

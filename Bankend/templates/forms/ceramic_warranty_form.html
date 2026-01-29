@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header text-center">
+            <h1 class="mb-0">CERAMIC COATING WARRANTY REGISTRATION FORM</h1>
+            <p class="mb-0 mt-2">ELITE SHINE CAR POLISH SERVICES LLC</p>
+        </div>
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">{{ form.full_name|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.contact_number|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{ form.invoice_number|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.email|as_crispy_field }}</div>
+            </div>
+
+            <div class="section-title">
+                <h4>Vehicle Information</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-4">{{ form.vehicle_brand|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.vehicle_model|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.vehicle_year|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">{{ form.vehicle_color|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.license_plate|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.vin|as_crispy_field }}</div>
+            </div>
+
+            <div class="section-title">
+                <h4>Installation & Coating Details</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-4">{{ form.installation_date|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.branch_location|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.coating_brand|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{ form.coating_type|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.warranty_period|as_crispy_field }}</div>
+            </div>
+
+            <!-- Maintenance History -->
+            <div class="section-title">
+                <h4>Maintenance History</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>1st Maintenance</h6>
+                    {{ form.m1_date|as_crispy_field }}
+                    {{ form.m1_notes|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    <h6>2nd Maintenance</h6>
+                    {{ form.m2_date|as_crispy_field }}
+                    {{ form.m2_notes|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Registration</button>
+                <a href="{% url 'ceramic_warranty_list' %}" class="btn btn-secondary btn-lg ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

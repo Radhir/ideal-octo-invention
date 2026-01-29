@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ title }} - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header text-center">
+            <h1 class="mb-0">PAINT PROTECTION FILM (PPF) WARRANTY REGISTRATION FORM</h1>
+            <p class="mb-0 mt-2">ELITE SHINE CAR POLISH SERVICES LLC</p>
+        </div>
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="col-md-6">{{ form.full_name|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.contact_number|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{ form.invoice_number|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.email|as_crispy_field }}</div>
+            </div>
+
+            <div class="section-title">
+                <h4>Vehicle Information</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-4">{{ form.vehicle_brand|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.vehicle_model|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.vehicle_year|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">{{ form.vehicle_color|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.license_plate|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.vin|as_crispy_field }}</div>
+            </div>
+
+            <div class="section-title">
+                <h4>PPF Installation Details</h4>
+            </div>
+            <div class="row">
+                <div class="col-md-4">{{ form.installation_date|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.branch_location|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.film_brand|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">{{ form.film_type|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.coverage_area|as_crispy_field }}</div>
+            </div>
+
+            <!-- Service History -->
+            <div class="section-title">
+                <h4>Service History</h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-header">
+                        <tr>
+                            <th>Service Details</th>
+                            <th>Date</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1st Check-up</td>
+                            <td>{{ form.first_checkup_date }}</td>
+                            <td>{{ form.first_checkup_notes }}</td>
+                        </tr>
+                        <tr>
+                            <td>2nd Check-up</td>
+                            <td>{{ form.second_checkup_date }}</td>
+                            <td>{{ form.second_checkup_notes }}</td>
+                        </tr>
+                        <tr>
+                            <td>3rd Check-up</td>
+                            <td>{{ form.third_checkup_date }}</td>
+                            <td>{{ form.third_checkup_notes }}</td>
+                        </tr>
+                        <tr>
+                            <td>4th Check-up</td>
+                            <td>{{ form.fourth_checkup_date }}</td>
+                            <td>{{ form.fourth_checkup_notes }}</td>
+                        </tr>
+                        <tr>
+                            <td>5th Check-up</td>
+                            <td>{{ form.fifth_checkup_date }}</td>
+                            <td>{{ form.fifth_checkup_notes }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Registration</button>
+                <a href="{% url 'ppf_warranty_list' %}" class="btn btn-secondary btn-lg ms-2">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block content %}
+<div class="header"
+    style="text-align: center; border-bottom: 2px solid #b08d57; padding-bottom: 20px; margin-bottom: 30px;">
+    <h1 style="color: #b08d57; margin: 0; font-size: 24pt;">WORKSHOP DAILY REPORT</h1>
+    <p style="margin: 5px 0; color: #666;">Elite Shine Car Polish Services LLC</p>
+    <p style="margin: 5px 0; font-weight: bold;">Date: {{ today|date:"F j, Y" }}</p>
+</div>
+
+<div class="stats" style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+    <div
+        style="flex: 1; background: #f9f9f9; padding: 20px; border: 1px solid #ddd; text-align: center; margin: 0 5px;">
+        <span style="font-size: 10pt; color: #888; text-transform: uppercase;">Daily Sales</span><br>
+        <strong style="font-size: 18pt; color: #b08d57;">AED {{ total_sales|floatformat:2 }}</strong>
+    </div>
+    <div
+        style="flex: 1; background: #f9f9f9; padding: 20px; border: 1px solid #ddd; text-align: center; margin: 0 5px;">
+        <span style="font-size: 10pt; color: #888; text-transform: uppercase;">New Units</span><br>
+        <strong style="font-size: 18pt;">{{ new_count }}</strong>
+    </div>
+    <div
+        style="flex: 1; background: #f9f9f9; padding: 20px; border: 1px solid #ddd; text-align: center; margin: 0 5px;">
+        <span style="font-size: 10pt; color: #888; text-transform: uppercase;">Closed Units</span><br>
+        <strong style="font-size: 18pt; color: #28a745;">{{ closed_count }}</strong>
+    </div>
+</div>
+
+<h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px; color: #444;">Daily Receiving Log</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+    <thead>
+        <tr style="background: #eee;">
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">JC # / Ref</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Customer</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Vehicle</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: right;">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in new_jobs %}
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ job.job_card_number }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ job.customer_name }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ job.brand }} {{ job.model }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd; text-align: right;">AED {{ job.net_amount }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h3 style="border-bottom: 1px solid #eee; padding-bottom: 5px; color: #444;">Closed Job Inventory</h3>
+<table style="width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr style="background: #eee;">
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">JC #</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Customer</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Vehicle</th>
+            <th style="padding: 10px; border: 1px solid #ddd; text-align: center;">Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in closed_jobs %}
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ job.job_card_number }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ job.customer_name }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ job.brand }}</td>
+            <td style="padding: 10px; border: 1px solid #ddd; text-align: center; color: green;">CLOSED</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="footer" style="margin-top: 50px; text-align: center; font-size: 9pt; color: #999;">
+    Generated on {{ now }} • AutoMaster ERP Integration
+</div>
+{% endblock %}

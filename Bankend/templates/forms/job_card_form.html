@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}New Job Card - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="glass-card p-5">
+                <div class="form-header text-center mb-5">
+                    <h1 class="text-gold font-outfit fw-bold">CREATE NEW JOB CARD</h1>
+                    <p class="text-white-50">Step 1: Reception & Registration</p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h5 class="text-gold mb-3"><i class="fas fa-user-circle me-2"></i>Customer Details</h5>
+                            {{ form.customer_name|as_crispy_field }}
+                            {{ form.phone|as_crispy_field }}
+                            {{ form.address|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <h5 class="text-gold mb-3"><i class="fas fa-id-card me-2"></i>Job Reference</h5>
+                            {{ form.job_card_number|as_crispy_field }}
+                            {{ form.date|as_crispy_field }}
+                            {{ form.service_advisor|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="row pt-4 border-top border-secondary mt-4">
+                        <div class="col-12">
+                            <h5 class="text-gold mb-3"><i class="fas fa-car me-2"></i>Vehicle Information</h5>
+                        </div>
+                        <div class="col-md-4">{{ form.brand|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.model|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.year|as_crispy_field }}</div>
+
+                        <div class="col-md-4">{{ form.registration_number|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.vin|as_crispy_field }}</div>
+                        <div class="col-md-4">{{ form.color|as_crispy_field }}</div>
+
+                        <div class="col-12">{{ form.kilometers|as_crispy_field }}</div>
+                    </div>
+
+                    <div class="row pt-4 border-top border-secondary mt-4">
+                        <div class="col-12">
+                            <h5 class="text-gold mb-3"><i class="fas fa-clipboard-list me-2"></i>Initial Inspection</h5>
+                            {{ form.initial_inspection_notes|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            Create & Proceed to Estimation
+                        </button>
+                        <a href="{% url 'job_card_list' %}" class="btn btn-outline-light btn-lg ms-3">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-gold {
+        color: var(--gold);
+    }
+
+    .font-outfit {
+        font-family: 'Outfit', sans-serif;
+    }
+</style>
+{% endblock %}

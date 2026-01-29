@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}PPF Warranty Registrations - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">PPF Warranty Registrations</h1>
+        <a href="{% url 'ppf_warranty_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Registration
+        </a>
+    </div>
+
+    <div class="card bg-dark text-white border-secondary">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead class="table-header">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th>Vehicle</th>
+                            <th>License Plate</th>
+                            <th>Installation Date</th>
+                            <th>Branch</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for warranty in warranties %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ warranty.full_name }}</td>
+                            <td>{{ warranty.vehicle_brand }} {{ warranty.vehicle_model }}</td>
+                            <td>{{ warranty.license_plate }}</td>
+                            <td>{{ warranty.installation_date }}</td>
+                            <td>{{ warranty.get_branch_location_display }}</td>
+                            <td>
+                                <a href="{% url 'generate_pdf' 'ppfwarrantyregistration' warranty.id %}"
+                                    class="btn btn-sm btn-success" title="Download PDF">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">No warranty registrations found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

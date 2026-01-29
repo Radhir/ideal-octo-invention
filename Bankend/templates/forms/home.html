@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Venture - Elite Shine Group{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        overflow: hidden;
+        /* Immersive single-page feel */
+    }
+
+    .adventure-container {
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+        padding: 100px 5%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .hero-number {
+        font-family: 'Outfit', sans-serif;
+        font-size: 10rem;
+        font-weight: 800;
+        line-height: 1;
+        opacity: 0.1;
+        position: absolute;
+        top: 20%;
+        left: 5%;
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+        max-width: 600px;
+    }
+
+    .hero-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 4rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        line-height: 1.2;
+    }
+
+    .btn-outline-white {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 12px 40px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 0.8rem;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-white:hover {
+        background: white;
+        color: black;
+    }
+
+    /* Horizontal Carousel */
+    .bottom-carousel {
+        position: absolute;
+        bottom: 50px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        gap: 20px;
+        padding: 0 5%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        scroll-snap-type: x mandatory;
+    }
+
+    .bottom-carousel::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-item-card {
+        min-width: 280px;
+        height: 180px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-decoration: none;
+        color: white;
+        scroll-snap-align: start;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transform-style: preserve-3d;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-item-card:hover {
+        transform: translateY(-20px) scale(1.05) rotateX(5deg) rotateY(2deg);
+        border-color: var(--gold);
+        color: var(--gold);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    .card-meta {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        opacity: 0.6;
+    }
+
+    .card-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .card-icon {
+        font-size: 1.5rem;
+        opacity: 0.8;
+    }
+
+    .nav-extra {
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        font-size: 0.8rem;
+        opacity: 0.5;
+    }
+
+    .nav-extra i {
+        margin-bottom: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .nav-extra i:hover {
+        color: var(--gold);
+        opacity: 1;
+    }
+
+    .lang-toggle {
+        position: absolute;
+        bottom: 50px;
+        right: 5%;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+        opacity: 0.8;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 20px;
+    }
+
+    .logout-btn {
+        color: #ff4d4d;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .logout-btn:hover {
+        color: #ff1a1a;
+        transform: translateX(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Command Center Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="hero-title mb-0">Elite Shine <span class="text-gold">Command Center</span></h1>
+        <p class="text-white-50">Operational Intelligence & Workshop Performance</p>
+    </div>
+</div>
+
+<!-- Top Row: Real-time Monitors -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center">
+            <div class="h2 text-gold fw-bold mb-0">{{ stats.active_jobs }}</div>
+            <div class="small text-white-50 uppercase tracking-wider">Active Units</div>
+            <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
+                <div class="progress-bar bg-gold" style="width: 75%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center">
+            <div class="h2 text-gold fw-bold mb-0">{{ stats.wip_count }}</div>
+            <div class="small text-white-50 uppercase tracking-wider">In Workshop (WIP)</div>
+            <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
+                <div class="progress-bar bg-info" style="width: 45%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center">
+            <div class="h2 text-gold fw-bold mb-0">{{ stats.todays_bookings }}</div>
+            <div class="small text-white-50 uppercase tracking-wider">Today's Appointments</div>
+            <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
+                <div class="progress-bar bg-success" style="width: 90%"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="glass-card p-4 text-center">
+            <div class="h2 text-white fw-bold mb-0">AED {{ stats.monthly_revenue|floatformat:0 }}</div>
+            <div class="small text-white-50 uppercase tracking-wider">M-T-D Revenue</div>
+            <div class="progress mt-3" style="height: 4px; background: rgba(255,255,255,0.05);">
+                <div class="progress-bar bg-white" style="width: 60%"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Grid: Modules & Activity -->
+<div class="row g-4">
+    <!-- Left Column: Service Modules -->
+    <div class="col-lg-8">
+        <div class="glass-card p-4 h-100">
+            <h5 class="text-gold mb-4"><i class="fas fa-th-large me-2"></i>Service Operations</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <a href="{% url 'job_card_create' %}" class="module-btn">
+                        <i class="fas fa-file-invoice mb-2"></i>
+                        <span>Job Cards</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'ppf_warranty_create' %}" class="module-btn">
+                        <i class="fas fa-shield-alt mb-2"></i>
+                        <span>PPF Warranty</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'ceramic_warranty_create' %}" class="module-btn">
+                        <i class="fas fa-gem mb-2"></i>
+                        <span>Ceramic Coating</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'booking_list' %}" class="module-btn">
+                        <i class="fas fa-calendar-check mb-2"></i>
+                        <span>CRM Bookings</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'lead_list' %}" class="module-btn">
+                        <i class="fas fa-user-tag mb-2"></i>
+                        <span>CRM Leads</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'pick_and_drop_list' %}" class="module-btn">
+                        <i class="fas fa-truck mb-2"></i>
+                        <span>Pick & Drop</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'invoice_list' %}" class="module-btn">
+                        <i class="fas fa-receipt mb-2"></i>
+                        <span>Invoicing</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'stock_form_list' %}" class="module-btn">
+                        <i class="fas fa-boxes mb-2"></i>
+                        <span>Inventory</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{% url 'attendance_list' %}" class="module-btn">
+                        <i class="fas fa-fingerprint mb-2"></i>
+                        <span>Attendance</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-3 mt-1">
+                <div class="col-md-3">
+                    <a href="{% url 'operation_list' %}" class="module-btn small">
+                        <i class="fas fa-cogs mb-1"></i>
+                        <span>Operations</span>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'checklist_list' %}" class="module-btn small">
+                        <i class="fas fa-clipboard-check mb-1"></i>
+                        <span>Checklists</span>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'request_form_list' %}" class="module-btn small">
+                        <i class="fas fa-paper-plane mb-1"></i>
+                        <span>Requests</span>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="{% url 'leave_application_list' %}" class="module-btn small">
+                        <i class="fas fa-user-clock mb-1"></i>
+                        <span>HR Leaves</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Activity & quick actions -->
+    <div class="col-lg-4">
+        <div class="row g-4 h-100">
+            <div class="col-12 h-50">
+                <div class="glass-card p-4 h-100 overflow-auto">
+                    <h5 class="text-gold mb-3"><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                    <div class="activity-feed">
+                        {% for activity in stats.recent_activity %}
+                        <div class="activity-item py-2 border-bottom border-secondary" style="font-size: 0.8rem;">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold">{{ activity.job_card_number }}</span>
+                                <span class="text-white-50">{{ activity.updated_at|timesince }} ago</span>
+                            </div>
+                            <div class="text-white-50">{{ activity.customer_name }} - {{ activity.status }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 h-50">
+                <div
+                    class="glass-card p-4 h-100 d-flex flex-column justify-content-center align-items-center text-center">
+                    <i class="fas fa-chart-line fa-3x text-gold mb-3 opacity-50"></i>
+                    <h6 class="text-white-50">Analyze Performance</h6>
+                    <a href="{% url 'workshop_diary' %}" class="btn btn-gold w-100 py-3 mt-3 text-black fw-bold">
+                        VIEW WORKSHOP DIARY
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<style>
+    .hero-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -1px;
+    }
+
+    .adventure-container {
+        padding: 40px 5% !important;
+        height: auto !important;
+        min-height: 100vh;
+        overflow-y: auto !important;
+    }
+
+    .module-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 25px 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-decoration: none;
+        color: white;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        height: 100%;
+        transform-style: preserve-3d;
+    }
+
+    .module-btn i {
+        font-size: 2rem;
+        color: var(--gold);
+        transition: 0.3s;
+    }
+
+    .module-btn span {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 10px;
+        text-align: center;
+    }
+
+    .module-btn:hover {
+        background: rgba(176, 141, 87, 0.05);
+        border-color: var(--gold);
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .module-btn:hover i {
+        transform: scale(1.1) translateZ(20px);
+    }
+
+    .module-btn.small {
+        padding: 15px 10px;
+    }
+
+    .module-btn.small i {
+        font-size: 1.2rem;
+    }
+
+    .module-btn.small span {
+        font-size: 0.65rem;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none !important;
+    }
+
+    .bg-gold {
+        background-color: var(--gold) !important;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(176, 141, 87, 0.3);
+        border-radius: 10px;
+    }
+</style>
+{% endblock %}

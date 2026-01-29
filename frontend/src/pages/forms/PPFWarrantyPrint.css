@@ -1,0 +1,325 @@
+/* PPF Warranty Form Print Styles */
+.warranty-form-container {
+    min-height: 100vh;
+    background: #f3f4f6;
+    padding: 2rem;
+    font-family: 'Arial', sans-serif;
+}
+
+.print-controls {
+    max-width: 1000px;
+    margin: 0 auto 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.print-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #2563eb;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.print-btn:hover {
+    background: #1d4ed8;
+}
+
+/* Main Document */
+.warranty-document {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 3rem;
+}
+
+/* Header */
+.warranty-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #000;
+}
+
+.warranty-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+}
+
+.warranty-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #4b5563;
+}
+
+/* Form Grid */
+.warranty-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form-section {
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background: #f9fafb;
+}
+
+.form-section h3 {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.form-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.form-field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+
+.form-field input[type="text"],
+.form-field input[type="email"],
+.form-field input[type="date"] {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #d1d5db;
+    background: transparent;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    outline: none;
+}
+
+.form-field input:focus {
+    border-bottom-color: #2563eb;
+}
+
+/* Installation Details */
+.installation-details {
+    grid-column: span 2;
+}
+
+.installation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.radio-group,
+.checkbox-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.checkbox-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.checkbox-grid label,
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+/* Service History Table */
+.service-history {
+    margin-bottom: 2rem;
+}
+
+.service-history h3 {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.service-history table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #d1d5db;
+    font-size: 0.875rem;
+}
+
+.service-history th,
+.service-history td {
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.service-history thead {
+    background: #f3f4f6;
+}
+
+.service-history th {
+    font-weight: 700;
+}
+
+.service-history tbody tr:nth-child(odd) {
+    background: #fafafa;
+}
+
+.service-note {
+    font-size: 0.75rem;
+    line-height: 1.4;
+}
+
+/* Signature */
+.signature-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3rem;
+    margin-bottom: 4rem;
+}
+
+.signature-box {
+    text-align: center;
+    width: 16rem;
+}
+
+.signature-line {
+    border-bottom: 1px solid #000;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    font-family: 'Brush Script MT', cursive;
+    font-size: 1.5rem;
+    font-style: italic;
+}
+
+.signature-title {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+/* Page Break */
+.page-break {
+    break-before: page;
+    border-top: 2px dashed #d1d5db;
+    margin-top: 2rem;
+}
+
+/* Terms & Conditions */
+.terms-section {
+    padding-top: 2rem;
+}
+
+.terms-section h3 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    text-decoration: underline;
+}
+
+.terms-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    font-size: 0.75rem;
+    text-align: justify;
+    line-height: 1.6;
+}
+
+.terms-grid h4 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+.terms-grid h4:first-child {
+    margin-top: 0;
+}
+
+.terms-grid ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.terms-grid li {
+    margin-bottom: 0.25rem;
+}
+
+.terms-grid p {
+    margin-bottom: 1rem;
+}
+
+/* Print Styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    .warranty-form-container {
+        background: white;
+        padding: 0;
+    }
+
+    .warranty-document {
+        box-shadow: none;
+        padding: 1cm;
+        max-width: 100%;
+    }
+
+    .page-break {
+        page-break-before: always;
+        border: none;
+        margin: 0;
+    }
+
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .warranty-form-grid,
+    .installation-grid,
+    .terms-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .installation-details {
+        grid-column: span 1;
+    }
+}

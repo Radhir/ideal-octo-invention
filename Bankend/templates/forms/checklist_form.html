@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Quality Check - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="glass-card p-5">
+                <div class="form-header text-center mb-5">
+                    <h1 class="text-gold font-outfit fw-bold">QUALITY CHECKLIST</h1>
+                    <p class="text-white-50">Quality Control Department</p>
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="text-center mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">Finalize Checklist</button>
+                        <a href="{% url 'checklist_list' %}" class="btn btn-outline-light btn-lg ms-3">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

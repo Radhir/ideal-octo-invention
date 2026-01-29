@@ -1,0 +1,51 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}INSTALLATION CHECKLIST{% endblock %}
+
+{% block content %}
+<div style="text-align: right; font-weight: bold;">
+    CHECKLIST #: <span style="color: #b08d57;">{{ object.checklist_number }}</span>
+</div>
+
+<div class="section-header">Job Assignment</div>
+<div class="field-row">
+    <span class="field-label">Technician Name :</span>
+    <span class="field-value">{{ object.technician_name }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Date :</span>
+    <span class="field-value">{{ object.date }}</span>
+</div>
+
+<div class="section-header">Vehicle Verification</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Brand/Model :</span>
+        <span class="field-value">{{ object.vehicle_brand }} {{ object.vehicle_model }}</span>
+    </div>
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Reg # :</span>
+        <span class="field-value">{{ object.registration_number }}</span>
+    </div>
+    <div class="field-row" style="width: 100%;">
+        <span class="field-label">VIN :</span>
+        <span class="field-value">{{ object.vin }}</span>
+    </div>
+</div>
+
+<div class="section-header">Inspection Checklist</div>
+<div style="margin-top: 20px;">
+    <p>[ ] Surface Decontamination Completed</p>
+    <p>[ ] Paint Correction/Polishing Done</p>
+    <p>[ ] Edge Sealant Applied (PPF)</p>
+    <p>[ ] Curing Chamber Check</p>
+    <p>[ ] Final Quality Inspection Passed</p>
+</div>
+
+<div class="signature-row">
+    <div>
+        <span class="field-label">Supervisor Signature :</span>
+        <span style="border-bottom: 1px solid #000; display: inline-block; width: 250px;"></span>
+    </div>
+</div>
+{% endblock %}

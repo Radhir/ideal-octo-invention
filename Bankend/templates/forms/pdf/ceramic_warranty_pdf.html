@@ -1,0 +1,89 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}CERAMIC COATING WARRANTY REGISTRATION FORM{% endblock %}
+
+{% block content %}
+<div class="section-header">Customer Details</div>
+<div class="field-row">
+    <span class="field-label">Full Name :</span>
+    <span class="field-value">{{ object.full_name }}</span>
+</div>
+<div style="display: flex; justify-content: space-between;">
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Contact Number :</span>
+        <span class="field-value">{{ object.contact_number }}</span>
+    </div>
+    <div class="field-row" style="width: 48%;">
+        <span class="field-label">Invoice Number :</span>
+        <span class="field-value">{{ object.invoice_number }}</span>
+    </div>
+</div>
+
+<div class="section-header">Vehicle Information</div>
+<div class="field-row">
+    <span class="field-label">Vehicle :</span>
+    <span class="field-value">{{ object.vehicle_brand }} {{ object.vehicle_model }} ({{ object.vehicle_year }})</span>
+</div>
+<div class="field-row">
+    <span class="field-label">License Plate Number :</span>
+    <span class="field-value">{{ object.license_plate }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">VIN :</span>
+    <span class="field-value">{{ object.vin }}</span>
+</div>
+
+<div class="section-header">Installation & Coating Details</div>
+<div class="field-row">
+    <span class="field-label">Installation Date :</span>
+    <span class="field-value">{{ object.installation_date }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Coating Type :</span>
+    <span class="field-value">{{ object.get_coating_type_display }} ({{ object.coating_brand }})</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Warranty Period :</span>
+    <span class="field-value">{{ object.warranty_period }}</span>
+</div>
+
+<div class="section-header">Maintenance History</div>
+<table>
+    <thead>
+        <tr>
+            <th style="width: 30%;">Maintenance</th>
+            <th style="width: 20%;">Date</th>
+            <th style="width: 50%;">Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1st Maintenance (6 Months) :</td>
+            <td>{{ object.m1_date|default:'' }}</td>
+            <td>{{ object.m1_notes|default:'' }}</td>
+        </tr>
+        <tr>
+            <td>2nd Maintenance (12 Months) :</td>
+            <td>{{ object.m2_date|default:'' }}</td>
+            <td>{{ object.m2_notes|default:'' }}</td>
+        </tr>
+        <tr>
+            <td>3rd Maintenance (18 Months) :</td>
+            <td>{{ object.m3_date|default:'' }}</td>
+            <td>{{ object.m3_notes|default:'' }}</td>
+        </tr>
+        <tr>
+            <td>4th Maintenance (24 Months) :</td>
+            <td>{{ object.m4_date|default:'' }}</td>
+            <td>{{ object.m4_notes|default:'' }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="signature-row">
+    <div>
+        <span class="field-label">Technician :</span>
+        <span style="border-bottom: 1px solid #000; display: inline-block; width: 250px;"></span>
+    </div>
+</div>
+{% endblock %}

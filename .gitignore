@@ -1,0 +1,37 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Backend
+Bankend/venv/
+Bankend/*.log
+Bankend/db.sqlite3
+Bankend/media/
+Bankend/staticfiles/
+**/__pycache__/
+*.py[cod]
+*$py.class
+Bankend/Final_Employee_Credentials.md
+Bankend/employee_credentials.md
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Secret folders and local configs
+ssl/
+.env*
+*.env
+
+# Large files
+*.mp4
+*.pdf
+nul

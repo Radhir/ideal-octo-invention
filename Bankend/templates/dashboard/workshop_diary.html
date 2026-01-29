@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Workshop Diary - Elite Shine{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="text-gold fw-bold m-0">WORKSHOP DIARY</h1>
+            <p class="text-white-50">Reports for {{ today|date:"l, F j, Y" }}</p>
+        </div>
+        <div>
+            <a href="{% url 'generate_pdf' 'workshopdiary' 0 %}?date={{ today|date:'Y-m-d' }}"
+                class="btn btn-primary btn-lg">
+                <i class="fas fa-print me-2"></i>Print Daily Report
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <h4 class="text-white-50 small mb-1">TOTAL DAILY SALES</h4>
+                <div class="h2 text-gold fw-bold">AED {{ total_sales|floatformat:2 }}</div>
+                <div class="small">{{ invoice_count }} Invoices Generated</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <h4 class="text-white-50 small mb-1">VEHICLES RECEIVED</h4>
+                <div class="h2 text-gold fw-bold">{{ new_jobs.count|add:new_bookings.count }}</div>
+                <div class="small">{{ new_jobs.count }} Jobs • {{ new_bookings.count }} Bookings</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <h4 class="text-white-50 small mb-1">VEHICLES CLOSED</h4>
+                <div class="h2 text-success fw-bold">{{ closed_jobs.count }}</div>
+                <div class="small">Ready for Delivery</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Section -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="glass-card p-4">
+                <h5 class="text-gold mb-4"><i class="fas fa-plus-circle me-2"></i>Receiving Log (Job Cards)</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover small">
+                        <thead>
+                            <tr>
+                                <th>JC #</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th class="text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in new_jobs %}
+                            <tr>
+                                <td>{{ job.job_card_number }}</td>
+                                <td>{{ job.customer_name }}</td>
+                                <td>{{ job.brand }}</td>
+                                <td class="text-end text-gold">AED {{ job.net_amount }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center opacity-50">No jobs received today</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="glass-card p-4">
+                <h5 class="text-success mb-4"><i class="fas fa-check-double me-2"></i>Closing Log (Completed)</h5>
+                <div class="table-responsive">
+                    <table class="table table-dark table-hover small">
+                        <thead>
+                            <tr>
+                                <th>JC #</th>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th class="text-end">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in closed_jobs %}
+                            <tr>
+                                <td>{{ job.job_card_number }}</td>
+                                <td>{{ job.customer_name }}</td>
+                                <td>{{ job.brand }}</td>
+                                <td class="text-end"><span class="badge bg-success">CLOSED</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center opacity-50">No jobs closed today</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

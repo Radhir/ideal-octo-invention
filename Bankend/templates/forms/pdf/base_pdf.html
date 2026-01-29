@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: 'Helvetica', sans-serif;
+            /* Standard font for PDFs */
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .header-table {
+            width: 100%;
+            margin-bottom: 20pt;
+        }
+
+        .logo-section h1 {
+            color: #000;
+            font-size: 18pt;
+            margin: 0;
+            text-transform: uppercase;
+            border-bottom: 2pt solid #b08d57;
+            display: inline-block;
+        }
+
+        .section-header {
+            background-color: #000;
+            color: #fff;
+            padding: 6pt 10pt;
+            font-weight: bold;
+            margin-top: 15pt;
+            margin-bottom: 8pt;
+            width: 100%;
+        }
+
+        .field-row {
+            margin-bottom: 10pt;
+        }
+
+        .field-label {
+            font-weight: bold;
+            margin-right: 4pt;
+        }
+
+        .field-value {
+            /* border-bottom: 1pt solid #ccc; Removed to prevent layout issues */
+            text-decoration: underline;
+            /* Safer alternative for PDFs */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10pt;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            border: 1pt solid #ddd;
+            padding: 6pt;
+            text-align: left;
+        }
+
+        td {
+            border: 1pt solid #ddd;
+            padding: 6pt;
+            vertical-align: top;
+        }
+
+        /* Utility to strip borders for layout tables */
+        table.layout-table td {
+            border: none;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 4px double #b08d57;"></div>
+
+    <table class="header-table layout-table">
+        <tr>
+            <td style="vertical-align: bottom;">
+                <div class="logo-section">
+                    <h1>{% block form_title %}WARRANTY REGISTRATION{% endblock %}</h1>
+                </div>
+            </td>
+            <td style="text-align: right; vertical-align: top;">
+                <div style="font-weight: bold; font-size: 15pt; color: #b08d57;">Elite <span
+                        style="color: #000;">SHINE</span></div>
+                <div style="font-size: 6pt; text-align: center;">CAR POLISH SERVICES LLC</div>
+            </td>
+        </tr>
+    </table>
+
+    {% block content %}{% endblock %}
+
+</body>
+
+</html>

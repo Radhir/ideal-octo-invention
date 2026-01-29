@@ -1,0 +1,122 @@
+@media print {
+    /* Global Resets */
+    @page {
+        margin: 10mm;
+        size: auto;
+    }
+
+    body, #root, .app-container {
+        background: #fff !important;
+        color: #000 !important;
+        width: 100% !important;
+        height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        font-family: Arial, sans-serif !important;
+    }
+
+    main {
+        padding-top: 0 !important; /* Override AppLayout padding */
+    }
+
+    /* Hide Navigation and Non-Printable UI */
+    header, 
+    nav, 
+    aside, 
+    .desktop-dock, 
+    .mobile-dock, 
+    .bottom-nav,
+    button:not(.no-print-hide), 
+    .no-print,
+    .dock-icon-container,
+    a[href="/"] /* Home button */
+    {
+        display: none !important;
+    }
+
+    /* Override Inline Styles for new Forms */
+    div[style*="background"], 
+    div[style*="background-color"],
+    input[style*="background"] {
+        background: #fff !important;
+        background-color: #fff !important;
+        color: #000 !important;
+        border-color: #000 !important;
+        box-shadow: none !important;
+    }
+
+    h1, h2, h3, h4, h5, h6, 
+    p, span, label, div {
+        color: #000 !important;
+        text-shadow: none !important;
+    }
+
+    /* Input Fields */
+    input, textarea, select {
+        border: 1px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+        box-shadow: none !important;
+        padding: 4px !important;
+        font-size: 12px !important;
+    }
+
+    /* GlassCard Specific Override */
+    .glass-card, 
+    div[class*="GlassCard"] {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+        border-radius: 4px !important;
+        margin-bottom: 20px !important;
+        color: #000 !important;
+    }
+
+    /* Tables */
+    table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        font-size: 11px !important;
+    }
+    
+    th {
+        background: #eee !important;
+        color: #000 !important;
+        font-weight: bold !important;
+        border: 1px solid #000 !important;
+    }
+
+    td {
+        border: 1px solid #000 !important;
+        color: #000 !important;
+    }
+
+    /* Signature Canvas Fix */
+    canvas {
+        border: 1px solid #000 !important;
+        background: #fff !important;
+        /* Enhance contrast for gold ink on white paper */
+        filter: contrast(1.5) grayscale(1) !important; 
+    }
+
+    /* 360 Visual Placeholder */
+    div[style*="Interactive 360"] {
+        border: 1px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+    }
+
+    /* Grid Layouts - fallback to block if needed, but grid usually prints ok */
+    div[style*="grid"] {
+        display: grid !important;
+        /* gap: 10px !important; // Reduce gaps */
+    }
+
+    /* Force links to have no underline/color */
+    a {
+        text-decoration: none !important;
+        color: #000 !important;
+    }
+}

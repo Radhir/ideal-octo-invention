@@ -1,0 +1,62 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}TAX INVOICE{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; margin-bottom: 40px;">
+    <div>
+        <h2 style="margin: 0;">Elite Shine Car Polish Services</h2>
+        <p style="margin: 5px 0;">TRN: 100456789000003</p>
+    </div>
+    <div style="text-align: right;">
+        <p style="margin: 0; font-weight: bold;">Invoice #: {{ object.invoice_number }}</p>
+        <p style="margin: 5px 0;">Date: {{ object.date }}</p>
+    </div>
+</div>
+
+<div class="section-header">Bill To</div>
+<div class="field-row">
+    <span class="field-label">Customer Name :</span>
+    <span class="field-value">{{ object.customer_name }}</span>
+</div>
+<div class="field-row">
+    <span class="field-label">Customer TRN :</span>
+    <span class="field-value">{{ object.customer_trn|default:'N/A' }}</span>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th style="width: 10%; text-align: right;">Qty</th>
+            <th style="width: 20%; text-align: right;">Price</th>
+            <th style="width: 20%; text-align: right;">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- This logic assumes items are stored in a format we can parse or just displays them -->
+        <tr>
+            <td colspan="4">{{ object.items|linebreaks }}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" style="text-align: right; font-weight: bold;">Total Amount (Excl. VAT)</td>
+            <td style="text-align: right;">{{ object.total_amount }}</td>
+        </tr>
+        <tr>
+            <td colspan="3" style="text-align: right; font-weight: bold;">VAT Amount (5%)</td>
+            <td style="text-align: right;">{{ object.vat_amount }}</td>
+        </tr>
+        <tr style="background-color: #f2f2f2; font-size: 18px;">
+            <td colspan="3" style="text-align: right; font-weight: bold;">Grand Total</td>
+            <td style="text-align: right; font-weight: bold;">{{ object.grand_total }}</td>
+        </tr>
+    </tfoot>
+</table>
+
+<div style="margin-top: 50px;">
+    <p><strong>Payment Status:</strong> {{ object.payment_status }}</p>
+    <p style="font-size: 10px; color: #666;">This is a computer-generated invoice and does not require a signature.</p>
+</div>
+{% endblock %}

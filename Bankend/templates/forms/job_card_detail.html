@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Job Card: {{ job_card.job_card_number }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stepper-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .stepper-container::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 1;
+    }
+
+    .step-item {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        width: 100%;
+    }
+
+    .step-dot {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #1a1d23;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .step-item.active .step-dot {
+        background: var(--gold);
+        border-color: var(--gold);
+        color: #000;
+        box-shadow: 0 0 20px rgba(176, 141, 87, 0.4);
+    }
+
+    .step-item.completed .step-dot {
+        background: #198754;
+        border-color: #198754;
+        color: white;
+    }
+
+    .step-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        opacity: 0.7;
+    }
+
+    .step-item.active .step-label {
+        opacity: 1;
+        color: var(--gold);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Stepper Navigation -->
+    <div class="stepper-container">
+        {% for status_code, status_name in job_card.STATUS_CHOICES %}
+        {% if status_code != 'CLOSED' %}
+        <div
+            class="step-item {% if job_card.status == status_code %}active{% elif forloop.counter < 8 and job_card.status == 'CLOSED' or job_card.status_index > forloop.counter0 %}completed{% endif %}">
+            <div class="step-dot">
+                {% if job_card.status_index > forloop.counter0 or job_card.status == 'CLOSED' %}
+                <i class="fas fa-check"></i>
+                {% else %}
+                {{ forloop.counter }}
+                {% endif %}
+            </div>
+            <div class="step-label">{{ status_name }}</div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <div class="glass-card p-5">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div>
+                        <h2 class="section-title m-0">{{ job_card.get_status_display }}</h2>
+                        <p class="text-white-50 mt-2">Job Card: <span class="text-gold">{{ job_card.job_card_number
+                                }}</span></p>
+                    </div>
+                    {% if job_card.status != 'CLOSED' %}
+                    <a href="?advance=1" class="btn btn-primary" onclick="return confirm('Move to the next stage?')">
+                        Advance to Next Step <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <hr class="mb-5 opacity-10">
+
+                {% if form %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-outline-light px-5">Save Step Data</button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-check-circle text-success" style="font-size: 5rem; margin-bottom: 20px;"></i>
+                    <h3>Workflow Complete</h3>
+                    <p class="text-white-50">This job card is now closed and finalized.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="glass-card p-4 mb-4">
+                <h5 class="text-gold mb-3"><i class="fas fa-car me-2"></i>Vehicle Summary</h5>
+                <p class="mb-1"><strong>{{ job_card.brand }} {{ job_card.model }}</strong></p>
+                <p class="text-white-50 small mb-3">Plate: {{ job_card.registration_number }}</p>
+
+                <h5 class="text-gold mb-2 mt-4"><i class="fas fa-user me-2"></i>Customer</h5>
+                <p class="mb-0">{{ job_card.customer_name }}</p>
+                <p class="text-white-50 small">{{ job_card.phone }}</p>
+            </div>
+
+            <div class="glass-card p-4">
+                <h5 class="text-gold mb-3"><i class="fas fa-file-invoice-dollar me-2"></i>Quick Actions</h5>
+                <a href="{% url 'generate_pdf' 'jobcard' job_card.pk %}" class="btn btn-outline-light w-100 mb-3">
+                    <i class="fas fa-print me-2"></i>Print Job Card
+                </a>
+
+                {% if not job_card.invoice %}
+                {% if job_card.status == 'INVOICING' %}
+                <a href="{% url 'generate_invoice_from_job' job_card.pk %}"
+                    class="btn btn-gold w-100 text-black fw-bold mb-3">
+                    <i class="fas fa-file-invoice me-2"></i>Generate Invoice
+                </a>
+                {% endif %}
+                {% else %}
+                <div class="alert alert-success py-2 mb-3" style="font-size: 0.8rem;">
+                    <i class="fas fa-check-circle me-1"></i> Invoice Paid: {{ job_card.invoice.invoice_number }}
+                </div>
+                {% endif %}
+
+                {% if job_card.invoice %}
+                <a href="{% url 'generate_pdf' 'invoice' job_card.pk %}" class="btn btn-outline-light w-100 mb-3">
+                    <i class="fas fa-receipt me-2"></i>View Invoice PDF
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

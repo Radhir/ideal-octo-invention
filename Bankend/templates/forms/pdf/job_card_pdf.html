@@ -1,0 +1,112 @@
+{% extends 'forms/pdf/base_pdf.html' %}
+
+{% block form_title %}WORKSHOP JOB CARD{% endblock %}
+
+{% block content %}
+<div style="text-align: right; font-weight: bold; margin-bottom: 15pt;">
+    JOB CARD #: <span style="color: #d9534f;">{{ object.job_card_number }}</span><br>
+    DATE: {{ object.date }}
+</div>
+
+<div class="section-header">Customer Information</div>
+<div class="field-row">
+    <span class="field-label">Customer Name :</span>
+    <span class="field-value">{{ object.customer_name }}</span>
+</div>
+<table style="width: 100%;">
+    <tr>
+        <td style="width: 50%;">
+            <span class="field-label">Phone :</span>
+            <span class="field-value">{{ object.phone }}</span>
+        </td>
+        <td style="width: 50%;">
+            <span class="field-label">Address :</span>
+            <span class="field-value">{{ object.address }}</span>
+        </td>
+    </tr>
+</table>
+
+<div class="section-header">Vehicle Details</div>
+<table style="width: 100%; margin-bottom: 15pt;">
+    <tr>
+        <td style="width: 33%;">
+            <span class="field-label">Brand :</span>
+            <span class="field-value">{{ object.brand }}</span>
+        </td>
+        <td style="width: 33%;">
+            <span class="field-label">Model :</span>
+            <span class="field-value">{{ object.model }}</span>
+        </td>
+        <td style="width: 33%;">
+            <span class="field-label">Year :</span>
+            <span class="field-value">{{ object.year }}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="field-label">Color :</span>
+            <span class="field-value">{{ object.color }}</span>
+        </td>
+        <td>
+            <span class="field-label">Reg # :</span>
+            <span class="field-value">{{ object.registration_number }}</span>
+        </td>
+        <td>
+            <span class="field-label">KM :</span>
+            <span class="field-value">{{ object.kilometers }}</span>
+        </td>
+    </tr>
+</table>
+
+<div class="section-header">Job Description</div>
+<div style="border: 1pt solid #ddd; padding: 8pt; margin-bottom: 15pt;">
+    {{ object.job_description|linebreaks }}
+    <br><br><br> <!-- Spacer instead of min-height -->
+</div>
+
+<div class="section-header">Financial Summary</div>
+<table style="width: 100%; margin-top: 15pt;">
+    <tr>
+        <td style="width: 50%;"></td> <!-- Empty left column -->
+        <td style="width: 50%;">
+            <table style="width: 100%;">
+                <tr>
+                    <td>Total Amount</td>
+                    <td style="text-align: right;">{{ object.total_amount }}</td>
+                </tr>
+                <tr>
+                    <td>VAT Amount</td>
+                    <td style="text-align: right;">{{ object.vat_amount }}</td>
+                </tr>
+                <tr>
+                    <td>Discount</td>
+                    <td style="text-align: right;">{{ object.discount_amount }}</td>
+                </tr>
+                <tr style="background-color: #f2f2f2; font-weight: bold;">
+                    <td>Net Amount</td>
+                    <td style="text-align: right;">{{ object.net_amount }}</td>
+                </tr>
+                <tr>
+                    <td>Advance</td>
+                    <td style="text-align: right;">{{ object.advance_amount }}</td>
+                </tr>
+                <tr style="color: #d9534f; font-weight: bold;">
+                    <td>Balance</td>
+                    <td style="text-align: right;">{{ object.balance_amount }}</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<div class="signature-row" style="margin-top: 22pt;">
+    <div>
+        <span class="field-label">Customer Signature :</span><br>
+        {% if object.customer_signature %}
+        <img src="{{ object.customer_signature.path }}" style="width: 110pt; border-bottom: 1pt solid #000;">
+        {% else %}
+        <span style="display: inline-block; width: 180pt; height: 38pt; border-bottom: 1pt solid #000;"></span>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,280 @@
+/* Shipment Management Styles */
+.shipment-management {
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #b08d57, #d4af37);
+    color: white;
+    border: none;
+    padding: 0.875rem 1.75rem;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(176, 141, 87, 0.4);
+}
+
+/* Filters */
+.filters-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.search-box {
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(176, 141, 87, 0.2);
+    border-radius: 10px;
+    padding: 0 1rem;
+    transition: all 0.3s;
+}
+
+.search-box:focus-within {
+    border-color: rgba(176, 141, 87, 0.5);
+    box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.1);
+}
+
+.search-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f1f5f9;
+    font-size: 0.95rem;
+    padding: 0.875rem 0;
+    outline: none;
+}
+
+.search-box input::placeholder {
+    color: #64748b;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.filter-btn {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid rgba(176, 141, 87, 0.2);
+    color: #94a3b8;
+    padding: 0.875rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    border-color: rgba(176, 141, 87, 0.4);
+    color: #b08d57;
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, rgba(176, 141, 87, 0.2), rgba(212, 175, 55, 0.2));
+    border-color: #b08d57;
+    color: #d4af37;
+}
+
+/* Shipments Grid */
+.shipments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+}
+
+.shipment-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.9));
+    border: 1px solid rgba(176, 141, 87, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.shipment-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(176, 141, 87, 0.4);
+    box-shadow: 0 12px 32px rgba(176, 141, 87, 0.2);
+}
+
+.shipment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(176, 141, 87, 0.1);
+}
+
+.shipment-number-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.shipping-icon {
+    font-size: 1.75rem;
+}
+
+.shipment-number {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #f1f5f9;
+}
+
+.shipment-type {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Route Section */
+.route-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
+    background: rgba(176, 141, 87, 0.05);
+    border-radius: 10px;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    font-weight: 500;
+    color: #e2e8f0;
+}
+
+.route-arrow {
+    color: #b08d57;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+/* Details */
+.shipment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.detail-item svg {
+    color: #64748b;
+}
+
+/* Footer */
+.shipment-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(176, 141, 87, 0.1);
+}
+
+.cost-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cost-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #b08d57;
+}
+
+.delayed-badge {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    padding: 0.35rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Loading & Empty States */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    gap: 1rem;
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(176, 141, 87, 0.2);
+    border-top-color: #b08d57;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #64748b;
+}
+
+.empty-state h3 {
+    color: #94a3b8;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: 0.95rem;
+}
