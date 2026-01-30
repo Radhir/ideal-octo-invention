@@ -151,83 +151,83 @@ const JobCreate = () => {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '40px', marginBottom: '25px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1.1fr) 1fr', gap: '30px', marginBottom: '20px' }}>
                         <div className="section">
-                            <h3 style={sectionTitleStyle}>Customer Details</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '10px' }}>
+                            <h3 style={sectionTitleStyle}>RECEPTION & CUSTOMER</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '15px', marginBottom: '12px' }}>
                                 <div>
                                     <label style={labelStyle}>Customer Name</label>
-                                    <input type="text" name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required />
+                                    <input type="text" name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required style={{ height: '36px' }} />
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Phone Number</label>
-                                    <input type="text" name="phone_number" className="form-control" value={formData.phone_number} onChange={handleChange} required />
+                                    <input type="text" name="phone_number" className="form-control" value={formData.phone_number} onChange={handleChange} required style={{ height: '36px' }} />
                                 </div>
                             </div>
-                            <div>
+                            <div style={{ marginBottom: '12px' }}>
                                 <label style={labelStyle}>Address (Optional)</label>
-                                <textarea name="address" className="form-control" rows="1" value={formData.address} onChange={handleChange} style={{ resize: 'none' }}></textarea>
+                                <input name="address" className="form-control" value={formData.address} onChange={handleChange} style={{ height: '36px' }} />
                             </div>
 
-                            <h3 style={{ ...sectionTitleStyle, marginTop: '25px' }}>Initial Notes</h3>
-                            <textarea name="job_description" className="form-control" rows="2" value={formData.job_description} onChange={handleChange} placeholder="Damages, special requests..."></textarea>
+                            <h3 style={{ ...sectionTitleStyle, marginTop: '20px' }}>NOTES & COMPLAINTS</h3>
+                            <textarea name="job_description" className="form-control" rows="3" value={formData.job_description} onChange={handleChange} placeholder="Damages, special requests..." style={{ fontSize: '13px', minHeight: '80px' }}></textarea>
                         </div>
 
                         <div className="section">
-                            <h3 style={sectionTitleStyle}>Vehicle Information</h3>
+                            <h3 style={sectionTitleStyle}>VEHICLE DETAILS</h3>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '15px', marginBottom: '10px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '12px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Brand</label>
-                                    <select name="brand" className="form-control" value={formData.brand} onChange={handleChange} required>
+                                    <select name="brand" className="form-control" value={formData.brand} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
                                         {CAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
                                     </select>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Model</label>
-                                    <input name="model" className="form-control" value={formData.model} onChange={handleChange} required />
+                                    <input name="model" className="form-control" value={formData.model} onChange={handleChange} required style={{ height: '34px' }} />
                                 </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Year</label>
-                                    <select name="year" className="form-control" value={formData.year} onChange={handleChange} required>
+                                    <select name="year" className="form-control" value={formData.year} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
                                         {YEAR_CHOICES.map(y => <option key={y} value={y}>{y}</option>)}
                                     </select>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Color</label>
-                                    <input name="color" className="form-control" value={formData.color} onChange={handleChange} required />
+                                    <input name="color" className="form-control" value={formData.color} onChange={handleChange} required style={{ height: '34px' }} />
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Kilometers</label>
-                                    <input name="kilometers" type="number" className="form-control" value={formData.kilometers} onChange={handleChange} required />
+                                    <input name="kilometers" type="number" className="form-control" value={formData.kilometers} onChange={handleChange} required style={{ height: '34px' }} />
                                 </div>
                             </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 1fr', gap: '10px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Emirate</label>
-                                    <select name="plate_emirate" className="form-control" value={formData.plate_emirate} onChange={handleChange} required>
+                                    <select name="plate_emirate" className="form-control" value={formData.plate_emirate} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
                                         {PLATE_EMIRATES.map(e => <option key={e} value={e}>{e}</option>)}
                                     </select>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Code</label>
-                                    <select name="plate_code" className="form-control" value={formData.plate_code} onChange={handleChange} required>
+                                    <select name="plate_code" className="form-control" value={formData.plate_code} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
                                         {PLATE_CODES.map(c => <option key={c} value={c}>{c}</option>)}
                                     </select>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Number</label>
-                                    <input name="license_plate" className="form-control" value={formData.license_plate} onChange={handleChange} required />
+                                    <input name="license_plate" className="form-control" value={formData.license_plate} onChange={handleChange} required style={{ height: '34px' }} />
                                 </div>
                             </div>
 
                             <div>
                                 <label style={labelStyle}>VIN Number</label>
-                                <input name="vin" className="form-control" value={formData.vin} onChange={handleChange} required />
+                                <input name="vin" className="form-control" value={formData.vin} onChange={handleChange} required style={{ height: '34px' }} />
                             </div>
                         </div>
                     </div>
