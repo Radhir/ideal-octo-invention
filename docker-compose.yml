@@ -13,6 +13,12 @@ services:
     networks:
       - eliteshine_network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eliteshine_user} -d ${POSTGRES_DB:-eliteshine_erp}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   # Django Backend
   backend:
@@ -20,8 +26,10 @@ services:
       context: ./Bankend
       dockerfile: Dockerfile
     container_name: eliteshine_backend
-    command: sh -c "python manage.py migrate && python manage.py seed_expense_accounts && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py seed_expense_accounts && gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3 --threads 2 --timeout 120"
     env_file: .env
+    environment:
+      - DEBUG=False
     volumes:
       - ./Bankend:/app
       - static_volume:/app/staticfiles
@@ -29,10 +37,17 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - eliteshine_network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/maintenance/')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   # React Frontend
   frontend:

@@ -32,7 +32,7 @@ const BookingForm = () => {
             try {
                 const [empRes, catRes] = await Promise.all([
                     axios.get('/hr/api/employees/'),
-                    axios.get('/job-cards/api/service-categories/')
+                    axios.get('/forms/job-cards/api/service-categories/')
                 ]);
                 setEmployees(empRes.data);
                 setCategories(catRes.data);
