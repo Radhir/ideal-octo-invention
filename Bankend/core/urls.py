@@ -53,6 +53,7 @@ urlpatterns = [
     path('api/projects/', include('projects.urls')),
     path('workshop/', include('workshop.urls')),
     path('risk-management/', include('risk_management.urls')),
+    path('reports/', include('reports.urls')),
 ]
 
 if settings.DEBUG:

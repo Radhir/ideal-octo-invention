@@ -31,7 +31,7 @@ const PickDropForm = () => {
             try {
                 const [empRes, jcRes] = await Promise.all([
                     axios.get('/hr/api/employees/'),
-                    axios.get('/forms/job-cards/api/list/')
+                    axios.get('/forms/job-cards/api/jobs/')
                 ]);
                 setEmployees(empRes.data);
                 setJobCards(jcRes.data);

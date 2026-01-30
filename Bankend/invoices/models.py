@@ -57,10 +57,12 @@ class Invoice(models.Model):
             old_instance = Invoice.objects.get(pk=self.pk)
             if old_instance.payment_status != 'PAID' and self.payment_status == 'PAID':
                 self.record_revenue_transaction()
+            self.update_workshop_diary()
         elif self.payment_status == 'PAID':
             # This is a new invoice already marked as paid
             super().save(*args, **kwargs) # Save first to get PK
             self.record_revenue_transaction()
+            self.update_workshop_diary()
             return
             
         super().save(*args, **kwargs)
@@ -84,6 +86,14 @@ class Invoice(models.Model):
                 reference=self.invoice_number
             )
             self.finance_transaction = tx
+
+    def update_workshop_diary(self):
+        """Auto-complete the Workshop Diary entry when Invoice is Paid"""
+        if self.job_card:
+            from workshop.models import WorkshopDiary
+            # Find diary entry linked to this job card
+            diary_entries = WorkshopDiary.objects.filter(job_card=self.job_card)
+            diary_entries.update(status='COMPLETED')
 
     def __str__(self):
         return f"{self.invoice_number} - {self.customer_name}"

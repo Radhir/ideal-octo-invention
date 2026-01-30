@@ -172,16 +172,71 @@ class ModulePermission(models.Model):
         return f'{self.employee.full_name} - {self.module_name}'
 class SalarySlip(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='salary_slips')
-    month = models.DateField()
+    month = models.CharField(max_length=7, help_text="Format: YYYY-MM")
     basic_salary = models.DecimalField(max_digits=10, decimal_places=2)
     allowances = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    bonuses = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    # Auto-Calculated Fields
+    days_present = models.IntegerField(default=30)
+    overtime_hours = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    overtime_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    late_deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    
+    total_additions = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     net_salary = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    payment_status = models.CharField(max_length=20, choices=[('PENDING', 'Pending'), ('PAID', 'Paid')], default='PENDING')
+    generated_at = models.DateTimeField(auto_now_add=True)
     is_sent = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
+
+    def calculate_salary(self):
+        from attendance.models import Attendance
+        from django.db.models import Sum
+        
+        # 1. Fetch Attendance for the Month
+        # Assuming month field is 'YYYY-MM' format
+        attendance_qs = Attendance.objects.filter(
+            employee=self.employee, 
+            date__startswith=self.month
+        )
+        
+        # 2. Count Days & OT
+        self.days_present = attendance_qs.filter(status__in=['PRESENT', 'LATE', 'HALF_DAY']).count()
+        agg = attendance_qs.aggregate(total_ot=Sum('overtime_hours'))
+        self.overtime_hours = agg['total_ot'] or 0
+        
+        # 3. Rate Calculations
+        # Standard: Base / 30 days
+        per_day_rate = float(self.basic_salary) / 30
+        
+        # OT Rate: Base / 30 / 10hrs * 1.5 (Standard OT multiplier) or just hourly
+        hourly_rate = per_day_rate / 10 
+        ot_rate = hourly_rate # or hourly_rate * 1.5
+        
+        self.overtime_amount = float(self.overtime_hours) * float(ot_rate)
+        
+        # 4. Final Totals
+        # Basic is usually fixed, but if we want "Pay for Work" logic:
+        # earnings = (per_day_rate * self.days_present) + self.allowances
+        earnings = float(self.basic_salary) + float(self.allowances) + float(self.overtime_amount) + float(self.bonuses)
+        deductions = float(self.deductions) + float(self.late_deductions)
+        
+        self.total_additions = self.overtime_amount + self.bonuses
+        self.total_deductions = deductions
+        
+        self.net_salary = earnings - deductions
+        self.save()
+
+    def save(self, *args, **kwargs):
+        if not self.net_salary:
+            self.net_salary = (float(self.basic_salary) + float(self.allowances)) - float(self.deductions)
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Slip {self.employee.full_name} - {self.month.strftime('%Y-%m')}"
+        return f"Slip {self.employee.full_name} - {self.month}"
 
 class EmployeeDocument(models.Model):
     DOC_TYPES = [

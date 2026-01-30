@@ -109,7 +109,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 
 # Database Selection
-USE_POSTGRES = os.environ.get('USE_POSTGRES', 'True').lower() in ('true', '1', 'yes')
+USE_POSTGRES = os.environ.get('USE_POSTGRES', 'False').lower() in ('true', '1', 'yes')
 
 if USE_POSTGRES:
     DATABASES = {

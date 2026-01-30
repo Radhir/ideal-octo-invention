@@ -49,3 +49,12 @@ class Lead(models.Model):
 
     def __str__(self):
         return f"{self.customer_name} ({self.status})"
+
+class LeadPhoto(models.Model):
+    lead = models.ForeignKey(Lead, related_name='photos', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='lead_photos/')
+    caption = models.CharField(max_length=50, blank=True) # e.g., 'Front', 'Damage'
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Photo for {self.lead.customer_name} - {self.caption}"

@@ -45,6 +45,28 @@ class LeadViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(leads, many=True)
         return Response(serializer.data)
 
+    def create(self, request, *args, **kwargs):
+        # Handle regular creation
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        lead = serializer.instance
+        
+        # Handle Photos
+        # Frontend sends: photos (list of files), captions (list of strings matching index)
+        photos = request.FILES.getlist('photos')
+        captions = request.data.getlist('captions') if 'captions' in request.data else []
+        
+        if photos:
+            from .models import LeadPhoto
+            for idx, photo in enumerate(photos):
+                caption = captions[idx] if idx < len(captions) else ''
+                LeadPhoto.objects.create(lead=lead, image=photo, caption=caption)
+                
+        headers = self.get_success_headers(serializer.data)
+        # Re-serialize to include photos
+        return Response(self.get_serializer(lead).data, status=status.HTTP_201_CREATED, headers=headers)
+
     def perform_create(self, serializer):
         # Auto-assign 'INBOX' for API created leads unless specified
         status = serializer.validated_data.get('status', 'INBOX')

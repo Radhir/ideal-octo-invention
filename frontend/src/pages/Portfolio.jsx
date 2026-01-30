@@ -12,7 +12,9 @@ import { useAuth } from '../context/AuthContext';
 const team = {
     // ... existing hardcoded team for fallback ...
     ruchika: { name: "Ruchika", role: "OWNER & MANAGING DIRECTOR", bio: "Architecting the future.", image: "/ruchika.jpg", accent: "#b08d57", label: "01 MANAGEMENT" },
-    afsar: { name: "Afsar Hussain", role: "SERVICE ADVISOR", bio: "Driving operational excellence.", image: "/afsar.jpg", accent: "#3b82f6", label: "02 OPERATIONS" },
+    radhir: { name: "Radhir", role: "DEVELOPER & SYSTEMS ARCHITECT", bio: "Building tomorrow's solutions.", image: "/radhir.jpg", accent: "#8b5cf6", label: "02 TECHNOLOGY" },
+    afsar: { name: "Afsar Hussain", role: "SERVICE ADVISOR", bio: "Driving operational excellence.", image: "/afsar.jpg", accent: "#3b82f6", label: "03 OPERATIONS" },
+    ankit: { name: "Ankit", role: "TECHNICIAN", bio: "Precision in every detail.", image: "/ankit.jpg", accent: "#10b981", label: "04 TECHNICAL" },
 };
 
 const Portfolio = () => {
@@ -69,7 +71,7 @@ const Portfolio = () => {
 
     const handleClockIn = async () => {
         try {
-            const res = await axios.post('/hr/api/attendance/clock_in/');
+            const res = await axios.post('/forms/attendance/api/check_in/');
             setAttendance(res.data);
         } catch (err) { console.error('Clock in failed', err); }
     };

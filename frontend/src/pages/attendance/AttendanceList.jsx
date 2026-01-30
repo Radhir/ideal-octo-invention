@@ -40,8 +40,8 @@ const AttendanceList = () => {
             setAttendance(todayAttend);
             setAllLogs(attendRes.data);
 
-            if (todayAttend && todayAttend.clock_in && !todayAttend.clock_out) {
-                startTimer(todayAttend.clock_in);
+            if (todayAttend && todayAttend.check_in_time && !todayAttend.check_out_time) {
+                startTimer(todayAttend.check_in_time);
             }
         } catch (err) {
             console.error('Error fetching HR data', err);
@@ -73,9 +73,9 @@ const AttendanceList = () => {
 
     const handleClockIn = async () => {
         try {
-            const res = await axios.post('/hr/api/attendance/clock_in/');
+            const res = await axios.post('/forms/attendance/api/check_in/');
             setAttendance(res.data);
-            startTimer(res.data.clock_in);
+            startTimer(res.data.check_in_time);
             fetchInitialData();
         } catch (err) {
             console.error('Clock in failed', err);
@@ -84,7 +84,7 @@ const AttendanceList = () => {
 
     const handleClockOut = async () => {
         try {
-            const res = await axios.post('/hr/api/attendance/clock_out/');
+            const res = await axios.post('/forms/attendance/api/check_out/');
             setAttendance(res.data);
             clearInterval(timerRef.current);
             fetchInitialData();
@@ -95,10 +95,10 @@ const AttendanceList = () => {
 
     // Calculate progress based on a 10-hour workday (36000 seconds)
     const getWorkProgress = () => {
-        if (!attendance || !attendance.clock_in) return 0;
-        if (attendance.clock_out) return (attendance.total_hours / 10) * 100;
+        if (!attendance || !attendance.check_in_time) return 0;
+        if (attendance.check_out_time) return (attendance.total_hours / 10) * 100;
 
-        const [h, m, s] = attendance.clock_in.split(':').map(Number);
+        const [h, m, s] = attendance.check_in_time.split(':').map(Number);
         const start = new Date();
         start.setHours(h, m, s, 0);
         const diffInSeconds = (new Date() - start) / 1000;
@@ -132,10 +132,10 @@ const AttendanceList = () => {
                     {/* Live Tracking Card */}
                     <GlassCard style={{ padding: '40px', position: 'relative', overflow: 'hidden' }}>
                         <div style={{ position: 'absolute', top: 0, right: 0, padding: '20px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: attendance && !attendance.clock_out ? '#10b981' : '#64748b' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: attendance && !attendance.check_out_time ? '#10b981' : '#64748b' }}>
                                 <Activity size={16} className={attendance && !attendance.clock_out ? 'pulse-anim' : ''} />
                                 <span style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '1px' }}>
-                                    {attendance && !attendance.clock_out ? 'SESSION ACTIVE' : 'NO ACTIVE SESSION'}
+                                    {attendance && !attendance.check_out_time ? 'SESSION ACTIVE' : 'NO ACTIVE SESSION'}
                                 </span>
                             </div>
                         </div>
@@ -149,7 +149,7 @@ const AttendanceList = () => {
                                 fontFamily: 'monospace',
                                 letterSpacing: '-2px'
                             }}>
-                                {attendance && !attendance.clock_out ? elapsedTime : attendance?.clock_out ? `${attendance.total_hours} hrs` : '00:00:00'}
+                                {attendance && !attendance.check_out_time ? elapsedTime : attendance?.check_out_time ? `${attendance.total_hours} hrs` : '00:00:00'}
                             </div>
                         </div>
 
@@ -170,11 +170,11 @@ const AttendanceList = () => {
                         </div>
 
                         <div style={{ display: 'flex', gap: '20px', marginTop: '40px' }}>
-                            {!attendance || !attendance.clock_in ? (
+                            {!attendance || !attendance.check_in_time ? (
                                 <button onClick={handleClockIn} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(176,141,87,0.1)', border: '1px solid #b08d57', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
                                     <Play size={20} /> INITIATE SHIFT
                                 </button>
-                            ) : !attendance.clock_out ? (
+                            ) : !attendance.check_out_time ? (
                                 <button onClick={handleClockOut} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(244,63,94,0.1)', border: '1px solid #f43f5e', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
                                     <Square size={20} /> TERMINATE SHIFT
                                 </button>
@@ -198,12 +198,12 @@ const AttendanceList = () => {
                                         </div>
                                         <div>
                                             <div style={{ fontWeight: '700', color: '#fff' }}>{log.employee_name}</div>
-                                            <div style={{ fontSize: '11px', color: '#64748b' }}>Shift active since {log.clock_in}</div>
+                                            <div style={{ fontSize: '11px', color: '#64748b' }}>Shift active since {log.check_in_time}</div>
                                         </div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
                                         <div style={{ fontSize: '14px', fontWeight: '800', color: log.clock_out ? '#10b981' : '#f59e0b' }}>
-                                            {log.clock_out ? 'COMPLETED' : 'IN_TRANSIT'}
+                                            {log.check_out_time ? 'COMPLETED' : 'IN_TRANSIT'}
                                         </div>
                                         <div style={{ fontSize: '11px', color: '#64748b' }}>{log.total_hours} hrs logged</div>
                                     </div>

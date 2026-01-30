@@ -133,22 +133,30 @@ const LeadForm = () => {
                 formData.notes && `\nNotes: ${formData.notes}`,
             ].filter(Boolean).join('\n');
 
-            const payload = {
-                customer_name: formData.customer_name,
-                phone: formData.phone,
-                email: formData.email,
-                source: formData.source,
-                interested_service: servicesSummary || formData.interested_service,
-                priority: formData.priority,
-                estimated_value: subtotal > 0 ? subtotal.toFixed(2) : formData.estimated_value,
-                assigned_to: formData.assigned_to,
-                follow_up_date: formData.follow_up_date,
-                notes: enrichedNotes,
-                status: formData.status,
-            };
+            // Use FormData for multipart upload
+            const formDataPayload = new FormData();
+            formDataPayload.append('customer_name', formData.customer_name);
+            formDataPayload.append('phone', formData.phone);
+            formDataPayload.append('email', formData.email || '');
+            formDataPayload.append('source', formData.source);
+            formDataPayload.append('interested_service', servicesSummary || formData.interested_service);
+            formDataPayload.append('priority', formData.priority);
+            formDataPayload.append('estimated_value', subtotal > 0 ? subtotal.toFixed(2) : formData.estimated_value || '0');
+            formDataPayload.append('assigned_to', formData.assigned_to || '');
+            formDataPayload.append('follow_up_date', formData.follow_up_date || '');
+            formDataPayload.append('notes', enrichedNotes);
+            formDataPayload.append('status', formData.status);
 
-            await axios.post('/forms/leads/api/list/', payload);
-            alert('Lead Captured Successfully');
+            // Append photos
+            photos.forEach((photo, idx) => {
+                formDataPayload.append('photos', photo.file);
+                formDataPayload.append('captions', photo.label);
+            });
+
+            await axios.post('/forms/leads/api/list/', formDataPayload, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            alert('Lead Captured Successfully with Photos!');
             navigate('/leads');
         } catch (err) {
             console.error('Error capturing lead', err);

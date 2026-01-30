@@ -14,8 +14,39 @@ const AttendanceBoard = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('ALL');
 
+    // New state variables for current user's attendance
+    const [status, setStatus] = useState('NOT_CHECKED_IN'); // NOT_CHECKED_IN, CHECKED_IN, CHECKED_OUT
+    const [records, setRecords] = useState([]); // Current user's attendance records
+    const [currentTime, setCurrentTime] = useState(new Date());
+
+    const fetchAttendance = async () => {
+        try {
+            const res = await axios.get('/forms/attendance/api/');
+            // Backend returns list, we want today's record for this user
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayRecord = res.data.find(r => r.date === todayStr);
+
+            if (todayRecord) {
+                setStatus('CHECKED_IN');
+                // Calculate hours if needed, or rely on backend
+                if (todayRecord.check_out_time) {
+                    setStatus('CHECKED_OUT');
+                }
+                setRecords(res.data);
+            } else {
+                setStatus('NOT_CHECKED_IN');
+            }
+        } catch (err) {
+            console.error("Error fetching current user's attendance:", err);
+            setStatus('NOT_CHECKED_IN'); // Assume not checked in if error
+        }
+    };
+
     useEffect(() => {
-        fetchData();
+        fetchData(); // Fetch data for the board
+        fetchAttendance(); // Fetch current user's attendance status
+        const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+        return () => clearInterval(interval);
     }, []);
 
     const fetchData = async () => {
@@ -33,13 +64,43 @@ const AttendanceBoard = () => {
         }
     };
 
+    const handleCheckIn = async () => {
+        setLoading(true); // This loading state might need to be more granular if it affects the whole board
+        try {
+            await axios.post('/forms/attendance/api/check_in/');
+            setStatus('CHECKED_IN');
+            alert('Checked in successfully!');
+            fetchAttendance(); // Re-fetch current user's attendance to update records
+            fetchData(); // Re-fetch board data to update overall status
+        } catch (err) {
+            alert(err.response?.data?.error || 'Check-in failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCheckOut = async () => {
+        setLoading(true); // This loading state might need to be more granular
+        try {
+            await axios.post('/forms/attendance/api/check_out/');
+            setStatus('CHECKED_OUT');
+            alert('Checked out successfully!');
+            fetchAttendance(); // Re-fetch current user's attendance to update records
+            fetchData(); // Re-fetch board data to update overall status
+        } catch (err) {
+            alert(err.response?.data?.error || 'Check-out failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     if (loading) return <div style={{ padding: '100px', textAlign: 'center', color: '#fff' }}>Monitoring Personnel Nodes...</div>;
 
     const todayStr = new Date().toISOString().split('T')[0];
     const todaysLogs = logs.filter(l => l.date === todayStr);
 
-    const activeCount = todaysLogs.filter(l => !l.clock_out).length;
-    const completedCount = todaysLogs.filter(l => l.clock_out).length;
+    const activeCount = todaysLogs.filter(l => !l.check_out_time).length;
+    const completedCount = todaysLogs.filter(l => l.check_out_time).length;
     const missingCount = employees.length - todaysLogs.length;
 
     return (
@@ -52,6 +113,19 @@ const AttendanceBoard = () => {
                     <h1 style={{ margin: '5px 0 0 0', fontSize: '2.2rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Attendance Board</h1>
                 </div>
                 <div style={{ display: 'flex', gap: '15px' }}>
+                    {/* Attendance Actions */}
+                    {status !== 'CHECKED_IN' && status !== 'CHECKED_OUT' && (
+                        <button onClick={handleCheckIn} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', color: '#fff', border: '1px solid #10b981', cursor: 'pointer', background: 'rgba(16, 185, 129, 0.1)' }}>
+                            <Zap size={18} color="#10b981" /> Clock In
+                        </button>
+                    )}
+
+                    {status === 'CHECKED_IN' && (
+                        <button onClick={handleCheckOut} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', color: '#fff', border: '1px solid #f43f5e', cursor: 'pointer', background: 'rgba(244, 63, 94, 0.1)' }}>
+                            <ArrowUpRight size={18} color="#f43f5e" /> Clock Out
+                        </button>
+                    )}
+
                     <button onClick={() => window.print()} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', background: 'rgba(255,255,255,0.05)' }}>
                         <Printer size={18} /> Print Daily Log
                     </button>
@@ -94,7 +168,7 @@ const AttendanceBoard = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
                     {employees.map(emp => {
                         const log = todaysLogs.find(l => l.employee === emp.id);
-                        const status = log ? (log.clock_out ? 'OUT' : 'IN') : 'MISSING';
+                        const status = log ? (log.check_out_time ? 'OUT' : 'IN') : 'MISSING';
 
                         // Filtering logic
                         if (filter !== 'ALL' && filter !== status) return null;
@@ -128,7 +202,7 @@ const AttendanceBoard = () => {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                                     <div>
                                         <div style={labelStyle}>Clock In</div>
-                                        <div style={{ fontSize: '13px', color: '#fff' }}>{log?.clock_in || '--:--'}</div>
+                                        <div style={{ fontSize: '13px', color: '#fff' }}>{log?.check_in_time || '--:--'}</div>
                                     </div>
                                     <div>
                                         <div style={labelStyle}>Total Hours</div>
