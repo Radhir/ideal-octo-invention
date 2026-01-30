@@ -191,8 +191,8 @@ const LoginPage = () => {
                         src="/elite_shine_logo.png"
                         alt="Elite Shine Logo"
                         style={{
-                            width: '450px',
-                            maxWidth: '80vw',
+                            width: '280px',
+                            maxWidth: '70vw',
                             height: 'auto',
                             position: 'relative',
                             zIndex: 1,
