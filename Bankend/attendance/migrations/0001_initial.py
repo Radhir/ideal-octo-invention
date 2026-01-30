@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('hr', '0012_rename_created_at_salaryslip_generated_at_and_more'),
+        ('hr', '0010_employeedocument_salaryslip_warningletter'),
     ]
 
     operations = [
