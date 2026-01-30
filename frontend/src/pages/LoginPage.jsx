@@ -134,7 +134,7 @@ const LoginPage = () => {
                 transition={{ duration: 2, delay: 0.5 }}
                 style={{ width: '100%', maxWidth: '900px', position: 'relative', zIndex: 2 }}
             >
-                <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative', overflow: 'visible', padding: '0 20px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '30px', position: 'relative', overflow: 'visible', padding: '0 20px' }}>
 
                     {/* Spotlight / Beam Effect */}
                     <motion.div
@@ -143,12 +143,12 @@ const LoginPage = () => {
                         transition={{ duration: 2 }}
                         style={{
                             position: 'absolute',
-                            top: '-150px',
+                            top: '-120px',
                             left: '50%',
                             transform: 'translateX(-50%)',
-                            width: '400px',
-                            height: '500px',
-                            background: 'conic-gradient(from 180deg at 50% 0%, transparent 45%, rgba(255, 255, 255, 0.15) 50%, transparent 55%)',
+                            width: '350px',
+                            height: '400px',
+                            background: 'conic-gradient(from 180deg at 50% 0%, transparent 45%, rgba(255, 255, 255, 0.12) 50%, transparent 55%)',
                             filter: 'blur(30px)',
                             pointerEvents: 'none',
                             zIndex: 0
@@ -156,34 +156,34 @@ const LoginPage = () => {
                     />
                     <motion.div
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.6 }}
+                        animate={{ opacity: 0.5 }}
                         transition={{ duration: 3, delay: 0.5 }}
                         style={{
                             position: 'absolute',
-                            top: '-50px',
+                            top: '-40px',
                             left: '50%',
                             transform: 'translateX(-50%)',
-                            width: '600px',
-                            height: '300px',
-                            background: 'radial-gradient(ellipse at center, rgba(176, 141, 87, 0.2) 0%, transparent 70%)',
+                            width: '500px',
+                            height: '250px',
+                            background: 'radial-gradient(ellipse at center, rgba(176, 141, 87, 0.15) 0%, transparent 70%)',
                             zIndex: 0
                         }}
                     />
 
                     <motion.img
-                        initial={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, y: -15 }}
                         animate={{
-                            opacity: [0.85, 1, 0.9, 1],
-                            scale: [0.98, 1, 0.99, 1],
+                            opacity: [0.9, 1, 0.95, 1],
+                            scale: [0.99, 1, 0.995, 1],
                             filter: [
-                                'brightness(1.1) drop-shadow(0 0 20px rgba(176, 141, 87, 0.4)) drop-shadow(0 0 40px rgba(212, 175, 55, 0.2))',
-                                'brightness(1.3) drop-shadow(0 0 35px rgba(176, 141, 87, 0.6)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.3))',
-                                'brightness(1.2) drop-shadow(0 0 25px rgba(176, 141, 87, 0.5)) drop-shadow(0 0 50px rgba(212, 175, 55, 0.25))',
-                                'brightness(1.3) drop-shadow(0 0 35px rgba(176, 141, 87, 0.6)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.3))'
+                                'brightness(1.1) drop-shadow(0 0 15px rgba(176, 141, 87, 0.3))',
+                                'brightness(1.2) drop-shadow(0 0 25px rgba(176, 141, 87, 0.5))',
+                                'brightness(1.15) drop-shadow(0 0 20px rgba(176, 141, 87, 0.4))',
+                                'brightness(1.2) drop-shadow(0 0 25px rgba(176, 141, 87, 0.5))'
                             ]
                         }}
                         transition={{
-                            duration: 5,
+                            duration: 4,
                             repeat: Infinity,
                             repeatType: "reverse",
                             ease: "easeInOut"
@@ -191,19 +191,18 @@ const LoginPage = () => {
                         src="/elite_shine_logo.png"
                         alt="Elite Shine Logo"
                         style={{
-                            width: '280px',
-                            maxWidth: '70vw',
+                            width: '240px',
+                            maxWidth: '60vw',
                             height: 'auto',
                             position: 'relative',
-                            zIndex: 1,
-                            filter: 'drop-shadow(0 0 30px rgba(176, 141, 87, 0.5)) drop-shadow(0 0 60px rgba(212, 175, 55, 0.2))'
+                            zIndex: 1
                         }}
                     />
                 </div>
 
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'row', gap: '60px', alignItems: 'flex-end', justifyContent: 'center', position: 'relative', zIndex: 2, width: '100%', maxWidth: '600px', margin: '0 auto' }}>
+                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-end', justifyContent: 'center', position: 'relative', zIndex: 2, width: '100%', maxWidth: '500px', margin: '0 auto' }}>
                     <div className="input-field" style={{ flex: 1, position: 'relative' }}>
-                        <label style={labelStyle}>NAME</label>
+                        <label style={labelStyle}>USERNAME</label>
                         <input
                             type="text"
                             name="username"
@@ -216,7 +215,7 @@ const LoginPage = () => {
                     </div>
 
                     <div className="input-field" style={{ flex: 1, position: 'relative' }}>
-                        <label style={labelStyle}>ID</label>
+                        <label style={labelStyle}>ACCESS ID</label>
                         <input
                             type="password"
                             name="password"

@@ -75,8 +75,9 @@ class JobCardReceptionForm(forms.ModelForm):
         model = JobCard
         fields = [
             'job_card_number', 'date', 'customer_name', 'phone', 'address',
-            'registration_number', 'vin', 'brand', 'model', 'year', 'color', 
-            'kilometers', 'service_advisor', 'initial_inspection_notes'
+            'registration_number', 'plate_emirate', 'plate_code', 'vin', 
+            'brand', 'model', 'year', 'color', 'kilometers', 'service_advisor', 
+            'initial_inspection_notes'
         ]
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),

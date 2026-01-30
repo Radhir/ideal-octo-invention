@@ -27,6 +27,8 @@ class JobCard(models.Model):
     address = models.TextField()
     
     registration_number = models.CharField(max_length=50)
+    plate_emirate = models.CharField(max_length=50, blank=True, null=True)
+    plate_code = models.CharField(max_length=10, blank=True, null=True)
     vin = models.CharField(max_length=50)
     brand = models.CharField(max_length=100)
     model = models.CharField(max_length=100)

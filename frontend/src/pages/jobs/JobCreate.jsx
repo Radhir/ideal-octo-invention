@@ -5,6 +5,8 @@ import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, Plus, X } from 'lucide-react';
 import { SERVICES_CATALOG } from '../../constants/services';
 
+import { CAR_BRANDS, YEAR_CHOICES, PLATE_EMIRATES, PLATE_CODES } from '../../constants/vehicle_data';
+
 const JobCreate = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -14,18 +16,16 @@ const JobCreate = () => {
         date: new Date().toISOString().split('T')[0],
         customer_name: '',
         phone_number: '',
-        address: '', // Fixed: initialized
-        car_type: '',
+        address: '',
         license_plate: '',
-        odometer_reading: '',
-        fuel_level: '50%',
-        service_category: '', // Fixed: initialized
-        vin: '', // Fixed: initialized
-        assigned_to: '', // Fixed: initialized
-        brand: '',
+        plate_emirate: 'Dubai',
+        plate_code: 'A',
+        vin: '',
+        brand: 'Toyota',
         model: '',
-        year: new Date().getFullYear(),
+        year: '2025',
         color: '',
+        kilometers: '',
         job_description: '',
         service_advisor: 'Admin',
         status: 'RECEPTION',
@@ -49,10 +49,9 @@ const JobCreate = () => {
                 customer_name: lead.customer_name || '',
                 phone_number: lead.phone || '',
                 job_description: lead.notes || '',
-                lead_id: lead.id // Capture Lead ID
+                lead_id: lead.id
             }));
         } else if (location.state && location.state.booking) {
-            // New: Handle booking pre-fill if navigating from Booking List
             const b = location.state.booking;
             setFormData(prev => ({
                 ...prev,
@@ -61,8 +60,8 @@ const JobCreate = () => {
                 license_plate: b.v_registration_no || '',
                 date: b.booking_date || new Date().toISOString().split('T')[0],
                 service_advisor: b.advisor_name || 'Admin',
-                booking_id: b.id, // Capture Booking ID
-                lead_id: b.related_lead || '' // Propagate Lead ID from Booking if available
+                booking_id: b.id,
+                lead_id: b.related_lead || ''
             }));
         }
     }, [location.state]);
@@ -85,7 +84,7 @@ const JobCreate = () => {
         setFormData({
             ...formData,
             selected_services: newServices,
-            total_price: subtotal, // This is net
+            total_price: subtotal,
             vat_amount: vat,
             net_amount: total
         });
@@ -108,16 +107,14 @@ const JobCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Map frontend fields to backend fields
             const submissionData = {
                 ...formData,
-                phone: formData.phone_number, // Fixed: Mapped phone number
+                phone: formData.phone_number,
                 registration_number: formData.license_plate,
-                kilometers: formData.odometer_reading,
-                total_amount: formData.total_price, // Net
+                kilometers: formData.kilometers,
+                total_amount: formData.total_price,
                 vat_amount: formData.vat_amount || 0,
-                net_amount: formData.net_amount || formData.total_price, // Gross
-                // Join selected services into description if empty, or append
+                net_amount: formData.net_amount || formData.total_price,
                 job_description: (formData.job_description ? formData.job_description + '\n\n' : '') +
                     'Selected Services:\n' +
                     formData.selected_services.map(s => `- ${s.name} (AED ${s.price})`).join('\n')
@@ -129,111 +126,108 @@ const JobCreate = () => {
         } catch (err) {
             console.error('Error creating job card', err);
             let errorMessage = 'Failed to create Job Card.';
-
             if (err.response && err.response.data) {
-                // Format backend validation errors
                 errorMessage = 'Validation Error:\n' + Object.entries(err.response.data)
                     .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
                     .join('\n');
             }
-
             alert(errorMessage);
         }
     };
 
     return (
-        <div style={{ padding: '30px 20px' }}>
+        <div style={{ padding: '20px' }}>
             <button
                 onClick={() => navigate('/job-cards')}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '20px' }}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '15px', fontSize: '13px' }}
             >
-                <ArrowLeft size={20} /> Back to List
+                <ArrowLeft size={16} /> Back to List
             </button>
 
-            <GlassCard style={{ padding: '40px', maxWidth: '900px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                    <h2 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '1.8rem' }}>Reception & Check-in</h2>
-                    <span style={{ color: '#b08d57', fontWeight: '800' }}>#{formData.job_card_number}</span>
+            <GlassCard style={{ padding: '30px', maxWidth: '1000px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                    <h2 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '1.5rem', margin: 0 }}>NEW JOB CARD</h2>
+                    <span style={{ color: '#b08d57', fontWeight: '800', fontSize: '14px' }}>#{formData.job_card_number}</span>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '40px', marginBottom: '25px' }}>
                         <div className="section">
                             <h3 style={sectionTitleStyle}>Customer Details</h3>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Customer Name</label>
-                                <input
-                                    type="text"
-                                    name="customer_name"
-                                    className="form-control"
-                                    value={formData.customer_name}
-                                    onChange={handleChange}
-                                    required
-                                />
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '10px' }}>
+                                <div>
+                                    <label style={labelStyle}>Customer Name</label>
+                                    <input type="text" name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required />
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Phone Number</label>
+                                    <input type="text" name="phone_number" className="form-control" value={formData.phone_number} onChange={handleChange} required />
+                                </div>
                             </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Phone Number</label>
-                                <input
-                                    type="text"
-                                    name="phone_number"
-                                    className="form-control"
-                                    value={formData.phone_number}
-                                    onChange={handleChange}
-                                    required
-                                />
+                            <div>
+                                <label style={labelStyle}>Address (Optional)</label>
+                                <textarea name="address" className="form-control" rows="1" value={formData.address} onChange={handleChange} style={{ resize: 'none' }}></textarea>
                             </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Address</label>
-                                <textarea name="address" className="form-control" rows="3" onChange={handleChange}></textarea>
-                            </div>
+
+                            <h3 style={{ ...sectionTitleStyle, marginTop: '25px' }}>Initial Notes</h3>
+                            <textarea name="job_description" className="form-control" rows="2" value={formData.job_description} onChange={handleChange} placeholder="Damages, special requests..."></textarea>
                         </div>
 
                         <div className="section">
                             <h3 style={sectionTitleStyle}>Vehicle Information</h3>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Vehicle (Model/Year)</label>
-                                <input
-                                    type="text"
-                                    name="car_type"
-                                    className="form-control"
-                                    value={formData.car_type}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
-                                <div>
-                                    <label style={labelStyle}>Plate#</label>
-                                    <input name="license_plate" className="form-control" value={formData.license_plate} onChange={handleChange} required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>VIN#</label>
-                                    <input name="vin" className="form-control" value={formData.vin} onChange={handleChange} required />
-                                </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '15px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Brand</label>
-                                    <input name="brand" className="form-control" value={formData.brand} onChange={handleChange} required />
+                                    <select name="brand" className="form-control" value={formData.brand} onChange={handleChange} required>
+                                        {CAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+                                    </select>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Model</label>
                                     <input name="model" className="form-control" value={formData.model} onChange={handleChange} required />
                                 </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Year</label>
-                                    <input name="year" type="number" className="form-control" onChange={handleChange} value={formData.year} required />
+                                    <select name="year" className="form-control" value={formData.year} onChange={handleChange} required>
+                                        {YEAR_CHOICES.map(y => <option key={y} value={y}>{y}</option>)}
+                                    </select>
                                 </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
                                 <div>
                                     <label style={labelStyle}>Color</label>
                                     <input name="color" className="form-control" value={formData.color} onChange={handleChange} required />
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Kilometers</label>
-                                    <input name="odometer_reading" type="number" className="form-control" value={formData.odometer_reading} onChange={handleChange} required />
+                                    <input name="kilometers" type="number" className="form-control" value={formData.kilometers} onChange={handleChange} required />
                                 </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 1fr', gap: '10px', marginBottom: '10px' }}>
+                                <div>
+                                    <label style={labelStyle}>Emirate</label>
+                                    <select name="plate_emirate" className="form-control" value={formData.plate_emirate} onChange={handleChange} required>
+                                        {PLATE_EMIRATES.map(e => <option key={e} value={e}>{e}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Code</label>
+                                    <select name="plate_code" className="form-control" value={formData.plate_code} onChange={handleChange} required>
+                                        {PLATE_CODES.map(c => <option key={c} value={c}>{c}</option>)}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Number</label>
+                                    <input name="license_plate" className="form-control" value={formData.license_plate} onChange={handleChange} required />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style={labelStyle}>VIN Number</label>
+                                <input name="vin" className="form-control" value={formData.vin} onChange={handleChange} required />
                             </div>
                         </div>
                     </div>
