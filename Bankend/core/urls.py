@@ -19,12 +19,14 @@ from django.urls import path, include
 from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse
 from .views import MaintenanceView
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
     path('', lambda request: redirect('home', permanent=False)),
     path('admin/', admin.site.urls),
+    path('api/health/', lambda request: JsonResponse({"status": "ok"}), name='health-check'),
     path('api/auth/', include('authentication.urls')),
     path('api/dashboard/', include('dashboard.urls')),
     path('api/maintenance/', MaintenanceView.as_view(), name='maintenance'),
