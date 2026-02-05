@@ -1,0 +1,167 @@
+/* Job Card Print Styles */
+.job-card-print-container {
+    padding: 20px;
+    background: #f0f0f0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.job-card-document {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    padding: 30px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    position: relative;
+    color: #1a1a2e;
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.4;
+}
+
+.job-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #b08d57;
+    padding-bottom: 15px;
+}
+
+.header-left h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #b08d57;
+    letter-spacing: 1px;
+}
+
+.header-left .subtitle {
+    margin: 0;
+    font-weight: 600;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.header-right {
+    text-align: right;
+}
+
+.job-card-title {
+    margin: 0;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+.job-card-id {
+    font-weight: 700;
+    font-size: 18px;
+    margin: 5px 0 0;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    background: #1a1a2e;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.info-row {
+    display: flex;
+    gap: 10px;
+}
+
+.label {
+    font-weight: 600;
+    color: #64748b;
+    font-size: 13px;
+    min-width: 100px;
+}
+
+.value {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.vehicle-diagram {
+    border: 1px solid #e2e8f0;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #f8fafc;
+    color: #94a3b8;
+}
+
+.checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+}
+
+.checkbox.checked {
+    background: #1a1a2e;
+    border-color: #1a1a2e;
+}
+
+.signatures {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.signature-box {
+    width: 45%;
+    text-align: center;
+}
+
+.sig-line {
+    border-bottom: 1px solid #000;
+    height: 40px;
+    margin-bottom: 8px;
+}
+
+.sig-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+@media print {
+    .job-card-print-container {
+        padding: 0;
+        background: white;
+    }
+    .job-card-document {
+        box-shadow: none;
+        padding: 15px;
+    }
+}
