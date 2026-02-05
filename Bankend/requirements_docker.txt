@@ -38,6 +38,9 @@ gunicorn
 qrcode
 barcode
 
+# Payments
+stripe
+
 # Other utilities
 Pillow
 requests
