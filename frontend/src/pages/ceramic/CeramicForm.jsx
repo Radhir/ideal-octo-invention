@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, PenTool } from 'lucide-react';
@@ -31,7 +31,7 @@ const CeramicForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/ceramic/api/warranties/', formData);
+            await api.post('/forms/ceramic/api/warranties/', formData);
             alert('Ceramic Warranty Registered Successfully');
             navigate('/ceramic');
         } catch (err) {

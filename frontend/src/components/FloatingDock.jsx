@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronUp } from "lucide-react";
 
 /**
@@ -139,6 +139,8 @@ const FloatingDockDesktop = ({ items, style }) => {
 };
 
 function IconContainer({ mouseX, title, icon, href }) {
+    const location = useLocation();
+    const isActive = location.pathname === href || (href !== '/' && location.pathname.startsWith(href));
     let ref = useRef(null);
 
     let distance = useTransform(mouseX, (val) => {
@@ -195,10 +197,24 @@ function IconContainer({ mouseX, title, icon, href }) {
                     )}
                 </AnimatePresence>
                 <motion.div
-                    style={{ width: widthIcon, height: heightIcon, display: 'flex', alignItems: 'center', justifyContent: 'center', color: hovered ? '#fff' : '#94a3b8' }}
+                    style={{ width: widthIcon, height: heightIcon, display: 'flex', alignItems: 'center', justifyContent: 'center', color: isActive ? '#b08d57' : (hovered ? '#fff' : '#94a3b8') }}
                 >
                     {icon}
                 </motion.div>
+                {isActive && (
+                    <motion.div
+                        layoutId="active-indicator"
+                        style={{
+                            position: 'absolute',
+                            bottom: '4px',
+                            width: '4px',
+                            height: '4px',
+                            borderRadius: '50%',
+                            background: '#b08d57',
+                            boxShadow: '0 0 10px #b08d57'
+                        }}
+                    />
+                )}
             </motion.div>
             <style>{`
         .dock-icon-container {

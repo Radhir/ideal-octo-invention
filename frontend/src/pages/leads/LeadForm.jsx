@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -92,7 +92,7 @@ const LeadForm = () => {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const res = await axios.get('/hr/api/employees/');
+                const res = await api.get('/hr/api/employees/');
                 setEmployees(res.data);
             } catch (err) {
                 console.error('Error fetching employees', err);
@@ -153,7 +153,7 @@ const LeadForm = () => {
                 formDataPayload.append('captions', photo.label);
             });
 
-            await axios.post('/forms/leads/api/list/', formDataPayload, {
+            await api.post('/forms/leads/api/list/', formDataPayload, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             alert('Lead Captured Successfully with Photos!');

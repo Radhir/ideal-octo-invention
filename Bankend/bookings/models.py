@@ -12,8 +12,8 @@ class Booking(models.Model):
     customer_name = models.CharField(max_length=255)
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     phone = models.CharField(max_length=20)
-    v_registration_no = models.CharField(max_length=50, blank=True)
-    vehicle_details = models.CharField(max_length=255)
+    v_registration_no = models.CharField(max_length=50, blank=True, null=True)
+    vehicle_details = models.CharField(max_length=255, blank=True, null=True)
     
     # Linked to industrial Catalog
     service_category = models.ForeignKey('job_cards.ServiceCategory', on_delete=models.SET_NULL, null=True, blank=True)

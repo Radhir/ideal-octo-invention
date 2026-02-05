@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     ScrollText, Plus, ShieldAlert, CheckCircle2,
@@ -15,7 +15,7 @@ const HRRules = () => {
     useEffect(() => {
         const fetchRules = async () => {
             try {
-                const res = await axios.get('/hr/api/rules/');
+                const res = await api.get('/hr/api/rules/');
                 // Transform backend data if needed to match UI expectations
                 const transformed = res.data.map(r => ({
                     id: r.id,

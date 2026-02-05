@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import {
     BarChart3, Calendar, ClipboardList, Car, Paintbrush, Package,
@@ -20,7 +20,7 @@ const SchedulePage = () => {
 
     const fetchTeams = async () => {
         try {
-            const response = await axios.get('/forms/scheduling/teams/');
+            const response = await api.get('/forms/scheduling/teams/');
             setTeams(response.data);
             setLoading(false);
         } catch (error) {
@@ -165,12 +165,12 @@ const AdvisorSheetsView = () => {
 
     const fetchEntries = async () => {
         try {
-            const response = await axios.get(`/forms/scheduling/advisor-sheets/?advisor=${selectedAdvisor}`);
+            const response = await api.get(`/forms/scheduling/advisor-sheets/?advisor=${selectedAdvisor}`);
             // Assuming entries are stored in a specific format or we use assignments
             // For simplicity, let's fetch assignments for this advisor's jobs if linked, 
             // but the model AdvisorSheet is more for totals. 
             // Let's use assignments for the list.
-            const assignments = await axios.get('/forms/scheduling/assignments/');
+            const assignments = await api.get('/forms/scheduling/assignments/');
             setEntries(assignments.data.filter(a => a.notes.includes(selectedAdvisor))); // Mock filter for now
         } catch (error) {
             console.error('Error fetching advisor entries:', error);
@@ -256,7 +256,7 @@ const TeamView = ({ section, teams }) => {
 
     const fetchAssignments = async () => {
         try {
-            const resp = await axios.get('/forms/scheduling/assignments/');
+            const resp = await api.get('/forms/scheduling/assignments/');
             setAssignments(resp.data);
         } catch (error) {
             console.error('Error fetching assignments:', error);
@@ -268,7 +268,7 @@ const TeamView = ({ section, teams }) => {
         if (!jobCard) return;
 
         try {
-            await axios.post('/forms/scheduling/assignments/', {
+            await api.post('/forms/scheduling/assignments/', {
                 team: teamId,
                 job_card: jobCard,
                 date: new Date().toISOString().split('T')[0],
@@ -345,7 +345,7 @@ const DailyClosingView = () => {
 
     const handleSave = async () => {
         try {
-            await axios.post('/forms/scheduling/daily-closing/', closingData);
+            await api.post('/forms/scheduling/daily-closing/', closingData);
             alert('Daily report submitted successfully!');
         } catch (error) {
             console.error('Error saving closing data:', error);
@@ -417,7 +417,7 @@ const PerformanceReportsView = () => {
 
     const fetchReport = async () => {
         try {
-            const resp = await axios.get(`/forms/scheduling/daily-closing/aggregation_report/?period=${period}`);
+            const resp = await api.get(`/forms/scheduling/daily-closing/aggregation_report/?period=${period}`);
             setReportData(resp.data);
         } catch (error) {
             console.error("error fetching report", error);
@@ -517,7 +517,7 @@ const EmployeeReportView = () => {
 
     const handleSave = async () => {
         try {
-            await axios.post('/forms/scheduling/employee-reports/', {
+            await api.post('/forms/scheduling/employee-reports/', {
                 ...report,
                 user: user.id,
                 date: new Date().toISOString().split('T')[0],

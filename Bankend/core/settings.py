@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'rest_framework_simplejwt',
     'corsheaders',
     'core',  # Cache and error logging
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
     'dashboard',
     'ppf_warranty',
     'ceramic_warranty',
+    'contracts',
+    'documents',
+    'payments',
+    'subscriptions',
+    'locations',
     'job_cards',
     'bookings',
     'leads',
@@ -180,6 +186,20 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'EliteShine ERP API',
+    'DESCRIPTION': 'Comprehensive API documentation for EliteShine ERP system covering all modules including Automotive Detailing, finance, HR, and inventory.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': True,
+    },
 }
 
 from datetime import timedelta
@@ -249,3 +269,8 @@ CACHES = {
 # Cache Collector Schedule
 # Runs on: 1st, 8th, 15th, 22nd of each month
 # Command: python manage.py clear_expired_cache
+
+# Stripe Configuration
+STRIPE_SECRET_KEY = 'sk_test_placeholder'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_placeholder'
+STRIPE_WEBHOOK_SECRET = 'whsec_placeholder'

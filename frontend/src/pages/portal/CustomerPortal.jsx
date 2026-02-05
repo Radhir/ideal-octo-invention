@@ -1,342 +1,286 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
-    CheckCircle, Clock, FileText, ShieldCheck,
-    Car, User, ArrowRight, Download, Printer, ExternalLink
+    Container, Grid, Paper, Typography,
+    Box, Card, CardContent, Button,
+    CircularProgress, Alert, Tabs, Tab
+} from '@mui/material';
+import api from '../../api/axios'; // Adjust path as necessary
+import {
+    Wrench as CarRepair,
+    ReceiptText as Receipt,
+    History as HistoryIcon,
+    Star as StarIcon,
+    Calendar as Schedule,
+    Image as Photo
 } from 'lucide-react';
+import MembershipTab from '../../components/portal/MembershipTab';
 
 const CustomerPortal = () => {
     const { token } = useParams();
-    const [data, setData] = useState(null);
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [customer, setCustomer] = useState(null);
+    const [activeTab, setActiveTab] = useState(0);
+    const [jobs, setJobs] = useState([]);
+    const [invoices, setInvoices] = useState([]);
+    const [stats, setStats] = useState({});
 
     useEffect(() => {
-        fetchPortalData();
+        if (token) verifyToken();
     }, [token]);
 
-    const fetchPortalData = async () => {
+    const verifyToken = async () => {
         try {
-            const res = await axios.get(`/forms/job-cards/api/portal/${token}/`);
-            setData(res.data);
+            const response = await api.post('/customer-portal/portal/verify_token/', {
+                token: token
+            });
+            setCustomer(response.data);
+            loadDashboardData(response.data.id);
         } catch (err) {
-            console.error('Error fetching portal data', err);
-            setError('The link you followed may be invalid or expired.');
+            setError('Invalid or expired access link. Please request a new one.');
+            setLoading(false);
+        }
+    };
+
+    const loadDashboardData = async (customerId) => {
+        try {
+            const [jobsRes, invoicesRes, statsRes] = await Promise.all([
+                api.get(`/customer-portal/my-jobs/?customer_id=${customerId}`),
+                api.get(`/customer-portal/invoices/?customer_id=${customerId}`),
+                api.get(`/customer-portal/portal/dashboard_stats/?customer_id=${customerId}`)
+            ]);
+
+            setJobs(jobsRes.data.results || jobsRes.data);
+            setInvoices(invoicesRes.data.results || invoicesRes.data);
+            setStats(statsRes.data);
+        } catch (err) {
+            console.error('Error loading dashboard data:', err);
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading) return (
-        <div style={containerStyle}>
-            <div style={{ textAlign: 'center', padding: '100px 0' }}>
-                <div className="loader" style={loaderStyle}></div>
-                <p style={{ color: '#94a3b8', fontStyle: 'italic' }}>Synchronizing vehicle status...</p>
-            </div>
-        </div>
-    );
+    const handleTabChange = (event, newValue) => {
+        setActiveTab(newValue);
+    };
 
-    if (error || !data) return (
-        <div style={containerStyle}>
-            <GlassCard style={{ padding: '50px', textAlign: 'center', maxWidth: '500px', margin: '100px auto' }}>
-                <h2 style={{ color: '#f43f5e' }}>Link Expired</h2>
-                <p style={{ color: '#94a3b8' }}>{error || 'Portal data unavailable.'}</p>
-                <button onClick={() => window.location.reload()} style={btnStyle}>Retry</button>
-            </GlassCard>
-        </div>
-    );
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
-    const { job, steps, invoice, warranties } = data;
+    if (error) {
+        return (
+            <Container maxWidth="md" sx={{ mt: 4 }}>
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+                <Button
+                    variant="contained"
+                    onClick={() => navigate('/portal/request-access')}
+                >
+                    Request New Access Link
+                </Button>
+            </Container>
+        );
+    }
 
     return (
-        <div style={containerStyle}>
-            {/* Header section with brand identity */}
-            <header style={headerStyle}>
-                <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '3px', textTransform: 'uppercase' }}>Elite Shine Detailing</div>
-                <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2rem', margin: '5px 0' }}>Client Portal</h1>
-                <div style={{ height: '2px', width: '40px', background: '#b08d57', margin: '10px auto' }}></div>
-            </header>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            {/* Header */}
+            <Paper sx={{ p: 3, mb: 3 }}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Box>
+                        <Typography variant="h4" gutterBottom>
+                            Welcome back, {customer?.name}!
+                        </Typography>
+                        <Typography variant="body1" color="textSecondary">
+                            Member since {new Date(customer?.member_since).toLocaleDateString()}
+                        </Typography>
+                    </Box>
+                    <Box textAlign="center">
+                        <Typography variant="h6" color="primary">
+                            {customer?.loyalty_points}
+                        </Typography>
+                        <Typography variant="body2">Loyalty Points</Typography>
+                    </Box>
+                </Box>
+            </Paper>
 
-            <div style={gridStyle}>
-                {/* Status Section */}
-                <div style={{ gridColumn: 'span 2' }}>
-                    <GlassCard style={{ padding: '30px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                            <h3 style={sectionTitleStyle}>Live Job Tracker</h3>
-                            <div style={statusBadgeStyle(job.status)}>
-                                {job.status_display}
-                            </div>
-                        </div>
+            {/* Quick Stats */}
+            <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Box display="flex" alignItems="center">
+                                <CarRepair size={24} />
+                                <Box ml={2}>
+                                    <Typography variant="h6">{stats.active_jobs || 0}</Typography>
+                                    <Typography variant="body2">Active Jobs</Typography>
+                                </Box>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Box display="flex" alignItems="center">
+                                <HistoryIcon size={24} />
+                                <Box ml={2}>
+                                    <Typography variant="h6">{stats.total_jobs || 0}</Typography>
+                                    <Typography variant="body2">Total Jobs</Typography>
+                                </Box>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Box display="flex" alignItems="center">
+                                <Receipt size={24} />
+                                <Box ml={2}>
+                                    <Typography variant="h6">
+                                        ${(stats.total_spent || 0).toLocaleString()}
+                                    </Typography>
+                                    <Typography variant="body2">Total Spent</Typography>
+                                </Box>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Box display="flex" alignItems="center">
+                                <StarIcon size={24} />
+                                <Box ml={2}>
+                                    <Typography variant="h6">{stats.warranties_active || 0}</Typography>
+                                    <Typography variant="body2">Active Warranties</Typography>
+                                </Box>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            </Grid>
 
-                        {/* Timeline */}
-                        <div style={timelineWrapperStyle}>
-                            {steps.map((step, index) => (
-                                <div key={step.id} style={stepItemStyle}>
-                                    <div style={stepCircleStyle(step.status)}>
-                                        {step.status === 'completed' ? <CheckCircle size={16} /> :
-                                            step.status === 'active' ? <Clock size={16} className="spin" /> :
-                                                index + 1}
-                                    </div>
-                                    <div style={stepLabelStyle(step.status)}>{step.label}</div>
-                                    {index < steps.length - 1 && <div style={stepLineStyle(step.status)}></div>}
-                                </div>
-                            ))}
-                        </div>
-                    </GlassCard>
-                </div>
+            {/* Main Content */}
+            <Paper sx={{ p: 2 }}>
+                <Tabs value={activeTab} onChange={handleTabChange} sx={{ mb: 3 }}>
+                    <Tab label="My Jobs" icon={<CarRepair size={20} />} />
+                    <Tab label="Invoices" icon={<Receipt size={20} />} />
+                    <Tab label="Book New Service" icon={<Schedule size={20} />} />
+                    <Tab label="Memberships" icon={<StarIcon size={20} />} />
+                    <Tab label="Feedback" icon={<StarIcon size={20} />} />
+                </Tabs>
 
-                {/* Info Card */}
-                <div>
-                    <GlassCard style={{ padding: '30px', height: '100%' }}>
-                        <h3 style={sectionTitleStyle}>Service Profile</h3>
-                        <div style={infoRowStyle}>
-                            <Car size={18} color="#b08d57" />
-                            <div>
-                                <div style={infoLabelStyle}>Vehicle</div>
-                                <div style={infoValueStyle}>{job.brand} {job.model}</div>
-                                <div style={{ fontSize: '12px', color: '#b08d57', fontWeight: '700' }}>PLATE: {job.registration_number}</div>
-                            </div>
-                        </div>
-                        <div style={infoRowStyle}>
-                            <User size={18} color="#b08d57" />
-                            <div>
-                                <div style={infoLabelStyle}>Service Advisor</div>
-                                <div style={infoValueStyle}>{job.service_advisor || 'Assigned Staff'}</div>
-                            </div>
-                        </div>
-                        <div style={infoRowStyle}>
-                            <FileText size={18} color="#b08d57" />
-                            <div>
-                                <div style={infoLabelStyle}>Job Card #</div>
-                                <div style={infoValueStyle}>{job.job_card_number}</div>
-                            </div>
-                        </div>
-                    </GlassCard>
-                </div>
-
-                {/* Documents Card */}
-                <div>
-                    <GlassCard style={{ padding: '30px', height: '100%' }}>
-                        <h3 style={sectionTitleStyle}>Documents & Billing</h3>
-
-                        {invoice ? (
-                            <div style={docItemStyle}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                    <div style={docIconStyle('#10b981')}><FileText size={20} /></div>
-                                    <div>
-                                        <div style={{ fontWeight: '700' }}>Tax Invoice</div>
-                                        <div style={{ fontSize: '11px', color: '#94a3b8' }}>{invoice.number}</div>
-                                    </div>
-                                </div>
-                                <Link to={`/invoices/${invoice.id}`} target="_blank" style={docLinkStyle}>
-                                    <ExternalLink size={16} />
-                                </Link>
-                            </div>
-                        ) : (
-                            <p style={{ color: '#64748b', fontSize: '13px', fontStyle: 'italic' }}>Invoice will be available after job completion.</p>
-                        )}
-
-                        {warranties.map(warranty => (
-                            <div key={warranty.id} style={docItemStyle}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                    <div style={docIconStyle('#b08d57')}><ShieldCheck size={20} /></div>
-                                    <div>
-                                        <div style={{ fontWeight: '700' }}>{warranty.type} Warranty</div>
-                                        <div style={{ fontSize: '11px', color: '#94a3b8' }}>{warranty.certificate_id}</div>
-                                    </div>
-                                </div>
-                                <Link to={`/${warranty.type.toLowerCase()}/${warranty.id}`} target="_blank" style={docLinkStyle}>
-                                    <ExternalLink size={16} />
-                                </Link>
-                            </div>
-                        ))}
-                    </GlassCard>
-                </div>
-            </div>
-
-            <footer style={footerStyle}>
-                <p>© Elite Shine Automotive Refinishing. All rights reserved.</p>
-                <div style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '10px' }}>
-                    <a href="https://eliteshine.ae" style={{ color: '#b08d57', fontSize: '12px', textDecoration: 'none' }}>Website</a>
-                    <a href="tel:+971" style={{ color: '#b08d57', fontSize: '12px', textDecoration: 'none' }}>Call Us</a>
-                </div>
-            </footer>
-
-            <style>{`
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                .spin { animation: spin 2s linear infinite; }
-            `}</style>
-        </div>
+                {activeTab === 0 && <JobList jobs={jobs} navigate={navigate} />}
+                {activeTab === 1 && <InvoiceList invoices={invoices} navigate={navigate} />}
+                {/* Placeholders for now */}
+                {activeTab === 2 && <Typography variant="body1" p={2}>Booking Form Coming Soon</Typography>}
+                {activeTab === 3 && <MembershipTab customerId={customer?.id} />}
+                {activeTab === 4 && <Typography variant="body1" p={2}>Feedback Form Coming Soon</Typography>}
+            </Paper>
+        </Container>
     );
 };
 
-// Styles
-const containerStyle = {
-    padding: '40px 20px',
-    maxWidth: '1000px',
-    margin: '0 auto',
-    minHeight: '100vh',
-    background: '#0a0a0b'
-};
+// Job List Component
+const JobList = ({ jobs, navigate }) => (
+    <Grid container spacing={3}>
+        {jobs.map((job) => (
+            <Grid item xs={12} key={job.id}>
+                <Card>
+                    <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <Typography variant="h6">Job #{job.job_number}</Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {job.vehicle_details?.make} {job.vehicle_details?.model}
+                                </Typography>
+                                <Typography variant="body2">
+                                    Status: <strong>{job.current_status_display}</strong>
+                                </Typography>
+                            </Box>
+                            <Box textAlign="right">
+                                <Typography variant="h6">
+                                    ${parseFloat(job.total_estimated_cost || 0).toLocaleString()}
+                                </Typography>
+                                <Button
+                                    size="small"
+                                    variant="outlined"
+                                    onClick={() => navigate(`/portal/jobs/${job.id}`)}
+                                >
+                                    View Details
+                                </Button>
+                            </Box>
+                        </Box>
+                        {job.notes_for_customer && (
+                            <Box mt={2} p={2} bgcolor="grey.50" borderRadius={1}>
+                                <Typography variant="body2">
+                                    <strong>Note:</strong> {job.notes_for_customer}
+                                </Typography>
+                            </Box>
+                        )}
+                    </CardContent>
+                </Card>
+            </Grid>
+        ))}
+    </Grid>
+);
 
-const headerStyle = {
-    textAlign: 'center',
-    marginBottom: '50px'
-};
-
-const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '20px',
-    marginBottom: '50px'
-};
-
-const sectionTitleStyle = {
-    fontSize: '12px',
-    textTransform: 'uppercase',
-    color: '#b08d57',
-    letterSpacing: '2px',
-    margin: '0 0 20px 0',
-    fontWeight: '800'
-};
-
-const statusBadgeStyle = (status) => ({
-    padding: '6px 15px',
-    borderRadius: '30px',
-    fontSize: '11px',
-    fontWeight: '900',
-    background: status === 'CLOSED' ? '#10b981' : '#b08d57',
-    color: '#000',
-    textTransform: 'uppercase'
-});
-
-const timelineWrapperStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: '20px 0 40px 0',
-    overflowX: 'auto',
-    gap: '10px'
-};
-
-const stepItemStyle = {
-    flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    position: 'relative',
-    minWidth: '80px'
-};
-
-const stepCircleStyle = (status) => ({
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '12px',
-    fontWeight: '900',
-    zIndex: 2,
-    background: status === 'completed' ? '#10b981' : status === 'active' ? '#b08d57' : '#1e293b',
-    color: status === 'pending' ? '#64748b' : '#000',
-    transition: 'all 0.3s ease'
-});
-
-const stepLabelStyle = (status) => ({
-    fontSize: '10px',
-    marginTop: '10px',
-    textAlign: 'center',
-    color: status === 'pending' ? '#64748b' : '#fff',
-    fontWeight: status === 'active' ? '800' : '400',
-    textTransform: 'uppercase'
-});
-
-const stepLineStyle = (status) => ({
-    position: 'absolute',
-    top: '16px',
-    left: '50%',
-    width: '100%',
-    height: '2px',
-    background: status === 'completed' ? '#10b981' : '#1e293b',
-    zIndex: 1
-});
-
-const infoRowStyle = {
-    display: 'flex',
-    gap: '15px',
-    marginBottom: '20px'
-};
-
-const infoLabelStyle = {
-    fontSize: '11px',
-    color: '#64748b',
-    textTransform: 'uppercase'
-};
-
-const infoValueStyle = {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: '15px'
-};
-
-const docItemStyle = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '15px',
-    background: 'rgba(255,255,255,0.03)',
-    borderRadius: '12px',
-    marginBottom: '10px',
-    border: '1px solid rgba(255,255,255,0.05)'
-};
-
-const docIconStyle = (color) => ({
-    width: '40px',
-    height: '40px',
-    borderRadius: '10px',
-    background: `${color}22`,
-    color: color,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-});
-
-const docLinkStyle = {
-    color: '#b08d57',
-    padding: '8px',
-    borderRadius: '8px',
-    background: 'rgba(255,255,255,0.05)'
-};
-
-const btnStyle = {
-    margin: '20px 0',
-    padding: '12px 30px',
-    background: '#b08d57',
-    color: '#000',
-    border: 'none',
-    borderRadius: '8px',
-    fontWeight: '900',
-    cursor: 'pointer'
-};
-
-const loaderStyle = {
-    width: '40px',
-    height: '40px',
-    border: '3px solid #1e293b',
-    borderTop: '3px solid #b08d57',
-    borderRadius: '50%',
-    margin: '0 auto 20px auto',
-    animation: 'spin 1s linear infinite'
-};
-
-const footerStyle = {
-    textAlign: 'center',
-    padding: '40px 0',
-    borderTop: '1px solid rgba(255,255,255,0.05)',
-    color: '#64748b',
-    fontSize: '12px'
-};
+// Invoice List Component
+const InvoiceList = ({ invoices, navigate }) => (
+    <Grid container spacing={3}>
+        {invoices.map((invoice) => (
+            <Grid item xs={12} key={invoice.id}>
+                <Card>
+                    <CardContent>
+                        <Box display="flex" justifyContent="space-between" alignItems="center">
+                            <Box>
+                                <Typography variant="h6">Invoice #{invoice.invoice_number}</Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    {/* Job Number linking might need adjustment depending on API data */}
+                                    {new Date(invoice.date).toLocaleDateString()}
+                                </Typography>
+                                <Typography variant="body2">
+                                    Status:
+                                    <span style={{
+                                        color: invoice.payment_status === 'PAID' ? 'green' : 'orange',
+                                        fontWeight: 'bold',
+                                        marginLeft: 8
+                                    }}>
+                                        {invoice.payment_status}
+                                    </span>
+                                </Typography>
+                            </Box>
+                            <Box textAlign="right">
+                                <Typography variant="h6">
+                                    ${parseFloat(invoice.total_amount).toLocaleString()}
+                                </Typography>
+                                {invoice.payment_status === 'PENDING' && (
+                                    <Button
+                                        size="small"
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => navigate(`/payment/${invoice.id}`)}
+                                    >
+                                        Pay Now
+                                    </Button>
+                                )}
+                            </Box>
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Grid>
+        ))}
+    </Grid>
+);
 
 export default CustomerPortal;

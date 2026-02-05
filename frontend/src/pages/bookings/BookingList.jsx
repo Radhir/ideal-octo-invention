@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, Calendar as CalendarIcon, Phone, LayoutGrid, Table, Printer, Car, User, Settings, ExternalLink } from 'lucide-react';
@@ -30,7 +30,7 @@ const BookingList = () => {
 
     const fetchBookings = async () => {
         try {
-            const res = await axios.get('/forms/bookings/api/list/');
+            const res = await api.get('/forms/bookings/api/list/');
             setBookings(res.data);
             const today = new Date().toISOString().split('T')[0];
             const count = res.data.filter(b => b.booking_date === today).length;
@@ -150,7 +150,7 @@ const BookingList = () => {
                                                     onClick={async () => {
                                                         if (!window.confirm(`Start Job for ${b.customer_name}? This will create a new Job Card.`)) return;
                                                         try {
-                                                            const res = await axios.post(`/forms/bookings/api/list/${b.id}/convert_to_job/`);
+                                                            const res = await api.post(`/forms/bookings/api/list/${b.id}/convert_to_job/`);
                                                             navigate(`/job-cards/${res.data.job_card_id}`);
                                                         } catch (err) {
                                                             console.error(err);

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -21,7 +21,7 @@ const LeaveForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/leaves/api/applications/', formData);
+            await api.post('/forms/leaves/api/applications/', formData);
             alert('Leave Application Submitted');
             navigate('/leaves');
         } catch (err) {

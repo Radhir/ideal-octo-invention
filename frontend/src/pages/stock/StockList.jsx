@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -23,8 +23,8 @@ const StockList = () => {
     const fetchData = async () => {
         try {
             const [itemRes, statRes] = await Promise.all([
-                axios.get('/forms/stock/api/items/'),
-                axios.get('/forms/stock/api/items/inventory_stats/')
+                api.get('/forms/stock/api/items/'),
+                api.get('/forms/stock/api/items/inventory_stats/')
             ]);
             setItems(itemRes.data);
             setStats(statRes.data);

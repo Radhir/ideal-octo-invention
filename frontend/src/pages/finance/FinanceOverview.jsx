@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -27,9 +27,9 @@ const FinanceOverview = () => {
     const fetchData = async () => {
         try {
             const [accRes, summaryRes, txRes] = await Promise.all([
-                axios.get('/finance/api/accounts/'),
-                axios.get('/finance/api/transactions/financial_summary/'),
-                axios.get('/finance/api/transactions/')
+                api.get('/finance/api/accounts/'),
+                api.get('/finance/api/transactions/financial_summary/'),
+                api.get('/finance/api/transactions/')
             ]);
 
             // Derive expenses and net profit from transactions

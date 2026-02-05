@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, Plus, X } from 'lucide-react';
 import { SERVICES_CATALOG } from '../../constants/services';
 
-import { CAR_BRANDS, YEAR_CHOICES, PLATE_EMIRATES, PLATE_CODES } from '../../constants/vehicle_data';
+import { CAR_BRANDS, CAR_MODELS, CAR_COLORS, YEAR_CHOICES, PLATE_EMIRATES, PLATE_CODES } from '../../constants/vehicle_data';
 
 const JobCreate = () => {
     const navigate = useNavigate();
@@ -68,7 +68,7 @@ const JobCreate = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get('/api/auth/users/');
+            const res = await api.get('/api/auth/users/');
             setUsers(res.data);
         } catch (err) {
             console.error('Error fetching users', err);
@@ -120,7 +120,7 @@ const JobCreate = () => {
                     formData.selected_services.map(s => `- ${s.name} (AED ${s.price})`).join('\n')
             };
 
-            const res = await axios.post('/forms/job-cards/api/jobs/', submissionData);
+            const res = await api.post('/forms/job-cards/api/jobs/', submissionData);
             alert('Job Card Created!');
             navigate(`/job-cards/${res.data.id}`);
         } catch (err) {
@@ -185,7 +185,21 @@ const JobCreate = () => {
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Model</label>
-                                    <input name="model" className="form-control" value={formData.model} onChange={handleChange} required style={{ height: '34px' }} />
+                                    <input
+                                        name="model"
+                                        className="form-control"
+                                        value={formData.model}
+                                        onChange={handleChange}
+                                        required
+                                        list="car-models"
+                                        placeholder="Type model..."
+                                        style={{ height: '34px' }}
+                                    />
+                                    <datalist id="car-models">
+                                        {CAR_MODELS[formData.brand]?.map(m => (
+                                            <option key={m} value={m} />
+                                        ))}
+                                    </datalist>
                                 </div>
                             </div>
 
@@ -198,7 +212,21 @@ const JobCreate = () => {
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Color</label>
-                                    <input name="color" className="form-control" value={formData.color} onChange={handleChange} required style={{ height: '34px' }} />
+                                    <input
+                                        name="color"
+                                        className="form-control"
+                                        value={formData.color}
+                                        onChange={handleChange}
+                                        required
+                                        list="car-colors"
+                                        placeholder="Pick color..."
+                                        style={{ height: '34px' }}
+                                    />
+                                    <datalist id="car-colors">
+                                        {CAR_COLORS.map(c => (
+                                            <option key={c} value={c} />
+                                        ))}
+                                    </datalist>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Kilometers</label>

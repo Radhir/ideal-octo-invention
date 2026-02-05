@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, PenTool } from 'lucide-react';
@@ -31,7 +31,7 @@ const PPFForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/ppf/api/warranties/', formData);
+            await api.post('/forms/ppf/api/warranties/', formData);
             alert('Warranty Registered Successfully');
             navigate('/ppf');
         } catch (err) {

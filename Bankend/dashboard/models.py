@@ -22,6 +22,10 @@ class WorkshopDiary(models.Model):
 class ChatMessage(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages', null=True, blank=True)
+    
+    # Linked to Logistics Trip for Live Chats
+    trip = models.ForeignKey('pick_and_drop.PickAndDrop', on_delete=models.CASCADE, related_name='chats', null=True, blank=True)
+    
     text = models.TextField()
     is_system = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

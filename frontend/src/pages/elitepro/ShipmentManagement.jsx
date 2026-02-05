@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Ship, Plus, Search, Filter, Calendar, Package, DollarSign, MapPin, X, Edit2 } from 'lucide-react';
 import './ShipmentManagement.css';
 
@@ -61,7 +61,7 @@ const ShipmentManagement = () => {
                 ? `${API_BASE}/logistics/api/shipments/in-transit/`
                 : `${API_BASE}/logistics/api/shipments/`;
 
-            const response = await axios.get(endpoint);
+            const response = await api.get(endpoint);
             setShipments(response.data);
             setLoading(false);
         } catch (error) {
@@ -162,9 +162,9 @@ const ShipmentManagement = () => {
         setSaving(true);
         try {
             if (editingShipment) {
-                await axios.put(`${API_BASE}/logistics/api/shipments/${editingShipment.id}/`, formData);
+                await api.put(`${API_BASE}/logistics/api/shipments/${editingShipment.id}/`, formData);
             } else {
-                await axios.post(`${API_BASE}/logistics/api/shipments/`, formData);
+                await api.post(`${API_BASE}/logistics/api/shipments/`, formData);
             }
             setShowModal(false);
             fetchShipments();
@@ -178,7 +178,7 @@ const ShipmentManagement = () => {
 
     const updateStatus = async (shipment, newStatus) => {
         try {
-            await axios.patch(`${API_BASE}/logistics/api/shipments/${shipment.id}/`, { status: newStatus });
+            await api.patch(`${API_BASE}/logistics/api/shipments/${shipment.id}/`, { status: newStatus });
             fetchShipments();
         } catch (error) {
             console.error('Error updating status:', error);

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EliteShine ERP - Complete Code Documentation</title>
+    <style>
+        :root {
+            --primary: #b08d57;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(255,255,255,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border-bottom: 1px solid var(--primary);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        header h1 { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
+        header p { color: var(--text-muted); font-size: 1.2rem; }
+        nav {
+            background: var(--dark);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        nav a:hover { background: var(--primary); color: #fff; }
+        section {
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid var(--border);
+        }
+        section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        section h3 { color: #fff; font-size: 1.3rem; margin: 25px 0 15px 0; }
+        section h4 { color: var(--primary); font-size: 1.1rem; margin: 20px 0 10px 0; }
+        pre {
+            background: #0d1117;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        pre code { color: #e6edf3; font-family: 'Consolas', 'Monaco', monospace; }
+        code { background: rgba(0,0,0,0.4); padding: 2px 8px; border-radius: 4px; font-family: 'Consolas', monospace; font-size: 0.85rem; color: #f472b6; }
+        .file-path {
+            background: rgba(176, 141, 87, 0.2);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        footer { text-align: center; padding: 40px 20px; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 60px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { padding: 12px 15px; text-align: left; border: 1px solid var(--border); }
+        th { background: rgba(176, 141, 87, 0.2); color: var(--primary); }
+        .method { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+        .get { background: #22c55e; color: #000; }
+        .post { background: #3b82f6; color: #fff; }
+        .put { background: #f59e0b; color: #000; }
+        .delete { background: #ef4444; color: #fff; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>EliteShine ERP</h1>
+    <p>Complete Source Code Documentation - Frontend, Backend & Database</p>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#database">Database Models</a></li>
+        <li><a href="#backend-views">Backend Views</a></li>
+        <li><a href="#serializers">Serializers</a></li>
+        <li><a href="#urls">URL Routing</a></li>
+        <li><a href="#frontend">Frontend Components</a></li>
+        <li><a href="#auth">Authentication</a></li>
+        <li><a href="#api">API Endpoints</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+<!-- OVERVIEW -->
+<section id="overview">
+    <h2>Project Overview</h2>
+    <p>EliteShine ERP is an enterprise resource planning system for automotive detailing businesses. Built with Django 5.0 (Backend) and React 19 (Frontend).</p>
+
+    <h3>Tech Stack</h3>
+    <table>
+        <tr><th>Layer</th><th>Technology</th><th>Version</th></tr>
+        <tr><td>Backend</td><td>Django + Django REST Framework</td><td>5.0.1</td></tr>
+        <tr><td>Frontend</td><td>React + Vite</td><td>19.2.0</td></tr>
+        <tr><td>Database</td><td>PostgreSQL</td><td>15</td></tr>
+        <tr><td>Auth</td><td>JWT (SimpleJWT)</td><td>5.3.1</td></tr>
+        <tr><td>Server</td><td>Gunicorn + Nginx</td><td>21.2.0</td></tr>
+    </table>
+</section>
+
+<!-- DATABASE MODELS -->
+<section id="database">
+    <h2>Database Models (Django ORM)</h2>
+
+    <h3>JobCard Model</h3>
+    <div class="file-path">Bankend/job_cards/models.py</div>
+    <pre><code>from django.db import models
+from customers.models import Customer
+from locations.models import Branch
+import uuid
+
+class JobCard(models.Model):
+    STATUS_CHOICES = [
+        ('RECEPTION', 'Reception'),
+        ('ESTIMATION', 'Estimation'),
+        ('WORK_ASSIGNMENT', 'Work Assignment'),
+        ('WIP', 'Work In Progress'),
+        ('QC', 'Quality Check'),
+        ('INVOICING', 'Invoicing'),
+        ('DELIVERY', 'Ready for Delivery'),
+        ('CLOSED', 'Closed'),
+    ]
+
+    job_card_number = models.CharField(max_length=50, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='RECEPTION')
+    date = models.DateField()
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
+
+    # Customer Info
+    customer_name = models.CharField(max_length=255)
+    customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True)
+    related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True)
+    related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True)
+    phone = models.CharField(max_length=20)
+    address = models.TextField()
+
+    # Vehicle Info
+    registration_number = models.CharField(max_length=50)
+    plate_emirate = models.CharField(max_length=50, blank=True, null=True)
+    plate_code = models.CharField(max_length=10, blank=True, null=True)
+    vin = models.CharField(max_length=50)
+    brand = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+    year = models.IntegerField()
+    color = models.CharField(max_length=50)
+    kilometers = models.PositiveIntegerField()
+
+    # Assignment
+    service_advisor = models.CharField(max_length=255, blank=True)
+    assigned_technician = models.CharField(max_length=255, blank=True)
+    assigned_bay = models.CharField(max_length=100, blank=True)
+    estimated_timeline = models.DateTimeField(null=True, blank=True)
+
+    # Description
+    job_description = models.TextField()
+    initial_inspection_notes = models.TextField(blank=True)
+
+    # Financial
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    vat_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    net_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    advance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    balance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    # QC Sign-offs
+    qc_sign_off = models.BooleanField(default=False)
+    pre_work_head_sign_off = models.BooleanField(default=False)
+    post_work_tl_sign_off = models.BooleanField(default=False)
+    post_work_head_sign_off = models.BooleanField(default=False)
+    floor_incharge_sign_off = models.BooleanField(default=False)
+
+    # Signatures
+    customer_signature = models.ImageField(upload_to='signatures/', null=True, blank=True)
+    signature_data = models.TextField(null=True, blank=True)
+    loyalty_points = models.IntegerField(default=0)
+    feedback_notes = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)</code></pre>
+
+    <h3>Lead Model (CRM)</h3>
+    <div class="file-path">Bankend/leads/models.py</div>
+    <pre><code>from django.db import models
+
+class Lead(models.Model):
+    SOURCE_CHOICES = [
+        ('INSTAGRAM', 'Instagram'),
+        ('FACEBOOK', 'Facebook'),
+        ('WHATSAPP', 'WhatsApp'),
+        ('GMAIL', 'Gmail'),
+        ('COBONE', 'Cobone'),
+        ('GROUPON', 'Groupon'),
+        ('TABBY', 'Tabby'),
+        ('WALKIN', 'Walk-in'),
+        ('REFERENCE', 'Reference / Referral'),
+        ('WEBSITE', 'Website'),
+        ('EXISTING', 'Existing Customer'),
+    ]
+    STATUS_CHOICES = [
+        ('INBOX', 'Inbox / Ghost'),
+        ('NEW', 'New Lead'),
+        ('CONTACTED', 'First Contact'),
+        ('NEGOTIATION', 'Negotiation'),
+        ('QUOTED', 'Quote Sent'),
+        ('CONVERTED', 'Converted'),
+        ('LOST', 'Lost'),
+    ]
+    PRIORITY_CHOICES = [
+        ('LOW', 'Low'),
+        ('MEDIUM', 'Medium'),
+        ('HIGH', 'High'),
+        ('HOT', 'Hot / Immediate'),
+    ]
+
+    customer_name = models.CharField(max_length=255)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField(blank=True)
+    source = models.CharField(max_length=50, choices=SOURCE_CHOICES)
+    interested_service = models.CharField(max_length=255)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='MEDIUM')
+    estimated_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+
+    assigned_to = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True)
+    customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True)
+    follow_up_date = models.DateField(null=True, blank=True)
+
+    notes = models.TextField(blank=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='NEW')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.customer_name} ({self.status})"</code></pre>
+
+    <h3>Booking Model</h3>
+    <div class="file-path">Bankend/bookings/models.py</div>
+    <pre><code>from django.db import models
+
+class Booking(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Confirmation'),
+        ('CONFIRMED', 'Confirmed'),
+        ('ARRIVED', 'Vehicle Arrived'),
+        ('CANCELLED', 'Cancelled'),
+        ('NOSHOW', 'No Show'),
+    ]
+
+    customer_name = models.CharField(max_length=255)
+    customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True)
+    phone = models.CharField(max_length=20)
+    v_registration_no = models.CharField(max_length=50, blank=True)
+    vehicle_details = models.CharField(max_length=255)
+
+    service_category = models.ForeignKey('job_cards.ServiceCategory', on_delete=models.SET_NULL, null=True, blank=True)
+    booking_date = models.DateField()
+    booking_time = models.TimeField()
+
+    advisor = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True)
+    related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True)
+
+    estimated_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='PENDING')
+    notes = models.TextField(blank=True)
+    signature_data = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def convert_to_job_card(self):
+        from job_cards.models import JobCard
+        import datetime
+
+        today = datetime.date.today()
+        count = JobCard.objects.filter(date=today).count() + 1
+        jc_no = f"JC-{today.strftime('%Y%m%d')}-{count:03d}"
+
+        total_net = float(self.estimated_total)
+        vat_amt = round(total_net * 0.05, 2)
+        gross_total = total_net + vat_amt
+
+        jc = JobCard.objects.create(
+            job_card_number=jc_no,
+            date=today,
+            customer_name=self.customer_name,
+            phone=self.phone,
+            registration_number=self.v_registration_no,
+            brand=self.vehicle_details.split(' ')[0] if ' ' in self.vehicle_details else "General",
+            model=self.vehicle_details,
+            year=today.year,
+            color="Not Specified",
+            kilometers=0,
+            service_advisor=self.advisor.full_name if self.advisor else "Walk-in",
+            job_description=f"Pre-booked Service: {self.service_category.name if self.service_category else 'General'}",
+            total_amount=total_net,
+            vat_amount=vat_amt,
+            net_amount=gross_total,
+            balance_amount=gross_total,
+            related_booking=self,
+            related_lead=self.related_lead
+        )
+
+        self.status = 'ARRIVED'
+        self.save()
+        return jc</code></pre>
+
+    <h3>Invoice Model</h3>
+    <div class="file-path">Bankend/invoices/models.py</div>
+    <pre><code>from django.db import models
+from job_cards.models import JobCard
+from locations.models import Branch
+
+class Invoice(models.Model):
+    ORDER_STATUS_CHOICES = [
+        ('PAID', 'Paid'),
+        ('PENDING', 'Pending'),
+        ('CANCELLED', 'Cancelled'),
+    ]
+
+    job_card = models.OneToOneField(JobCard, on_delete=models.SET_NULL, null=True, blank=True, related_name='invoice')
+    invoice_number = models.CharField(max_length=50, unique=True)
+    date = models.DateField()
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
+
+    customer_name = models.CharField(max_length=255)
+    customer_trn = models.CharField(max_length=50, blank=True)
+
+    items = models.TextField(help_text="format: item|qty|price per line")
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    vat_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    grand_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    advance_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    balance_due = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    payment_status = models.CharField(max_length=50, choices=ORDER_STATUS_CHOICES, default='PENDING')
+    signature_data = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        self.balance_due = self.grand_total - self.advance_paid
+
+        if self.pk:
+            old_instance = Invoice.objects.get(pk=self.pk)
+            if old_instance.payment_status != 'PAID' and self.payment_status == 'PAID':
+                self.record_revenue_transaction()
+
+        super().save(*args, **kwargs)
+
+    def record_revenue_transaction(self):
+        from finance.models import Account, Transaction
+        revenue_acc, _ = Account.objects.get_or_create(
+            code='4000',
+            defaults={'name': 'Sales Revenue', 'category': 'REVENUE'}
+        )
+
+        tx = Transaction.objects.create(
+            account=revenue_acc,
+            amount=self.grand_total,
+            transaction_type='CREDIT',
+            description=f"Revenue from Invoice {self.invoice_number}",
+            reference=self.invoice_number
+        )</code></pre>
+
+    <h3>Employee Model (HR)</h3>
+    <div class="file-path">Bankend/hr/models.py</div>
+    <pre><code>from django.db import models
+from django.contrib.auth.models import User
+from locations.models import Branch
+
+class Employee(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='hr_profile')
+    employee_id = models.CharField(max_length=20, unique=True)
+    company = models.ForeignKey('Company', on_delete=models.SET_NULL, null=True, blank=True)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
+    pin_code = models.CharField(max_length=6, unique=True)
+    role = models.CharField(max_length=100)
+    basic_salary = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    housing_allowance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    transport_allowance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    date_joined = models.DateField()
+    is_active = models.BooleanField(default=True)
+    bio = models.TextField(blank=True, null=True)
+    profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
+    accent_color = models.CharField(max_length=7, default='#b08d57')
+
+    # Personal Details
+    medical_history = models.TextField(blank=True, null=True)
+    family_members_count = models.IntegerField(default=0)
+    visa_start_date = models.DateField(null=True, blank=True)
+    experience_summary = models.TextField(blank=True, null=True)
+
+    # Emergency Contacts
+    emergency_contact_1_name = models.CharField(max_length=100, blank=True, null=True)
+    emergency_contact_1_phone = models.CharField(max_length=20, blank=True, null=True)
+    emergency_contact_1_relation = models.CharField(max_length=50, blank=True, null=True)
+
+    @property
+    def full_name(self):
+        return self.user.get_full_name()
+
+    def __str__(self):
+        return f"{self.full_name} ({self.employee_id})"</code></pre>
+
+    <h3>Finance Models</h3>
+    <div class="file-path">Bankend/finance/models.py</div>
+    <pre><code>from django.db import models
+
+class Account(models.Model):
+    code = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=100)  # Asset, Liability, Revenue, Expense
+    description = models.TextField(blank=True, null=True)
+    balance = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
+
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+
+class Budget(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
+    department_ref = models.ForeignKey('hr.Department', on_delete=models.SET_NULL, null=True, blank=True)
+    period = models.CharField(max_length=20)  # e.g. "2024-Q1"
+    amount = models.DecimalField(max_digits=15, decimal_places=2)
+    spent = models.DecimalField(max_digits=15, decimal_places=2, default=0.00)
+
+class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('DEBIT', 'Debit'),
+        ('CREDIT', 'Credit'),
+    ]
+    account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
+    department_ref = models.ForeignKey('hr.Department', on_delete=models.SET_NULL, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+    amount = models.DecimalField(max_digits=15, decimal_places=2)
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
+    description = models.TextField()
+    reference = models.CharField(max_length=100, blank=True)
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new:
+            if self.transaction_type == 'CREDIT':
+                self.account.balance += self.amount
+            else:
+                self.account.balance -= self.amount
+            self.account.save()</code></pre>
+</section>
+
+<!-- BACKEND VIEWS -->
+<section id="backend-views">
+    <h2>Backend Views (API)</h2>
+
+    <h3>Job Card ViewSet</h3>
+    <div class="file-path">Bankend/job_cards/views.py</div>
+    <pre><code>from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .models import JobCard, JobCardPhoto, JobCardTask, ServiceCategory, Service
+from .serializers import JobCardSerializer, JobCardTaskSerializer, JobCardPhotoSerializer
+
+class JobCardViewSet(viewsets.ModelViewSet):
+    queryset = JobCard.objects.all().order_by('-created_at')
+    serializer_class = JobCardSerializer
+
+    @action(detail=True, methods=['post'])
+    def advance_status(self, request, pk=None):
+        """Advance job card to next workflow stage"""
+        job_card = self.get_object()
+
+        next_status = {
+            'RECEPTION': 'ESTIMATION',
+            'ESTIMATION': 'WORK_ASSIGNMENT',
+            'WORK_ASSIGNMENT': 'WIP',
+            'WIP': 'QC',
+            'QC': 'INVOICING',
+            'INVOICING': 'DELIVERY',
+            'DELIVERY': 'CLOSED',
+        }.get(job_card.status)
+
+        if next_status:
+            # Cannot advance from INVOICING without Invoice
+            if job_card.status == 'INVOICING' and not hasattr(job_card, 'invoice'):
+                return Response(
+                    {'error': 'Create Invoice before advancing to Delivery'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            job_card.status = next_status
+            job_card.save()
+            return Response({'status': next_status})
+
+        return Response({'error': 'Cannot advance'}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def create_invoice(self, request, pk=None):
+        """Create invoice from job card"""
+        job_card = self.get_object()
+
+        if hasattr(job_card, 'invoice'):
+            return Response({'error': 'Invoice already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+        from invoices.models import Invoice
+        import datetime
+
+        today = datetime.date.today()
+        count = Invoice.objects.filter(date=today).count() + 1
+        inv_no = f"INV-{today.strftime('%Y%m%d')}-{count:03d}"
+
+        invoice = Invoice.objects.create(
+            job_card=job_card,
+            invoice_number=inv_no,
+            date=today,
+            customer_name=job_card.customer_name,
+            total_amount=job_card.total_amount,
+            vat_amount=job_card.vat_amount,
+            grand_total=job_card.net_amount,
+            advance_paid=job_card.advance_amount,
+            balance_due=job_card.balance_amount,
+        )
+
+        return Response({'invoice_id': invoice.id, 'invoice_number': inv_no})</code></pre>
+
+    <h3>Authentication Views</h3>
+    <div class="file-path">Bankend/authentication/views.py</div>
+    <pre><code>from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from django.contrib.auth.models import User
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import UserSerializer
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'user': serializer.data,
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileView(APIView):
+    def get(self, request):
+        serializer = UserSerializer(request.user, context={'request': request})
+        return Response(serializer.data)
+
+class UserListView(APIView):
+    def get(self, request):
+        users = User.objects.all().order_by('username')
+        serializer = UserSerializer(users, many=True, context={'request': request})
+        return Response(serializer.data)</code></pre>
+</section>
+
+<!-- SERIALIZERS -->
+<section id="serializers">
+    <h2>Serializers</h2>
+
+    <h3>Job Card Serializers</h3>
+    <div class="file-path">Bankend/job_cards/serializers.py</div>
+    <pre><code>from rest_framework import serializers
+from .models import JobCard, JobCardPhoto, JobCardTask, Service, ServiceCategory
+
+class JobCardPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobCardPhoto
+        fields = '__all__'
+
+class JobCardTaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobCardTask
+        fields = '__all__'
+
+class JobCardSerializer(serializers.ModelSerializer):
+    photos = JobCardPhotoSerializer(many=True, read_only=True)
+    tasks = JobCardTaskSerializer(many=True, read_only=True)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    invoice = serializers.SerializerMethodField()
+
+    class Meta:
+        model = JobCard
+        fields = '__all__'
+
+    def get_invoice(self, obj):
+        if hasattr(obj, 'invoice'):
+            return {
+                'id': obj.invoice.id,
+                'payment_status': obj.invoice.payment_status,
+                'invoice_number': obj.invoice.invoice_number
+            }
+        return None
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = '__all__'
+
+class ServiceCategorySerializer(serializers.ModelSerializer):
+    services = ServiceSerializer(many=True, read_only=True)
+    class Meta:
+        model = ServiceCategory
+        fields = '__all__'</code></pre>
+</section>
+
+<!-- URL ROUTING -->
+<section id="urls">
+    <h2>URL Routing</h2>
+
+    <h3>Main URL Configuration</h3>
+    <div class="file-path">Bankend/core/urls.py</div>
+    <pre><code>from django.contrib import admin
+from django.urls import path, include
+from django.shortcuts import redirect
+
+urlpatterns = [
+    path('', lambda request: redirect('home', permanent=False)),
+    path('admin/', admin.site.urls),
+
+    # Authentication
+    path('api/auth/', include('authentication.urls')),
+    path('api/dashboard/', include('dashboard.urls')),
+    path('api/maintenance/', MaintenanceView.as_view()),
+
+    # Forms & Workflow
+    path('forms/ppf/', include('ppf_warranty.urls')),
+    path('forms/ceramic/', include('ceramic_warranty.urls')),
+    path('forms/job-cards/', include('job_cards.urls')),
+    path('forms/bookings/', include('bookings.urls')),
+    path('forms/leads/', include('leads.urls')),
+    path('forms/invoices/', include('invoices.urls')),
+    path('forms/operations/', include('operations.urls')),
+    path('forms/stock/', include('stock.urls')),
+    path('forms/leaves/', include('leaves.urls')),
+    path('forms/pick-and-drop/', include('pick_and_drop.urls')),
+    path('forms/attendance/', include('attendance.urls')),
+    path('forms/scheduling/', include('scheduling.urls')),
+
+    # Core Modules
+    path('finance/', include('finance.urls')),
+    path('hr/', include('hr.urls')),
+    path('customers/', include('customers.urls')),
+
+    # API Documentation
+    path('api/schema/', SpectacularAPIView.as_view()),
+    path('api/docs/', SpectacularSwaggerView.as_view()),
+
+    # Additional APIs
+    path('api/customer-portal/', include('customers.portal.urls')),
+    path('api/contracts/', include('contracts.urls')),
+    path('api/documents/', include('documents.urls')),
+    path('api/payments/', include('payments.urls')),
+    path('api/subscriptions/', include('subscriptions.urls')),
+    path('api/locations/', include('locations.urls')),
+]</code></pre>
+
+    <h3>Job Cards URL Configuration</h3>
+    <div class="file-path">Bankend/job_cards/urls.py</div>
+    <pre><code>from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from . import views
+
+router = DefaultRouter()
+router.register(r'jobs', views.JobCardViewSet)
+router.register(r'tasks', views.JobCardTaskViewSet)
+router.register(r'photos', views.JobCardPhotoViewSet)
+router.register(r'service-categories', views.ServiceCategoryViewSet)
+router.register(r'services', views.ServiceViewSet)
+
+urlpatterns = [
+    path('', views.job_card_list, name='job_card_list'),
+    path('create/', views.job_card_create, name='job_card_create'),
+    path('&lt;int:pk&gt;/', views.job_card_detail, name='job_card_detail'),
+    path('&lt;int:pk&gt;/invoice/', views.create_invoice_from_job, name='create_invoice_from_job'),
+    # API endpoints
+    path('api/', include(router.urls)),
+    path('api/portal/&lt;uuid:token&gt;/', views.CustomerPortalDetailView.as_view()),
+]</code></pre>
+</section>
+
+<!-- FRONTEND -->
+<section id="frontend">
+    <h2>Frontend Components (React)</h2>
+
+    <h3>Job List Component</h3>
+    <div class="file-path">frontend/src/pages/jobs/JobList.jsx</div>
+    <pre><code>import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import GlassCard from '../../components/GlassCard';
+import { Plus, Search, Kanban } from 'lucide-react';
+
+const JobList = () =&gt; {
+    const [jobs, setJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+
+    useEffect(() =&gt; {
+        fetchJobs();
+    }, []);
+
+    const fetchJobs = async () =&gt; {
+        try {
+            const res = await axios.get('/forms/job-cards/api/jobs/');
+            setJobs(res.data);
+        } catch (err) {
+            console.error('Error fetching jobs', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredJobs = jobs.filter(j =&gt;
+        j.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        j.job_card_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        j.registration_number.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const getStatusColor = (status) =&gt; {
+        const colors = {
+            'RECEPTION': '#b08d57',
+            'ESTIMATION': '#6366f1',
+            'WORK_ASSIGNMENT': '#10b981',
+            'WIP': '#3b82f6',
+            'QC': '#ec4899',
+            'INVOICING': '#8b5cf6',
+            'DELIVERY': '#f59e0b',
+            'CLOSED': '#64748b'
+        };
+        return colors[status] || '#94a3b8';
+    };
+
+    return (
+        &lt;div style={{ padding: '30px 20px' }}&gt;
+            &lt;header&gt;
+                &lt;h1 style={{ color: '#b08d57' }}&gt;Job Cards&lt;/h1&gt;
+                &lt;Link to="/job-cards/create"&gt;
+                    &lt;Plus size={20} /&gt; Open Job Card
+                &lt;/Link&gt;
+            &lt;/header&gt;
+
+            &lt;input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) =&gt; setSearchTerm(e.target.value)}
+            /&gt;
+
+            {filteredJobs.map(job =&gt; (
+                &lt;GlassCard key={job.id} onClick={() =&gt; navigate(`/job-cards/${job.id}`)}&gt;
+                    &lt;h3&gt;{job.job_card_number}&lt;/h3&gt;
+                    &lt;p&gt;{job.customer_name}&lt;/p&gt;
+                    &lt;span style={{ background: getStatusColor(job.status) }}&gt;
+                        {job.status_display}
+                    &lt;/span&gt;
+                &lt;/GlassCard&gt;
+            ))}
+        &lt;/div&gt;
+    );
+};
+
+export default JobList;</code></pre>
+
+    <h3>Auth Context</h3>
+    <div class="file-path">frontend/src/context/AuthContext.jsx</div>
+    <pre><code>import React, { createContext, useState, useContext, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import api from '../api/axios';
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) =&gt; {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() =&gt; {
+        const checkAuth = async () =&gt; {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                try {
+                    const decoded = jwtDecode(token);
+                    if (decoded.exp * 1000 &lt; Date.now()) {
+                        logout();
+                    } else {
+                        await fetchProfile();
+                    }
+                } catch (err) {
+                    logout();
+                }
+            }
+            setLoading(false);
+        };
+        checkAuth();
+    }, []);
+
+    const fetchProfile = async () =&gt; {
+        try {
+            const res = await api.get('/api/auth/profile/');
+            setUser(res.data);
+            return true;
+        } catch (err) {
+            if (err.response?.status === 401) {
+                logout();
+            }
+            return false;
+        }
+    };
+
+    const login = async (username, password) =&gt; {
+        try {
+            const res = await api.post('/api/auth/login/', {
+                username: username.toLowerCase(),
+                password
+            });
+            const { access, refresh } = res.data;
+            localStorage.setItem('access_token', access);
+            localStorage.setItem('refresh_token', refresh);
+            const success = await fetchProfile();
+            return success;
+        } catch (err) {
+            return false;
+        }
+    };
+
+    const logout = () =&gt; {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        setUser(null);
+    };
+
+    return (
+        &lt;AuthContext.Provider value={{ user, login, logout, loading }}&gt;
+            {children}
+        &lt;/AuthContext.Provider&gt;
+    );
+};
+
+export const useAuth = () =&gt; useContext(AuthContext);</code></pre>
+</section>
+
+<!-- API ENDPOINTS -->
+<section id="api">
+    <h2>Complete API Endpoints</h2>
+
+    <h3>Authentication</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/api/auth/register/</code></td><td>Register new user</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/api/auth/login/</code></td><td>Login, returns JWT tokens</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/api/auth/token/refresh/</code></td><td>Refresh access token</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/api/auth/profile/</code></td><td>Get current user profile</td></tr>
+    </table>
+
+    <h3>Job Cards</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/job-cards/api/jobs/</code></td><td>List all job cards</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/job-cards/api/jobs/</code></td><td>Create job card</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/job-cards/api/jobs/{id}/</code></td><td>Get job card details</td></tr>
+        <tr><td><span class="method put">PUT</span></td><td><code>/forms/job-cards/api/jobs/{id}/</code></td><td>Update job card</td></tr>
+        <tr><td><span class="method delete">DELETE</span></td><td><code>/forms/job-cards/api/jobs/{id}/</code></td><td>Delete job card</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/job-cards/api/jobs/{id}/advance_status/</code></td><td>Advance workflow</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/job-cards/api/jobs/{id}/create_invoice/</code></td><td>Create invoice</td></tr>
+    </table>
+
+    <h3>Bookings</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/bookings/api/list/</code></td><td>List all bookings</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/bookings/api/list/</code></td><td>Create booking</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/bookings/api/list/{id}/convert_to_job/</code></td><td>Convert to job card</td></tr>
+    </table>
+
+    <h3>Leads (CRM)</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/leads/api/list/</code></td><td>List all leads</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/leads/api/list/</code></td><td>Create lead</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/leads/api/list/inbox/</code></td><td>Get inbox leads</td></tr>
+    </table>
+
+    <h3>HR</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/hr/api/employees/</code></td><td>List employees</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/hr/api/employees/</code></td><td>Create employee</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/hr/api/payroll/</code></td><td>List payroll</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/hr/api/payroll/generate_payroll_cycle/</code></td><td>Generate payroll</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/hr/api/attendance/</code></td><td>List attendance</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/hr/api/teams/</code></td><td>List teams</td></tr>
+    </table>
+
+    <h3>Finance</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/finance/api/accounts/</code></td><td>List accounts</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/finance/api/transactions/</code></td><td>List transactions</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/finance/api/transactions/</code></td><td>Create transaction</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/finance/api/transactions/financial_summary/</code></td><td>Get summary</td></tr>
+    </table>
+
+    <h3>Invoices</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/invoices/api/list/</code></td><td>List invoices</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/invoices/api/list/</code></td><td>Create invoice</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/invoices/api/list/{id}/</code></td><td>Get invoice details</td></tr>
+    </table>
+
+    <h3>Stock</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/stock/api/items/</code></td><td>List stock items</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/stock/api/items/</code></td><td>Create item</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/stock/api/movements/</code></td><td>Record movement</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/stock/api/suppliers/</code></td><td>List suppliers</td></tr>
+    </table>
+
+    <h3>Warranties</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/ppf/api/warranties/</code></td><td>List PPF warranties</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/ppf/api/warranties/</code></td><td>Create PPF warranty</td></tr>
+        <tr><td><span class="method get">GET</span></td><td><code>/forms/ceramic/api/ceramic/</code></td><td>List ceramic warranties</td></tr>
+        <tr><td><span class="method post">POST</span></td><td><code>/forms/ceramic/api/ceramic/</code></td><td>Create ceramic warranty</td></tr>
+    </table>
+</section>
+
+</div>
+
+<footer>
+    <p>EliteShine ERP - Complete Code Documentation</p>
+    <p>Django 5.0 + React 19 + PostgreSQL | January 2026</p>
+</footer>
+
+</body>
+</html>

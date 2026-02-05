@@ -39,9 +39,9 @@ const UserDropdown = () => {
     };
 
     const menuVariants = {
-        hidden: { opacity: 0, y: -10, scale: 0.95 },
+        hidden: { opacity: 0, y: 10, scale: 0.95 },
         visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } },
-        exit: { opacity: 0, y: -10, scale: 0.95, transition: { duration: 0.15 } }
+        exit: { opacity: 0, y: 10, scale: 0.95, transition: { duration: 0.15 } }
     };
 
     return (
@@ -89,16 +89,17 @@ const UserDropdown = () => {
                         exit="exit"
                         style={{
                             position: 'absolute',
-                            top: '100%',
+                            bottom: '100%',
                             right: 0,
-                            marginTop: '10px',
+                            marginBottom: '10px',
                             width: '260px',
                             background: 'rgba(15, 23, 42, 0.95)',
-                            backdropFilter: 'blur(20px)',
+                            backdropFilter: 'blur(30px)',
+                            WebkitBackdropFilter: 'blur(30px)',
                             border: '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '16px',
-                            padding: '8px',
-                            boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)',
+                            borderRadius: '20px',
+                            padding: '10px',
+                            boxShadow: '0 -15px 50px rgba(0, 0, 0, 0.6)',
                             zIndex: 1001,
                             overflow: 'hidden'
                         }}

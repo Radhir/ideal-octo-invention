@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, Activity, User, Clock, CheckCircle2, Printer, Target, AlertCircle, BarChart3 } from 'lucide-react';
@@ -17,7 +17,7 @@ const OperationList = () => {
 
     const fetchOperations = async () => {
         try {
-            const res = await axios.get('/forms/operations/api/list/');
+            const res = await api.get('/forms/operations/api/list/');
             setOperations(res.data);
         } catch (err) {
             console.error('Error fetching operations', err);
@@ -124,7 +124,7 @@ const OperationList = () => {
                                             const val = parseInt(newProgress, 10);
                                             if (isNaN(val) || val < 0 || val > 100) { alert('Invalid percentage'); return; }
                                             try {
-                                                await axios.patch(`/forms/operations/api/list/${op.id}/`, { progress_percentage: val });
+                                                await api.patch(`/forms/operations/api/list/${op.id}/`, { progress_percentage: val });
                                                 fetchOperations();
                                             } catch (err) { alert('Failed to update progress'); }
                                         }}
@@ -141,7 +141,7 @@ const OperationList = () => {
                                             onClick={async () => {
                                                 if (!window.confirm('Mark this operation as completed?')) return;
                                                 try {
-                                                    await axios.patch(`/forms/operations/api/list/${op.id}/`, { status: 'COMPLETED', progress_percentage: 100 });
+                                                    await api.patch(`/forms/operations/api/list/${op.id}/`, { status: 'COMPLETED', progress_percentage: 100 });
                                                     fetchOperations();
                                                 } catch (err) { alert('Failed to complete operation'); }
                                             }}

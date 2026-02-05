@@ -1,30 +1,33 @@
 from django.db import models
-from django.contrib.auth.models import User
+from customers.models import Customer
+from locations.models import Branch
 import uuid
 
 class JobCard(models.Model):
     STATUS_CHOICES = [
-        ('RECEPTION', 'Step 1: Reception'),
-        ('ESTIMATION', 'Step 2: Estimation'),
-        ('WORK_ASSIGNMENT', 'Step 3: Work Assignment'),
-        ('WIP', 'Step 4: Work In Progress'),
-        ('QC', 'Step 5: QC Approval'),
-        ('INVOICING', 'Step 6: Invoicing'),
-        ('DELIVERY', 'Step 7: Delivery'),
-        ('CLOSED', 'Job Card Closed'),
+        ('RECEPTION', 'Reception'),
+        ('ESTIMATION', 'Estimation'),
+        ('WORK_ASSIGNMENT', 'Work Assignment'),
+        ('WIP', 'Work In Progress'),
+        ('QC', 'Quality Check'),
+        ('INVOICING', 'Invoicing'),
+        ('DELIVERY', 'Ready for Delivery'),
+        ('CLOSED', 'Closed'),
     ]
 
     job_card_number = models.CharField(max_length=50, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='RECEPTION')
     date = models.DateField()
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     
     # Reception Info
     customer_name = models.CharField(max_length=255)
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
+    related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     phone = models.CharField(max_length=20)
-    address = models.TextField()
+    address = models.TextField(blank=True)
     
     registration_number = models.CharField(max_length=50)
     plate_emirate = models.CharField(max_length=50, blank=True, null=True)

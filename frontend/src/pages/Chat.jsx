@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import GlassCard from '../components/GlassCard';
 import { useAuth } from '../context/AuthContext';
 import { MessageSquare, Send, Users, User, RefreshCw, Search } from 'lucide-react';
@@ -38,7 +38,7 @@ const Chat = () => {
 
     const fetchColleagues = async () => {
         try {
-            const res = await axios.get('/api/dashboard/chat/colleagues/');
+            const res = await api.get('/api/dashboard/chat/colleagues/');
             setColleagues(res.data);
         } catch (err) {
             console.error('Error fetching colleagues', err);
@@ -49,7 +49,7 @@ const Chat = () => {
 
     const fetchConversation = async (userId) => {
         try {
-            const res = await axios.get(`/api/dashboard/chat/conversation/?user_id=${userId}`);
+            const res = await api.get(`/api/dashboard/chat/conversation/?user_id=${userId}`);
             setMessages(res.data);
         } catch (err) {
             console.error('Error fetching conversation', err);
@@ -61,7 +61,7 @@ const Chat = () => {
         if (!text || !selectedUser || sending) return;
         setSending(true);
         try {
-            await axios.post('/api/dashboard/chat/', { text, receiver: selectedUser.id });
+            await api.post('/api/dashboard/chat/', { text, receiver: selectedUser.id });
             setInput('');
             fetchConversation(selectedUser.id);
         } catch (err) {

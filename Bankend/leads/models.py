@@ -34,7 +34,7 @@ class Lead(models.Model):
     phone = models.CharField(max_length=20)
     email = models.EmailField(blank=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES)
-    interested_service = models.CharField(max_length=255)
+    interested_service = models.CharField(max_length=255, blank=True, null=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='MEDIUM')
     estimated_value = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     

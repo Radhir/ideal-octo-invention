@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     Calendar, Download, Package, CheckCircle,
@@ -18,7 +18,7 @@ const WorkshopDiary = () => {
 
     const fetchHistory = async () => {
         try {
-            const res = await axios.get('/api/dashboard/workshop-diary/');
+            const res = await api.get('/api/dashboard/workshop-diary/');
             const data = Array.isArray(res.data) ? res.data : res.data.results || [];
             setHistory(data);
         } catch (err) {
@@ -31,7 +31,7 @@ const WorkshopDiary = () => {
     const captureToday = async () => {
         setIsCapturing(true);
         try {
-            await axios.post('/api/dashboard/workshop-diary/capture_snapshot/');
+            await api.post('/api/dashboard/workshop-diary/capture_snapshot/');
             await fetchHistory();
         } catch (err) {
             console.error('Snapshot failed', err);
@@ -41,7 +41,7 @@ const WorkshopDiary = () => {
     };
 
     const exportPDF = () => {
-        window.open(`${axios.defaults.baseURL}/forms/utils/generate-pdf/WorkshopDiary/0/`, '_blank');
+        window.open(`${api.defaults.baseURL}/forms/utils/generate-pdf/WorkshopDiary/0/`, '_blank');
     };
 
     if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Analyzing Daily Snapshots...</div>;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Package, TrendingUp, DollarSign, ShoppingCart, Ship, AlertTriangle } from 'lucide-react';
 import './EliteProDashboard.css';
 
@@ -23,9 +23,9 @@ const EliteProDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             const [shipmentsRes, productsRes, ordersRes] = await Promise.all([
-                axios.get(`${API_BASE}/logistics/api/shipments/in-transit/`),
-                axios.get(`${API_BASE}/logistics/api/products/low-stock/`),
-                axios.get(`${API_BASE}/logistics/api/sales-orders/pending-payment/`)
+                api.get(`${API_BASE}/logistics/api/shipments/in-transit/`),
+                api.get(`${API_BASE}/logistics/api/products/low-stock/`),
+                api.get(`${API_BASE}/logistics/api/sales-orders/pending-payment/`)
             ]);
 
             setShipments(shipmentsRes.data.slice(0, 5));

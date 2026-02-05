@@ -1,0 +1,15 @@
+
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2149 modules transformed.
+Γ£ù Build failed in 2.55s
+error during build:
+Could not resolve "../../services/api" from "src/components/portal/MembershipTab.jsx"
+file: R:/webplot/frontend/src/components/portal/MembershipTab.jsx
+    at getRollupError (file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/parseAst.js:400:41)
+    at error (file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/parseAst.js:396:42)
+    at ModuleLoader.handleInvalidResolvedId (file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/node-entry.js:21666:24)
+    at file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/node-entry.js:21626:26

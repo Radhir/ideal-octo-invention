@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Printer } from 'lucide-react';
 import './PPFWarrantyPrint.css';
 
-const PPFWarrantyForm = ({ jobCardData }) => {
+const PPFWarrantyPrint = ({ jobCardData }) => {
     const [formData, setFormData] = useState({
         customerName: jobCardData?.customer_name || "",
         contactNumber: jobCardData?.phone || "",
@@ -260,4 +260,4 @@ const PPFWarrantyForm = ({ jobCardData }) => {
     );
 };
 
-export default PPFWarrantyForm;
+export default PPFWarrantyPrint;

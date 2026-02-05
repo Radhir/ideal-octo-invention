@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, Calendar, User, CheckCircle2, XCircle, Printer } from 'lucide-react';
@@ -16,7 +16,7 @@ const LeaveList = () => {
 
     const fetchLeaves = async () => {
         try {
-            const res = await axios.get('/forms/leaves/api/applications/');
+            const res = await api.get('/forms/leaves/api/applications/');
             setLeaves(res.data);
         } catch (err) {
             console.error('Error fetching leave applications', err);

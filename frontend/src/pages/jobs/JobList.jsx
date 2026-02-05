@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, ChevronRight, Filter, Printer, Kanban } from 'lucide-react';
@@ -27,7 +27,7 @@ const JobList = () => {
 
     const fetchJobs = async () => {
         try {
-            const res = await axios.get('/forms/job-cards/api/jobs/');
+            const res = await api.get('/forms/job-cards/api/jobs/');
             setJobs(res.data);
         } catch (err) {
             console.error('Error fetching jobs', err);

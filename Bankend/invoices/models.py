@@ -1,5 +1,6 @@
 from django.db import models
 from job_cards.models import JobCard
+from locations.models import Branch
 
 class Invoice(models.Model):
     ORDER_STATUS_CHOICES = [
@@ -11,6 +12,7 @@ class Invoice(models.Model):
     job_card = models.OneToOneField(JobCard, on_delete=models.SET_NULL, null=True, blank=True, related_name='invoice')
     invoice_number = models.CharField(max_length=50, unique=True)
     date = models.DateField()
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='invoices')
     
     # Customer Info (usually inherited from Job Card)
     customer_name = models.CharField(max_length=255)

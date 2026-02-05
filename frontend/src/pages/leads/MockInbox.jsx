@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -96,8 +96,8 @@ const MockInbox = () => {
     const fetchData = async () => {
         try {
             const [notifRes, leadRes] = await Promise.all([
-                axios.get('/forms/notifications/api/logs/'),
-                axios.get('/forms/leads/api/list/inbox/') // Real Inbox Leads
+                api.get('/forms/notifications/api/logs/'),
+                api.get('/forms/leads/api/list/inbox/') // Real Inbox Leads
             ]);
 
             const sentLogs = notifRes.data.map(log => ({
@@ -143,7 +143,7 @@ const MockInbox = () => {
         try {
             if (msg.isLead) {
                 // It's a real lead in INBOX, just update status to NEW
-                await axios.patch(`/forms/leads/api/list/${msg.id}/`, { status: 'NEW' });
+                await api.patch(`/forms/leads/api/list/${msg.id}/`, { status: 'NEW' });
                 alert(`Lead "${msg.sender}" moved to Sales Pipeline!`);
             } else {
                 // It's a mock lead, create it
@@ -156,7 +156,7 @@ const MockInbox = () => {
                     status: 'NEW',
                     priority: 'MEDIUM'
                 };
-                await axios.post('/forms/leads/api/list/', leadData);
+                await api.post('/forms/leads/api/list/', leadData);
                 alert(`Succesfully captured ${msg.sender} as a CRM Lead!`);
             }
             // Remove from inbox view locally

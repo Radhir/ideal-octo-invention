@@ -20,6 +20,7 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import MaintenanceView
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
     path('', lambda request: redirect('home', permanent=False)),
@@ -54,6 +55,30 @@ urlpatterns = [
     path('workshop/', include('workshop.urls')),
     path('risk-management/', include('risk_management.urls')),
     path('reports/', include('reports.urls')),
+    
+    
+    # API Documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+
+    # Customer Portal
+    path('api/customer-portal/', include('customers.portal.urls')),
+
+    # Contracts & SLA
+    path('api/contracts/', include('contracts.urls')),
+
+    # Documents
+    path('api/documents/', include('documents.urls')),
+
+    # Payments
+    path('api/payments/', include('payments.urls')),
+
+    # Subscriptions
+    path('api/subscriptions/', include('subscriptions.urls')),
+
+    # Locations
+    path('api/locations/', include('locations.urls')),
 ]
 
 if settings.DEBUG:

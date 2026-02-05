@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     TrendingUp, Package, Users, Activity,
@@ -26,8 +26,8 @@ const AnalyticsDashboard = () => {
     const fetchData = async () => {
         try {
             const [statsRes, chartRes] = await Promise.all([
-                axios.get('/api/dashboard/api/stats/'),
-                axios.get('/api/dashboard/workshop-diary/chart_data/')
+                api.get('/api/dashboard/api/stats/'),
+                api.get('/api/dashboard/workshop-diary/chart_data/')
             ]);
             setStats(statsRes.data);
             setChartData(chartRes.data);

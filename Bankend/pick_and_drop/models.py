@@ -30,6 +30,12 @@ class PickAndDrop(models.Model):
     job_card = models.ForeignKey('job_cards.JobCard', on_delete=models.SET_NULL, null=True, blank=True, related_name='pick_drop_logs')
     
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='SCHEDULED')
+    
+    # Live Tracking Data
+    current_lat = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    current_lng = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    last_updated_coords = models.DateTimeField(null=True, blank=True)
+    
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

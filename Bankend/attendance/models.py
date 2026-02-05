@@ -3,6 +3,10 @@ from hr.models import Employee
 from datetime import datetime, timedelta
 
 class Attendance(models.Model):
+    """
+    Attendance record for employees.
+    Critical for salary calculation - tracks time worked.
+    """
     STATUS_CHOICES = [
         ('PRESENT', 'Present'),
         ('ABSENT', 'Absent'),
@@ -11,15 +15,19 @@ class Attendance(models.Model):
         ('ON_LEAVE', 'On Leave'),
     ]
 
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='attendance_records')
+    employee = models.ForeignKey(
+        Employee, 
+        on_delete=models.CASCADE, 
+        related_name='attendance_records'
+    )
     date = models.DateField(auto_now_add=True)
     
     check_in_time = models.TimeField(null=True, blank=True)
     check_out_time = models.TimeField(null=True, blank=True)
     
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ABSENT')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PRESENT')
     
-    # Roster & Calculation Fields
+    # Calculation Fields
     is_late = models.BooleanField(default=False)
     total_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
     overtime_hours = models.DecimalField(max_digits=5, decimal_places=2, default=0.00)
@@ -30,18 +38,19 @@ class Attendance(models.Model):
 
     class Meta:
         unique_together = ('employee', 'date')
+        ordering = ['-date', '-check_in_time']
 
     def save(self, *args, **kwargs):
-        # 1. Universal 10-Hour Roster Logic (e.g., Shift starts at 9:00 AM)
-        ROSTER_START_HOUR = 9
-        ROSTER_SHIFT_HOURS = 10
+        # Shift Configuration
+        ROSTER_START_HOUR = 9  # 9 AM
+        ROSTER_SHIFT_HOURS = 10  # 10 hour shift
         
         # Check Late Status
         if self.check_in_time:
-            if self.check_in_time.hour > ROSTER_START_HOUR: # LATE after 9 AM
+            if self.check_in_time.hour > ROSTER_START_HOUR:
                 self.is_late = True
                 self.status = 'LATE'
-            elif self.status == 'ABSENT': # If checking in on time
+            elif self.status == 'ABSENT':
                 self.status = 'PRESENT'
 
         # Calculate Total Hours & Overtime
@@ -50,12 +59,16 @@ class Attendance(models.Model):
             start = datetime.combine(dummy_date, self.check_in_time)
             end = datetime.combine(dummy_date, self.check_out_time)
             
-            duration = (end - start).total_seconds() / 3600 # hours
+            # Handle overnight shifts
+            if end < start:
+                end += timedelta(days=1)
+            
+            duration = (end - start).total_seconds() / 3600
             self.total_hours = round(duration, 2)
             
-            # Simple OT Calculation: Anything above 10 hours is OT
+            # OT: Anything above 10 hours
             if self.total_hours > ROSTER_SHIFT_HOURS:
-                self.overtime_hours = self.total_hours - ROSTER_SHIFT_HOURS
+                self.overtime_hours = round(self.total_hours - ROSTER_SHIFT_HOURS, 2)
             else:
                 self.overtime_hours = 0
                 

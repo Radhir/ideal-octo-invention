@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.db.models.functions import Now
 from django.contrib.auth.models import User
+from locations.models import Branch
 
 class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -21,21 +22,23 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
-class Branch(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='branches', null=True)
-    name = models.CharField(max_length=100)
-    location = models.CharField(max_length=255, blank=True)
-    contact_number = models.CharField(max_length=20, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
+# Refactored: Branch moved to locations app
+# class Branch(models.Model):
+#     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='branches', null=True)
+#     name = models.CharField(max_length=100)
+#     location = models.CharField(max_length=255, blank=True)
+#     contact_number = models.CharField(max_length=20, blank=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return self.name
 
 class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='hr_profile')
     employee_id = models.CharField(max_length=20, unique=True)
     company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
     department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
+    # Updated to point to locations.Branch
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
     pin_code = models.CharField(max_length=6, unique=True)
     role = models.CharField(max_length=100)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     CreditCard, DollarSign, Receipt, CheckCircle,
@@ -21,7 +21,7 @@ const BillingPage = () => {
 
     const fetchBilling = async () => {
         try {
-            const res = await axios.get('/forms/invoices/api/list/');
+            const res = await api.get('/forms/invoices/api/list/');
             const data = Array.isArray(res.data) ? res.data : res.data.results || [];
             setInvoices(data);
         } catch (err) {

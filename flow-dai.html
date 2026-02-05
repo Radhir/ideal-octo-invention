@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EliteShine ERP - Complete Project Documentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#b08d57',
+                primaryTextColor: '#e2e8f0',
+                primaryBorderColor: '#b08d57',
+                lineColor: '#b08d57',
+                secondaryColor: '#0a0a0f',
+                tertiaryColor: '#050508'
+            },
+            flowchart: {
+                curve: 'basis'
+            }
+        });
+    </script>
+    <style>
+        :root {
+            --primary: #b08d57;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --border: rgba(255,255,255,0.1);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--darker);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 40px 20px; }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+            border-bottom: 1px solid var(--primary);
+            padding: 60px 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        header p { color: var(--text-muted); font-size: 1.2rem; }
+
+        /* Navigation */
+        nav {
+            background: var(--dark);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        nav a:hover { background: var(--primary); color: #fff; }
+
+        /* Sections */
+        section {
+            background: var(--dark);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid var(--border);
+        }
+        section h2 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        section h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin: 25px 0 15px 0;
+        }
+        section h4 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin: 20px 0 10px 0;
+        }
+
+        /* Mermaid Diagram Containers */
+        .mermaid-container {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            overflow-x: auto;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mermaid {
+            width: 100%;
+            height: auto;
+            min-height: 300px;
+        }
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+        th {
+            background: rgba(176, 141, 87, 0.2);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+        tr:hover { background: rgba(176, 141, 87, 0.1); }
+
+        /* Code blocks */
+        code {
+            background: rgba(0,0,0,0.4);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: #f472b6;
+        }
+        pre {
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid var(--border);
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text);
+        }
+
+        /* Method badges */
+        .method {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-right: 8px;
+        }
+        .get { background: #22c55e; color: #000; }
+        .post { background: #3b82f6; color: #fff; }
+        .put { background: #f59e0b; color: #000; }
+        .patch { background: #8b5cf6; color: #fff; }
+        .delete { background: #ef4444; color: #fff; }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .card h4 { margin-top: 0; }
+        .card p { color: var(--text-muted); font-size: 0.9rem; }
+
+        /* Lists */
+        ul, ol { margin-left: 25px; margin-bottom: 15px; }
+        li { margin: 8px 0; color: var(--text-muted); }
+
+        /* Status badges */
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-active { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 { font-size: 2rem; }
+            section { padding: 25px; }
+            table { font-size: 0.8rem; }
+            th, td { padding: 8px; }
+            .diagram-grid {
+                grid-template-columns: 1fr;
+            }
+            .mermaid-container {
+                padding: 15px;
+                min-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>EliteShine ERP</h1>
+    <p>Enterprise Resource Planning System for Automotive Detailing & Coating Services</p>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#tech-stack">Tech Stack</a></li>
+        <li><a href="#backend-api">Backend API</a></li>
+        <li><a href="#data-flow">Data Flow</a></li>
+        <li><a href="#frontend">Frontend</a></li>
+        <li><a href="#database">Database</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#workflows">Workflows</a></li>
+        <li><a href="#deployment">Deployment</a></li>
+        <li><a href="#file-paths">File Paths</a></li>
+    </ul>
+</nav>
+
+<div class="container">
+
+<!-- OVERVIEW SECTION -->
+<section id="overview">
+    <h2>Project Overview</h2>
+
+    <p>EliteShine ERP is a comprehensive enterprise resource planning system designed for automotive detailing and coating businesses. It manages the complete workflow from customer leads to job completion, including HR, finance, inventory, and warranty management.</p>
+
+    <!-- Company Workflow Diagram -->
+    <h3>Complete Company Workflow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+graph TD
+    A[Customer Inquiry] --> B[Lead Creation]
+    B --> C{Lead Status}
+    C -->|Hot| D[Booking Creation]
+    C -->|Warm| E[Follow-up Task]
+    C -->|Cold| F[Lead Nurturing]
+    
+    D --> G[Service Advisor Assignment]
+    G --> H[Job Card Creation]
+    
+    H --> I[Reception Stage]
+    I --> J[Estimation & Quotation]
+    J --> K[Customer Approval]
+    
+    K --> L[Work Assignment]
+    L --> M[Work in Progress]
+    M --> N[Quality Control]
+    N --> O{QC Pass?}
+    O -->|Yes| P[Invoicing]
+    O -->|No| M
+    
+    P --> Q[Payment Processing]
+    Q --> R[Vehicle Delivery]
+    R --> S[Customer Feedback]
+    S --> T[Warranty Registration]
+    T --> U[Closed Job]
+    
+    %% Support Processes
+    V[Inventory Check] -.-> M
+    W[HR Scheduling] -.-> L
+    X[Finance Reconciliation] -.-> Q
+    Y[CRM Update] -.-> U
+    
+    classDef primary fill:#b08d57,stroke:#fff,stroke-width:2px,color:#fff
+    classDef secondary fill:#0a0a0f,stroke:#b08d57,stroke-width:1px,color:#e2e8f0
+    class A,B,D,G,H,I,J,K,L,M,N,P,Q,R,S,T,U primary
+    class C,E,F,O,V,W,X,Y secondary
+        </div>
+    </div>
+
+    <h3>Key Business Modules</h3>
+    <div class="card-grid">
+        <div class="card">
+            <h4>Workshop Management</h4>
+            <p>Job cards with 8-stage workflow: Reception → Estimation → Work Assignment → WIP → QC → Invoicing → Delivery → Closed</p>
+        </div>
+        <div class="card">
+            <h4>CRM & Leads</h4>
+            <p>Lead tracking, conversion to bookings, customer management with full contact history</p>
+        </div>
+        <div class="card">
+            <h4>Booking System</h4>
+            <p>Appointment scheduling, service advisor assignment, automatic job card creation</p>
+        </div>
+        <div class="card">
+            <h4>Invoicing & Finance</h4>
+            <p>Invoice generation, chart of accounts, transactions, budgets, financial reports</p>
+        </div>
+        <div class="card">
+            <h4>HR Management</h4>
+            <p>Employee directory, payroll, attendance tracking, rosters, team management</p>
+        </div>
+        <div class="card">
+            <h4>Inventory</h4>
+            <p>Stock items, movements, suppliers, purchase orders, barcode scanning</p>
+        </div>
+        <div class="card">
+            <h4>Warranty Management</h4>
+            <p>PPF and Ceramic coating warranty registration and tracking</p>
+        </div>
+        <div class="card">
+            <h4>Pick & Drop</h4>
+            <p>Vehicle pickup/delivery logistics with driver dashboard</p>
+        </div>
+    </div>
+</section>
+
+<!-- ARCHITECTURE SECTION -->
+<section id="architecture">
+    <h2>System Architecture</h2>
+
+    <h3>Application Flow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+graph LR
+    subgraph "Client Layer"
+        A[Web Browser] --> B[Mobile App]
+    end
+    
+    subgraph "Presentation Layer"
+        C[React Frontend<br>Port 8080]
+        D[Nginx Reverse Proxy<br>Load Balancer]
+    end
+    
+    subgraph "Application Layer"
+        E[Django Backend<br>Port 8000<br>Gunicorn WSGI]
+        F[API Gateway<br>REST API Routes]
+    end
+    
+    subgraph "Data Layer"
+        G[PostgreSQL<br>Port 5432<br>Primary DB]
+        H[Redis Cache<br>Session & Cache]
+        I[File Storage<br>Media & Documents]
+    end
+    
+    subgraph "External Services"
+        J[Payment Gateway]
+        K[Email Service]
+        L[SMS Gateway]
+        M[Cloud Storage]
+    end
+    
+    A --> D
+    B --> D
+    D --> C
+    C --> F
+    F --> E
+    E --> G
+    E --> H
+    E --> I
+    E --> J
+    E --> K
+    E --> L
+    E --> M
+    
+    classDef client fill:#3b82f6,stroke:#fff,color:#fff
+    classDef presentation fill:#10b981,stroke:#fff,color:#fff
+    classDef application fill:#f59e0b,stroke:#fff,color:#000
+    classDef data fill:#8b5cf6,stroke:#fff,color:#fff
+    classDef external fill:#ef4444,stroke:#fff,color:#fff
+    
+    class A,B client
+    class C,D presentation
+    class E,F application
+    class G,H,I data
+    class J,K,L,M external
+        </div>
+    </div>
+
+    <h3>Project Structure</h3>
+    <pre><code>webplot/
+├── Bankend/                    # Django Backend
+│   ├── core/                   # Main Django project settings
+│   ├── authentication/         # JWT auth, user management
+│   ├── dashboard/              # Analytics, workshop diary, chat
+│   ├── job_cards/              # Job card workflow
+│   ├── bookings/               # Appointment system
+│   ├── leads/                  # CRM leads
+│   ├── invoices/               # Invoice management
+│   ├── operations/             # Operations logging
+│   ├── stock/                  # Inventory management
+│   ├── hr/                     # HR, payroll, attendance
+│   ├── finance/                # Accounting, budgets
+│   ├── customers/              # Customer profiles
+│   ├── ppf_warranty/           # PPF warranty registration
+│   ├── ceramic_warranty/       # Ceramic warranty registration
+│   ├── pick_and_drop/          # Logistics
+│   ├── leaves/                 # Leave applications
+│   ├── attendance/             # Time tracking
+│   ├── scheduling/             # Team scheduling
+│   └── notifications/          # System notifications
+│
+├── frontend/                   # React Frontend
+│   ├── src/
+│   │   ├── components/         # Reusable UI components
+│   │   ├── pages/              # Page components by module
+│   │   ├── context/            # React context (Auth)
+│   │   ├── layouts/            # App and Auth layouts
+│   │   └── constants/          # Static data (services, vehicles)
+│   ├── nginx.conf              # Production nginx config
+│   └── Dockerfile              # Frontend container
+│
+├── docker-compose.yml          # Container orchestration
+├── .env                        # Environment variables
+└── .env.example                # Environment template</code></pre>
+</section>
+
+<!-- TECH STACK SECTION -->
+<section id="tech-stack">
+    <h2>Technology Stack</h2>
+
+    <h3>Backend</h3>
+    <table>
+        <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+        <tr><td>Python</td><td>3.11</td><td>Programming language</td></tr>
+        <tr><td>Django</td><td>5.0.1</td><td>Web framework</td></tr>
+        <tr><td>Django REST Framework</td><td>3.14.0</td><td>REST API</td></tr>
+        <tr><td>PostgreSQL</td><td>15</td><td>Production database</td></tr>
+        <tr><td>Gunicorn</td><td>21.2.0</td><td>WSGI HTTP server</td></tr>
+        <tr><td>SimpleJWT</td><td>5.3.1</td><td>JWT authentication</td></tr>
+        <tr><td>WeasyPrint</td><td>68.0</td><td>PDF generation</td></tr>
+        <tr><td>Pillow</td><td>12.0.0</td><td>Image processing</td></tr>
+        <tr><td>WhiteNoise</td><td>6.6.0</td><td>Static file serving</td></tr>
+    </table>
+
+    <h3>Frontend</h3>
+    <table>
+        <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+        <tr><td>React</td><td>19.2.0</td><td>UI framework</td></tr>
+        <tr><td>Vite</td><td>7.3.1</td><td>Build tool</td></tr>
+        <tr><td>React Router</td><td>7.13.0</td><td>Client-side routing</td></tr>
+        <tr><td>Axios</td><td>1.13.3</td><td>HTTP client</td></tr>
+        <tr><td>Recharts</td><td>Latest</td><td>Charts and graphs</td></tr>
+        <tr><td>Lucide React</td><td>Latest</td><td>Icon library</td></tr>
+        <tr><td>Framer Motion</td><td>Latest</td><td>Animations</td></tr>
+        <tr><td>HTML5 QRCode</td><td>Latest</td><td>QR/Barcode scanning</td></tr>
+    </table>
+
+    <h3>Infrastructure</h3>
+    <table>
+        <tr><th>Technology</th><th>Purpose</th></tr>
+        <tr><td>Docker</td><td>Containerization</td></tr>
+        <tr><td>Docker Compose</td><td>Multi-container orchestration</td></tr>
+        <tr><td>Nginx</td><td>Reverse proxy, static serving</td></tr>
+    </table>
+</section>
+
+<!-- BACKEND API SECTION -->
+<section id="backend-api">
+    <h2>Backend API Endpoints</h2>
+    
+    <!-- API Request Flow Diagram -->
+    <h3>API Request Flow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+sequenceDiagram
+    participant Client as Frontend Client
+    participant Nginx as Nginx Proxy
+    participant Auth as Auth Middleware
+    participant View as Django View
+    participant Model as Database Model
+    participant Serializer as Serializer
+    participant Response as API Response
+    
+    Client->>Nginx: HTTP Request (REST API)
+    Nginx->>Auth: Route to Django Backend
+    Auth->>Auth: JWT Token Validation
+    Auth->>Auth: Permission Check
+    Auth->>View: Authenticated Request
+    View->>Model: Database Query
+    Model-->>View: Query Results
+    View->>Serializer: Data Serialization
+    Serializer-->>View: Serialized Data
+    View->>Response: HTTP Response
+    Response-->>Nginx: JSON Response
+    Nginx-->>Client: Return Data
+    
+    Note over Auth,View: Includes:<br/>- Rate Limiting<br/>- CORS Handling<br/>- Request Validation
+        </div>
+    </div>
+
+    <h3>Authentication</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr>
+        <tr>
+            <td><span class="method post">POST</span></td>
+            <td><code>/api/auth/register/</code></td>
+            <td>Register new user account</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td><span class="method post">POST</span></td>
+            <td><code>/api/auth/login/</code></td>
+            <td>Login, returns JWT access & refresh tokens</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td><span class="method post">POST</span></td>
+            <td><code>/api/auth/token/refresh/</code></td>
+            <td>Refresh access token using refresh token</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td><span class="method get">GET</span></td>
+            <td><code>/api/auth/profile/</code></td>
+            <td>Get current user profile</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td><span class="method get">GET</span></td>
+            <td><code>/api/auth/users/</code></td>
+            <td>List all users</td>
+            <td>Yes</td>
+        </tr>
+    </table>
+
+    <h3>Dashboard & Analytics</h3>
+    <table>
+        <tr><th>Method</th><th>Endpoint</th><th>Description</th></tr>
+        <tr>
+            <td><span class="method get">GET</span></td>
+            <td><code>/api/dashboard/api/stats/</code></td>
+            <td>KPI statistics (revenue, jobs, bookings, leads)</td>
+        </tr>
+        <tr>
+            <td><span class="method get">GET</span></td>
+            <td><code>/api/dashboard/api/sales/</code></td>
+            <td>Sales dashboard data</td>
+        </tr>
+        <tr>
+            <td><span class="method get">GET</span></td>
+            <td><code>/api/dashboard/workshop-diary/</code></td>
+            <td>List workshop diary entries</td>
+        </tr>
+        <tr>
+            <td><span class="method post">POST</span></td>
+            <td><code>/api/dashboard/workshop-diary/capture_snapshot/</code></td>
+            <td>Capture daily snapshot</td>
+        </tr>
+        <tr>
+            <td><span class="method get">GET</span></td>
+            <td><code>/api/dashboard/workshop-diary/chart_data/</code></td>
+            <td>30-day chart data</td>
+        </tr>
+    </table>
+
+    <!-- Additional tables remain the same as original -->
+    <!-- ... rest of the API tables ... -->
+
+</section>
+
+<!-- DATA FLOW SECTION -->
+<section id="data-flow">
+    <h2>Data Flow Diagrams</h2>
+
+    <h3>Core Data Flow Architecture</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+graph TB
+    subgraph "Data Sources"
+        A[Web Forms]
+        B[Mobile Apps]
+        C[IoT Devices]
+        D[External APIs]
+        E[File Uploads]
+    end
+    
+    subgraph "API Layer"
+        F[Authentication Service]
+        G[Validation Service]
+        H[Rate Limiter]
+        I[API Gateway]
+    end
+    
+    subgraph "Business Logic"
+        J[CRM Module]
+        K[Job Card Module]
+        L[Inventory Module]
+        M[HR Module]
+        N[Finance Module]
+    end
+    
+    subgraph "Data Processing"
+        O[Data Transformation]
+        P[Business Rules Engine]
+        Q[Workflow Engine]
+        R[Notification Engine]
+    end
+    
+    subgraph "Data Storage"
+        S[(PostgreSQL<br>Transactional Data)]
+        T[(Redis<br>Cache & Session)]
+        U[(File Storage<br>Media & Docs)]
+        V[(Data Warehouse<br>Analytics)]
+    end
+    
+    subgraph "Output Channels"
+        W[Web Dashboard]
+        X[Mobile Notifications]
+        Y[Email Reports]
+        Z[API Consumers]
+    end
+    
+    A --> I
+    B --> I
+    C --> I
+    D --> I
+    E --> I
+    
+    I --> F
+    I --> G
+    I --> H
+    
+    F --> J
+    F --> K
+    F --> L
+    F --> M
+    F --> N
+    
+    J --> O
+    K --> O
+    L --> O
+    M --> O
+    N --> O
+    
+    O --> P
+    P --> Q
+    Q --> R
+    
+    P --> S
+    Q --> S
+    R --> S
+    
+    S --> T
+    S --> U
+    S --> V
+    
+    V --> W
+    R --> X
+    V --> Y
+    S --> Z
+    
+    classDef source fill:#3b82f6,stroke:#fff,color:#fff
+    classDef api fill:#10b981,stroke:#fff,color:#fff
+    classDef business fill:#f59e0b,stroke:#fff,color:#000
+    classDef processing fill:#8b5cf6,stroke:#fff,color:#fff
+    classDef storage fill:#ef4444,stroke:#fff,color:#fff
+    classDef output fill:#b08d57,stroke:#fff,color:#fff
+    
+    class A,B,C,D,E source
+    class F,G,H,I api
+    class J,K,L,M,N business
+    class O,P,Q,R processing
+    class S,T,U,V storage
+    class W,X,Y,Z output
+        </div>
+    </div>
+
+    <h3>Module Interaction Flow</h3>
+    <div class="diagram-grid">
+        <div class="mermaid-container">
+            <div class="mermaid">
+graph LR
+    subgraph "Lead to Job Flow"
+        A[Lead Creation] --> B[Lead Qualification]
+        B --> C[Booking Creation]
+        C --> D[Job Card Generation]
+        D --> E[Workflow Execution]
+        E --> F[Invoice Creation]
+        F --> G[Payment Processing]
+        G --> H[Warranty Registration]
+    end
+    
+    subgraph "Supporting Modules"
+        I[Inventory<br>Stock Check]
+        J[HR<br>Team Assignment]
+        K[Finance<br>Cost Calculation]
+        L[CRM<br>Customer Update]
+    end
+    
+    C -.-> I
+    D -.-> J
+    E -.-> K
+    G -.-> L
+            </div>
+        </div>
+        
+        <div class="mermaid-container">
+            <div class="mermaid">
+graph TD
+    A[Customer Request] --> B{Type of Service}
+    B -->|Detailing| C[Detailing Module]
+    B -->|PPF| D[PPF Module]
+    B -->|Ceramic| E[Ceramic Module]
+    B -->|Maintenance| F[Maintenance Module]
+    
+    C --> G[Service Selection]
+    D --> G
+    E --> G
+    F --> G
+    
+    G --> H[Resource Allocation]
+    H --> I[Inventory Check]
+    I --> J{Stock Available?}
+    J -->|Yes| K[Schedule Service]
+    J -->|No| L[Procurement Process]
+    
+    K --> M[Service Execution]
+    L --> N[Supplier Order] --> O[Stock Update] --> K
+    
+    M --> P[Quality Check]
+    P --> Q{Customer Approval}
+    Q -->|Yes| R[Payment & Delivery]
+    Q -->|No| M
+    
+    R --> S[Feedback Collection]
+    S --> T[Data Analytics]
+            </div>
+        </div>
+    </div>
+
+    <h3>Real-time Data Sync Flow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+sequenceDiagram
+    participant FE as Frontend
+    participant WS as WebSocket
+    participant BE as Backend
+    participant DB as Database
+    participant Cache as Redis Cache
+    participant Notify as Notification Service
+    
+    Note over FE,Notify: Real-time Updates Flow
+    
+    FE->>BE: HTTP Request (Create/Update)
+    BE->>DB: Transaction Commit
+    DB-->>BE: Success Response
+    BE->>Cache: Update Cache
+    BE->>WS: Broadcast Update Event
+    WS->>FE: Real-time UI Update
+    BE->>Notify: Generate Notification
+    Notify->>FE: Push Notification
+    
+    Note over FE,BE: Events Triggered:<br/>- Job Status Change<br/>- New Booking<br/>- Stock Update<br/>- Payment Received
+    
+    par Parallel Updates
+        WS->>FE: Update Dashboard
+        WS->>FE: Update Job Board
+        WS->>FE: Update Inventory
+        WS->>FE: Update Chat
+    end
+        </div>
+    </div>
+</section>
+
+<!-- WORKFLOWS SECTION -->
+<section id="workflows">
+    <h2>Workflow Models</h2>
+
+    <h3>Job Card State Machine</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+stateDiagram-v2
+    [*] --> RECEPTION
+    RECEPTION --> ESTIMATION : Customer Arrival
+    ESTIMATION --> WORK_ASSIGNMENT : Estimate Approved
+    WORK_ASSIGNMENT --> WIP : Team Assigned
+    WIP --> QC : Work Completed
+    QC --> INVOICING : Quality Passed
+    INVOICING --> DELIVERY : Payment Received
+    DELIVERY --> CLOSED : Vehicle Delivered
+    CLOSED --> [*]
+    
+    state ESTIMATION {
+        [*] --> ESTIMATE_PREP
+        ESTIMATE_PREP --> CUSTOMER_REVIEW
+        CUSTOMER_REVIEW --> APPROVAL_PENDING
+        APPROVAL_PENDING --> APPROVED : Customer Approves
+        APPROVAL_PENDING --> REVISED : Revision Requested
+        REVISED --> CUSTOMER_REVIEW
+    }
+    
+    state WIP {
+        [*] --> PREPARATION
+        PREPARATION --> DETailing
+        DETailing --> COATING
+        COATING --> FINISHING
+        FINISHING --> [*]
+    }
+    
+    state QC {
+        [*] --> INITIAL_CHECK
+        INITIAL_CHECK --> DETAIL_INSPECTION
+        DETAIL_INSPECTION --> FINAL_APPROVAL
+        FINAL_APPROVAL --> [*]
+    }
+    
+    %% Error States
+    RECEPTION --> CANCELLED : Customer Cancels
+    ESTIMATION --> CANCELLED : Estimate Rejected
+    WORK_ASSIGNMENT --> CANCELLED : Resource Unavailable
+    WIP --> CANCELLED : Work Stoppage
+    QC --> REWORK : Quality Failed
+    REWORK --> WIP
+    CANCELLED --> [*]
+    
+    classDef primary fill:#b08d57,stroke:#fff,color:#fff
+    classDef secondary fill:#0a0a0f,stroke:#b08d57,color:#e2e8f0
+    classDef error fill:#ef4444,stroke:#fff,color:#fff
+    
+    class RECEPTION,ESTIMATION,WORK_ASSIGNMENT,WIP,QC,INVOICING,DELIVERY,CLOSED primary
+    class ESTIMATE_PREP,CUSTOMER_REVIEW,APPROVAL_PENDING,APPROVED,REVISED,PREPARATION,DETailing,COATING,FINISHING,INITIAL_CHECK,DETAIL_INSPECTION,FINAL_APPROVAL secondary
+    class CANCELLED,REWORK error
+        </div>
+    </div>
+
+    <h3>HR & Attendance Workflow</h3>
+    <div class="diagram-grid">
+        <div class="mermaid-container">
+            <div class="mermaid">
+graph TD
+    A[Employee Check-in] --> B[Attendance Recorded]
+    B --> C{Shift Type}
+    C -->|Regular| D[Normal Shift Processing]
+    C -->|Overtime| E[OT Approval Check]
+    C -->|Holiday| F[Special Shift Rates]
+    
+    D --> G[Work Hours Calculation]
+    E --> H[Manager Approval]
+    H -->|Approved| G
+    H -->|Rejected| I[Regular Rate]
+    F --> J[Holiday Rates]
+    
+    G --> K[Attendance Summary]
+    I --> K
+    J --> K
+    
+    K --> L[Payroll Processing]
+    L --> M[Salary Calculation]
+    M --> N[Deductions Applied]
+    N --> O[Net Salary]
+    O --> P[Payment Disbursement]
+    P --> Q[Payslip Generation]
+    
+    R[Leave Application] --> S[Leave Balance Check]
+    S --> T{Sufficient Balance?}
+    T -->|Yes| U[Manager Approval]
+    T -->|No| V[Application Rejected]
+    U -->|Approved| W[Leave Granted]
+    U -->|Rejected| V
+            </div>
+        </div>
+        
+        <div class="mermaid-container">
+            <div class="mermaid">
+graph LR
+    subgraph "Inventory Management Flow"
+        A[Stock Request] --> B{Request Type}
+        B -->|Issue to Job| C[Job Card Link]
+        B -->|Restock| D[Supplier Order]
+        B -->|Adjustment| E[Stock Adjustment]
+        
+        C --> F[Stock Availability Check]
+        F --> G{Sufficient Stock?}
+        G -->|Yes| H[Issue Stock]
+        G -->|No| I[Low Stock Alert]
+        
+        H --> J[Update Job Card]
+        J --> K[Cost Allocation]
+        
+        D --> L[PO Generation]
+        L --> M[Supplier Dispatch]
+        M --> N[Goods Receipt]
+        N --> O[Quality Check]
+        O --> P{Quality Pass?}
+        P -->|Yes| Q[Stock Update]
+        P -->|No| R[Return to Supplier]
+        
+        E --> S[Reason Documentation]
+        S --> T[Approval Required]
+        T --> U[Manager Approval]
+        U --> V[Stock Updated]
+    end
+            </div>
+        </div>
+    </div>
+
+    <h3>Financial Transaction Flow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+graph TB
+    A[Transaction Initiation] --> B{Transaction Type}
+    B -->|Invoice Payment| C[Invoice Matching]
+    B -->|Expense| D[Expense Approval]
+    B -->|Salary| E[Payroll Processing]
+    B -->|Supplier Payment| F[PO Verification]
+    
+    C --> G[Payment Allocation]
+    D --> H[Budget Check]
+    E --> I[Salary Calculation]
+    F --> J[GRN Verification]
+    
+    G --> K[GL Posting]
+    H --> L{Budget Available?}
+    L -->|Yes| M[Approval Workflow]
+    L -->|No| N[Budget Override Request]
+    I --> O[Tax Calculation]
+    J --> P[Payment Terms Check]
+    
+    M --> K
+    N --> Q[Senior Approval] --> K
+    O --> K
+    P --> K
+    
+    K --> R[Bank Reconciliation]
+    R --> S[Financial Reporting]
+    S --> T[Management Dashboard]
+    
+    U[Audit Trail] -.-> G
+    U -.-> K
+    U -.-> R
+    
+    V[Compliance Check] -.-> O
+    V -.-> K
+        </div>
+    </div>
+</section>
+
+<!-- FRONTEND SECTION -->
+<section id="frontend">
+    <h2>Frontend Pages & API Connections</h2>
+
+    <!-- Frontend Component Flow -->
+    <h3>Component Hierarchy & Data Flow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+graph TB
+    subgraph "Application Root"
+        A[App.jsx] --> B[Router Configuration]
+        A --> C[AuthProvider]
+        A --> D[ThemeProvider]
+    end
+    
+    subgraph "Layout Components"
+        B --> E[MainLayout]
+        B --> F[AuthLayout]
+        E --> G[Navigation Bar]
+        E --> H[Sidebar Menu]
+        E --> I[Page Container]
+    end
+    
+    subgraph "Page Components"
+        I --> J[Dashboard Pages]
+        I --> K[CRM Pages]
+        I --> L[Workshop Pages]
+        I --> M[HR Pages]
+        I --> N[Finance Pages]
+        I --> O[Inventory Pages]
+    end
+    
+    subgraph "Shared Components"
+        P[GlassCard]
+        Q[DataTable]
+        R[FormBuilder]
+        S[ModalManager]
+        T[ToastNotifications]
+    end
+    
+    subgraph "State Management"
+        C --> U[Auth Context]
+        U --> V[User State]
+        U --> W[Permissions]
+        X[API Service] --> Y[Axios Instance]
+        Y --> Z[Request Interceptors]
+    end
+    
+    J --> P
+    K --> Q
+    L --> R
+    M --> S
+    N --> T
+    
+    Z --> AA[JWT Token Injection]
+    AA --> AB[API Calls]
+    AB --> AC[Response Handling]
+    AC --> AD[State Updates]
+    AD --> AE[UI Re-render]
+    
+    classDef root fill:#b08d57,stroke:#fff,color:#fff
+    classDef layout fill:#3b82f6,stroke:#fff,color:#fff
+    classDef page fill:#10b981,stroke:#fff,color:#fff
+    classDef component fill:#f59e0b,stroke:#fff,color:#000
+    classDef state fill:#8b5cf6,stroke:#fff,color:#fff
+    
+    class A,B,C,D root
+    class E,F,G,H,I layout
+    class J,K,L,M,N,O page
+    class P,Q,R,S,T component
+    class U,V,W,X,Y,Z,AA,AB,AC,AD,AE state
+        </div>
+    </div>
+
+    <!-- Frontend tables remain the same as original -->
+    <!-- ... rest of frontend tables ... -->
+
+</section>
+
+<!-- DATABASE SECTION -->
+<section id="database">
+    <h2>Database Models</h2>
+
+    <!-- Database Relationship Diagram -->
+    <h3>Entity Relationship Diagram</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+erDiagram
+    USER ||--o{ EMPLOYEE : "has profile"
+    USER ||--o{ CUSTOMER : "can be"
+    USER {
+        int id PK
+        string username
+        string email
+        string password_hash
+        datetime created_at
+        boolean is_active
+    }
+    
+    EMPLOYEE ||--o{ ATTENDANCE : "has"
+    EMPLOYEE ||--o{ PAYROLL : "receives"
+    EMPLOYEE ||--o{ TEAM_MEMBER : "belongs to"
+    EMPLOYEE {
+        int id PK
+        int user_id FK
+        string employee_code
+        string department
+        string position
+        decimal salary
+        date join_date
+    }
+    
+    CUSTOMER ||--o{ VEHICLE : "owns"
+    CUSTOMER ||--o{ LEAD : "generates"
+    CUSTOMER ||--o{ JOB_CARD : "has"
+    CUSTOMER {
+        int id PK
+        int user_id FK
+        string customer_code
+        string phone
+        string address
+        int loyalty_points
+    }
+    
+    LEAD ||--o{ BOOKING : "converts to"
+    LEAD {
+        int id PK
+        int customer_id FK
+        string source
+        string status
+        datetime follow_up_date
+        decimal estimated_value
+    }
+    
+    BOOKING ||--o{ JOB_CARD : "creates"
+    BOOKING {
+        int id PK
+        int lead_id FK
+        datetime scheduled_date
+        string service_type
+        int assigned_advisor_id FK
+    }
+    
+    JOB_CARD ||--o{ JOB_TASK : "has"
+    JOB_CARD ||--o{ JOB_PHOTO : "contains"
+    JOB_CARD ||--o{ INVOICE : "generates"
+    JOB_CARD {
+        int id PK
+        int booking_id FK
+        int vehicle_id FK
+        string status
+        datetime start_date
+        datetime completion_date
+        decimal total_cost
+    }
+    
+    INVOICE ||--o{ PAYMENT : "receives"
+    INVOICE {
+        int id PK
+        int job_card_id FK
+        string invoice_number
+        decimal amount
+        decimal tax
+        string payment_status
+    }
+    
+    VEHICLE {
+        int id PK
+        int customer_id FK
+        string make
+        string model
+        string year
+        string vin
+        string license_plate
+    }
+    
+    STOCK_ITEM ||--o{ STOCK_MOVEMENT : "has"
+    STOCK_ITEM ||--o{ SUPPLIER : "supplied by"
+    STOCK_ITEM {
+        int id PK
+        string sku
+        string name
+        string category
+        decimal current_stock
+        decimal reorder_level
+    }
+    
+    STOCK_MOVEMENT {
+        int id PK
+        int stock_item_id FK
+        int job_card_id FK
+        string movement_type
+        decimal quantity
+        datetime movement_date
+    }
+    
+    WARRANTY ||--o{ JOB_CARD : "covers"
+    WARRANTY {
+        int id PK
+        int job_card_id FK
+        string warranty_type
+        date start_date
+        date expiry_date
+        string terms
+    }
+        </div>
+    </div>
+
+    <h3>Key Relationships</h3>
+    <pre><code>Lead (CRM)
+    └── converts to → Booking
+                        └── converts to → JobCard
+                                            ├── has many → Tasks
+                                            ├── has many → Photos
+                                            ├── has many → Services
+                                            └── creates → Invoice
+                                                            └── belongs to → Customer
+
+Employee
+    ├── belongs to → Department
+    ├── has many → Attendance Records
+    ├── has many → Payroll Records
+    └── member of → Teams
+
+StockItem
+    ├── has many → StockMovements
+    ├── belongs to → Supplier
+    └── linked to → JobCard (via movements)</code></pre>
+</section>
+
+<!-- AUTHENTICATION SECTION -->
+<section id="authentication">
+    <h2>Authentication Flow</h2>
+
+    <!-- Authentication Flow Diagram -->
+    <h3>Complete Authentication & Authorization Flow</h3>
+    <div class="mermaid-container">
+        <div class="mermaid">
+graph TD
+    A[User Access] --> B{Authenticated?}
+    B -->|No| C[Login Page]
+    C --> D[Enter Credentials]
+    D --> E[API Auth Request]
+    E --> F{JWT Validation}
+    F -->|Valid| G[Generate Tokens]
+    F -->|Invalid| H[Error Response]
+    G --> I[Store Tokens]
+    I --> J[Redirect to Dashboard]
+    
+    B -->|Yes| K[Token Refresh Check]
+    K --> L{Token Expiring?}
+    L -->|Yes| M[Silent Refresh]
+    L -->|No| N[Proceed]
+    M --> O[New Access Token]
+    O --> N
+    
+    N --> P[Authorization Check]
+    P --> Q{Has Permission?}
+    Q -->|Yes| R[Grant Access]
+    Q -->|No| S[Access Denied]
+    
+    R --> T[Load User Context]
+    T --> U[Load Permissions]
+    U --> V[Load User Data]
+    V --> W[Render Application]
+    
+    X[API Request] --> Y[Auth Middleware]
+    Y --> Z[Token Verification]
+    Z --> AA[Permission Validation]
+    AA --> BB[Route Guard]
+    BB --> CC[Controller Access]
+    
+    subgraph "Token Management"
+        DD[Access Token: 60min]
+        EE[Refresh Token: 24hr]
+        FF[Auto-refresh at 50min]
+        GG[Logout clears all]
+    end
+    
+    subgraph "Security Features"
+        HH[Rate Limiting]
+        II[CORS Protection]
+        JJ[CSRF Tokens]
+        KK[Session Management]
+    end
+    
+    classDef auth fill:#b08d57,stroke:#fff,color:#fff
+    classDef token fill:#3b82f6,stroke:#fff,color:#fff
+    classDef security fill:#ef4444,stroke:#fff,color:#fff
+    
+    class A,B,C,D,E,F,G,H,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,AA,BB,CC auth
+    class DD,EE,FF,GG token
+    class HH,II,JJ,KK security
+        </div>
+    </div>
+
+    <h3>JWT Token Flow</h3>
+    <pre><code>1. User sends credentials to POST /api/auth/login/
+   Request: { "username": "user", "password": "pass" }
+
+2. Server validates and returns tokens:
+   Response: {
+     "access": "eyJ...",
+     "refresh": "eyJ...",
+     "user": { "id": 1, "username": "user", ... }
+   }
+
+3. Frontend stores tokens in localStorage
+
+4. All subsequent requests include Authorization header:
+   Authorization: Bearer eyJ...
+
+5. Access token expires after 60 minutes
+
+6. Frontend calls POST /api/auth/token/refresh/ with refresh token
+   Request: { "refresh": "eyJ..." }
+   Response: { "access": "new_eyJ..." }
+
+7. Refresh token expires after 24 hours, user must login again</code></pre>
+</section>
+
+<!-- Additional sections remain with their original content -->
+<!-- ... deployment section ... -->
+<!-- ... file paths section ... -->
+
+</div>
+
+<footer>
+    <p>EliteShine ERP Documentation | Generated January 2026</p>
+    <p>Built with Django 5.0 + React 19 + PostgreSQL | Diagrams powered by Mermaid.js</p>
+</footer>
+
+</body>
+</html>

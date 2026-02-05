@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     ChevronRight, ChevronDown, Folder, FileText,
@@ -22,8 +22,8 @@ const ChartOfAccounts = () => {
     const fetchData = async () => {
         try {
             const [accRes, summaryRes] = await Promise.all([
-                axios.get('/finance/api/accounts/'),
-                axios.get('/finance/api/transactions/financial_summary/')
+                api.get('/finance/api/accounts/'),
+                api.get('/finance/api/transactions/financial_summary/')
             ]);
             setAccounts(accRes.data);
             setSummary({

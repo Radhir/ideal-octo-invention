@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -20,7 +20,7 @@ const EmployeeDirectory = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await axios.get('/hr/api/employees/');
+            const res = await api.get('/hr/api/employees/');
             setEmployees(res.data);
         } catch (err) {
             console.error('Error fetching employees', err);

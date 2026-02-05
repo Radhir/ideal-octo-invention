@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, User, Car, Hash, Wallet, Printer } from 'lucide-react';
@@ -16,7 +16,7 @@ const RequestList = () => {
 
     const fetchRequests = async () => {
         try {
-            const res = await axios.get('/forms/requests/api/forms/');
+            const res = await api.get('/forms/requests/api/forms/');
             setRequests(res.data);
         } catch (err) {
             console.error('Error fetching request forms', err);

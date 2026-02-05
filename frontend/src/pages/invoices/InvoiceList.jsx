@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, FileText, ChevronRight, CheckCircle2, AlertCircle, Printer } from 'lucide-react';
@@ -27,7 +27,7 @@ const InvoiceList = () => {
 
     const fetchInvoices = async () => {
         try {
-            const res = await axios.get('/forms/invoices/api/list/');
+            const res = await api.get('/forms/invoices/api/list/');
             setInvoices(res.data);
         } catch (err) {
             console.error('Error fetching invoices', err);

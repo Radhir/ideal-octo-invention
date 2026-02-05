@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     UserCheck, Clock, CheckCircle2, AlertCircle,
@@ -24,7 +24,7 @@ const AttendanceList = () => {
         setLoading(true);
         try {
             // Fetch roster for today (simulated)
-            const rostersRes = await axios.get('/hr/api/roster/');
+            const rostersRes = await api.get('/hr/api/roster/');
             // Find roster for today or use a default 10-hour shift
             const todayStr = new Date().toISOString().split('T')[0];
             const myRoster = rostersRes.data.length > 0 ? rostersRes.data[0] : {
@@ -35,7 +35,7 @@ const AttendanceList = () => {
             setRoster(myRoster);
 
             // Fetch current attendance
-            const attendRes = await axios.get('/hr/api/attendance/');
+            const attendRes = await api.get('/hr/api/attendance/');
             const todayAttend = attendRes.data.find(a => a.date === todayStr);
             setAttendance(todayAttend);
             setAllLogs(attendRes.data);
@@ -73,23 +73,27 @@ const AttendanceList = () => {
 
     const handleClockIn = async () => {
         try {
-            const res = await axios.post('/forms/attendance/api/check_in/');
-            setAttendance(res.data);
-            startTimer(res.data.check_in_time);
+            const res = await api.post('/forms/attendance/api/check-in/');
+            setAttendance(res.data.data || res.data);
+            if (res.data.data?.check_in_time || res.data.check_in_time) {
+                startTimer(res.data.data?.check_in_time || res.data.check_in_time);
+            }
             fetchInitialData();
         } catch (err) {
             console.error('Clock in failed', err);
+            alert('Clock in failed: ' + (err.response?.data?.error || err.message));
         }
     };
 
     const handleClockOut = async () => {
         try {
-            const res = await axios.post('/forms/attendance/api/check_out/');
-            setAttendance(res.data);
+            const res = await api.post('/forms/attendance/api/check-out/');
+            setAttendance(res.data.data || res.data);
             clearInterval(timerRef.current);
             fetchInitialData();
         } catch (err) {
             console.error('Clock out failed', err);
+            alert('Clock out failed: ' + (err.response?.data?.error || err.message));
         }
     };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { ArrowLeft, Printer, Download, Clock, User, Car, FileText, CheckCircle } from 'lucide-react';
@@ -19,7 +19,7 @@ const EstimateDetail = () => {
     const fetchEstimate = async () => {
         try {
             // Estimates are actually Job Cards in the early stages
-            const res = await axios.get(`/forms/job-cards/api/jobs/${id}/`);
+            const res = await api.get(`/forms/job-cards/api/jobs/${id}/`);
             setEstimate(res.data);
         } catch (err) {
             console.error('Error fetching estimate', err);
@@ -164,7 +164,7 @@ const EstimateDetail = () => {
                                         title="Sign to Accept Quotation"
                                         onSave={async (data) => {
                                             try {
-                                                await axios.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
+                                                await api.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
                                                 setEstimate({ ...estimate, signature_data: data });
                                                 alert('Quotation Accepted!');
                                             } catch (err) {

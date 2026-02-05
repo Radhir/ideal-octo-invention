@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     MapPin, Truck, Phone, Clock, AlertCircle,
@@ -49,13 +49,16 @@ const DriverDashboard = () => {
                     filter: 'grayscale(100%) contrast(150%) invert(100%)'
                 }}></div>
 
-                {/* Mock Map Markers */}
-                <Marker label="Rancho Dr" color="#3b82f6" top="15%" left="10%" />
-                <Marker label="N Jones Blvd" color="#f43f5e" top="30%" left="85%" />
-                <Marker label="Fremont St" color="#3b82f6" top="38%" left="25%" />
-                <Marker label="Bonanza Rd" color="#f59e0b" top="65%" left="15%" />
-                <Marker label="Oakey Blvd" color="#3b82f6" top="65%" left="75%" />
-                <Marker label="Maryland Pkwy" color="#3b82f6" top="88%" left="25%" />
+                {/* Dynamic Map Markers */}
+                {trips.map(trip => (
+                    <Marker
+                        key={trip.id}
+                        label={trip.name}
+                        color={trip.status === 'ERROR' ? '#f43f5e' : trip.status === 'WARNING' ? '#f59e0b' : '#3b82f6'}
+                        top={`${((trip.lat - 36.16) * 500) % 100}%`} // Simple mapping for demonstration
+                        left={`${((trip.lng + 115.2) * 500) % 100}%`}
+                    />
+                ))}
             </div>
 
             {/* Right: Operational Dashboard */}

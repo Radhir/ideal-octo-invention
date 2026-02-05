@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import BentoCard from '../components/BentoCard';
 import GlassCard from '../components/GlassCard';
 import {
@@ -24,9 +24,9 @@ const MissionControl = () => {
     const fetchLiveData = async () => {
         try {
             const [jobsRes, bookingsRes, invoicesRes] = await Promise.all([
-                axios.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
-                axios.get('/forms/bookings/api/list/').catch(() => ({ data: [] })),
-                axios.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
+                api.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
+                api.get('/forms/bookings/api/list/').catch(() => ({ data: [] })),
+                api.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
             ]);
 
             const jobs = Array.isArray(jobsRes.data) ? jobsRes.data : jobsRes.data.results || [];

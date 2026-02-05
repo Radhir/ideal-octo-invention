@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Shine ERP - System Architecture</title>
+    <style>
+        :root {
+            --primary: #b08d57;
+            --dark: #0f172a;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* COMPLETE DATA FLOW STYLES */
+        #complete-data-flow {
+            position: relative;
+            min-height: 800px;
+        }
+
+        .data-flow-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .data-flow-controls button {
+            padding: 8px 16px;
+            background: rgba(176, 141, 87, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .data-flow-controls button:hover,
+        .data-flow-controls button.active {
+            background: var(--primary);
+            color: var(--dark);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .complete-flow-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            height: 600px;
+        }
+
+        .flow-3d-model {
+            perspective: 1200px;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .flow-world {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(15deg) rotateY(25deg);
+            transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .model-node,
+        .api-node {
+            position: absolute;
+            width: 220px;
+            background: linear-gradient(145deg, rgba(10, 10, 15, 0.95), rgba(30, 30, 40, 0.95));
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .model-node:hover,
+        .api-node:hover {
+            transform: translateZ(50px) scale(1.1);
+            z-index: 1000;
+            box-shadow: 0 20px 60px rgba(176, 141, 87, 0.3);
+            border-color: var(--primary);
+        }
+
+        .model-node[data-type="core"] {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .model-node[data-type="inventory"] {
+            border-left: 4px solid #22c55e;
+        }
+
+        .model-node[data-type="financial"] {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .api-node[data-type="crud"] {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .api-node[data-type="report"] {
+            border-left: 4px solid #ec4899;
+        }
+
+        .node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .node-header h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .node-badge {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            background: rgba(176, 141, 87, 0.2);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .node-badge.api {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+
+        .node-body {
+            font-size: 0.8rem;
+        }
+
+        .node-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .node-body li {
+            padding: 3px 0;
+            color: var(--text-muted);
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+            font-family: 'Courier New', monospace;
+        }
+
+        .node-body li:last-child {
+            border-bottom: none;
+        }
+
+        .node-connections {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+        }
+
+        .connection {
+            display: block;
+            padding: 3px 8px;
+            margin: 2px 0;
+            background: rgba(176, 141, 87, 0.1);
+            border-radius: 4px;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .connection:hover {
+            background: rgba(176, 141, 87, 0.3);
+            transform: translateX(5px);
+        }
+
+        .connection-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .flow-info-panel {
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .info-content {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            min-height: 200px;
+        }
+
+        .data-flow-stats {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: rgba(176, 141, 87, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(176, 141, 87, 0.2);
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Animation for data flow */
+        @keyframes flowPath {
+            0% {
+                stroke-dashoffset: 1000;
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                stroke-dashoffset: 0;
+                opacity: 0;
+            }
+        }
+
+        /* Auto-rotation */
+        @keyframes autoRotate {
+            0% {
+                transform: rotateX(15deg) rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateX(15deg) rotateY(360deg);
+            }
+        }
+
+        .flow-world.auto-rotate {
+            animation: autoRotate 60s linear infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .complete-flow-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .flow-info-panel {
+                height: 300px;
+            }
+
+            .flow-3d-model {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .model-node,
+            .api-node {
+                width: 180px;
+                padding: 12px;
+            }
+
+            .flow-3d-model {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- COMPLETE DATA FLOW SECTION -->
+    <section id="complete-data-flow">
+        <h2>Complete System Data Flow</h2>
+        <p>Interactive 3D visualization of all models, APIs, and data relationships</p>
+
+        <div class="data-flow-controls">
+            <button onclick="showLayer('models')" class="active">Models Layer</button>
+            <button onclick="showLayer('apis')">API Layer</button>
+            <button onclick="showLayer('relationships')">Relationships</button>
+            <button onclick="showAllLayers()">Show All</button>
+        </div>
+
+        <div class="complete-flow-container">
+            <!-- 3D Container -->
+            <div class="flow-3d-model">
+                <div class="flow-world" id="flowWorld">
+                    <!-- CORE MODELS -->
+                    <div class="model-node" data-type="core" style="transform: translate3d(-300px, -100px, 200px);">
+                        <div class="node-header">
+                            <h4>Customer</h4>
+                            <span class="node-badge">Model</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>customer_id</li>
+                                <li>name</li>
+                                <li>contact_info</li>
+                                <li>vehicle_history</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="vehicle">→ Vehicle</span>
+                            <span class="connection" data-to="booking">→ Booking</span>
+                        </div>
+                    </div>
+
+                    <div class="model-node" data-type="core" style="transform: translate3d(-150px, -200px, 100px);">
+                        <div class="node-header">
+                            <h4>Vehicle</h4>
+                            <span class="node-badge">Model</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>vehicle_id</li>
+                                <li>make_model</li>
+                                <li>vin</li>
+                                <li>service_history</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="customer">← Customer</span>
+                            <span class="connection" data-to="service">→ Service</span>
+                        </div>
+                    </div>
+
+                    <div class="model-node" data-type="core" style="transform: translate3d(0px, -150px, 300px);">
+                        <div class="node-header">
+                            <h4>Service</h4>
+                            <span class="node-badge">Model</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>service_id</li>
+                                <li>name</li>
+                                <li>duration</li>
+                                <li>price_tiers</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="booking">→ Booking</span>
+                            <span class="connection" data-to="invoice">→ Invoice</span>
+                        </div>
+                    </div>
+
+                    <div class="model-node" data-type="core" style="transform: translate3d(200px, -100px, 150px);">
+                        <div class="node-header">
+                            <h4>Booking</h4>
+                            <span class="node-badge">Model</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>booking_id</li>
+                                <li>date_time</li>
+                                <li>status</li>
+                                <li>assigned_technician</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="customer">← Customer</span>
+                            <span class="connection" data-to="invoice">→ Invoice</span>
+                        </div>
+                    </div>
+
+                    <!-- INVENTORY MODELS -->
+                    <div class="model-node" data-type="inventory" style="transform: translate3d(-250px, 100px, 250px);">
+                        <div class="node-header">
+                            <h4>Product</h4>
+                            <span class="node-badge">Inventory</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>product_id</li>
+                                <li>name</li>
+                                <li>stock_level</li>
+                                <li>reorder_point</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="service">→ Service</span>
+                            <span class="connection" data-to="supplier">← Supplier</span>
+                        </div>
+                    </div>
+
+                    <div class="model-node" data-type="inventory" style="transform: translate3d(-100px, 200px, 100px);">
+                        <div class="node-header">
+                            <h4>Supplier</h4>
+                            <span class="node-badge">Inventory</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>supplier_id</li>
+                                <li>name</li>
+                                <li>contact</li>
+                                <li>lead_time</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="product">→ Product</span>
+                            <span class="connection" data-to="purchase">→ Purchase</span>
+                        </div>
+                    </div>
+
+                    <!-- FINANCIAL MODELS -->
+                    <div class="model-node" data-type="financial" style="transform: translate3d(150px, 100px, 300px);">
+                        <div class="node-header">
+                            <h4>Invoice</h4>
+                            <span class="node-badge">Financial</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>invoice_id</li>
+                                <li>amount</li>
+                                <li>tax</li>
+                                <li>payment_status</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="booking">← Booking</span>
+                            <span class="connection" data-to="payment">→ Payment</span>
+                        </div>
+                    </div>
+
+                    <div class="model-node" data-type="financial" style="transform: translate3d(300px, 200px, 200px);">
+                        <div class="node-header">
+                            <h4>Payment</h4>
+                            <span class="node-badge">Financial</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>payment_id</li>
+                                <li>method</li>
+                                <li>amount</li>
+                                <li>transaction_id</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="invoice">← Invoice</span>
+                        </div>
+                    </div>
+
+                    <!-- API NODES -->
+                    <div class="api-node" data-type="crud" style="transform: translate3d(0px, 0px, 400px);">
+                        <div class="node-header">
+                            <h4>/api/customers</h4>
+                            <span class="node-badge api">API</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>GET / - List</li>
+                                <li>POST / - Create</li>
+                                <li>GET /{id} - Retrieve</li>
+                                <li>PUT /{id} - Update</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="customer">↔ Customer</span>
+                        </div>
+                    </div>
+
+                    <div class="api-node" data-type="crud" style="transform: translate3d(200px, 0px, 350px);">
+                        <div class="node-header">
+                            <h4>/api/bookings</h4>
+                            <span class="node-badge api">API</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>POST /create - New Booking</li>
+                                <li>GET /calendar - Schedule</li>
+                                <li>PUT /{id}/status</li>
+                                <li>GET /upcoming</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="booking">↔ Booking</span>
+                        </div>
+                    </div>
+
+                    <div class="api-node" data-type="report" style="transform: translate3d(-200px, 0px, 450px);">
+                        <div class="node-header">
+                            <h4>/api/reports</h4>
+                            <span class="node-badge api">API</span>
+                        </div>
+                        <div class="node-body">
+                            <ul>
+                                <li>GET /sales</li>
+                                <li>GET /inventory</li>
+                                <li>GET /customer-analytics</li>
+                                <li>POST /export</li>
+                            </ul>
+                        </div>
+                        <div class="node-connections">
+                            <span class="connection" data-to="invoice">← Invoice</span>
+                            <span class="connection" data-to="booking">← Booking</span>
+                        </div>
+                    </div>
+
+                    <!-- CONNECTION LINES (Dynamic) -->
+                    <div class="connection-line" id="conn1"></div>
+                    <div class="connection-line" id="conn2"></div>
+                    <div class="connection-line" id="conn3"></div>
+                    <div class="connection-line" id="conn4"></div>
+                    <div class="connection-line" id="conn5"></div>
+                </div>
+            </div>
+
+            <div class="flow-info-panel">
+                <h4>Selected Node Information</h4>
+                <div class="info-content" id="nodeInfo">
+                    <p>Click on any node to see detailed information...</p>
+                </div>
+
+                <div class="data-flow-stats">
+                    <h5>System Statistics</h5>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value">12</span>
+                            <span class="stat-label">Models</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">28</span>
+                            <span class="stat-label">API Endpoints</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">46</span>
+                            <span class="stat-label">Relationships</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">98.7%</span>
+                            <span class="stat-label">Data Integrity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // COMPLETE DATA FLOW INTERACTIVITY
+        function setupCompleteDataFlow() {
+            const nodes = document.querySelectorAll('.model-node, .api-node');
+            const flowWorld = document.getElementById('flowWorld');
+            let isAutoRotating = true;
+
+            // Auto-rotation toggle
+            if (flowWorld) {
+                flowWorld.classList.add('auto-rotate');
+
+                flowWorld.addEventListener('mouseenter', function () {
+                    this.classList.remove('auto-rotate');
+                });
+
+                flowWorld.addEventListener('mouseleave', function () {
+                    if (isAutoRotating) {
+                        this.classList.add('auto-rotate');
+                    }
+                });
+            }
+
+            // Node click interaction
+            nodes.forEach(node => {
+                node.addEventListener('click', function (e) {
+                    e.stopPropagation();
+
+                    // Remove active class from all nodes
+                    nodes.forEach(n => n.classList.remove('active'));
+
+                    // Add active class to clicked node
+                    this.classList.add('active');
+
+                    // Update info panel
+                    updateNodeInfo(this);
+
+                    // Highlight connections
+                    highlightConnections(this);
+                });
+            });
+
+            // Connection click
+            document.querySelectorAll('.connection').forEach(conn => {
+                conn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const targetNode = this.dataset.to.toLowerCase();
+                    const targetElement = document.querySelector(`[data-type="${targetNode}"]`) ||
+                        document.querySelector(`[data-to="${targetNode}"]`);
+
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        targetElement.classList.add('active');
+                        setTimeout(() => targetElement.classList.remove('active'), 2000);
+                    }
+                });
+            });
+        }
+
+        function updateNodeInfo(node) {
+            const infoPanel = document.getElementById('nodeInfo');
+            const header = node.querySelector('.node-header h4').textContent;
+            const type = node.querySelector('.node-badge').textContent;
+            const bodyItems = Array.from(node.querySelectorAll('.node-body li')).map(li => li.textContent);
+
+            const info = `
+                <h5>${header}</h5>
+                <p><strong>Type:</strong> ${type}</p>
+                <p><strong>Fields:</strong></p>
+                <ul>
+                    ${bodyItems.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+                <p><strong>Relationships:</strong> ${node.querySelectorAll('.connection').length} connections</p>
+            `;
+
+            infoPanel.innerHTML = info;
+        }
+
+        function highlightConnections(activeNode) {
+            const connections = activeNode.querySelectorAll('.connection');
+
+            // Remove highlight from all connections
+            document.querySelectorAll('.connection').forEach(c => {
+                c.style.background = 'rgba(176, 141, 87, 0.1)';
+            });
+
+            // Highlight this node's connections
+            connections.forEach(conn => {
+                conn.style.background = 'rgba(176, 141, 87, 0.3)';
+                conn.style.transform = 'translateX(5px)';
+            });
+        }
+
+        window.showLayer = function (layer) {
+            const nodes = document.querySelectorAll('.model-node, .api-node');
+            const buttons = document.querySelectorAll('.data-flow-controls button');
+
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show/hide nodes based on layer
+            nodes.forEach(node => {
+                if (layer === 'all') {
+                    node.style.opacity = '1';
+                    node.style.display = 'block';
+                } else if (node.dataset.type === layer) {
+                    node.style.opacity = '1';
+                    node.style.display = 'block';
+                } else if (node.classList.contains('api-node') && layer === 'apis') {
+                    node.style.opacity = '1';
+                    node.style.display = 'block';
+                } else if (layer === 'relationships') {
+                    node.style.opacity = '0.3';
+                    node.style.display = 'block';
+                } else {
+                    node.style.opacity = '0.1';
+                }
+            });
+        }
+
+        window.showAllLayers = function () {
+            const nodes = document.querySelectorAll('.model-node, .api-node');
+            const buttons = document.querySelectorAll('.data-flow-controls button');
+
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Show all nodes
+            nodes.forEach(node => {
+                node.style.opacity = '1';
+                node.style.display = 'block';
+            });
+        }
+
+        // Add to your existing initialization
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize complete data flow
+            setTimeout(() => {
+                setupCompleteDataFlow();
+            }, 1000);
+        });
+
+        // Add keyboard controls for 3D rotation
+        document.addEventListener('keydown', function (e) {
+            const flowWorld = document.getElementById('flowWorld');
+            if (!flowWorld) return;
+            let currentTransform = flowWorld.style.transform || 'rotateX(15deg) rotateY(25deg)';
+            let [x, y] = currentTransform.match(/(-?\d+)/g) || [15, 25];
+
+            switch (e.key) {
+                case 'ArrowUp':
+                    x = parseInt(x) + 5;
+                    break;
+                case 'ArrowDown':
+                    x = parseInt(x) - 5;
+                    break;
+                case 'ArrowLeft':
+                    y = parseInt(y) + 5;
+                    break;
+                case 'ArrowRight':
+                    y = parseInt(y) - 5;
+                    break;
+                case 'r': // Reset
+                    x = 15;
+                    y = 25;
+                    break;
+                case ' ': // Space to toggle auto-rotation
+                    flowWorld.classList.toggle('auto-rotate');
+                    return;
+                default:
+                    return;
+            }
+
+            flowWorld.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
+        });
+    </script>
+</body>
+
+</html>

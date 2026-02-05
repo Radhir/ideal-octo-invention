@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Shield, User, Lock, Save, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -27,7 +27,7 @@ const AccessManagement = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await axios.get(`${API_BASE}/hr/api/employees/`);
+            const res = await api.get(`${API_BASE}/hr/api/employees/`);
             setEmployees(res.data);
             setLoading(false);
         } catch (err) {
@@ -65,9 +65,9 @@ const AccessManagement = () => {
         try {
             for (const perm of permissions) {
                 if (perm.id) {
-                    await axios.put(`${API_BASE}/hr/api/permissions/${perm.id}/`, perm);
+                    await api.put(`${API_BASE}/hr/api/permissions/${perm.id}/`, perm);
                 } else {
-                    await axios.post(`${API_BASE}/hr/api/permissions/`, {
+                    await api.post(`${API_BASE}/hr/api/permissions/`, {
                         ...perm,
                         employee: selectedEmployee.id
                     });

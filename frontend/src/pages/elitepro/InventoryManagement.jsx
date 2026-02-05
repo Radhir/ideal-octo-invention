@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Package, Plus, Search, AlertTriangle, TrendingDown, TrendingUp, Edit2, Archive, X } from 'lucide-react';
 import './InventoryManagement.css';
 
@@ -45,7 +45,7 @@ const InventoryManagement = () => {
                 ? `${API_BASE}/logistics/api/products/low-stock/`
                 : `${API_BASE}/logistics/api/products/`;
 
-            const response = await axios.get(endpoint);
+            const response = await api.get(endpoint);
             setProducts(response.data);
             setLoading(false);
         } catch (error) {
@@ -116,9 +116,9 @@ const InventoryManagement = () => {
         setSaving(true);
         try {
             if (editingProduct) {
-                await axios.put(`${API_BASE}/logistics/api/products/${editingProduct.id}/`, formData);
+                await api.put(`${API_BASE}/logistics/api/products/${editingProduct.id}/`, formData);
             } else {
-                await axios.post(`${API_BASE}/logistics/api/products/`, formData);
+                await api.post(`${API_BASE}/logistics/api/products/`, formData);
             }
             setShowModal(false);
             fetchProducts();
@@ -133,7 +133,7 @@ const InventoryManagement = () => {
     const handleArchive = async (product) => {
         if (!window.confirm(`Archive ${product.name}? This will mark it as inactive.`)) return;
         try {
-            await axios.patch(`${API_BASE}/logistics/api/products/${product.id}/`, { is_active: false });
+            await api.patch(`${API_BASE}/logistics/api/products/${product.id}/`, { is_active: false });
             fetchProducts();
         } catch (error) {
             console.error('Error archiving product:', error);

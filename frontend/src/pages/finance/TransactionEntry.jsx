@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { ArrowLeft, PlusCircle, CreditCard, FileText, Tag, Calendar } from 'lucide-react';
@@ -23,7 +23,7 @@ const TransactionEntry = () => {
 
     const fetchAccounts = async () => {
         try {
-            const res = await axios.get('/finance/api/accounts/');
+            const res = await api.get('/finance/api/accounts/');
             setAccounts(res.data);
         } catch (err) {
             console.error('Error fetching accounts', err);
@@ -39,7 +39,7 @@ const TransactionEntry = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/finance/api/transactions/', formData);
+            await api.post('/finance/api/transactions/', formData);
             alert('Financial Ledger Updated Successfully.');
             navigate('/finance');
         } catch (err) {

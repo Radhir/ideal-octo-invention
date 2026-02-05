@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import PrintHeader from '../../components/PrintHeader';
@@ -17,7 +17,7 @@ const LeadDetail = () => {
 
     const fetchLead = async () => {
         try {
-            const res = await axios.get(`/forms/leads/api/list/${id}/`);
+            const res = await api.get(`/forms/leads/api/list/${id}/`);
             setLead(res.data);
         } catch (err) {
             console.error('Error fetching lead', err);

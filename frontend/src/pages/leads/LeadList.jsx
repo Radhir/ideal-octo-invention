@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, User, Zap, Mail, Phone, Printer, Target, Calendar, Award, AlertCircle } from 'lucide-react';
@@ -32,7 +32,7 @@ const LeadList = () => {
 
     const fetchLeads = async () => {
         try {
-            const res = await axios.get('/forms/leads/api/list/');
+            const res = await api.get('/forms/leads/api/list/');
             // Handle both array and paginated response
             const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setLeads(data);
@@ -45,7 +45,7 @@ const LeadList = () => {
 
     const fetchUsers = async () => {
         try {
-            const res = await axios.get('/api/auth/users/');
+            const res = await api.get('/api/auth/users/');
             // Handle both array and paginated response
             const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setUsers(data);
@@ -57,7 +57,7 @@ const LeadList = () => {
     const handleTransfer = async () => {
         if (!selectedUser) return;
         try {
-            await axios.patch(`/forms/leads/api/list/${transferModal.lead.id}/`, {
+            await api.patch(`/forms/leads/api/list/${transferModal.lead.id}/`, {
                 assigned_to: selectedUser
             });
             alert('Lead transferred successfully');

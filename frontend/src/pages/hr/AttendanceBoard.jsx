@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     Users, Clock, CheckCircle2, AlertCircle,
@@ -21,7 +21,7 @@ const AttendanceBoard = () => {
 
     const fetchAttendance = async () => {
         try {
-            const res = await axios.get('/forms/attendance/api/');
+            const res = await api.get('/forms/attendance/api/');
             // Backend returns list, we want today's record for this user
             const todayStr = new Date().toISOString().split('T')[0];
             const todayRecord = res.data.find(r => r.date === todayStr);
@@ -52,8 +52,8 @@ const AttendanceBoard = () => {
     const fetchData = async () => {
         try {
             const [empRes, logRes] = await Promise.all([
-                axios.get('/hr/api/employees/'),
-                axios.get('/hr/api/attendance/')
+                api.get('/hr/api/employees/'),
+                api.get('/hr/api/attendance/')
             ]);
             setEmployees(empRes.data);
             setLogs(logRes.data);
@@ -67,7 +67,7 @@ const AttendanceBoard = () => {
     const handleCheckIn = async () => {
         setLoading(true); // This loading state might need to be more granular if it affects the whole board
         try {
-            await axios.post('/forms/attendance/api/check_in/');
+            await api.post('/forms/attendance/api/check_in/');
             setStatus('CHECKED_IN');
             alert('Checked in successfully!');
             fetchAttendance(); // Re-fetch current user's attendance to update records
@@ -82,7 +82,7 @@ const AttendanceBoard = () => {
     const handleCheckOut = async () => {
         setLoading(true); // This loading state might need to be more granular
         try {
-            await axios.post('/forms/attendance/api/check_out/');
+            await api.post('/forms/attendance/api/check_out/');
             setStatus('CHECKED_OUT');
             alert('Checked out successfully!');
             fetchAttendance(); // Re-fetch current user's attendance to update records

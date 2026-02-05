@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { ArrowLeft, Save, Box, ArrowUpCircle, ArrowDownCircle, AlertCircle, FileText } from 'lucide-react';
@@ -26,8 +26,8 @@ const StockMovementEntry = () => {
     const fetchData = async () => {
         try {
             const [itemRes, jobRes] = await Promise.all([
-                axios.get('/forms/stock/api/items/'),
-                axios.get('/forms/job-cards/api/jobs/')
+                api.get('/forms/stock/api/items/'),
+                api.get('/forms/job-cards/api/jobs/')
             ]);
             setItems(itemRes.data);
             setJobs(jobRes.data);
@@ -45,7 +45,7 @@ const StockMovementEntry = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/stock/api/movements/', formData);
+            await api.post('/forms/stock/api/movements/', formData);
             alert('Inventory Movement Recorded Successfully.');
             navigate('/stock');
         } catch (err) {

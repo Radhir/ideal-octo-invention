@@ -15,6 +15,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import QuickNotes from '../components/QuickNotes';
 import AccordionMenu from '../components/AccordionMenu';
+import { usePermissions } from '../context/PermissionContext';
+import EmployeeDashboard from './dashboard/EmployeeDashboard';
 
 const CATEGORIES = [
     {
@@ -25,13 +27,13 @@ const CATEGORIES = [
         description: 'Managing the core workshop flow from reception to final QC and delivery.',
         color: '#3b82f6',
         modules: [
-            { name: 'Job Cards', path: '/job-cards' },
-            { name: 'PPF & Tinting', path: '/ppf' },
-            { name: 'Ceramic Coating', path: '/ceramic' },
-            { name: 'Detailing', path: '/job-cards' }, // Consolidated
-            { name: 'Bodyshop', path: '/job-cards' }, // Consolidated
-            { name: 'Quality Control', path: '/job-cards' }, // Consolidated
-            { name: 'Scanner/Vision', path: '/job-cards' }, // Consolidated
+            { name: 'Job Cards', path: '/job-cards', permission: 'job_cards' },
+            { name: 'PPF & Tinting', path: '/ppf', permission: 'job_cards' },
+            { name: 'Ceramic Coating', path: '/ceramic', permission: 'job_cards' },
+            { name: 'Detailing', path: '/job-cards', permission: 'job_cards' },
+            { name: 'Bodyshop', path: '/job-cards', permission: 'job_cards' },
+            { name: 'Quality Control', path: '/job-cards', permission: 'job_cards' },
+            { name: 'Scanner/Vision', path: '/job-cards', permission: 'job_cards' },
         ]
     },
     {
@@ -42,11 +44,11 @@ const CATEGORIES = [
         description: 'Strengthening relationships and driving sales through interactive lead management.',
         color: '#ec4899',
         modules: [
-            { name: 'Sales Dashboard', path: '/sales' },
-            { name: 'Leads & Sales', path: '/leads' },
-            { name: 'Customer Database', path: '/customers' },
-            { name: 'Booking Schedule', path: '/bookings' },
-            { name: 'Quick Chat', path: '/chat' },
+            { name: 'Sales Dashboard', path: '/sales', permission: 'job_cards' },
+            { name: 'Leads & Sales', path: '/leads', permission: 'leads' },
+            { name: 'Customer Database', path: '/customers', permission: 'customers' },
+            { name: 'Booking Schedule', path: '/bookings', permission: 'bookings' },
+            { name: 'Quick Chat', path: '/chat', permission: 'all' },
         ]
     },
     {
@@ -57,10 +59,10 @@ const CATEGORIES = [
         description: 'Real-time financial tracking, billing, and automated ledger management.',
         color: '#8b5cf6',
         modules: [
-            { name: 'General Accounting', path: '/finance/coa' },
-            { name: 'Billing & Cashier', path: '/invoices' },
-            { name: 'Budget Control', path: '/finance/budget' },
-            { name: 'Revenue Reports', path: '/finance/reports' },
+            { name: 'General Accounting', path: '/finance/coa', permission: 'finance' },
+            { name: 'Billing & Cashier', path: '/invoices', permission: 'invoices' },
+            { name: 'Budget Control', path: '/finance/budget', permission: 'finance' },
+            { name: 'Revenue Reports', path: '/finance/reports', permission: 'finance' },
         ]
     },
     {
@@ -71,10 +73,10 @@ const CATEGORIES = [
         description: 'Empowering your team through structured attendance and performance tracking.',
         color: '#f43f5e',
         modules: [
-            { name: 'HR Management', path: '/hr' },
-            { name: 'Attendance Logs', path: '/hr/attendance' },
-            { name: 'Logistics/Drivers', path: '/pick-drop' },
-            { name: 'Duty Approvals', path: '/requests' },
+            { name: 'HR Management', path: '/hr', permission: 'hr' },
+            { name: 'Attendance Logs', path: '/hr/attendance', permission: 'attendance' },
+            { name: 'Logistics/Drivers', path: '/pick-drop', permission: 'logistics' },
+            { name: 'Duty Approvals', path: '/requests', permission: 'hr' },
         ]
     },
     {
@@ -99,10 +101,10 @@ const CATEGORIES = [
         description: 'Level-up your brand with high-level strategy and multi-branch intelligence.',
         color: '#b08d57',
         modules: [
-            { name: 'Company Strategy', path: '/mission-control' },
-            { name: 'Risk & Audit', path: '/construction' },
-            { name: 'Portfolio Hub', path: '/portfolio' },
-            { name: 'Branch Management', path: '/construction' },
+            { name: 'Company Strategy', path: '/mission-control', permission: 'settings' },
+            { name: 'Risk & Audit', path: '/construction', permission: 'settings' },
+            { name: 'Portfolio Hub', path: '/portfolio', permission: 'all' },
+            { name: 'Branch Management', path: '/construction', permission: 'settings' },
         ]
     },
     {
@@ -113,9 +115,9 @@ const CATEGORIES = [
         description: 'Backend utilities, dynamic models, and system-wide settings.',
         color: '#2dd4bf',
         modules: [
-            { name: 'Global Settings', path: '/construction' },
-            { name: 'Forms Hub', path: '/construction' },
-            { name: 'Media Library', path: '/construction' },
+            { name: 'Global Settings', path: '/construction', permission: 'settings' },
+            { name: 'Forms Hub', path: '/construction', permission: 'settings' },
+            { name: 'Media Library', path: '/construction', permission: 'settings' },
         ]
     }
 ];
@@ -127,18 +129,40 @@ import MeetingRoomWidget from '../components/MeetingRoomWidget';
 const HomePage = () => {
     const navigate = useNavigate();
     const [activeIdx, setActiveIdx] = useState(0);
+    const { hasPermission, isAdmin } = usePermissions();
+
+    // Regular employees only see the limited dashboard
+    if (!hasPermission('dashboard')) {
+        return <EmployeeDashboard />;
+    }
 
     return (
-        <div style={{
-            minHeight: '100vh',
+        <div className="home-page-container" style={{
+            height: '100%',
             display: 'flex',
             flexDirection: 'column',
-            padding: '40px',
+            padding: 'clamp(15px, 4vw, 40px)',
             color: '#fff',
             overflowX: 'hidden'
         }}>
+            <style>{`
+                .home-grid {
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 350px 1fr;
+                    gap: 30px;
+                    align-items: start;
+                    padding-top: 20px;
+                }
+                @media (max-width: 1024px) {
+                    .home-grid {
+                        grid-template-columns: 1fr;
+                        gap: 20px;
+                    }
+                }
+            `}</style>
             {/* Main Layout Area */}
-            <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '400px 1fr', gap: '80px', alignItems: 'start', paddingTop: '20px' }}>
+            <div className="home-grid">
 
                 {/* 1. Sidebar - Left */}
                 <GlassCard
@@ -150,7 +174,7 @@ const HomePage = () => {
                         flexDirection: 'column',
                         gap: '25px',
                         height: '100%',
-                        padding: '30px'
+                        padding: '20px'
                     }}
                 >
                     {/* Elite Shine Logo - Moved to Sidebar */}
@@ -172,16 +196,19 @@ const HomePage = () => {
                         />
                     </motion.div>
 
+                    {/* Sidebar navigation filtered by permissions */}
                     <AccordionMenu items={CATEGORIES.map(cat => ({
                         id: cat.id,
                         title: cat.name,
                         icon: cat.icon,
-                        subItems: cat.modules.map(m => ({ label: m.name, path: m.path }))
-                    }))} />
+                        subItems: cat.modules
+                            .filter(m => !m.permission || hasPermission(m.permission))
+                            .map(m => ({ label: m.name, path: m.path }))
+                    })).filter(cat => cat.subItems.length > 0)} />
                 </GlassCard>
 
                 {/* 2. Center: Meeting Room & Tools */}
-                <div style={{ minHeight: '300px', display: 'flex', flexDirection: 'column', gap: '40px', paddingTop: '10px' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '20px', paddingTop: '10px' }}>
 
                     {/* War Room / Meeting Room Widget */}
                     <motion.div
@@ -206,7 +233,7 @@ const HomePage = () => {
             </div>
 
             {/* Bottom Indicator */}
-            <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingBottom: '40px' }}>
+            <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingBottom: '10px' }}>
                 <MagneticButton strength={0.4}>
                     <motion.div
                         whileHover={{ scale: 1.05 }}

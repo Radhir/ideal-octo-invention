@@ -1,17 +1,12 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import api from '../api/axios';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    // Configure axios defaults
-    // Uses relative URLs — proxied by Vite (dev), nginx (Docker), or tunnel
-    axios.defaults.baseURL = import.meta.env.VITE_API_URL ?? '';
-    axios.defaults.timeout = 10000; // 10s timeout to prevent hanging checkAuth
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -22,7 +17,7 @@ export const AuthProvider = ({ children }) => {
                     if (decoded.exp * 1000 < Date.now()) {
                         logout();
                     } else {
-                        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                        // Headers are handled by interceptor in api/axios.js
                         await fetchProfile();
                     }
                 } catch (err) {
@@ -37,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
     const fetchProfile = async () => {
         try {
-            const res = await axios.get('/api/auth/profile/');
+            const res = await api.get('/api/auth/profile/');
             setUser(res.data);
             return true;
         } catch (err) {
@@ -52,14 +47,14 @@ export const AuthProvider = ({ children }) => {
     const login = async (username, password) => {
         try {
             // Ensure username is lowercased for consistency
-            const res = await axios.post('/api/auth/login/', {
+            const res = await api.post('/api/auth/login/', {
                 username: username.toLowerCase(),
                 password
             });
             const { access, refresh } = res.data;
             localStorage.setItem('access_token', access);
             localStorage.setItem('refresh_token', refresh);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+            // Interceptor will pick up the new token
             const success = await fetchProfile();
             return success;
         } catch (err) {
@@ -68,12 +63,12 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+
     const logout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         sessionStorage.setItem('justLoggedOut', 'true');
         setUser(null);
-        delete axios.defaults.headers.common['Authorization'];
     };
 
     return (

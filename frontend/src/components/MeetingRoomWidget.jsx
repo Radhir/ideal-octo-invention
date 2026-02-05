@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Camera, Lock, Users, Activity, Eye } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import api from '../api/axios';
 
 const MeetingRoomWidget = () => {
     const { user } = useAuth();
@@ -23,7 +23,7 @@ const MeetingRoomWidget = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const res = await axios.get('/api/dashboard/chat/');
+                const res = await api.get('/api/dashboard/chat/');
                 // Safety check for array vs pagination result
                 const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
                 const global = data.filter(m => !m.receiver);
@@ -46,7 +46,7 @@ const MeetingRoomWidget = () => {
         if (!newMessage.trim() || !canWrite) return;
 
         try {
-            await axios.post('/api/dashboard/chat/', {
+            await api.post('/api/dashboard/chat/', {
                 text: newMessage,
                 receiver: null // Global message
             });

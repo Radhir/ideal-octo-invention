@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -38,7 +38,7 @@ const JobBoard = () => {
 
     const fetchJobs = async () => {
         try {
-            const res = await axios.get('/forms/job-cards/api/jobs/');
+            const res = await api.get('/forms/job-cards/api/jobs/');
             setJobs(res.data);
         } catch (err) {
             console.error('Error fetching jobs', err);
@@ -51,7 +51,7 @@ const JobBoard = () => {
         if (!confirm('Are you sure you want to advance this job to the next stage?')) return;
 
         try {
-            await axios.post(`/forms/job-cards/api/jobs/${jobId}/advance_status/`);
+            await api.post(`/forms/job-cards/api/jobs/${jobId}/advance_status/`);
             fetchJobs(); // Refresh to see change
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to advance workflow');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -44,7 +44,7 @@ const JobDetail = () => {
 
     const fetchJob = async () => {
         try {
-            const res = await axios.get(`/forms/job-cards/api/jobs/${id}/`);
+            const res = await api.get(`/forms/job-cards/api/jobs/${id}/`);
             setJob(res.data);
         } catch (err) {
             console.error('Error fetching job', err);
@@ -55,7 +55,7 @@ const JobDetail = () => {
 
     const advanceWorkflow = async () => {
         try {
-            const res = await axios.post(`/forms/job-cards/api/jobs/${id}/advance_status/`);
+            const res = await api.post(`/forms/job-cards/api/jobs/${id}/advance_status/`);
             alert(`Workflow advanced to ${res.data.display}`);
             // Refetch full job data so all computed fields update
             await fetchJob();
@@ -66,7 +66,7 @@ const JobDetail = () => {
 
     const generateInvoice = async () => {
         try {
-            const res = await axios.post(`/forms/job-cards/api/jobs/${id}/create_invoice/`);
+            const res = await api.post(`/forms/job-cards/api/jobs/${id}/create_invoice/`);
             alert(`Invoice ${res.data.invoice_number} generated!`);
             // Optionally navigate to invoice detail
         } catch (err) {
@@ -116,7 +116,7 @@ const JobDetail = () => {
                         <ShieldCheck size={18} color="#b08d57" /> Share Portal
                     </button>
                     <button
-                        onClick={() => window.open(`${axios.defaults.baseURL}/forms/utils/generate-pdf/JobCard/${id}/`, '_blank')}
+                        onClick={() => window.open(`/forms/utils/generate-pdf/JobCard/${id}/`, '_blank')}
                         className="glass-card"
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
                     >
@@ -133,7 +133,7 @@ const JobDetail = () => {
                                 <FileText size={18} /> View Invoice
                             </button>
                             <button
-                                onClick={() => window.open(`${axios.defaults.baseURL}/forms/utils/generate-pdf/Invoice/${job.invoice.id}/`, '_blank')}
+                                onClick={() => window.open(`/forms/utils/generate-pdf/Invoice/${job.invoice.id}/`, '_blank')}
                                 style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
                             >
                                 <Printer size={18} /> Print Invoice
@@ -177,7 +177,7 @@ const JobDetail = () => {
                                 <SignaturePad
                                     onSave={async (data) => {
                                         try {
-                                            await axios.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
+                                            await api.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
                                             setJob({ ...job, signature_data: data });
                                             alert('Signature captured successfully!');
                                         } catch (err) {

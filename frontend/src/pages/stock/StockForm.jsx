@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -37,7 +37,7 @@ const StockForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/stock/api/items/', formData);
+            await api.post('/forms/stock/api/items/', formData);
             alert('Stock Request Created Successfully');
             navigate('/stock');
         } catch (err) {

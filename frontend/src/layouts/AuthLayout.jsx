@@ -10,7 +10,7 @@ const AuthLayout = () => {
             justifyContent: 'center',
             background: 'transparent'
         }}>
-            <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '450px', padding: '20px' }}>
+            <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px', padding: '20px' }}>
                 <Outlet />
             </div>
         </div>

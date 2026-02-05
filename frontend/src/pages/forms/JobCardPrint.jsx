@@ -1,10 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Printer, Car, User, FileText } from 'lucide-react';
+import api from '../../api/axios';
 import './JobCardPrint.css';
 
-const JobCardPrint = ({ jobCardData }) => {
-    const data = jobCardData || {
-        id: "JC-9999",
+const JobCardPrint = ({ jobCardData: propData }) => {
+    const { id } = useParams();
+    const [data, setData] = useState(propData || null);
+    const [loading, setLoading] = useState(!propData);
+
+    useEffect(() => {
+        if (!propData && id) {
+            fetchJobCard();
+        }
+    }, [id, propData]);
+
+    const fetchJobCard = async () => {
+        try {
+            const res = await api.get(`/forms/job-cards/api/jobs/${id}/`);
+            const jc = res.data;
+            setData({
+                id: jc.job_card_number || `JC-${jc.id}`,
+                date: jc.date,
+                customer: {
+                    name: jc.customer_name,
+                    phone: jc.phone,
+                    address: jc.address || 'N/A'
+                },
+                vehicle: {
+                    brand: jc.brand,
+                    model: jc.model,
+                    year: jc.year,
+                    color: jc.color,
+                    reg: jc.registration_number,
+                    km: jc.kilometers
+                },
+                description: jc.job_description,
+                financials: {
+                    total: parseFloat(jc.total_amount || 0).toFixed(2),
+                    vat: parseFloat(jc.vat_amount || 0).toFixed(2),
+                    discount: parseFloat(jc.discount_amount || 0).toFixed(2),
+                    net: parseFloat(jc.net_amount || 0).toFixed(2),
+                    advance: parseFloat(jc.advance_amount || 0).toFixed(2),
+                    balance: parseFloat(jc.balance_amount || 0).toFixed(2)
+                }
+            });
+        } catch (err) {
+            console.error('Error fetching job card:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return <div style={{ padding: '50px', textAlign: 'center', color: '#b08d57' }}>Loading Job Card...</div>;
+    }
+
+    const displayData = data || {
+        id: "JC-0000",
         date: new Date().toISOString().split('T')[0],
         customer: { name: "", phone: "", address: "" },
         vehicle: { brand: "", model: "", year: "", color: "", reg: "", km: "" },
@@ -29,8 +82,8 @@ const JobCardPrint = ({ jobCardData }) => {
                     </div>
                     <div className="header-right">
                         <h2>Workshop Job Card</h2>
-                        <p className="job-id">#{data.id}</p>
-                        <p className="date">{data.date}</p>
+                        <p className="job-id">#{displayData.id}</p>
+                        <p className="date">{displayData.date}</p>
                     </div>
                 </div>
 
@@ -45,15 +98,15 @@ const JobCardPrint = ({ jobCardData }) => {
                         <div className="info-fields">
                             <div className="field-row">
                                 <label>Name</label>
-                                <div className="field-value">{data.customer.name}</div>
+                                <div className="field-value">{displayData.customer.name}</div>
                             </div>
                             <div className="field-row">
                                 <label>Phone</label>
-                                <div className="field-value">{data.customer.phone}</div>
+                                <div className="field-value">{displayData.customer.phone}</div>
                             </div>
                             <div className="field-row">
                                 <label>Address</label>
-                                <div className="field-value">{data.customer.address || "N/A"}</div>
+                                <div className="field-value">{displayData.customer.address || "N/A"}</div>
                             </div>
                         </div>
                     </div>
@@ -67,19 +120,19 @@ const JobCardPrint = ({ jobCardData }) => {
                         <div className="vehicle-grid">
                             <div className="field-col">
                                 <label>Brand</label>
-                                <div className="field-value">{data.vehicle.brand}</div>
+                                <div className="field-value">{displayData.vehicle.brand}</div>
                             </div>
                             <div className="field-col">
                                 <label>Model</label>
-                                <div className="field-value">{data.vehicle.model}</div>
+                                <div className="field-value">{displayData.vehicle.model}</div>
                             </div>
                             <div className="field-col">
                                 <label>Reg #</label>
-                                <div className="field-value">{data.vehicle.reg}</div>
+                                <div className="field-value">{displayData.vehicle.reg}</div>
                             </div>
                             <div className="field-col">
                                 <label>KM</label>
-                                <div className="field-value">{data.vehicle.km}</div>
+                                <div className="field-value">{displayData.vehicle.km}</div>
                             </div>
                         </div>
                     </div>
@@ -91,11 +144,9 @@ const JobCardPrint = ({ jobCardData }) => {
                         <FileText size={18} />
                         <h3>Job Description</h3>
                     </div>
-                    <textarea
-                        className="description-field"
-                        defaultValue={data.description}
-                        readOnly={!!jobCardData}
-                    />
+                    <div className="description-field" style={{ whiteSpace: 'pre-wrap', padding: '15px', background: '#f9f9f9', borderRadius: '8px', minHeight: '80px' }}>
+                        {displayData.description}
+                    </div>
                 </div>
 
                 {/* Financial Summary */}
@@ -103,13 +154,13 @@ const JobCardPrint = ({ jobCardData }) => {
                     <div className="financial-summary">
                         <div className="summary-header">Financial Summary</div>
                         <div className="summary-rows">
-                            <div className="summary-row"><span>Total</span> <span>{data.financials.total}</span></div>
-                            <div className="summary-row"><span>VAT</span> <span>{data.financials.vat}</span></div>
-                            <div className="summary-row discount"><span>Discount</span> <span>{data.financials.discount}</span></div>
+                            <div className="summary-row"><span>Total</span> <span>{displayData.financials.total}</span></div>
+                            <div className="summary-row"><span>VAT</span> <span>{displayData.financials.vat}</span></div>
+                            <div className="summary-row discount"><span>Discount</span> <span>{displayData.financials.discount}</span></div>
                             <div className="summary-divider"></div>
-                            <div className="summary-row net"><span>Net</span> <span>{data.financials.net}</span></div>
-                            <div className="summary-row advance"><span>Advance</span> <span>{data.financials.advance}</span></div>
-                            <div className="summary-row balance"><span>Balance</span> <span>{data.financials.balance}</span></div>
+                            <div className="summary-row net"><span>Net</span> <span>{displayData.financials.net}</span></div>
+                            <div className="summary-row advance"><span>Advance</span> <span>{displayData.financials.advance}</span></div>
+                            <div className="summary-row balance"><span>Balance</span> <span>{displayData.financials.balance}</span></div>
                         </div>
                     </div>
                 </div>

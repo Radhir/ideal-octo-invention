@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Plus, Search, Eye, Printer } from 'lucide-react';
@@ -16,7 +16,7 @@ const CeramicList = () => {
 
     const fetchWarranties = async () => {
         try {
-            const res = await axios.get('/forms/ceramic/api/warranties/');
+            const res = await api.get('/forms/ceramic/api/warranties/');
             setWarranties(res.data);
         } catch (err) {
             console.error('Error fetching warranties', err);

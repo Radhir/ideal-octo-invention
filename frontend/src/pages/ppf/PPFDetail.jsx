@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { ArrowLeft, Printer, ShieldCheck, Calendar, User, Car } from 'lucide-react';
@@ -17,7 +17,7 @@ const PPFDetail = () => {
 
     const fetchWarranty = async () => {
         try {
-            const res = await axios.get(`/forms/ppf/api/warranties/${id}/`);
+            const res = await api.get(`/forms/ppf/api/warranties/${id}/`);
             setWarranty(res.data);
         } catch (err) {
             console.error('Error fetching warranty', err);

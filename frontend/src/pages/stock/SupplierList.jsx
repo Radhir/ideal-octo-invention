@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     Users, Phone, Mail, MapPin, Plus,
@@ -19,7 +19,7 @@ const SupplierList = () => {
 
     const fetchSuppliers = async () => {
         try {
-            const res = await axios.get('/forms/stock/api/suppliers/');
+            const res = await api.get('/forms/stock/api/suppliers/');
             setSuppliers(res.data);
             setLoading(false);
         } catch (err) {

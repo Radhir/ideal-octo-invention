@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { ArrowLeft, Printer, Download, CreditCard, ShieldCheck, User } from 'lucide-react';
@@ -18,7 +18,7 @@ const InvoiceDetail = () => {
 
     const fetchInvoice = async () => {
         try {
-            const res = await axios.get(`/forms/invoices/api/list/${id}/`);
+            const res = await api.get(`/forms/invoices/api/list/${id}/`);
             setInvoice(res.data);
         } catch (err) {
             console.error('Error fetching invoice', err);
@@ -29,7 +29,7 @@ const InvoiceDetail = () => {
 
     const markAsPaid = async () => {
         try {
-            await axios.patch(`/forms/invoices/api/list/${id}/`, { payment_status: 'PAID' });
+            await api.patch(`/forms/invoices/api/list/${id}/`, { payment_status: 'PAID' });
             setInvoice({ ...invoice, payment_status: 'PAID' });
             alert('Payment Received!');
         } catch (err) {
@@ -183,7 +183,7 @@ const InvoiceDetail = () => {
                                         title="Sign to Accept Invoice"
                                         onSave={async (data) => {
                                             try {
-                                                await axios.patch(`/forms/invoices/api/list/${id}/`, { signature_data: data });
+                                                await api.patch(`/forms/invoices/api/list/${id}/`, { signature_data: data });
                                                 setInvoice({ ...invoice, signature_data: data });
                                                 alert('Invoice signed successfully!');
                                             } catch (err) {

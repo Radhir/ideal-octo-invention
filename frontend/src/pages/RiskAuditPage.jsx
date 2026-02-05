@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/axios';
 import GlassCard from '../components/GlassCard';
 import {
     ShieldAlert, AlertTriangle, CheckCircle, Clock,
@@ -19,8 +19,8 @@ const RiskAuditPage = () => {
     const fetchAuditData = async () => {
         try {
             const [jobsRes, invoicesRes] = await Promise.all([
-                axios.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
-                axios.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
+                api.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
+                api.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
             ]);
             setJobs(Array.isArray(jobsRes.data) ? jobsRes.data : jobsRes.data.results || []);
             setInvoices(Array.isArray(invoicesRes.data) ? invoicesRes.data : invoicesRes.data.results || []);

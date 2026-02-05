@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     BookOpen, ArrowUpRight, ArrowDownRight, Search,
@@ -25,9 +25,9 @@ const AccountingPage = () => {
     const fetchData = async () => {
         try {
             const [txRes, accRes, summaryRes] = await Promise.all([
-                axios.get('/finance/api/transactions/').catch(() => ({ data: [] })),
-                axios.get('/finance/api/accounts/').catch(() => ({ data: [] })),
-                axios.get('/finance/api/transactions/financial_summary/').catch(() => ({ data: {} }))
+                api.get('/finance/api/transactions/').catch(() => ({ data: [] })),
+                api.get('/finance/api/accounts/').catch(() => ({ data: [] })),
+                api.get('/finance/api/transactions/financial_summary/').catch(() => ({ data: {} }))
             ]);
             const txData = Array.isArray(txRes.data) ? txRes.data : txRes.data.results || [];
             const accData = Array.isArray(accRes.data) ? accRes.data : accRes.data.results || [];

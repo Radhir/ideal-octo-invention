@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     Printer, Download, Calendar, Users, Briefcase,
@@ -24,9 +24,9 @@ const AdvisorDailyReport = () => {
         try {
             const today = new Date().toISOString().split('T')[0];
             const [leadsRes, bookingsRes, jobsRes] = await Promise.all([
-                axios.get('/forms/leads/api/list/'),
-                axios.get('/forms/bookings/api/list/'),
-                axios.get('/forms/job-cards/api/jobs/')
+                api.get('/forms/leads/api/list/'),
+                api.get('/forms/bookings/api/list/'),
+                api.get('/forms/job-cards/api/jobs/')
             ]);
 
             setData({

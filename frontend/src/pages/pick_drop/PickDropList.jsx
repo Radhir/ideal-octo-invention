@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { Link, useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
-import { Plus, Search, MapPin, Truck, Phone, Calendar, Printer, ExternalLink, User } from 'lucide-react';
+import { Plus, Search, MapPin, Truck, Phone, Calendar, Printer, ExternalLink, User, Navigation } from 'lucide-react';
 import PrintHeader from '../../components/PrintHeader';
 
 const PickDropList = () => {
@@ -17,7 +17,7 @@ const PickDropList = () => {
 
     const fetchTrips = async () => {
         try {
-            const res = await axios.get('/forms/pick-and-drop/api/trips/');
+            const res = await api.get('/forms/pick-and-drop/api/trips/');
             setTrips(res.data);
         } catch (err) {
             console.error('Error fetching pick and drop trips', err);
@@ -139,17 +139,30 @@ const PickDropList = () => {
                                         <Calendar size={14} color="#b08d57" />
                                         {new Date(trip.scheduled_time).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                                     </div>
-                                    <button
-                                        onClick={() => navigate(`/pick-drop/edit/${trip.id}`)}
-                                        style={{
-                                            background: 'rgba(255,255,255,0.05)', color: '#fff',
-                                            border: '1px solid rgba(255,255,255,0.1)', padding: '8px 15px',
-                                            borderRadius: '8px', fontSize: '11px', fontWeight: '900',
-                                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'
-                                        }}
-                                    >
-                                        <ExternalLink size={14} color="#b08d57" /> Manage Trip
-                                    </button>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button
+                                            onClick={() => navigate(`/pick-drop/track/${trip.id}`)}
+                                            style={{
+                                                background: 'rgba(176, 141, 87, 0.1)', color: '#b08d57',
+                                                border: '1px solid rgba(176, 141, 87, 0.3)', padding: '8px 15px',
+                                                borderRadius: '8px', fontSize: '11px', fontWeight: '900',
+                                                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'
+                                            }}
+                                        >
+                                            <Navigation size={14} /> Track Live
+                                        </button>
+                                        <button
+                                            onClick={() => navigate(`/pick-drop/edit/${trip.id}`)}
+                                            style={{
+                                                background: 'rgba(255,255,255,0.05)', color: '#fff',
+                                                border: '1px solid rgba(255,255,255,0.1)', padding: '8px 15px',
+                                                borderRadius: '8px', fontSize: '11px', fontWeight: '900',
+                                                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'
+                                            }}
+                                        >
+                                            <ExternalLink size={14} color="#b08d57" /> Manage Trip
+                                        </button>
+                                    </div>
                                 </div>
                             </GlassCard>
                         );

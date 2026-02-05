@@ -35,49 +35,6 @@ const LoginPage = () => {
         }
     };
 
-    // Auto-login after 3 seconds of inactivity
-    useEffect(() => {
-        if (!username || !password) return;
-
-        const timer = setTimeout(() => {
-            handleLogin();
-        }, 3000);
-
-        return () => clearTimeout(timer);
-    }, [username, password]);
-
-    const inputStyle = {
-        width: '100%',
-        background: 'transparent',
-        border: 'none',
-        borderTop: 'none',
-        borderLeft: 'none',
-        borderRight: 'none',
-        borderBottom: '1px solid rgba(176, 141, 87, 0.4)',
-        borderRadius: 0,
-        padding: '10px 0',
-        color: 'rgba(255, 255, 255, 0.7)',
-        fontSize: '15px',
-        outline: 'none',
-        transition: 'border-color 0.3s ease',
-        textAlign: 'center',
-        letterSpacing: '3px',
-        fontFamily: 'Outfit, sans-serif',
-        caretColor: 'var(--gold)',
-        boxShadow: 'none'
-    };
-
-    const labelStyle = {
-        display: 'block',
-        fontSize: '9px',
-        color: 'rgba(176, 141, 87, 0.6)',
-        letterSpacing: '5px',
-        textTransform: 'uppercase',
-        marginBottom: '5px',
-        textAlign: 'center',
-        fontWeight: '500'
-    };
-
     return (
         <div style={{
             minHeight: '100vh',
@@ -85,11 +42,12 @@ const LoginPage = () => {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '20px',
-            background: '#000',
+            background: '#0a0c10',
             position: 'relative',
-            overflow: 'hidden'
+            overflowY: 'auto',
+            overflowX: 'hidden'
         }}>
-            {/* Background Video - plays once */}
+            {/* Background Video */}
             <video
                 ref={videoRef}
                 autoPlay
@@ -97,7 +55,7 @@ const LoginPage = () => {
                 playsInline
                 onEnded={() => setVideoEnded(true)}
                 style={{
-                    position: 'absolute',
+                    position: 'fixed',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
@@ -106,145 +64,252 @@ const LoginPage = () => {
                     width: 'auto',
                     height: 'auto',
                     objectFit: 'cover',
-                    opacity: videoEnded ? 0 : 1,
-                    transition: 'opacity 1s ease',
+                    opacity: videoEnded ? 0.3 : 0.8,
+                    transition: 'opacity 1.5s ease',
                     zIndex: 0
                 }}
             >
                 <source src="/bglogin.mp4" type="video/mp4" />
             </video>
 
-            {/* Dark overlay */}
+            {/* Premium Gradient Overlay */}
             <div style={{
-                position: 'absolute',
+                position: 'fixed',
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: videoEnded
-                    ? 'radial-gradient(ellipse at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%)'
-                    : 'rgba(0,0,0,0.3)',
-                transition: 'background 1s ease',
+                background: 'radial-gradient(circle at center, transparent 0%, rgba(10, 12, 16, 0.8) 100%)',
                 zIndex: 1
             }} />
 
             <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: videoEnded ? 1 : 0 }}
-                transition={{ duration: 2, delay: 0.5 }}
-                style={{ width: '100%', maxWidth: '900px', position: 'relative', zIndex: 2 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
+                className="executive-glass login-main-card"
             >
-                <div style={{ textAlign: 'center', marginBottom: '30px', position: 'relative', overflow: 'visible', padding: '0 20px' }}>
-
-                    {/* Spotlight / Beam Effect */}
+                {/* Left Side: Brand Section */}
+                <div className="login-brand-section">
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 2 }}
-                        style={{
-                            position: 'absolute',
-                            top: '-120px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: '350px',
-                            height: '400px',
-                            background: 'conic-gradient(from 180deg at 50% 0%, transparent 45%, rgba(255, 255, 255, 0.12) 50%, transparent 55%)',
-                            filter: 'blur(30px)',
-                            pointerEvents: 'none',
-                            zIndex: 0
-                        }}
-                    />
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.5 }}
-                        transition={{ duration: 3, delay: 0.5 }}
-                        style={{
-                            position: 'absolute',
-                            top: '-40px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            width: '500px',
-                            height: '250px',
-                            background: 'radial-gradient(ellipse at center, rgba(176, 141, 87, 0.15) 0%, transparent 70%)',
-                            zIndex: 0
-                        }}
-                    />
-
-                    <motion.img
-                        initial={{ opacity: 0, y: -15 }}
-                        animate={{
-                            opacity: [0.9, 1, 0.95, 1],
-                            scale: [0.99, 1, 0.995, 1],
-                            filter: [
-                                'brightness(1.1) drop-shadow(0 0 15px rgba(176, 141, 87, 0.3))',
-                                'brightness(1.2) drop-shadow(0 0 25px rgba(176, 141, 87, 0.5))',
-                                'brightness(1.15) drop-shadow(0 0 20px rgba(176, 141, 87, 0.4))',
-                                'brightness(1.2) drop-shadow(0 0 25px rgba(176, 141, 87, 0.5))'
-                            ]
-                        }}
-                        transition={{
-                            duration: 4,
-                            repeat: Infinity,
-                            repeatType: "reverse",
-                            ease: "easeInOut"
-                        }}
-                        src="/elite_shine_logo.png"
-                        alt="Elite Shine Logo"
-                        style={{
-                            width: '240px',
-                            maxWidth: '60vw',
-                            height: 'auto',
-                            position: 'relative',
-                            zIndex: 1
-                        }}
-                    />
+                        initial={{ x: -20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.3, duration: 1 }}
+                        style={{ marginBottom: '30px' }}
+                    >
+                        <img
+                            src="/elite_shine_logo.png"
+                            className="login-logo-img"
+                            alt="Elite Shine Group"
+                            style={{
+                                width: '280px',
+                                height: 'auto',
+                                filter: 'drop-shadow(0 0 30px rgba(176, 141, 87, 0.4))'
+                            }}
+                        />
+                    </motion.div>
+                    <h2 style={{
+                        color: '#fff',
+                        fontSize: '2.5rem',
+                        fontWeight: '900',
+                        letterSpacing: '-1px',
+                        lineHeight: '1.1',
+                        marginBottom: '15px',
+                        textTransform: 'uppercase'
+                    }}>
+                        Executive <br /> <span style={{ color: 'var(--gold)' }}>Intelligence</span>
+                    </h2>
+                    <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '14px', lineHeight: '1.6', maxWidth: '300px' }}>
+                        Secured access to the Elite Shine Group of Companies ERP infrastructure. Log in to manage global operations, logistics, and financials.
+                    </p>
                 </div>
 
-                <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-end', justifyContent: 'center', position: 'relative', zIndex: 2, width: '100%', maxWidth: '500px', margin: '0 auto' }}>
-                    <div className="input-field" style={{ flex: 1, position: 'relative' }}>
-                        <label style={labelStyle}>USERNAME</label>
-                        <input
-                            type="text"
-                            name="username"
-                            autoComplete="username"
-                            style={inputStyle}
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            required
-                        />
-                    </div>
+                {/* Right Side: Login Form */}
+                <div className="login-form-section">
+                    <form onSubmit={handleLogin} className="login-form-v2" style={{ padding: 0, margin: 0, maxWidth: 'none' }}>
+                        <div className="premium-input-container">
+                            <input
+                                type="text"
+                                className="premium-input"
+                                placeholder=" "
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                            <label className="premium-label">Username</label>
+                        </div>
 
-                    <div className="input-field" style={{ flex: 1, position: 'relative' }}>
-                        <label style={labelStyle}>ACCESS ID</label>
-                        <input
-                            type="password"
-                            name="password"
-                            autoComplete="current-password"
-                            style={inputStyle}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                </form>
+                        <div className="premium-input-container">
+                            <input
+                                type="password"
+                                className="premium-input"
+                                placeholder=" "
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <label className="premium-label">Access ID</label>
+                        </div>
 
-                {error && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        style={{
-                            marginTop: '30px',
-                            textAlign: 'center',
-                            color: '#ef4444',
-                            fontSize: '10px',
-                            letterSpacing: '2px',
-                            fontWeight: '700'
-                        }}
-                    >
-                        {error}
-                    </motion.div>
-                )}
+                        <motion.button
+                            whileHover={{ scale: 1.02, boxShadow: '0 0 30px rgba(176, 141, 87, 0.3)' }}
+                            whileTap={{ scale: 0.98 }}
+                            type="submit"
+                            disabled={isAuthenticating}
+                            style={{
+                                width: '100%',
+                                background: 'linear-gradient(135deg, var(--gold) 0%, #8c6d3e 100%)',
+                                border: 'none',
+                                borderRadius: '12px',
+                                padding: '16px',
+                                color: '#000',
+                                fontSize: '14px',
+                                fontWeight: '800',
+                                letterSpacing: '3px',
+                                textTransform: 'uppercase',
+                                cursor: 'pointer',
+                                marginTop: '20px',
+                                transition: 'all 0.3s ease'
+                            }}
+                        >
+                            {isAuthenticating ? 'Authenticating...' : 'Enter System'}
+                        </motion.button>
+                    </form>
+                </div>
+
+                {/* Error Pulse */}
+                <AnimatePresence>
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0 }}
+                            style={{
+                                position: 'absolute',
+                                bottom: '40px',
+                                left: 0,
+                                right: 0,
+                                textAlign: 'center',
+                                color: '#ef4444',
+                                fontSize: '11px',
+                                letterSpacing: '2px',
+                                fontWeight: '700'
+                            }}
+                        >
+                            {error}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </motion.div>
+
+            {/* Bottom Brand Line */}
+            <div className="bottom-brand-line" style={{
+                position: 'absolute',
+                bottom: '30px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                fontSize: '10px',
+                fontWeight: '600',
+                color: 'rgba(255,255,255,0.2)',
+                letterSpacing: '5px',
+                zIndex: 1,
+                textAlign: 'center',
+                width: '100%'
+            }}>
+                ELITE SHINE GROUP OF COMPANIES
+            </div>
+
+            <style>{`
+                /* Base styles */
+                .login-brand-section {
+                    border-right: 1px solid rgba(255,255,255,0.05);
+                    padding-right: 40px;
+                }
+                .login-main-card {
+                    width: 95%;
+                    max-width: 900px;
+                    position: relative;
+                    z-index: 2;
+                    padding: 80px 60px;
+                    text-align: left;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+                    gap: 60px;
+                    align-items: center;
+                    overflow: visible;
+                }
+                /* Tablet */
+                @media (max-width: 1024px) {
+                    .login-main-card {
+                        padding: 60px 40px;
+                        max-width: 800px;
+                    }
+                    .login-brand-section h2 {
+                        font-size: 2rem;
+                    }
+                    .login-brand-section p {
+                        font-size: 13px;
+                    }
+                }
+                /* Mobile */
+                @media (max-width: 768px) {
+                    .login-main-card {
+                        padding: 40px 30px;
+                        grid-template-columns: 1fr;
+                        gap: 30px;
+                        margin-top: 40px;
+                        margin-bottom: 80px;
+                    }
+                    .login-brand-section {
+                        border-right: none;
+                        padding-right: 0;
+                        border-bottom: 1px solid rgba(255,255,255,0.05);
+                        padding-bottom: 30px;
+                        text-align: center;
+                    }
+                    .login-logo-img {
+                        margin: 0 auto;
+                        width: 220px !important;
+                    }
+                    .login-brand-section h2 {
+                        font-size: 1.8rem;
+                    }
+                    .login-brand-section p {
+                        margin: 0 auto;
+                        font-size: 13px;
+                    }
+                    .bottom-brand-line {
+                        position: relative;
+                        bottom: auto;
+                        margin-top: -40px;
+                        margin-bottom: 40px;
+                    }
+                }
+                /* Small Mobile */
+                @media (max-width: 480px) {
+                    .login-main-card {
+                        padding: 30px 20px;
+                        border-radius: 20px;
+                        gap: 20px;
+                    }
+                    .login-logo-img {
+                        width: 180px !important;
+                    }
+                    .login-brand-section h2 {
+                        font-size: 1.5rem;
+                    }
+                    .login-brand-section p {
+                        font-size: 12px;
+                    }
+                    .premium-input {
+                        padding: 14px 16px;
+                        font-size: 14px;
+                    }
+                    .premium-label {
+                        font-size: 12px;
+                    }
+                }
+            `}</style>
         </div>
     );
 };

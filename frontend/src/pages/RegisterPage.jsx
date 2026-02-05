@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import GlassCard from '../components/GlassCard';
 import { UserPlus, Upload, User, Briefcase, Heart, FileText, Calendar } from 'lucide-react';
 
@@ -97,7 +97,7 @@ const RegisterPage = () => {
         try {
             // Create user account first
             const { confirmPassword, profile_photo, ...userData } = form;
-            const userResponse = await axios.post('/api/auth/register/', {
+            const userResponse = await api.post('/api/auth/register/', {
                 username: form.username,
                 email: form.email,
                 password: form.password,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     FileText, ShoppingCart, Clock, CheckCircle,
@@ -18,7 +18,7 @@ const ProcurementManager = () => {
 
     const fetchOrders = async () => {
         try {
-            const res = await axios.get('/forms/stock/api/purchase-orders/');
+            const res = await api.get('/forms/stock/api/purchase-orders/');
             setOrders(res.data);
 
             const pending = res.data.filter(o => o.status === 'DRAFT' || o.status === 'SENT').length;

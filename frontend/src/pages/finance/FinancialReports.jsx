@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     ArrowLeft, Printer, Download, Filter,
@@ -24,9 +24,9 @@ const FinancialReports = () => {
     const fetchData = async () => {
         try {
             const [txRes, coaRes, invRes] = await Promise.all([
-                axios.get('/finance/api/transactions/'),
-                axios.get('/finance/api/accounts/'),
-                axios.get('/forms/stock/api/items/inventory_stats/')
+                api.get('/finance/api/transactions/'),
+                api.get('/finance/api/accounts/'),
+                api.get('/forms/stock/api/items/inventory_stats/')
             ]);
             setTransactions(txRes.data);
             setCoa(coaRes.data);

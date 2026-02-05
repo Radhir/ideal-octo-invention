@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import { Camera, RefreshCw, ArrowUp, ArrowDown, Package, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
@@ -47,7 +47,7 @@ const StockScanner = () => {
         setLoading(true);
         try {
             // Find item by SKU
-            const itemRes = await axios.get(`/forms/stock/api/items/?sku=${sku}`);
+            const itemRes = await api.get(`/forms/stock/api/items/?sku=${sku}`);
             const item = itemRes.data.find(i => i.sku === sku);
 
             if (!item) {
@@ -65,7 +65,7 @@ const StockScanner = () => {
                 recorded_by: 'Staff (QR)'
             };
 
-            await axios.post('/forms/stock/api/movements/', movementData);
+            await api.post('/forms/stock/api/movements/', movementData);
             setLastLog({
                 status: 'SUCCESS',
                 message: `${mode === 'ENTRY' ? 'Received' : 'Distributed'} 1 unit of ${item.name}`,

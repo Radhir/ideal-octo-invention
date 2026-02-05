@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -23,7 +23,7 @@ const RequestForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/requests/api/forms/', formData);
+            await api.post('/forms/requests/api/forms/', formData);
             alert('Request Form Submitted');
             navigate('/requests');
         } catch (err) {

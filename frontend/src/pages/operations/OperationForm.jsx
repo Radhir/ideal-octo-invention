@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, Activity, User, Target, Clock, AlertCircle } from 'lucide-react';
@@ -27,8 +27,8 @@ const OperationForm = () => {
         const fetchData = async () => {
             try {
                 const [empRes, jcRes] = await Promise.all([
-                    axios.get('/hr/api/employees/'),
-                    axios.get('/forms/job-cards/api/jobs/')
+                    api.get('/hr/api/employees/'),
+                    api.get('/forms/job-cards/api/jobs/')
                 ]);
                 setEmployees(empRes.data);
                 setJobCards(jcRes.data);
@@ -46,7 +46,7 @@ const OperationForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/operations/api/list/', formData);
+            await api.post('/forms/operations/api/list/', formData);
             alert('Production Log Updated Successfully');
             navigate('/operations');
         } catch (err) {

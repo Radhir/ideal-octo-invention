@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     DollarSign, Printer, Download, Search,
@@ -19,7 +19,7 @@ const PayrollConsole = () => {
     const fetchPayroll = async () => {
         setLoading(true);
         try {
-            const res = await axios.get('/hr/api/payroll/');
+            const res = await api.get('/hr/api/payroll/');
             setPayroll(res.data);
 
             // Calculate stats from live data
@@ -44,7 +44,7 @@ const PayrollConsole = () => {
 
         setLoading(true);
         try {
-            await axios.post('/hr/api/payroll/generate_payroll_cycle/');
+            await api.post('/hr/api/payroll/generate_payroll_cycle/');
             fetchPayroll();
             alert("Elite Shine Payroll Cycle execution complete. All accounts synchronized.");
         } catch (err) {

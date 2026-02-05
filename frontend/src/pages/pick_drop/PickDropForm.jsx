@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, Truck, User, MapPin, Calendar, Car } from 'lucide-react';
@@ -26,12 +26,21 @@ const PickDropForm = () => {
     const [employees, setEmployees] = useState([]);
     const [jobCards, setJobCards] = useState([]);
 
+    const DRIVER_LIST = [
+        { name: 'Ashok', vehicle: 'Ford Focus' },
+        { name: 'Sahanur', vehicle: 'Nissan Sunny' },
+        { name: 'Emad', vehicle: 'Nissan Sunny' },
+        { name: 'Akhma Jaan', vehicle: 'Coaster Bus' },
+        { name: 'Sittapa', vehicle: 'Hiace' },
+        { name: 'Mira Rao', vehicle: 'Hiace' }
+    ];
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const [empRes, jcRes] = await Promise.all([
-                    axios.get('/hr/api/employees/'),
-                    axios.get('/forms/job-cards/api/jobs/')
+                    api.get('/hr/api/employees/'),
+                    api.get('/forms/job-cards/api/jobs/')
                 ]);
                 setEmployees(empRes.data);
                 setJobCards(jcRes.data);
@@ -49,7 +58,7 @@ const PickDropForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/pick-and-drop/api/trips/', formData);
+            await api.post('/forms/pick-and-drop/api/trips/', formData);
             alert('Logistics Movement Scheduled Successfully');
             navigate('/pick-drop');
         } catch (err) {
@@ -140,11 +149,35 @@ const PickDropForm = () => {
                         <GlassCard style={{ padding: '30px' }}>
                             <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}><User size={16} color="#b08d57" /> Assignment</h3>
                             <label style={labelStyle}>Assign Driver</label>
-                            <select name="driver" className="form-control" onChange={handleChange} value={formData.driver} required>
+                            <select
+                                name="driver"
+                                className="form-control"
+                                value={formData.driver}
+                                onChange={(e) => {
+                                    const selectedDriver = DRIVER_LIST.find(d => d.name === e.target.value);
+                                    if (selectedDriver) {
+                                        const [brand, ...modelParts] = selectedDriver.vehicle.split(' ');
+                                        setFormData({
+                                            ...formData,
+                                            driver: selectedDriver.name,
+                                            vehicle_brand: brand || '',
+                                            vehicle_model: modelParts.join(' ') || ''
+                                        });
+                                    } else {
+                                        handleChange(e);
+                                    }
+                                }}
+                                required
+                            >
                                 <option value="">Select Driver...</option>
-                                {employees.map(emp => (
-                                    <option key={emp.id} value={emp.id}>{emp.full_name}</option>
+                                {DRIVER_LIST.map(driver => (
+                                    <option key={driver.name} value={driver.name}>{driver.name} ({driver.vehicle})</option>
                                 ))}
+                                <optgroup label="System Employees">
+                                    {employees.map(emp => (
+                                        <option key={emp.id} value={emp.full_name}>{emp.full_name}</option>
+                                    ))}
+                                </optgroup>
                             </select>
                         </GlassCard>
 

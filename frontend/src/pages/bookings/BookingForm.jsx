@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { Save, ArrowLeft, Clock, Calendar, User, Truck, Award, DollarSign, PenTool } from 'lucide-react';
 import SignaturePad from '../../components/SignaturePad';
+import { CAR_BRANDS, CAR_MODELS, CAR_COLORS } from '../../constants/vehicle_data';
 
 const BookingForm = () => {
     const navigate = useNavigate();
@@ -31,8 +32,8 @@ const BookingForm = () => {
         const fetchData = async () => {
             try {
                 const [empRes, catRes] = await Promise.all([
-                    axios.get('/hr/api/employees/'),
-                    axios.get('/forms/job-cards/api/service-categories/')
+                    api.get('/hr/api/employees/'),
+                    api.get('/forms/job-cards/api/service-categories/')
                 ]);
                 setEmployees(empRes.data);
                 setCategories(catRes.data);
@@ -50,7 +51,11 @@ const BookingForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/forms/bookings/api/list/', formData);
+            const submissionData = {
+                ...formData,
+                vehicle_details: `${formData.brand} ${formData.model} - ${formData.color}`
+            };
+            await api.post('/forms/bookings/api/list/', submissionData);
 
             // If it came from a lead, mark the lead as negotiated or converted if needed
             // For now, just confirming the booking
@@ -98,8 +103,53 @@ const BookingForm = () => {
                                     <input name="v_registration_no" className="form-control" placeholder="DUBAI A 12345" onChange={handleChange} required />
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>Vehicle Description</label>
-                                    <input name="vehicle_details" placeholder="e.g. Porsche 911 GT3 - Shark Blue" className="form-control" onChange={handleChange} required />
+                                    <label style={labelStyle}>Vehicle Brand</label>
+                                    <select
+                                        name="brand"
+                                        className="form-control"
+                                        value={formData.brand || 'Toyota'}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        {CAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
+                                <div>
+                                    <label style={labelStyle}>Model</label>
+                                    <input
+                                        name="model"
+                                        className="form-control"
+                                        value={formData.model || ''}
+                                        onChange={handleChange}
+                                        required
+                                        list="booking-car-models"
+                                        placeholder="Type model..."
+                                    />
+                                    <datalist id="booking-car-models">
+                                        {CAR_MODELS[formData.brand || 'Toyota']?.map(m => (
+                                            <option key={m} value={m} />
+                                        ))}
+                                    </datalist>
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Color</label>
+                                    <input
+                                        name="color"
+                                        className="form-control"
+                                        value={formData.color || ''}
+                                        onChange={handleChange}
+                                        required
+                                        list="booking-car-colors"
+                                        placeholder="Pick color..."
+                                    />
+                                    <datalist id="booking-car-colors">
+                                        {CAR_COLORS.map(c => (
+                                            <option key={c} value={c} />
+                                        ))}
+                                    </datalist>
                                 </div>
                             </div>
                         </GlassCard>

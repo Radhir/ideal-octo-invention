@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import { Users, Search, Phone, Mail, MapPin, Plus } from 'lucide-react';
 
@@ -14,7 +14,7 @@ const CustomerList = () => {
 
     const fetchCustomers = async () => {
         try {
-            const res = await axios.get('/customers/api/');
+            const res = await api.get('/customers/api/');
             setCustomers(res.data.results || res.data); // Handle pagination or list
         } catch (err) {
             console.error(err);
