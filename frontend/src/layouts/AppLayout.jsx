@@ -57,7 +57,11 @@ const AppLayout = () => {
             'ppf': 'PPF PROTECTION',
             'ceramic': 'CERAMIC COATING',
             'finance': 'TREASURY',
-            'hr': 'WORKFORCE HUB'
+            'hr': 'WORKFORCE HUB',
+            'workshop-diary': 'WORKSHOP DIARY',
+            'commissions': 'COMMISSION HUB',
+            'invoice-book': 'INVOICE BOOK',
+            'reports': 'TREASURY REPORTS'
         };
 
         const lastSegment = segments[segments.length - 1];

@@ -42,6 +42,8 @@ const QuickAccessHub = () => {
 
     const modules = [
         { name: 'Job Cards', icon: ClipboardList, path: '/job-cards', color: '#b08d57', permission: 'job_cards' },
+        { name: 'Treasury', icon: Briefcase, path: '/finance', color: 'var(--gold)', permission: 'finance' },
+        { name: 'Workshop Diary', icon: Calendar, path: '/workshop-diary', color: 'var(--gold)', permission: 'finance' },
         { name: 'Invoices', icon: FileText, path: '/invoices', color: '#3b82f6', permission: 'job_cards' },
         { name: 'Schedule', icon: Calendar, path: '/scheduling', color: '#f59e0b', permission: 'calendar' },
         { name: 'Live Map', icon: MapPin, path: '/pick-drop', color: '#10b981', permission: 'logistics' },
