@@ -6,6 +6,8 @@ import UserDropdown from '../components/UserDropdown';
 import BottomNav from '../components/BottomNav';
 import QuickAccessHub from '../components/QuickAccessHub';
 import BranchSwitcher from '../components/BranchSwitcher';
+import NotificationBell from '../components/NotificationBell';
+import ThemeToggle from '../components/ThemeToggle';
 
 import './AppLayout.css';
 
@@ -76,7 +78,9 @@ const AppLayout = () => {
                     </h1>
                 </div>
 
-                <div className="header-right">
+                <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <ThemeToggle />
+                    <NotificationBell />
                     {/* Home Button */}
                     <div
                         className="header-home-btn"

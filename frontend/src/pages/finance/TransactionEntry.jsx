@@ -117,142 +117,147 @@ const TransactionEntry = () => {
             <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                 <button
                     onClick={() => navigate('/finance')}
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
+                    style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)' }}
                 >
                     <ArrowLeft size={20} />
                 </button>
                 <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE LEDGER</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: '#fff' }}>New Transaction</h1>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE LEDGER</div>
+                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: 'var(--text-primary)' }}>New Transaction</h1>
                 </div>
             </header>
 
             <form onSubmit={handleSubmit} style={{ maxWidth: '1000px' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-                    <GlassCard style={{ padding: '40px' }}>
+                    <GlassCard style={{ padding: '40px', border: '1.5px solid var(--gold-border)' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '25px', marginBottom: '35px' }}>
                             <div style={{ gridColumn: '1 / -1' }}>
-                                <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '700', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Target Account</label>
+                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Target Account</label>
                                 <select name="account" onChange={handleChange} required
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        color: '#fff',
+                                        background: 'var(--input-bg)',
+                                        border: '1.5px solid var(--gold-border)',
+                                        color: 'var(--text-primary)',
                                         width: '100%',
                                         padding: '15px',
                                         borderRadius: '12px',
                                         fontSize: '14px',
+                                        fontWeight: '900',
                                         outline: 'none',
                                         cursor: 'pointer'
                                     }}>
-                                    <option value="" style={{ background: '#1e293b' }}>Select Account...</option>
+                                    <option value="" style={{ background: 'var(--bg-secondary)' }}>Select Account...</option>
                                     {accounts.map(acc => (
-                                        <option key={acc.id} value={acc.id} style={{ background: '#1e293b' }}>{acc.code} - {acc.name}</option>
+                                        <option key={acc.id} value={acc.id} style={{ background: 'var(--bg-secondary)' }}>{acc.code} - {acc.name}</option>
                                     ))}
                                 </select>
                             </div>
                             <div>
-                                <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '700', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Flow Type</label>
+                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Flow Type</label>
                                 <select name="transaction_type" onChange={handleChange}
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        color: '#fff',
+                                        background: 'var(--input-bg)',
+                                        border: '1.5px solid var(--gold-border)',
+                                        color: 'var(--text-primary)',
                                         width: '100%',
                                         padding: '15px',
                                         borderRadius: '12px',
                                         fontSize: '14px',
+                                        fontWeight: '900',
                                         outline: 'none',
                                         cursor: 'pointer'
                                     }}>
-                                    <option value="DEBIT" style={{ background: '#1e293b' }}>Debit (Expenditure)</option>
-                                    <option value="CREDIT" style={{ background: '#1e293b' }}>Credit (Revenue/Capital)</option>
+                                    <option value="DEBIT" style={{ background: 'var(--bg-secondary)' }}>Debit (Expenditure)</option>
+                                    <option value="CREDIT" style={{ background: 'var(--bg-secondary)' }}>Credit (Revenue/Capital)</option>
                                 </select>
                             </div>
                             <div>
-                                <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '700', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Amount (AED Excl. VAT)</label>
+                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Amount (AED Excl. VAT)</label>
                                 <input name="amount" type="number" step="0.01" onChange={handleChange} required
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        color: '#fff',
+                                        background: 'var(--input-bg)',
+                                        border: '1.5px solid var(--gold-border)',
+                                        color: 'var(--text-primary)',
                                         width: '100%',
                                         padding: '15px',
                                         borderRadius: '12px',
-                                        fontSize: '16px',
-                                        fontWeight: 'bold',
+                                        fontSize: '18px',
+                                        fontWeight: '900',
                                         outline: 'none'
                                     }} />
                             </div>
 
                             {/* VAT Automation */}
-                            <div style={{ gridColumn: '1 / -1', background: 'rgba(176,141,87,0.05)', padding: '20px', borderRadius: '15px', border: '1px solid rgba(176,141,87,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ gridColumn: '1 / -1', background: 'var(--gold-glow)', padding: '20px', borderRadius: '15px', border: '1.5px solid var(--gold-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <div>
-                                    <div style={{ color: '#fff', fontWeight: '800', fontSize: '14px' }}>VAT Automation (UAE 5%)</div>
-                                    <div style={{ color: '#64748b', fontSize: '11px' }}>Automatically append tax and adjust total amount</div>
+                                    <div style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px' }}>VAT Automation (UAE 5%)</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '11px', fontWeight: '800' }}>Automatically append tax and adjust total amount</div>
                                 </div>
                                 <input
                                     type="checkbox"
                                     checked={applyVAT}
                                     onChange={(e) => setApplyVAT(e.target.checked)}
-                                    style={{ width: '24px', height: '24px', cursor: 'pointer', accentColor: '#b08d57' }}
+                                    style={{ width: '24px', height: '24px', cursor: 'pointer', accentColor: 'var(--gold)' }}
                                 />
                             </div>
 
                             <div>
-                                <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '700', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Department</label>
+                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Department</label>
                                 <select name="department" onChange={handleChange}
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        color: '#fff',
+                                        background: 'var(--input-bg)',
+                                        border: '1.5px solid var(--gold-border)',
+                                        color: 'var(--text-primary)',
                                         width: '100%',
                                         padding: '15px',
                                         borderRadius: '12px',
                                         fontSize: '14px',
+                                        fontWeight: '900',
                                         outline: 'none',
                                         cursor: 'pointer'
                                     }}>
-                                    <option value="GENERAL" style={{ background: '#1e293b' }}>General & Admin</option>
-                                    <option value="OPERATIONS" style={{ background: '#1e293b' }}>Operations</option>
-                                    <option value="MARKETING" style={{ background: '#1e293b' }}>Marketing</option>
-                                    <option value="HR" style={{ background: '#1e293b' }}>HR & Visa</option>
-                                    <option value="INVENTORY" style={{ background: '#1e293b' }}>Inventory</option>
+                                    <option value="GENERAL" style={{ background: 'var(--bg-secondary)' }}>General & Admin</option>
+                                    <option value="OPERATIONS" style={{ background: 'var(--bg-secondary)' }}>Operations</option>
+                                    <option value="MARKETING" style={{ background: 'var(--bg-secondary)' }}>Marketing</option>
+                                    <option value="HR" style={{ background: 'var(--bg-secondary)' }}>HR & Visa</option>
+                                    <option value="INVENTORY" style={{ background: 'var(--bg-secondary)' }}>Inventory</option>
                                 </select>
                             </div>
                             <div>
-                                <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '700', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Reference #</label>
+                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Reference #</label>
                                 <input name="reference" onChange={handleChange} placeholder="Invoice or Receipt #"
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        color: '#fff',
+                                        background: 'var(--input-bg)',
+                                        border: '1.5px solid var(--gold-border)',
+                                        color: 'var(--text-primary)',
                                         width: '100%',
                                         padding: '15px',
                                         borderRadius: '12px',
                                         fontSize: '14px',
+                                        fontWeight: '900',
                                         outline: 'none'
                                     }} />
                             </div>
                             <div style={{ gridColumn: '1 / -1' }}>
-                                <label style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '700', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Description / Narrative</label>
+                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Description / Narrative</label>
                                 <textarea name="description" rows="3" onChange={handleChange} placeholder="Detailed reason for transaction..."
                                     style={{
-                                        background: 'rgba(0,0,0,0.3)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        color: '#fff',
+                                        background: 'var(--input-bg)',
+                                        border: '1.5px solid var(--gold-border)',
+                                        color: 'var(--text-primary)',
                                         width: '100%',
                                         padding: '15px',
                                         borderRadius: '12px',
                                         resize: 'none',
                                         fontFamily: 'inherit',
                                         fontSize: '14px',
+                                        fontWeight: '900',
                                         outline: 'none'
                                     }}></textarea>
                             </div>
                         </div>
 
-                        <button type="submit" className="btn-primary" style={{ width: '100%', height: '60px', borderRadius: '15px', fontSize: '1.2rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
+                        <button type="submit" className="btn-primary" style={{ width: '100%', height: '60px', borderRadius: '15px', fontSize: '1.2rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', border: '1.5px solid var(--gold-border)' }}>
                             <CreditCard size={24} /> Commit to Ledger
                         </button>
                     </GlassCard>

@@ -97,13 +97,13 @@ const MissionControl = () => {
                         cursor: 'pointer',
                         fontSize: '14px',
                         fontWeight: isSelected ? '800' : '500',
-                        color: isSelected ? '#fff' : '#94a3b8',
-                        background: isSelected ? 'rgba(176, 141, 87, 0.4)' : isToday ? 'rgba(255,255,255,0.05)' : 'transparent',
-                        border: isSelected ? '1px solid rgba(176, 141, 87, 0.6)' : isToday ? '1px solid rgba(255,255,255,0.1)' : '1px solid transparent',
+                        color: isSelected ? '#fff' : 'var(--text-secondary)',
+                        background: isSelected ? 'var(--gold)' : isToday ? 'var(--input-bg)' : 'transparent',
+                        border: isSelected ? '1px solid var(--gold-border)' : isToday ? '1px solid var(--border-color)' : '1px solid transparent',
                         transition: 'all 0.2s'
                     }}
-                    onMouseOver={(e) => !isSelected && (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
-                    onMouseOut={(e) => !isSelected && (e.currentTarget.style.background = isToday ? 'rgba(255,255,255,0.05)' : 'transparent')}
+                    onMouseOver={(e) => !isSelected && (e.currentTarget.style.background = 'var(--bg-glass)')}
+                    onMouseOut={(e) => !isSelected && (e.currentTarget.style.background = isToday ? 'var(--input-bg)' : 'transparent')}
                 >
                     {d}
                 </div>
@@ -113,20 +113,20 @@ const MissionControl = () => {
     };
 
     return (
-        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: '#0a0a0a' }}>
+        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: 'var(--bg-primary)', transition: 'background-color 0.3s ease' }}>
             <header style={{ marginBottom: '40px', paddingLeft: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                 <div>
-                    <div style={{ color: '#b08d57', fontWeight: '900', letterSpacing: '4px', fontSize: '12px', marginBottom: '10px' }}>MISSION CONTROL</div>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '900', color: '#fff', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Systems Overview</h1>
+                    <div style={{ color: 'var(--gold)', fontWeight: '900', letterSpacing: '4px', fontSize: '12px', marginBottom: '10px' }}>MISSION CONTROL</div>
+                    <h1 style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--text-primary)', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Systems Overview</h1>
                 </div>
 
                 <div style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
                     <button
                         onClick={() => navigate('/job-cards/create')}
                         style={{
-                            background: 'rgba(176, 141, 87, 0.15)',
-                            border: '1px solid rgba(176, 141, 87, 0.4)',
-                            color: '#fff',
+                            background: 'var(--bg-glass)',
+                            border: '1px solid var(--gold-border)',
+                            color: 'var(--text-primary)',
                             padding: '12px 25px',
                             borderRadius: '12px',
                             display: 'flex',
@@ -136,17 +136,17 @@ const MissionControl = () => {
                             fontWeight: '700',
                             transition: 'all 0.3s'
                         }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(176, 141, 87, 0.3)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(176, 141, 87, 0.15)'}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'var(--gold)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
                     >
                         <PlusCircle size={18} /> Create Job Card
                     </button>
                     <button
                         onClick={() => navigate('/hr/attendance')}
                         style={{
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: '#fff',
+                            background: 'var(--bg-glass)',
+                            border: '1px solid var(--border-color)',
+                            color: 'var(--text-primary)',
                             padding: '12px 25px',
                             borderRadius: '12px',
                             display: 'flex',
@@ -156,8 +156,8 @@ const MissionControl = () => {
                             fontWeight: '700',
                             transition: 'all 0.3s'
                         }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
+                        onMouseOver={(e) => e.currentTarget.style.background = 'var(--border-color)'}
+                        onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
                     >
                         <UserCheck size={18} color="#10b981" /> Attendance
                     </button>
@@ -178,17 +178,57 @@ const MissionControl = () => {
                     >
                         <div style={{ marginTop: '20px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>{monthNames[currentMonth]} {currentYear}</div>
+                                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>{monthNames[currentMonth]} {currentYear}</div>
                                 <div style={{ display: 'flex', gap: '10px' }}>
-                                    <ChevronLeft onClick={handlePrevMonth} style={{ cursor: 'pointer', opacity: 0.5 }} size={20} />
-                                    <ChevronRight onClick={handleNextMonth} style={{ cursor: 'pointer', opacity: 0.5 }} size={20} />
+                                    <ChevronLeft onClick={handlePrevMonth} style={{ cursor: 'pointer', opacity: 0.5, color: 'var(--text-primary)' }} size={20} />
+                                    <ChevronRight onClick={handleNextMonth} style={{ cursor: 'pointer', opacity: 0.5, color: 'var(--text-primary)' }} size={20} />
                                 </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', textAlign: 'center' }}>
                                 {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                                    <div key={`day-${i}`} style={{ fontSize: '10px', fontWeight: '900', color: '#64748b', marginBottom: '10px' }}>{d}</div>
+                                    <div key={`day-${i}`} style={{ fontSize: '10px', fontWeight: '900', color: 'var(--text-muted)', marginBottom: '10px' }}>{d}</div>
                                 ))}
-                                {renderCalendar()}
+                                {(() => {
+                                    const days = [];
+                                    const totalDays = daysInMonth(currentMonth, currentYear);
+                                    const startDay = firstDayOfMonth(currentMonth, currentYear);
+
+                                    for (let i = 0; i < startDay; i++) {
+                                        days.push(<div key={`empty-${i}`} style={{ width: '100%', aspectRatio: '1', opacity: 0.1 }} />);
+                                    }
+
+                                    for (let d = 1; d <= totalDays; d++) {
+                                        const isToday = d === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
+                                        const isSelected = d === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
+
+                                        days.push(
+                                            <div
+                                                key={d}
+                                                onClick={() => setSelectedDate(new Date(currentYear, currentMonth, d))}
+                                                style={{
+                                                    width: '100%',
+                                                    aspectRatio: '1',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderRadius: '12px',
+                                                    cursor: 'pointer',
+                                                    fontSize: '14px',
+                                                    fontWeight: isSelected ? '800' : '500',
+                                                    color: isSelected ? '#000' : 'var(--text-secondary)',
+                                                    background: isSelected ? 'var(--gold)' : isToday ? 'var(--bg-glass)' : 'transparent',
+                                                    border: isSelected ? '1px solid var(--gold-border)' : isToday ? '1px solid var(--border-color)' : '1px solid transparent',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                                onMouseOver={(e) => !isSelected && (e.currentTarget.style.background = 'var(--bg-glass)')}
+                                                onMouseOut={(e) => !isSelected && (e.currentTarget.style.background = isToday ? 'var(--bg-glass)' : 'transparent')}
+                                            >
+                                                {d}
+                                            </div>
+                                        );
+                                    }
+                                    return days;
+                                })()}
                             </div>
                         </div>
                     </BentoCard>
@@ -222,10 +262,10 @@ const MissionControl = () => {
                 <GlassCard style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '30px' }}>
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                            <div className="pulse-dot" style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%' }} />
-                            <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '2px' }}>DAILY SNAPSHOT</div>
+                            <div className="pulse-dot" style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981' }} />
+                            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>DAILY SNAPSHOT</div>
                         </div>
-                        <h3 style={{ margin: 0, fontSize: '24px', fontWeight: '800' }}>{selectedDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</h3>
+                        <h3 style={{ margin: 0, fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>{selectedDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</h3>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
@@ -237,14 +277,14 @@ const MissionControl = () => {
 
                     <div style={{ flex: 1, marginTop: '10px', overflow: 'hidden' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h4 style={{ fontSize: '13px', fontWeight: '800', color: '#94a3b8', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Live Workshop View</h4>
+                            <h4 style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-secondary)', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Live Workshop View</h4>
                             <div style={{ fontSize: '10px', color: '#10b981', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '5px' }}>
                                 <div className="pulse-dot" style={{ width: '6px', height: '6px', background: '#10b981', borderRadius: '50%' }} /> REAL-TIME
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px', padding: '10px 15px', fontSize: '10px', fontWeight: '900', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px', padding: '10px 15px', fontSize: '10px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                                 <span>Time</span>
                                 <span>Unit / Customer</span>
                                 <span style={{ textAlign: 'right' }}>Status</span>
@@ -259,15 +299,15 @@ const MissionControl = () => {
                                         gridTemplateColumns: '80px 1fr 100px',
                                         alignItems: 'center',
                                         padding: '14px 15px',
-                                        background: 'rgba(255,255,255,0.02)',
+                                        background: 'var(--bg-glass)',
                                         borderRadius: '12px',
-                                        border: '1px solid rgba(255,255,255,0.05)',
+                                        border: '1px solid var(--border-color)',
                                         transition: 'all 0.3s'
                                     }}>
-                                        <div style={{ fontSize: '11px', fontWeight: '800', color: '#64748b' }}>{s.time}</div>
+                                        <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-secondary)' }}>{s.time}</div>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: '700', color: '#fff' }}>{jc}</div>
-                                            <div style={{ fontSize: '11px', color: '#94a3b8' }}>{cust}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)' }}>{jc}</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{cust}</div>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
                                             <span style={{
@@ -275,9 +315,9 @@ const MissionControl = () => {
                                                 fontWeight: '900',
                                                 padding: '4px 8px',
                                                 borderRadius: '6px',
-                                                background: status === 'CLOSED' ? 'rgba(255,255,255,0.05)' : 'rgba(176,141,87,0.1)',
-                                                color: status === 'CLOSED' ? '#64748b' : '#b08d57',
-                                                border: `1px solid ${status === 'CLOSED' ? 'rgba(255,255,255,0.1)' : 'rgba(176,141,87,0.2)'}`
+                                                background: status === 'CLOSED' ? 'var(--bg-glass)' : 'var(--gold-glow)',
+                                                color: status === 'CLOSED' ? 'var(--text-secondary)' : 'var(--gold)',
+                                                border: `1px solid ${status === 'CLOSED' ? 'var(--border-color)' : 'var(--gold-border)'}`
                                             }}>
                                                 {status}
                                             </span>
@@ -285,7 +325,7 @@ const MissionControl = () => {
                                     </div>
                                 );
                             }) : (
-                                <div style={{ padding: '40px 20px', textAlign: 'center', color: '#64748b', fontSize: '13px' }}>
+                                <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '13px' }}>
                                     No units currently in shop
                                 </div>
                             )}
@@ -296,8 +336,8 @@ const MissionControl = () => {
                         onClick={() => navigate('/')}
                         style={{
                             background: 'transparent',
-                            border: '1px solid #392e4e',
-                            color: '#fff',
+                            border: '1px solid var(--border-color)',
+                            color: 'var(--text-primary)',
                             padding: '12px',
                             borderRadius: '12px',
                             display: 'flex',
@@ -318,10 +358,10 @@ const MissionControl = () => {
 };
 
 const SnapshotItem = ({ icon: Icon, label, value, color }) => (
-    <div style={{ padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+    <div style={{ padding: '20px', background: 'var(--bg-glass)', borderRadius: '16px', border: '1px solid var(--border-color)', transition: 'all 0.3s' }}>
         <Icon size={18} color={color} style={{ marginBottom: '10px' }} />
-        <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>{label}</div>
-        <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff', marginTop: '4px' }}>{value}</div>
+        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700', textTransform: 'uppercase' }}>{label}</div>
+        <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '4px' }}>{value}</div>
     </div>
 );
 

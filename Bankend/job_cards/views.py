@@ -146,6 +146,9 @@ class JobCardViewSet(viewsets.ModelViewSet):
         next_status = next_status_map.get(job_card.status)
         
         if next_status:
+            if job_card.status == 'RECEPTION' and not job_card.checklists.exists():
+                return Response({'error': 'Vehicle Intake Checklist required to advance from Reception'}, status=status.HTTP_400_BAD_REQUEST)
+                
             if job_card.status == 'INVOICING' and not hasattr(job_card, 'invoice'):
                 return Response({'error': 'Invoice required to advance to Delivery'}, status=status.HTTP_400_BAD_REQUEST)
             

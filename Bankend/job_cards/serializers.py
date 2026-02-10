@@ -14,6 +14,7 @@ class JobCardTaskSerializer(serializers.ModelSerializer):
 class JobCardSerializer(serializers.ModelSerializer):
     photos = JobCardPhotoSerializer(many=True, read_only=True)
     tasks = JobCardTaskSerializer(many=True, read_only=True)
+    checklists = serializers.SlugRelatedField(many=True, read_only=True, slug_field='checklist_number')
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     invoice = serializers.SerializerMethodField()
 

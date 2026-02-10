@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import models
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -122,4 +123,83 @@ class YearlyPLReportView(APIView):
                 'net_profit_loss': total_revenue - total_expenses
             },
             'departmental_performance': dept_stats
+        })
+
+class WorkshopDiaryReportView(APIView):
+    """
+    Detailed Audit log of all Job Cards within a date range.
+    """
+    def get(self, request):
+        from job_cards.models import JobCard
+        from django.db.models import Count, Sum
+
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+        
+        jobs = JobCard.objects.all().order_by('-date')
+        if start_date and end_date:
+            jobs = jobs.filter(date__range=[start_date, end_date])
+        
+        summary = jobs.aggregate(
+            total_jobs=Count('id'),
+            total_value=Sum('net_amount'),
+            total_vat=Sum('vat_amount')
+        )
+
+        # Serialize manually or use a lightweight serializer for the list
+        job_data = []
+        for j in jobs:
+            job_data.append({
+                'id': j.id,
+                'number': j.job_card_number,
+                'date': j.date,
+                'customer': j.customer_name,
+                'status': j.status,
+                'net_amount': j.net_amount,
+                'advisor': j.service_advisor.full_name if j.service_advisor else j.service_advisor_legacy
+            })
+
+        return Response({
+            'summary': summary,
+            'entries': job_data
+        })
+
+class InvoiceBookReportView(APIView):
+    """
+    Detailed log of all Invoices within a date range.
+    """
+    def get(self, request):
+        from invoices.models import Invoice
+        from django.db.models import Sum, Count
+
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+        
+        invoices = Invoice.objects.all().order_by('-date')
+        if start_date and end_date:
+            invoices = invoices.filter(date__range=[start_date, end_date])
+            
+        summary = invoices.aggregate(
+            total_invoices=Count('id'),
+            total_grand=Sum('grand_total'),
+            total_vat=Sum('vat_amount'),
+            pending_count=Count('id', filter=models.Q(payment_status='PENDING')),
+            paid_count=Count('id', filter=models.Q(payment_status='PAID'))
+        )
+
+        entries = []
+        for inv in invoices:
+            entries.append({
+                'id': inv.id,
+                'number': inv.invoice_number,
+                'date': inv.date,
+                'customer': inv.customer_name,
+                'status': inv.payment_status,
+                'grand_total': inv.grand_total,
+                'vat_amount': inv.vat_amount
+            })
+
+        return Response({
+            'summary': summary,
+            'entries': entries
         })

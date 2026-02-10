@@ -77,14 +77,14 @@ const AccountingPage = () => {
         <div style={{ padding: '30px' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
                 <div>
-                    <div style={{ fontSize: '10px', color: '#8b5cf6', fontWeight: '800', letterSpacing: '2px' }}>FINANCE & ACCOUNTS</div>
-                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>General Ledger</h1>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>FINANCE & ACCOUNTS</div>
+                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>General Ledger</h1>
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={exportCSV} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.08)', color: '#fff' }}>
+                    <button onClick={exportCSV} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)' }}>
                         <Download size={16} /> Export CSV
                     </button>
-                    <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1.5px solid var(--gold-border)' }}>
                         <Plus size={16} /> New Entry
                     </button>
                 </div>
@@ -109,8 +109,8 @@ const AccountingPage = () => {
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
                             style={{
-                                width: '100%', padding: '10px 10px 10px 36px', background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', fontSize: '14px', outline: 'none'
+                                width: '100%', padding: '10px 10px 10px 36px', background: 'var(--input-bg)',
+                                border: '1.5px solid var(--gold-border)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '800'
                             }}
                         />
                     </div>
@@ -119,9 +119,9 @@ const AccountingPage = () => {
                             key={f}
                             onClick={() => { setFilterType(f); setPage(1); }}
                             style={{
-                                padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '12px',
-                                background: filterType === f ? '#8b5cf6' : 'rgba(255,255,255,0.05)',
-                                color: filterType === f ? '#fff' : '#94a3b8'
+                                padding: '10px 20px', borderRadius: '10px', border: filterType === f ? '1.5px solid var(--gold-border)' : '1.5px solid var(--border-color)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
+                                background: filterType === f ? 'var(--gold-glow)' : 'var(--input-bg)',
+                                color: 'var(--text-primary)'
                             }}
                         >{f}</button>
                     ))}
@@ -129,29 +129,29 @@ const AccountingPage = () => {
             </GlassCard>
 
             {/* Ledger Table */}
-            <GlassCard style={{ padding: 0, overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
+            <GlassCard style={{ padding: 0, overflow: 'hidden', border: '1.5px solid var(--gold-border)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-primary)', fontSize: '14px' }}>
                     <thead>
-                        <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
-                            <th style={{ padding: '18px' }}>Date</th>
-                            <th style={{ padding: '18px' }}>Reference</th>
-                            <th style={{ padding: '18px' }}>Description</th>
-                            <th style={{ padding: '18px' }}>Account</th>
-                            <th style={{ padding: '18px', textAlign: 'right' }}>Debit (AED)</th>
-                            <th style={{ padding: '18px', textAlign: 'right' }}>Credit (AED)</th>
+                        <tr style={{ background: 'var(--input-bg)', textAlign: 'left', borderBottom: '2.5px solid var(--gold-border)' }}>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Date</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Reference</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Description</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Account</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px', textAlign: 'right' }}>Debit (AED)</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px', textAlign: 'right' }}>Credit (AED)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginated.length > 0 ? paginated.map((t, i) => (
-                            <tr key={t.id || i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                                <td style={{ padding: '16px', color: '#b08d57', fontWeight: '600' }}>{t.date || '-'}</td>
-                                <td style={{ padding: '16px', fontWeight: '700' }}>{t.reference || '-'}</td>
-                                <td style={{ padding: '16px', color: '#94a3b8' }}>{t.description || '-'}</td>
-                                <td style={{ padding: '16px' }}>{t.account_name || t.account || '-'}</td>
-                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '800', color: parseFloat(t.debit_amount) > 0 ? '#3b82f6' : '#333' }}>
+                            <tr key={t.id || i} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                <td style={{ padding: '16px', color: 'var(--gold)', fontWeight: '900' }}>{t.date || '-'}</td>
+                                <td style={{ padding: '16px', fontWeight: '900', color: 'var(--text-primary)' }}>{t.reference || '-'}</td>
+                                <td style={{ padding: '16px', color: 'var(--text-secondary)', fontWeight: '800' }}>{t.description || '-'}</td>
+                                <td style={{ padding: '16px', color: 'var(--text-primary)', fontWeight: '800' }}>{t.account_name || t.account || '-'}</td>
+                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.debit_amount) > 0 ? '#3b82f6' : 'var(--text-secondary)' }}>
                                     {parseFloat(t.debit_amount) > 0 ? parseFloat(t.debit_amount).toLocaleString() : '-'}
                                 </td>
-                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '800', color: parseFloat(t.credit_amount) > 0 ? '#10b981' : '#333' }}>
+                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.credit_amount) > 0 ? '#10b981' : 'var(--text-secondary)' }}>
                                     {parseFloat(t.credit_amount) > 0 ? parseFloat(t.credit_amount).toLocaleString() : '-'}
                                 </td>
                             </tr>
@@ -170,12 +170,12 @@ const AccountingPage = () => {
             {totalPages > 1 && (
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
                     <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                        style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fff', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer' }}>
+                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer' }}>
                         <ChevronLeft size={16} />
                     </button>
-                    <span style={{ color: '#94a3b8', padding: '8px 14px', fontSize: '14px' }}>Page {page} of {totalPages}</span>
+                    <span style={{ color: 'var(--text-secondary)', padding: '8px 14px', fontSize: '14px', fontWeight: '900' }}>Page {page} of {totalPages}</span>
                     <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                        style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: '#fff', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer' }}>
+                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer' }}>
                         <ChevronRight size={16} />
                     </button>
                 </div>
@@ -185,13 +185,13 @@ const AccountingPage = () => {
 };
 
 const LedgerStat = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px' }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon size={24} color={color} />
+    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px', border: '1.5px solid var(--gold-border)' }}>
+        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--gold-border)' }}>
+            <Icon size={24} color="var(--gold)" />
         </div>
         <div>
-            <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '22px', fontWeight: '900', color: '#fff' }}>{value}</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
+            <div style={{ fontSize: '22px', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
         </div>
     </GlassCard>
 );

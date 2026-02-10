@@ -20,16 +20,17 @@ const BentoCard = ({ title, label, description, icon: Icon, span = 1, rows = 1, 
             style={{
                 '--glow-x': glowPos.x,
                 '--glow-y': glowPos.y,
+                transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)', // Ensure smooth theme transition
             }}
         >
             <div className="magic-bento-card__header">
                 <span className="magic-bento-card__label">{label}</span>
-                {Icon && <Icon size={24} color="#b08d57" />}
+                {Icon && <Icon size={24} color="var(--gold)" />}
             </div>
 
             <div className="magic-bento-card__content">
-                <h3 className="magic-bento-card__title">{title}</h3>
-                {description && <p className="magic-bento-card__description">{description}</p>}
+                <h3 className="magic-bento-card__title" style={{ color: 'var(--text-primary)' }}>{title}</h3>
+                {description && <p className="magic-bento-card__description" style={{ color: 'var(--text-secondary)' }}>{description}</p>}
                 {children}
             </div>
         </div>

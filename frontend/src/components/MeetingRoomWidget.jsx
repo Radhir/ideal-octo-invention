@@ -71,23 +71,24 @@ const MeetingRoomWidget = () => {
 
     return (
         <div style={{
-            background: 'rgba(0, 0, 0, 0.4)',
-            border: '1px solid rgba(176, 141, 87, 0.2)',
+            background: 'var(--bg-glass)',
+            border: '1.5px solid var(--gold-border)',
             borderRadius: '15px',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
             height: '100%',
-            minHeight: '400px'
+            minHeight: '400px',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
         }}>
             {/* Header */}
             <div style={{
                 padding: '15px 20px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                borderBottom: '1px solid var(--border-color)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                background: 'rgba(176, 141, 87, 0.05)'
+                background: 'var(--input-bg)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Activity size={16} color="#b08d57" />
@@ -98,7 +99,7 @@ const MeetingRoomWidget = () => {
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 5px #10b981' }} />
-                        <span style={{ fontSize: '9px', color: '#fff', opacity: 0.5 }}>LIVE</span>
+                        <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontWeight: '800' }}>LIVE</span>
                     </div>
                 </div>
             </div>
@@ -109,11 +110,12 @@ const MeetingRoomWidget = () => {
                 {/* CCTV Section - Left Side (30%) */}
                 <div style={{
                     width: '35%',
-                    borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRight: '1.5px solid var(--gold-border)',
                     padding: '10px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '10px'
+                    gap: '10px',
+                    background: 'var(--bg-secondary)'
                 }}>
                     <div style={{
                         flex: 1,
@@ -121,7 +123,7 @@ const MeetingRoomWidget = () => {
                         borderRadius: '8px',
                         position: 'relative',
                         overflow: 'hidden',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                        border: '1.5px solid var(--gold-border)'
                     }}>
                         {/* Static / Placeholder Feed */}
                         <div style={{
@@ -131,7 +133,7 @@ const MeetingRoomWidget = () => {
                             opacity: 0.4
                         }}>
                             <Camera size={24} color="#64748b" />
-                            <span style={{ fontSize: '8px', color: '#64748b', letterSpacing: '1px' }}>CAM-{activeCamera} FEED OFF-AIR</span>
+                            <span style={{ fontSize: '8px', color: '#ffffff', letterSpacing: '1px', fontWeight: '800' }}>CAM-{activeCamera} FEED OFF-AIR</span>
                         </div>
 
                         {/* Overlay Info */}
@@ -146,12 +148,13 @@ const MeetingRoomWidget = () => {
                                 onClick={() => setActiveCamera(cam)}
                                 style={{
                                     height: '30px',
-                                    background: activeCamera === cam ? 'rgba(176, 141, 87, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-                                    border: `1px solid ${activeCamera === cam ? '#b08d57' : 'rgba(255, 255, 255, 0.1)'}`,
+                                    background: activeCamera === cam ? 'var(--gold-glow)' : 'var(--input-bg)',
+                                    border: `1px solid ${activeCamera === cam ? 'var(--gold)' : 'var(--border-color)'}`,
                                     borderRadius: '4px',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    fontSize: '9px', color: activeCamera === cam ? '#b08d57' : '#64748b',
-                                    cursor: 'pointer'
+                                    fontSize: '9px', color: activeCamera === cam ? 'var(--gold)' : 'var(--text-muted)',
+                                    cursor: 'pointer',
+                                    fontWeight: '800'
                                 }}
                             >
                                 CAM {cam}
@@ -171,7 +174,7 @@ const MeetingRoomWidget = () => {
                         gap: '15px'
                     }}>
                         {messages.length === 0 && (
-                            <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '10px', marginTop: '50px' }}>
+                            <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '10px', marginTop: '50px', letterSpacing: '2px', fontWeight: '800' }}>
                                 NO ACTIVE COMMUNICATIONS
                             </div>
                         )}
@@ -180,21 +183,22 @@ const MeetingRoomWidget = () => {
                             return (
                                 <div key={idx} style={{
                                     alignSelf: 'flex-start',
-                                    background: 'rgba(255, 255, 255, 0.03)',
-                                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                                    background: 'var(--input-bg)',
+                                    border: '1.5px solid var(--gold-border)',
                                     borderRadius: '2px 10px 10px 10px',
                                     padding: '8px 12px',
-                                    maxWidth: '85%'
+                                    maxWidth: '85%',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', gap: '10px' }}>
                                         <span style={{ fontSize: '9px', fontWeight: '700', color: '#b08d57' }}>
                                             {msg.sender_name.toUpperCase()}
                                         </span>
-                                        <span style={{ fontSize: '8px', color: '#64748b' }}>
+                                        <span style={{ fontSize: '8px', color: 'var(--text-muted)', fontWeight: '700' }}>
                                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </div>
-                                    <div style={{ fontSize: '12px', color: '#e2e8f0', lineHeight: '1.4' }}>
+                                    <div style={{ fontSize: '12px', color: 'var(--text-primary)', lineHeight: '1.4', fontWeight: '900' }}>
                                         {msg.text}
                                     </div>
                                 </div>
@@ -206,8 +210,8 @@ const MeetingRoomWidget = () => {
                     {/* Input Area */}
                     <div style={{
                         padding: '15px',
-                        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-                        background: 'rgba(0, 0, 0, 0.2)'
+                        borderTop: '1px solid var(--border-color)',
+                        background: 'var(--bg-secondary)'
                     }}>
                         {canWrite ? (
                             <form onSubmit={handleSend} style={{ display: 'flex', gap: '10px' }}>
@@ -218,15 +222,16 @@ const MeetingRoomWidget = () => {
                                     placeholder="TRANSMIT MESSAGE..."
                                     style={{
                                         flex: 1,
-                                        background: 'rgba(255, 255, 255, 0.05)',
-                                        border: 'none',
+                                        background: 'var(--input-bg)',
+                                        border: '1px solid var(--border-color)',
                                         borderRadius: '4px',
                                         padding: '10px 15px',
-                                        color: '#fff',
+                                        color: 'var(--text-primary)',
                                         fontSize: '11px',
                                         outline: 'none',
                                         fontFamily: 'Outfit, sans-serif',
-                                        letterSpacing: '1px'
+                                        letterSpacing: '1px',
+                                        fontWeight: '700'
                                     }}
                                 />
                                 <button
@@ -247,11 +252,11 @@ const MeetingRoomWidget = () => {
                             <div style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                                 padding: '10px',
-                                border: '1px dashed rgba(255, 255, 255, 0.1)',
+                                border: '1px dashed var(--gold-border)',
                                 borderRadius: '4px'
                             }}>
-                                <Lock size={12} color="#64748b" />
-                                <span style={{ fontSize: '10px', color: '#64748b', letterSpacing: '2px' }}>READ ONLY CHANNEL</span>
+                                <Lock size={12} color="var(--gold)" />
+                                <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '2px', fontWeight: '800' }}>READ ONLY CHANNEL</span>
                             </div>
                         )}
                     </div>

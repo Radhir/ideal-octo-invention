@@ -16,7 +16,8 @@ import {
     Save,
     Activity,
     Package,
-    Printer
+    Printer,
+    AlertCircle
 } from 'lucide-react';
 import JobWorkflow from './JobWorkflow';
 import PrintHeader from '../../components/PrintHeader';
@@ -86,13 +87,13 @@ const JobDetail = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <button
                         onClick={() => navigate('/job-cards')}
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
+                        style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-color)', padding: '8px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)', transition: 'all 0.3s' }}
                     >
                         <ArrowLeft size={20} />
                     </button>
                     <div>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.5rem', margin: 0 }}>{job.customer_name}</h1>
-                        <p style={{ color: '#b08d57', fontSize: '14px', margin: 0, fontWeight: '700' }}>#{job.job_card_number}</p>
+                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.5rem', margin: 0, color: 'var(--text-primary)' }}>{job.customer_name}</h1>
+                        <p style={{ color: 'var(--gold)', fontSize: '14px', margin: 0, fontWeight: '700' }}>#{job.job_card_number}</p>
                     </div>
                 </div>
 
@@ -111,14 +112,14 @@ const JobDetail = () => {
                             alert('Customer Portal Link copied to clipboard!');
                         }}
                         className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', transition: 'all 0.3s' }}
                     >
-                        <ShieldCheck size={18} color="#b08d57" /> Share Portal
+                        <ShieldCheck size={18} color="var(--gold)" /> Share Portal
                     </button>
                     <button
                         onClick={() => window.open(`/forms/utils/generate-pdf/JobCard/${id}/`, '_blank')}
                         className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', transition: 'all 0.3s' }}
                     >
                         <Printer size={18} /> Res. Job Card
                     </button>
@@ -128,13 +129,13 @@ const JobDetail = () => {
                         <>
                             <button
                                 onClick={() => navigate(`/invoices/${job.invoice.id}`)}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: '#b08d57', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '12px', fontWeight: '900' }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--gold)', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '12px', fontWeight: '900', transition: 'all 0.3s' }}
                             >
                                 <FileText size={18} /> View Invoice
                             </button>
                             <button
                                 onClick={() => window.open(`/forms/utils/generate-pdf/Invoice/${job.invoice.id}/`, '_blank')}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--bg-glass)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', transition: 'all 0.3s' }}
                             >
                                 <Printer size={18} /> Print Invoice
                             </button>
@@ -158,7 +159,7 @@ const JobDetail = () => {
                 <div className="main-content">
                     <GlassCard style={{ padding: '30px', marginBottom: '30px' }}>
                         <h3 style={sectionTitleStyle}>Job Status: {job.status_display}</h3>
-                        <div style={{ color: '#fff', fontSize: '15px', lineHeight: '1.6', background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ color: 'var(--text-primary)', fontSize: '15px', lineHeight: '1.6', background: 'var(--input-bg)', padding: '20px', borderRadius: '15px', border: '1px solid var(--border-color)', transition: 'all 0.3s' }}>
                             {job.job_description}
                         </div>
                     </GlassCard>
@@ -167,13 +168,13 @@ const JobDetail = () => {
                     <GlassCard style={{ padding: '30px', marginBottom: '30px', border: '1px solid rgba(176, 141, 87, 0.2)' }}>
                         <h3 style={sectionTitleStyle}>Customer Authorization</h3>
                         {job.signature_data ? (
-                            <div style={{ textAlign: 'center', background: '#fff', padding: '20px', borderRadius: '12px' }}>
+                            <div style={{ textAlign: 'center', background: '#fff', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                                 <img src={job.signature_data} alt="Customer Signature" style={{ maxHeight: '150px' }} />
-                                <p style={{ color: '#64748b', fontSize: '11px', marginTop: '10px' }}>Digitally signed on {new Date(job.updated_at).toLocaleDateString()}</p>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '11px', marginTop: '10px' }}>Digitally signed on {new Date(job.updated_at).toLocaleDateString()}</p>
                             </div>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-                                <p style={{ color: '#94a3b8', fontSize: '14px', textAlign: 'center' }}>Vehicle reception signature required to proceed with works.</p>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', textAlign: 'center' }}>Vehicle reception signature required to proceed with works.</p>
                                 <SignaturePad
                                     onSave={async (data) => {
                                         try {
@@ -217,14 +218,14 @@ const JobDetail = () => {
                     <GlassCard style={{ padding: '20px', marginBottom: '20px' }}>
                         <h4 style={sectionTitleStyle}>Financial Summary</h4>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ color: '#94a3b8' }}>Subtotal (Net)</span>
-                            <span>AED {job.total_amount}</span>
+                            <span style={{ color: 'var(--text-secondary)' }}>Subtotal (Net)</span>
+                            <span style={{ color: 'var(--text-primary)' }}>AED {job.total_amount}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ color: '#94a3b8' }}>VAT (5%)</span>
-                            <span>AED {job.vat_amount}</span>
+                            <span style={{ color: 'var(--text-secondary)' }}>VAT (5%)</span>
+                            <span style={{ color: 'var(--text-primary)' }}>AED {job.vat_amount}</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.1)', fontWeight: '800', fontSize: '1.2rem', color: '#b08d57' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid var(--border-color)', fontWeight: '800', fontSize: '1.2rem', color: 'var(--gold)' }}>
                             <span>Grand Total</span>
                             <span>AED {job.net_amount}</span>
                         </div>
@@ -248,14 +249,50 @@ const JobDetail = () => {
                 }
             `}</style>
             </div>
+            {/* Checklist Enforcement Warning */}
+            {job.status === 'RECEPTION' && (!job.checklists || job.checklists.length === 0) && (
+                <div style={{
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid #ef4444',
+                    borderRadius: '12px',
+                    padding: '15px 20px',
+                    marginBottom: '20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '15px'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <AlertCircle color="#ef4444" size={24} />
+                        <div>
+                            <div style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '15px' }}>Action Required: Intake Checklist Missing</div>
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>Vehicle cannot proceed to Estimation until the Service Advisor checklist is completed.</div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => navigate(`/service-advisor/form?jobId=${job.id}`)}
+                        style={{
+                            background: '#ef4444',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '10px 20px',
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        Complete Checklist
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
 
 const InfoItem = ({ label, value }) => (
     <div style={{ marginBottom: '12px' }}>
-        <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '2px' }}>{label}</div>
-        <div style={{ fontSize: '14px', fontWeight: '600' }}>{value}</div>
+        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '2px' }}>{label}</div>
+        <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>{value}</div>
     </div>
 );
 
@@ -265,23 +302,24 @@ const QCItem = ({ label, checked }) => (
             width: '18px',
             height: '18px',
             borderRadius: '4px',
-            border: '2px solid rgba(255,255,255,0.2)',
+            border: '2px solid var(--border-color)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: checked ? '#b08d57' : 'transparent',
-            borderColor: checked ? '#b08d57' : 'rgba(255,255,255,0.2)'
+            background: checked ? 'var(--gold)' : 'transparent',
+            borderColor: checked ? 'var(--gold)' : 'var(--border-color)',
+            transition: 'all 0.3s'
         }}>
             {checked && <CheckCircle2 size={12} color="#000" />}
         </div>
-        <span style={{ fontSize: '13px', color: checked ? '#fff' : '#94a3b8' }}>{label}</span>
+        <span style={{ fontSize: '13px', color: checked ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{label}</span>
     </div>
 );
 
 const sectionTitleStyle = {
     fontSize: '12px',
     textTransform: 'uppercase',
-    color: '#b08d57',
+    color: 'var(--gold)',
     marginBottom: '20px',
     fontWeight: '800',
     letterSpacing: '1px'

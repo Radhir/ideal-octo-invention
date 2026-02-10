@@ -5,13 +5,13 @@ from django.utils import timezone
 from core.permissions import IsAdminOrOwner, IsManager, IsEliteAdmin
 from .models import (
     Employee, HRRule, Payroll, Roster, HRAttendance, Team, Mistake, 
-    Department, Company, Branch, ModulePermission, SalarySlip, EmployeeDocument, WarningLetter
+    Department, Company, Branch, ModulePermission, SalarySlip, EmployeeDocument, WarningLetter, Notification
 )
 from .serializers import (
     EmployeeSerializer, HRRuleSerializer, PayrollSerializer,
     RosterSerializer, HRAttendanceSerializer, TeamSerializer, MistakeSerializer, DepartmentSerializer,
     CompanySerializer, BranchSerializer, ModulePermissionSerializer,
-    SalarySlipSerializer, EmployeeDocumentSerializer, WarningLetterSerializer
+    SalarySlipSerializer, EmployeeDocumentSerializer, WarningLetterSerializer, NotificationSerializer
 )
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -297,3 +297,22 @@ class EmployeeDocumentViewSet(viewsets.ModelViewSet):
 class WarningLetterViewSet(viewsets.ModelViewSet):
     queryset = WarningLetter.objects.all().order_by('-date_issued')
     serializer_class = WarningLetterSerializer
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    queryset = Notification.objects.none()
+    
+    def get_queryset(self):
+        return Notification.objects.filter(recipient=self.request.user)
+
+    @action(detail=False, methods=['POST'])
+    def mark_all_as_read(self, request):
+        Notification.objects.filter(recipient=request.user, is_read=False).update(is_read=True)
+        return Response({'status': 'notifications marked as read'})
+
+    @action(detail=True, methods=['POST'])
+    def mark_as_read(self, request, pk=None):
+        notification = self.get_object()
+        notification.is_read = True
+        notification.save()
+        return Response({'status': 'notification marked as read'})

@@ -39,11 +39,13 @@ class JobCard(models.Model):
     color = models.CharField(max_length=50)
     kilometers = models.PositiveIntegerField()
     
-    service_advisor = models.CharField(max_length=255, blank=True)
+    service_advisor_legacy = models.CharField(max_length=255, blank=True, null=True)
+    service_advisor = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='advised_jobs')
     initial_inspection_notes = models.TextField(blank=True)
 
     # Work Assignment
-    assigned_technician = models.CharField(max_length=255, blank=True)
+    assigned_technician_legacy = models.CharField(max_length=255, blank=True, null=True)
+    assigned_technician = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_jobs')
     assigned_bay = models.CharField(max_length=100, blank=True)
     estimated_timeline = models.DateTimeField(null=True, blank=True)
 
@@ -57,6 +59,11 @@ class JobCard(models.Model):
     net_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     advance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    # Commission Tracking
+    commission_applied = models.BooleanField(default=False)
+    advisor_commission = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    technician_commission = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
     # Banking (optional/legacy)
     account_name = models.CharField(max_length=255, blank=True)
@@ -100,34 +107,63 @@ class JobCard(models.Model):
             self.sync_to_finance()
 
     def sync_to_finance(self):
-        from finance.models import Transaction, Account, DEPARTMENTS
-        from hr.models import Department
+        from finance.models import Transaction, Account, Commission
         
-        # 1. Identify/Create Revenue Account
-        # Using a standard code for Workshop Revenue, e.g., '4001'
-        revenue_account, created = Account.objects.get_or_create(
+        # 1. Revenue Recognition
+        revenue_account, _ = Account.objects.get_or_create(
             code='4001',
-            defaults={
-                'name': 'Workshop Service Revenue',
-                'category': 'Revenue',
-                'description': 'Automated account for Job Card closed revenue'
-            }
+            defaults={'name': 'Workshop Service Revenue', 'category': 'REVENUE'}
         )
         
-        # 2. Identify Department
-        # Try to map branch or related info to a Finance Department
-        # For now, default to 'OPERATIONS' or map if Department model is available
-        target_dept = 'OPERATIONS' 
-        
-        # 3. Create Transaction
         Transaction.objects.create(
             account=revenue_account,
-            department=target_dept,
+            department='OPERATIONS',
             amount=self.net_amount,
             transaction_type='CREDIT',
-            description=f"Revenue recognized from Job Card #{self.job_card_number} | {self.customer_name}",
+            description=f"Revenue: Job #{self.job_card_number} | {self.customer_name}",
             reference=self.job_card_number
         )
+
+        # 2. VAT Recognition (Output VAT)
+        if self.vat_amount > 0:
+            vat_account, _ = Account.objects.get_or_create(
+                code='2050',
+                defaults={'name': 'VAT Payable (Output)', 'category': 'LIABILITY'}
+            )
+            Transaction.objects.create(
+                account=vat_account,
+                amount=self.vat_amount,
+                transaction_type='CREDIT', # Liability increases with Credit
+                description=f"VAT Output: Job #{self.job_card_number}",
+                reference=self.job_card_number
+            )
+
+        # 3. Commission Accrual
+        if not self.commission_applied:
+            # Advisor Commission
+            if self.service_advisor and self.service_advisor.commission_rate > 0:
+                comm_amt = (self.total_amount * self.service_advisor.commission_rate) / 100
+                self.advisor_commission = comm_amt
+                Commission.objects.create(
+                    employee=self.service_advisor,
+                    job_card=self,
+                    amount=comm_amt,
+                    notes=f"Advisor Commission for Job #{self.job_card_number}"
+                )
+            
+            # Technician Commission (Standard 2% if not specified, or use advisor rate as proxy for now)
+            if self.assigned_technician:
+                tech_comm = (self.total_amount * 2) / 100 # Default 2% for tech
+                self.technician_commission = tech_comm
+                Commission.objects.create(
+                    employee=self.assigned_technician,
+                    job_card=self,
+                    amount=tech_comm,
+                    notes=f"Technician Commission for Job #{self.job_card_number}"
+                )
+            
+            self.commission_applied = True
+            self.save()
 
     def __str__(self):
         return f"{self.job_card_number} - {self.get_status_display()}"

@@ -16,16 +16,16 @@ const ChecklistForm = ({ title, packages }) => {
         border: 'none',
         transition: 'all 0.3s',
         background: activePackage === pkgName
-            ? 'linear-gradient(135deg, #b08d57 0%, #8a6d43 100%)'
-            : 'rgba(255, 255, 255, 0.05)',
-        color: activePackage === pkgName ? '#fff' : '#94a3b8',
-        boxShadow: activePackage === pkgName ? '0 4px 15px rgba(176, 141, 87, 0.3)' : 'none'
+            ? 'linear-gradient(135deg, var(--gold) 0%, var(--gold-mute) 100%)'
+            : 'var(--bg-glass)',
+        color: activePackage === pkgName ? '#fff' : 'var(--text-secondary)',
+        boxShadow: activePackage === pkgName ? '0 4px 15px var(--gold-glow)' : 'none'
     });
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#fff' }}>{title}</h2>
+                <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--text-primary)' }}>{title}</h2>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     {Object.keys(packages).map(pkg => (
                         <button
@@ -42,16 +42,16 @@ const ChecklistForm = ({ title, packages }) => {
             <GlassCard>
                 <div style={{
                     padding: '16px 24px',
-                    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderBottom: '1px solid var(--border-color)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    background: 'rgba(255, 255, 255, 0.02)'
+                    background: 'var(--bg-glass)'
                 }}>
-                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#b08d57' }}>
+                    <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--gold)' }}>
                         {activePackage} Package Checklist
                     </span>
-                    <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#64748b', fontWeight: '700', letterSpacing: '1px' }}>
+                    <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: '700', letterSpacing: '1px' }}>
                         Compliance Check
                     </span>
                 </div>
@@ -63,22 +63,22 @@ const ChecklistForm = ({ title, packages }) => {
                             justifyContent: 'space-between',
                             alignItems: 'center',
                             padding: '16px 24px',
-                            borderBottom: idx === packages[activePackage].length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.05)',
+                            borderBottom: idx === packages[activePackage].length - 1 ? 'none' : '1px solid var(--border-color)',
                             transition: 'background 0.2s'
                         }}
-                            onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'}
+                            onMouseOver={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
                             onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
                         >
-                            <span style={{ color: '#e2e8f0', fontSize: '14px' }}>{item}</span>
+                            <span style={{ color: 'var(--text-primary)', fontSize: '14px' }}>{item}</span>
 
                             <div style={{ display: 'flex', gap: '20px' }}>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                                     <input type="radio" name={`item-${idx}`} style={{ accentColor: '#10b981' }} />
-                                    <span style={{ fontSize: '12px', color: '#cbd5e1' }}>Pass</span>
+                                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Pass</span>
                                 </label>
                                 <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                                     <input type="radio" name={`item-${idx}`} style={{ accentColor: '#ef4444' }} />
-                                    <span style={{ fontSize: '12px', color: '#cbd5e1' }}>Fail</span>
+                                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Fail</span>
                                 </label>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ const ChecklistForm = ({ title, packages }) => {
 
             <GlassCard>
                 <div style={{ padding: '20px' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: '#fff', marginBottom: '10px' }}>Final Approval</h3>
+                    <h3 style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--text-primary)', marginBottom: '10px' }}>Final Approval</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
                         <SignaturePad label="Inspector / Supervisor Signature" />
                     </div>

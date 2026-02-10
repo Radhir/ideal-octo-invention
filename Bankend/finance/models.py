@@ -36,11 +36,21 @@ class Budget(models.Model):
     def __str__(self):
         return f"{self.account.name} - {self.period}"
 
+import uuid
+
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
         ('DEBIT', 'Debit'),
         ('CREDIT', 'Credit'),
     ]
+    
+    audit_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    regulatory_status = models.CharField(max_length=50, default='FINAL', choices=[
+        ('DRAFT', 'Draft'),
+        ('FINAL', 'Finalized'),
+        ('VOID', 'Voided'),
+    ])
+    
     account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
     department_ref = models.ForeignKey('hr.Department', on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
     department = models.CharField(max_length=50, choices=DEPARTMENTS, default='GENERAL') # Legacy
@@ -67,3 +77,27 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.transaction_type} - {self.amount} ({self.account.name})"
+
+class Commission(models.Model):
+    COMMISSION_STATUS = [
+        ('ACCRUED', 'Accrued (Unpaid)'),
+        ('PAID', 'Paid'),
+        ('CANCELLED', 'Cancelled'),
+    ]
+    
+    employee = models.ForeignKey('hr.Employee', on_delete=models.CASCADE, related_name='commissions')
+    job_card = models.ForeignKey('job_cards.JobCard', on_delete=models.CASCADE, related_name='commissions')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=20, choices=COMMISSION_STATUS, default='ACCRUED')
+    date = models.DateField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"Comm: {self.employee.full_name} - {self.amount} AED"
+    
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        super().save(*args, **kwargs)
+        if is_new:
+            self.employee.total_commissions_earned += self.amount
+            self.employee.save()

@@ -20,3 +20,11 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+
+class CommissionSerializer(serializers.ModelSerializer):
+    employee_name = serializers.CharField(source='employee.full_name', read_only=True)
+    job_card_number = serializers.CharField(source='job_card.job_card_number', read_only=True)
+    
+    class Meta:
+        model = Commission
+        fields = '__all__'

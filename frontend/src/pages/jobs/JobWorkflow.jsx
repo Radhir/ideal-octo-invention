@@ -37,7 +37,7 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
                     left: '40px',
                     right: '40px',
                     height: '2px',
-                    background: 'rgba(255,255,255,0.05)',
+                    background: 'var(--border-color)',
                     zIndex: 0
                 }} />
 
@@ -52,21 +52,21 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
                                 width: '48px',
                                 height: '48px',
                                 borderRadius: '50%',
-                                background: isCompleted ? step.color : isActive ? '#000' : 'rgba(255,255,255,0.02)',
-                                border: `2px solid ${isActive || isCompleted ? step.color : 'rgba(255,255,255,0.1)'}`,
+                                background: isCompleted ? step.color : isActive ? 'var(--bg-primary)' : 'var(--input-bg)',
+                                border: `2px solid ${isActive || isCompleted ? step.color : 'var(--border-color)'}`,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 transition: 'all 0.3s ease',
                                 boxShadow: isActive ? `0 0 20px ${step.color}44` : 'none'
                             }}>
-                                {isCompleted ? <CheckCircle2 size={24} color="#fff" /> : <Icon size={24} color={isActive ? step.color : '#64748b'} />}
+                                {isCompleted ? <CheckCircle2 size={24} color="#fff" /> : <Icon size={24} color={isActive ? step.color : 'var(--text-muted)'} />}
                             </div>
                             <div style={{
                                 fontSize: '10px',
                                 fontWeight: '700',
                                 textTransform: 'uppercase',
-                                color: isActive ? '#fff' : '#64748b',
+                                color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
                                 textAlign: 'center'
                             }}>
                                 {step.label}
@@ -77,19 +77,25 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
             </div>
 
             {/* Step Content / Actions */}
-            <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '15px', padding: '25px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ background: 'var(--input-bg)', borderRadius: '15px', padding: '25px', border: '1px solid var(--border-color)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
                         <h4 style={{ margin: '0 0 10px 0', fontSize: '18px', fontWeight: '800', color: steps[currentIndex]?.color }}>
                             {steps[currentIndex]?.label} - Active
                         </h4>
-                        <p style={{ color: '#94a3b8', fontSize: '13px', margin: 0, maxWidth: '500px' }}>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0, maxWidth: '500px' }}>
                             {getStepDescription(currentStatus)}
                         </p>
                     </div>
                     {currentIndex < steps.length - 1 && (
                         <button
-                            onClick={() => onStatusChange(steps[currentIndex + 1].id)}
+                            onClick={() => {
+                                if (currentStatus === 'RECEPTION' && (!jobData.checklists || jobData.checklists.length === 0)) {
+                                    alert('Error: Vehicle Intake Checklist is missing. You must complete the checklist before proceeding to Estimation.');
+                                    return;
+                                }
+                                onStatusChange(steps[currentIndex + 1].id);
+                            }}
                             style={{
                                 background: steps[currentIndex + 1].color,
                                 color: '#fff',
@@ -101,10 +107,10 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
                                 alignItems: 'center',
                                 gap: '10px',
                                 cursor: 'pointer',
-                                transition: 'transform 0.2s',
+                                transition: 'all 0.2s',
                             }}
-                            onMouseOver={(e) => e.target.style.transform = 'scale(1.02)'}
-                            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                            onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = `0 0 20px ${steps[currentIndex + 1].color}44`; }}
+                            onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}
                         >
                             Advance to {steps[currentIndex + 1].label.split(': ')[1]} <ArrowRightCircle size={18} />
                         </button>
@@ -205,8 +211,8 @@ const getStepBadges = (status, jobData) => {
     }
 
     return badges.map((b, i) => (
-        <div key={i} style={{ background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '10px' }}>
-            <div style={{ fontSize: '10px', color: '#64748b', textTransform: 'uppercase', marginBottom: '3px' }}>{b.label}</div>
+        <div key={i} style={{ background: 'var(--bg-primary)', padding: '10px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '3px' }}>{b.label}</div>
             <div style={{ fontSize: '12px', fontWeight: '700', color: b.ok ? '#10b981' : '#ef4444' }}>{b.value}</div>
         </div>
     ));

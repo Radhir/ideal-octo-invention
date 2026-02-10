@@ -31,22 +31,22 @@ const BudgetManager = () => {
             <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                 <button
                     onClick={() => navigate('/finance')}
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
+                    style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)' }}
                 >
                     <ArrowLeft size={20} />
                 </button>
                 <div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2rem', fontWeight: '900', margin: 0 }}>BUDGET ALLOCATION</h1>
-                    <p style={{ color: '#94a3b8' }}>Define departmental spending limits</p>
+                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2rem', fontWeight: '900', margin: 0, color: 'var(--text-primary)' }}>BUDGET ALLOCATION</h1>
+                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Define departmental spending limits</p>
                 </div>
             </header>
 
             <form onSubmit={handleSubmit} style={{ maxWidth: '800px' }}>
-                <GlassCard style={{ padding: '40px' }}>
+                <GlassCard style={{ padding: '40px', border: '1.5px solid var(--gold-border)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                         <div style={{ gridColumn: '1 / -1' }}>
-                            <label className="form-label">Select Account</label>
-                            <select name="account" className="form-control" onChange={handleChange} required>
+                            <label className="form-label" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>Select Account</label>
+                            <select name="account" className="form-control" onChange={handleChange} required style={{ background: 'var(--input-bg)', border: '1.5px solid var(--border-color)', color: 'var(--text-primary)', fontWeight: '800' }}>
                                 <option value="">Choose Account Category...</option>
                                 <option value="6010">Staff Salaries</option>
                                 <option value="6100">Workshop Rent</option>
@@ -55,16 +55,16 @@ const BudgetManager = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="form-label">Budget Period</label>
-                            <input name="period" className="form-control" value={formData.period} onChange={handleChange} placeholder="e.g. 2024-Q1" />
+                            <label className="form-label" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>Budget Period</label>
+                            <input name="period" className="form-control" value={formData.period} onChange={handleChange} placeholder="e.g. 2024-Q1" style={{ background: 'var(--input-bg)', border: '1.5px solid var(--border-color)', color: 'var(--text-primary)', fontWeight: '800' }} />
                         </div>
                         <div>
-                            <label className="form-label">Allocation Amount (AED)</label>
-                            <input name="amount" className="form-control" type="number" onChange={handleChange} placeholder="0.00" required />
+                            <label className="form-label" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>Allocation Amount (AED)</label>
+                            <input name="amount" className="form-control" type="number" onChange={handleChange} placeholder="0.00" required style={{ background: 'var(--input-bg)', border: '1.5px solid var(--border-color)', color: 'var(--text-primary)', fontWeight: '800' }} />
                         </div>
                     </div>
 
-                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '40px', height: '55px', fontSize: '1.1rem', fontWeight: '800', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '40px', height: '55px', fontSize: '1.1rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', border: '1.5px solid var(--gold-border)' }}>
                         <Save size={20} /> Commit Allocation
                     </button>
                 </GlassCard>

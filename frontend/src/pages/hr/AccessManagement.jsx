@@ -4,8 +4,6 @@ import api from '../../api/axios';
 import { Shield, User, Lock, Save, CheckCircle, XCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
 const AccessManagement = () => {
     const { user: currentUser } = useAuth();
     const [employees, setEmployees] = useState([]);
@@ -16,9 +14,9 @@ const AccessManagement = () => {
     const [message, setMessage] = useState({ type: '', text: '' });
 
     const modules = [
-        'Inventory', 'Job Cards', 'Leads', 'Finance', 'HR',
-        'Projects', 'Risk Management', 'Ceramic/PPF', 'Invoices',
-        'Staff Roster', 'Attendance'
+        'Employees', 'HR Management', 'Job Cards', 'Bookings', 'Stock',
+        'Payroll', 'Attendance', 'Invoices', 'Dashboard', 'Finance',
+        'Leads', 'Projects', 'Ceramic/PPF', 'Pick & Drop'
     ];
 
     useEffect(() => {
@@ -27,7 +25,7 @@ const AccessManagement = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await api.get(`${API_BASE}/hr/api/employees/`);
+            const res = await api.get('/hr/api/employees/');
             setEmployees(res.data);
             setLoading(false);
         } catch (err) {
@@ -65,9 +63,9 @@ const AccessManagement = () => {
         try {
             for (const perm of permissions) {
                 if (perm.id) {
-                    await api.put(`${API_BASE}/hr/api/permissions/${perm.id}/`, perm);
+                    await api.put(`/hr/api/permissions/${perm.id}/`, perm);
                 } else {
-                    await api.post(`${API_BASE}/hr/api/permissions/`, {
+                    await api.post(`/hr/api/permissions/`, {
                         ...perm,
                         employee: selectedEmployee.id
                     });
@@ -87,30 +85,39 @@ const AccessManagement = () => {
     if (loading) return <div className="p-8 text-gold">Loading Sector Access Protocols...</div>;
 
     return (
-        <div className="p-6 bg-black min-h-screen text-gray-200">
-            <div className="flex items-center gap-3 mb-8">
-                <Shield className="w-8 h-8 text-gold" />
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-gold to-yellow-200 bg-clip-text text-transparent">
-                    Elite Security & Access Control
+        <div style={{ padding: '24px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', transition: 'all 0.3s' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
+                <Shield size={32} color="var(--gold)" />
+                <h1 style={{ fontSize: '28px', fontWeight: '900', fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)' }}>
+                    Elite Security <span style={{ color: 'var(--gold)' }}>& Access Control</span>
                 </h1>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Employee List */}
-                <div className="bg-gray-900 border border-gold/20 rounded-xl overflow-hidden shadow-2xl">
-                    <div className="p-4 bg-gold/10 border-b border-gold/20 flex items-center justify-between">
-                        <span className="font-semibold text-gold">Employee Directory</span>
-                        <User className="w-5 h-5 text-gold" />
+                <div style={{ background: 'var(--card-bg)', border: '1.5px solid var(--gold-border)', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', height: 'fit-content' }}>
+                    <div style={{ padding: '16px', background: 'var(--bg-secondary)', borderBottom: '1.5px solid var(--gold-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '700', color: 'var(--gold)', letterSpacing: '1px', fontSize: '14px', textTransform: 'uppercase' }}>Employee Directory</span>
+                        <User size={20} color="var(--gold)" />
                     </div>
-                    <div className="max-h-[600px] overflow-y-auto custom-scrollbar">
+                    <div style={{ maxHeight: '600px', overflowY: 'auto' }} className="custom-scrollbar">
                         {employees.map(emp => (
                             <div
                                 key={emp.id}
                                 onClick={() => handleEmployeeSelect(emp)}
-                                className={`p-4 border-b border-gray-800 cursor-pointer transition-all hover:bg-gold/5 ${selectedEmployee?.id === emp.id ? 'bg-gold/10 border-l-4 border-l-gold' : ''}`}
+                                style={{
+                                    padding: '16px',
+                                    borderBottom: '1.5px solid var(--gold-border)',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.3s',
+                                    background: selectedEmployee?.id === emp.id ? 'var(--input-bg)' : 'transparent',
+                                    borderLeft: selectedEmployee?.id === emp.id ? '6px solid var(--gold)' : 'none'
+                                }}
+                                onMouseOver={(e) => selectedEmployee?.id !== emp.id && (e.currentTarget.style.background = 'var(--input-bg)')}
+                                onMouseOut={(e) => selectedEmployee?.id !== emp.id && (e.currentTarget.style.background = 'transparent')}
                             >
-                                <div className="font-medium">{emp.full_name}</div>
-                                <div className="text-sm text-gray-500">{emp.role} • {emp.employee_id}</div>
+                                <div style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '15px' }}>{emp.full_name}</div>
+                                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '800' }}>{emp.role} • {emp.employee_id}</div>
                             </div>
                         ))}
                     </div>
@@ -119,24 +126,37 @@ const AccessManagement = () => {
                 {/* Permission Matrix */}
                 <div className="lg:col-span-2 space-y-6">
                     {selectedEmployee ? (
-                        <div className="bg-gray-900 border border-gold/20 rounded-xl shadow-2xl p-6">
-                            <div className="flex items-center justify-between mb-6">
+                        <div style={{ background: 'var(--card-bg)', border: '1.5px solid var(--gold-border)', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
                                 <div>
-                                    <h2 className="text-xl font-bold text-gold">Permission Matrix: {selectedEmployee.full_name}</h2>
-                                    <p className="text-sm text-gray-400">Configure granular sector access for this operative.</p>
+                                    <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)' }}>Permission Matrix: <span style={{ color: 'var(--gold)' }}>{selectedEmployee.full_name}</span></h2>
+                                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Configure granular sector access for this operative.</p>
                                 </div>
                                 <button
                                     onClick={savePermissions}
                                     disabled={saving}
-                                    className="flex items-center gap-2 px-6 py-2 bg-gold text-black font-bold rounded-lg hover:bg-yellow-500 transition-all disabled:opacity-50"
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        padding: '10px 24px',
+                                        background: 'var(--gold)',
+                                        color: '#000',
+                                        fontWeight: '800',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s',
+                                        opacity: saving ? 0.5 : 1
+                                    }}
                                 >
-                                    <Save className="w-5 h-5" />
+                                    <Save size={18} />
                                     {saving ? 'Encrypting...' : 'Save Protocols'}
                                 </button>
                             </div>
 
                             {message.text && (
-                                <div className={`p-3 rounded-lg mb-4 flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                <div className={`p-3 rounded-lg mb-4 flex items-center gap-2 ${message.type === 'success' ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`}>
                                     {message.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
                                     {message.text}
                                 </div>
@@ -145,20 +165,20 @@ const AccessManagement = () => {
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
                                     <thead>
-                                        <tr className="border-b border-gray-800">
-                                            <th className="py-3 text-gold">Module Sector</th>
-                                            <th className="py-3 text-center">View</th>
-                                            <th className="py-3 text-center">Create</th>
-                                            <th className="py-3 text-center">Edit</th>
-                                            <th className="py-3 text-center">Delete</th>
+                                        <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--gold)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                            <th style={{ padding: '12px 0' }}>Module Sector</th>
+                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>View</th>
+                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>Create</th>
+                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>Edit</th>
+                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {permissions.map((perm, idx) => (
-                                            <tr key={perm.module_name} className="border-b border-gray-800 hover:bg-white/5 transition-all">
-                                                <td className="py-4 font-medium">{perm.module_name}</td>
+                                            <tr key={perm.module_name} style={{ borderBottom: '1.5px solid var(--gold-border)', transition: 'all 0.3s' }}>
+                                                <td style={{ padding: '16px 0', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px' }}>{perm.module_name}</td>
                                                 {['can_view', 'can_create', 'can_edit', 'can_delete'].map(field => (
-                                                    <td key={field} className="py-4 text-center">
+                                                    <td key={field} style={{ padding: '16px 0', textAlign: 'center' }}>
                                                         <label className="relative inline-flex items-center cursor-pointer justify-center">
                                                             <input
                                                                 type="checkbox"
@@ -166,7 +186,7 @@ const AccessManagement = () => {
                                                                 checked={perm[field]}
                                                                 onChange={() => togglePermission(idx, field)}
                                                             />
-                                                            <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gold"></div>
+                                                            <div className="w-10 h-5 bg-[var(--text-muted)] opacity-30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-gold peer-checked:opacity-100"></div>
                                                         </label>
                                                     </td>
                                                 ))}
@@ -177,10 +197,23 @@ const AccessManagement = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="h-full flex flex-col items-center justify-center bg-gray-900 border border-gold/20 rounded-xl p-12 text-center">
-                            <Lock className="w-16 h-16 text-gold/20 mb-4" />
-                            <h2 className="text-2xl font-bold text-gold/40">Secured Access Control</h2>
-                            <p className="text-gray-500 mt-2">Select an employee from the directory to configure their operational permissions.</p>
+                        <div style={{
+                            height: '100%',
+                            minHeight: '400px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            itemsCenter: 'center',
+                            justifyContent: 'center',
+                            background: 'var(--card-bg)',
+                            border: '1px solid var(--border-color)',
+                            borderRadius: '16px',
+                            padding: '48px',
+                            textAlign: 'center',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
+                        }}>
+                            <Lock size={64} color="var(--gold)" style={{ opacity: 0.2, marginBottom: '24px', margin: '0 auto' }} />
+                            <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--gold)', opacity: 0.4 }}>Secured Access Control</h2>
+                            <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>Select an employee from the directory to configure their operational permissions.</p>
                         </div>
                     )}
                 </div>

@@ -77,17 +77,17 @@ const ChartOfAccounts = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                     <button
                         onClick={() => navigate('/finance')}
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
+                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)' }}
                     >
                         <ArrowLeft size={20} />
                     </button>
                     <div>
-                        <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE OVERSIGHT</div>
-                        <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Financial Ledger</h1>
+                        <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE OVERSIGHT</div>
+                        <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>Financial Ledger</h1>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '15px' }}>
-                    <button onClick={() => window.print()} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', color: '#fff', cursor: 'pointer' }}>
+                    <button onClick={() => window.print()} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', color: 'var(--text-primary)', cursor: 'pointer', border: '1.5px solid var(--gold-border)' }}>
                         <Printer size={18} /> Print COA
                     </button>
                     <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -107,17 +107,17 @@ const ChartOfAccounts = () => {
                                     alignItems: 'center',
                                     gap: '12px',
                                     padding: '15px 20px',
-                                    background: expandedGroups.has(cat) ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.02)',
+                                    background: expandedGroups.has(cat) ? 'var(--gold-glow)' : 'var(--input-bg)',
                                     borderRadius: '16px',
                                     cursor: 'pointer',
-                                    border: `1px solid ${expandedGroups.has(cat) ? 'rgba(255,255,255,0.1)' : 'transparent'}`,
+                                    border: `1.5px solid ${expandedGroups.has(cat) ? 'var(--gold-border)' : 'var(--border-color)'}`,
                                     transition: 'all 0.3s'
                                 }}
                             >
-                                {expandedGroups.has(cat) ? <ChevronDown size={18} color="#94a3b8" /> : <ChevronRight size={18} color="#94a3b8" />}
-                                <Folder size={20} color={COLORS[cat] || '#94a3b8'} fill={expandedGroups.has(cat) ? (COLORS[cat] || '#94a3b8') : 'transparent'} style={{ opacity: 0.8 }} />
-                                <span style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>{CATEGORY_LABELS[cat]}</span>
-                                <span style={{ marginLeft: 'auto', color: '#64748b', fontSize: '13px' }}>{groupedAccounts[cat]?.length || 0} Accounts</span>
+                                {expandedGroups.has(cat) ? <ChevronDown size={18} color="var(--gold)" /> : <ChevronRight size={18} color="var(--text-secondary)" />}
+                                <Folder size={20} color={COLORS[cat] || 'var(--text-secondary)'} fill={expandedGroups.has(cat) ? (COLORS[cat] || 'var(--text-secondary)') : 'transparent'} style={{ opacity: 0.8 }} />
+                                <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '15px' }}>{CATEGORY_LABELS[cat]}</span>
+                                <span style={{ marginLeft: 'auto', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '800' }}>{groupedAccounts[cat]?.length || 0} Accounts</span>
                             </div>
 
                             {expandedGroups.has(cat) && (
@@ -129,16 +129,16 @@ const ChartOfAccounts = () => {
                                             gap: '15px',
                                             padding: '12px 20px',
                                             borderRadius: '12px',
-                                            border: '1px solid rgba(255,255,255,0.05)',
-                                            background: 'rgba(0,0,0,0.2)',
+                                            border: '1.5px solid var(--border-color)',
+                                            background: 'var(--input-bg)',
                                             transition: 'transform 0.2s'
                                         }}
-                                            onMouseOver={(e) => e.currentTarget.style.transform = 'translateX(5px)'}
-                                            onMouseOut={(e) => e.currentTarget.style.transform = 'translateX(0)'}
+                                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(5px)'; e.currentTarget.style.borderColor = 'var(--gold-border)'; }}
+                                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
                                         >
-                                            <div style={{ width: '45px', color: '#b08d57', fontSize: '13px', fontWeight: '800' }}>#{acc.code}</div>
-                                            <div style={{ flex: 1, color: '#f1f5f9', fontWeight: '600', fontSize: '14px' }}>{acc.name}</div>
-                                            <div style={{ color: '#fff', fontWeight: '800', fontSize: '14px' }}>AED {parseFloat(acc.balance).toLocaleString()}</div>
+                                            <div style={{ width: '45px', color: 'var(--gold)', fontSize: '13px', fontWeight: '900' }}>#{acc.code}</div>
+                                            <div style={{ flex: 1, color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px' }}>{acc.name}</div>
+                                            <div style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '16px' }}>AED {parseFloat(acc.balance).toLocaleString()}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -148,9 +148,9 @@ const ChartOfAccounts = () => {
                 </div>
 
                 <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                    <GlassCard style={{ padding: '25px' }}>
-                        <h3 style={{ margin: '0 0 25px 0', fontSize: '18px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <PieChart size={20} color="#b08d57" /> Financial Status
+                    <GlassCard style={{ padding: '25px', border: '1.5px solid var(--gold-border)' }}>
+                        <h3 style={{ margin: '0 0 25px 0', fontSize: '18px', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-primary)' }}>
+                            <PieChart size={20} color="var(--gold)" /> Financial Status
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <SummaryRow label="Total Assets" value={summary.total_assets.toLocaleString()} color="#3b82f6" />
@@ -159,11 +159,11 @@ const ChartOfAccounts = () => {
                         </div>
                     </GlassCard>
 
-                    <GlassCard style={{ padding: '25px', background: 'rgba(16, 185, 129, 0.05)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>
-                        <h3 style={{ margin: '0 0 20px 0', fontSize: '18px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <Activity size={20} color="#10b981" /> Auditor Log
+                    <GlassCard style={{ padding: '25px', background: 'var(--gold-glow)', border: '1.5px solid var(--gold-border)' }}>
+                        <h3 style={{ margin: '0 0 20px 0', fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <Activity size={20} color="var(--gold)" /> Auditor Log
                         </h3>
-                        <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '1.6' }}>
+                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6', fontWeight: '800' }}>
                             Ledger is synchronized with live transactions. Automatic double-entry balancing is active.
                         </p>
                     </GlassCard>
@@ -177,9 +177,9 @@ const SummaryRow = ({ label, value, color }) => (
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: color }}></div>
-            <span style={{ color: '#94a3b8', fontSize: '14px', fontWeight: '600' }}>{label}</span>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '800' }}>{label}</span>
         </div>
-        <span style={{ color: '#fff', fontWeight: '900', fontSize: '16px' }}>AED {value}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '16px' }}>AED {value}</span>
     </div>
 );
 

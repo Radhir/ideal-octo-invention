@@ -51,14 +51,14 @@ const BillingPage = () => {
 
     const getStatusBadge = (status) => {
         const map = {
-            PAID: { bg: 'rgba(16,185,129,0.1)', color: '#10b981', border: 'rgba(16,185,129,0.2)', label: 'Paid' },
-            PENDING: { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', border: 'rgba(245,158,11,0.2)', label: 'Pending' },
-            PARTIAL: { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: 'rgba(59,130,246,0.2)', label: 'Partial' },
-            OVERDUE: { bg: 'rgba(239,68,68,0.1)', color: '#ef4444', border: 'rgba(239,68,68,0.2)', label: 'Overdue' },
+            PAID: { bg: '#10b98115', color: '#10b981', border: '#10b98160', label: 'Paid' },
+            PENDING: { bg: '#f59e0b15', color: '#f59e0b', border: '#f59e0b60', label: 'Pending' },
+            PARTIAL: { bg: '#3b82f615', color: '#3b82f6', border: '#3b82f660', label: 'Partial' },
+            OVERDUE: { bg: '#ef444415', color: '#ef4444', border: '#ef444460', label: 'Overdue' },
         };
         const s = map[status] || map.PENDING;
         return (
-            <span style={{ padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700', background: s.bg, color: s.color, border: `1px solid ${s.border}` }}>
+            <span style={{ padding: '6px 14px', borderRadius: '20px', fontSize: '11px', fontWeight: '900', background: s.bg, color: s.color, border: `1.5px solid ${s.border}`, textTransform: 'uppercase' }}>
                 {s.label}
             </span>
         );
@@ -70,14 +70,14 @@ const BillingPage = () => {
         <div style={{ padding: '30px' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
                 <div>
-                    <div style={{ fontSize: '10px', color: '#8b5cf6', fontWeight: '800', letterSpacing: '2px' }}>CASHIER OPERATIONS</div>
-                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Billing & Cashier</h1>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>CASHIER OPERATIONS</div>
+                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>Billing & Cashier</h1>
                 </div>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={() => navigate('/invoices')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.08)', color: '#fff' }}>
+                    <button onClick={() => navigate('/invoices')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)' }}>
                         <FileText size={16} /> All Invoices
                     </button>
-                    <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1.5px solid var(--gold-border)' }}>
                         <Plus size={16} /> Record Payment
                     </button>
                 </div>
@@ -102,8 +102,8 @@ const BillingPage = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             style={{
-                                width: '100%', padding: '10px 10px 10px 36px', background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', color: '#fff', fontSize: '14px', outline: 'none'
+                                width: '100%', padding: '10px 10px 10px 36px', background: 'var(--input-bg)',
+                                border: '1.5px solid var(--gold-border)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '800'
                             }}
                         />
                     </div>
@@ -112,9 +112,9 @@ const BillingPage = () => {
                             key={t}
                             onClick={() => setTab(t)}
                             style={{
-                                padding: '10px 18px', borderRadius: '10px', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '12px',
-                                background: tab === t ? '#8b5cf6' : 'rgba(255,255,255,0.05)',
-                                color: tab === t ? '#fff' : '#94a3b8'
+                                padding: '10px 18px', borderRadius: '10px', border: tab === t ? '1.5px solid var(--gold-border)' : '1.5px solid var(--border-color)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
+                                background: tab === t ? 'var(--gold-glow)' : 'var(--input-bg)',
+                                color: 'var(--text-primary)'
                             }}
                         >{t}</button>
                     ))}
@@ -122,28 +122,28 @@ const BillingPage = () => {
             </GlassCard>
 
             {/* Invoice Table */}
-            <GlassCard style={{ padding: 0, overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
+            <GlassCard style={{ padding: 0, overflow: 'hidden', border: '1.5px solid var(--gold-border)' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-primary)', fontSize: '14px' }}>
                     <thead>
-                        <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
-                            <th style={{ padding: '18px' }}>Invoice #</th>
-                            <th style={{ padding: '18px' }}>Customer</th>
-                            <th style={{ padding: '18px' }}>Date</th>
-                            <th style={{ padding: '18px', textAlign: 'right' }}>Amount (AED)</th>
-                            <th style={{ padding: '18px' }}>Status</th>
-                            <th style={{ padding: '18px' }}>Method</th>
+                        <tr style={{ background: 'var(--input-bg)', textAlign: 'left', borderBottom: '2.5px solid var(--gold-border)' }}>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Invoice #</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Customer</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Date</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px', textAlign: 'right' }}>Amount (AED)</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Status</th>
+                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Method</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredInvoices.length > 0 ? filteredInvoices.map((inv, i) => (
-                            <tr key={inv.id || i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', cursor: 'pointer' }}
+                            <tr key={inv.id || i} style={{ borderBottom: '1px solid var(--border-color)', cursor: 'pointer' }}
                                 onClick={() => navigate(`/invoices/${inv.id}`)}>
-                                <td style={{ padding: '16px', fontWeight: '700', color: '#b08d57' }}>{inv.invoice_number || `INV-${inv.id}`}</td>
-                                <td style={{ padding: '16px' }}>{inv.customer_name || '-'}</td>
-                                <td style={{ padding: '16px', color: '#94a3b8' }}>{inv.date || inv.created_at?.split('T')[0] || '-'}</td>
-                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '800' }}>{parseFloat(inv.grand_total || 0).toLocaleString()}</td>
+                                <td style={{ padding: '16px', fontWeight: '900', color: 'var(--gold)' }}>{inv.invoice_number || `INV-${inv.id}`}</td>
+                                <td style={{ padding: '16px', fontWeight: '900', color: 'var(--text-primary)' }}>{inv.customer_name || '-'}</td>
+                                <td style={{ padding: '16px', color: 'var(--text-secondary)', fontWeight: '800' }}>{inv.date || inv.created_at?.split('T')[0] || '-'}</td>
+                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '900', color: 'var(--text-primary)', fontSize: '15px' }}>{parseFloat(inv.grand_total || 0).toLocaleString()}</td>
                                 <td style={{ padding: '16px' }}>{getStatusBadge(inv.payment_status)}</td>
-                                <td style={{ padding: '16px', color: '#94a3b8', fontSize: '13px' }}>{inv.payment_method || 'Cash'}</td>
+                                <td style={{ padding: '16px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '800' }}>{inv.payment_method || 'Cash'}</td>
                             </tr>
                         )) : (
                             <tr>
@@ -160,13 +160,13 @@ const BillingPage = () => {
 };
 
 const BillingStat = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px' }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon size={24} color={color} />
+    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px', border: '1.5px solid var(--gold-border)' }}>
+        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--gold-border)' }}>
+            <Icon size={24} color="var(--gold)" />
         </div>
         <div>
-            <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '22px', fontWeight: '900', color: '#fff' }}>{value}</div>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
+            <div style={{ fontSize: '22px', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
         </div>
     </GlassCard>
 );

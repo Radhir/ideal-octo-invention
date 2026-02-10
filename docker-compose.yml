@@ -10,7 +10,7 @@ services:
       - eliteshine_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eliteshine_user} -d ${POSTGRES_DB:-eliteshine_erp}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-eliteshine_user} -d ${POSTGRES_DB:-eliteshine_erp}" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -18,6 +18,7 @@ services:
 
   # Django Backend
   backend:
+    image: ${BACKEND_IMAGE:-eliteshine-backend:latest}
     build:
       context: ./Bankend
       dockerfile: Dockerfile
@@ -38,7 +39,7 @@ services:
       - eliteshine_network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/')"]
+      test: [ "CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health/')" ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -46,6 +47,7 @@ services:
 
   # React Frontend + Nginx Reverse Proxy
   frontend:
+    image: ${FRONTEND_IMAGE:-eliteshine-frontend:latest}
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -82,6 +84,7 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+
 
 networks:
   eliteshine_network:

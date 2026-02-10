@@ -18,23 +18,23 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
                     justifyContent: 'space-between',
                     padding: '16px 24px',
                     borderRadius: '16px',
-                    background: isOpen ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.03)',
-                    border: isOpen ? '1px solid rgba(176, 141, 87, 0.5)' : '1px solid rgba(255, 255, 255, 0.05)',
-                    color: isOpen ? '#fff' : '#94a3b8',
+                    background: isOpen ? 'var(--input-bg)' : 'transparent',
+                    border: '1.5px solid var(--gold-border)',
+                    color: 'var(--text-primary)',
                     cursor: 'pointer',
                     fontSize: '15px',
-                    fontWeight: isOpen ? '700' : '500',
+                    fontWeight: isOpen ? '900' : '800',
                     transition: 'all 0.3s ease',
                     textAlign: 'left',
                     outline: 'none',
-                    boxShadow: isOpen ? '0 10px 30px rgba(0,0,0,0.3)' : 'none'
+                    boxShadow: isOpen ? '0 10px 25px rgba(0,0,0,0.1)' : 'none'
                 }}
-                whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
+                whileHover={{ scale: 1.02, backgroundColor: 'var(--input-bg)' }}
                 whileTap={{ scale: 0.98 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
-                        color: isOpen ? '#b08d57' : 'inherit',
+                        color: isOpen ? 'var(--gold)' : 'var(--text-muted)',
                         transition: 'color 0.3s'
                     }}>
                         {item.icon}
@@ -46,12 +46,13 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
                     width: '24px',
                     height: '24px',
                     borderRadius: '50%',
-                    background: isOpen ? '#b08d57' : 'rgba(255,255,255,0.1)',
+                    background: isOpen ? 'var(--gold)' : 'var(--input-bg)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    color: isOpen ? '#000' : 'inherit',
-                    marginTop: '2px' // optical alignment
+                    color: isOpen ? '#000' : 'var(--text-muted)',
+                    marginTop: '2px', // optical alignment
+                    border: '1.5px solid var(--gold-border)'
                 }}>
                     {isOpen ? <Minus size={14} /> : <Plus size={14} />}
                 </div>
@@ -71,10 +72,11 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
                         style={{ overflow: 'hidden' }}
                     >
                         <div style={{
-                            background: 'rgba(0,0,0,0.2)',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(255,255,255,0.05)',
-                            padding: '8px'
+                            background: 'var(--bg-secondary)',
+                            borderRadius: '16px',
+                            border: '1.5px solid var(--border-color)',
+                            padding: '10px',
+                            boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)'
                         }}>
                             {item.subItems && item.subItems.map((sub, idx) => (
                                 <motion.div
@@ -87,28 +89,32 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
                                         navigate(sub.path);
                                     }}
                                     style={{
-                                        padding: '12px 16px',
-                                        borderRadius: '8px',
+                                        padding: '12px 18px',
+                                        borderRadius: '10px',
                                         cursor: 'pointer',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'space-between',
-                                        color: '#cbd5e1',
-                                        fontSize: '13px',
-                                        marginBottom: idx === item.subItems.length - 1 ? 0 : '4px',
-                                        transition: 'background 0.2s'
+                                        color: 'var(--text-primary)',
+                                        fontSize: '14px',
+                                        fontWeight: '900',
+                                        marginBottom: idx === item.subItems.length - 1 ? 0 : '6px',
+                                        transition: 'all 0.2s',
+                                        borderBottom: '1px solid var(--gold-border)'
                                     }}
                                     onMouseOver={(e) => {
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                                        e.currentTarget.style.color = '#fff';
+                                        e.currentTarget.style.background = 'var(--gold-glow)';
+                                        e.currentTarget.style.color = 'var(--text-primary)';
+                                        e.currentTarget.style.paddingLeft = '22px';
                                     }}
                                     onMouseOut={(e) => {
                                         e.currentTarget.style.background = 'transparent';
-                                        e.currentTarget.style.color = '#cbd5e1';
+                                        e.currentTarget.style.color = 'var(--text-secondary)';
+                                        e.currentTarget.style.paddingLeft = '18px';
                                     }}
                                 >
                                     <span>{sub.label}</span>
-                                    <ChevronRight size={14} color="#64748b" />
+                                    <ChevronRight size={14} color="var(--gold)" />
                                 </motion.div>
                             ))}
                         </div>

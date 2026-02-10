@@ -121,8 +121,8 @@ const JobCreate = () => {
             };
 
             const res = await api.post('/forms/job-cards/api/jobs/', submissionData);
-            alert('Job Card Created!');
-            navigate(`/job-cards/${res.data.id}`);
+            alert('Job Card Created! Proceeding to Vehicle Intake Checklist.');
+            navigate(`/service-advisor/form?jobId=${res.data.id}`);
         } catch (err) {
             console.error('Error creating job card', err);
             let errorMessage = 'Failed to create Job Card.';

@@ -41,7 +41,7 @@ const StockList = () => {
     );
 
     return (
-        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: '#0a0a0a' }}>
+        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
             <PrintHeader title="Workshop Inventory & Asset Registry" />
 
             <header className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', paddingLeft: '20px' }}>
@@ -50,17 +50,17 @@ const StockList = () => {
                         <div className="pulse-dot" style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%' }} />
                         <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '4px' }}>LIVE STOCK MONITOR</div>
                     </div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '3rem', fontWeight: '900', margin: 0 }}>Stock Central</h1>
+                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', fontSize: '3rem', fontWeight: '900', margin: 0 }}>Stock Central</h1>
                 </div>
                 <div style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
                     <button
                         onClick={() => window.print()}
                         style={{
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            background: 'var(--bg-glass)',
+                            border: '1px solid var(--border-color)',
                             padding: '12px 25px',
                             borderRadius: '12px',
-                            color: '#fff',
+                            color: 'var(--text-primary)',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
@@ -81,7 +81,7 @@ const StockList = () => {
                             border: '1px solid rgba(176, 141, 87, 0.4)',
                             padding: '12px 25px',
                             borderRadius: '12px',
-                            color: '#fff',
+                            color: 'var(--text-primary)',
                             display: 'flex',
                             alignItems: 'center',
                             gap: '10px',
@@ -146,17 +146,17 @@ const StockList = () => {
                     type="text"
                     className="form-control"
                     placeholder="Search by SKU, Name or Category..."
-                    style={{ paddingLeft: '45px', flex: 1 }}
+                    style={{ paddingLeft: '45px', flex: 1, background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
 
             <div style={{ padding: '0 20px' }}>
-                <GlassCard style={{ padding: '0', overflowX: 'auto', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <GlassCard style={{ padding: '0', overflowX: 'auto', border: '1px solid var(--border-color)' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                         <thead>
-                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(176, 141, 87, 0.2)' }}>
+                            <tr style={{ background: 'var(--input-bg)', borderBottom: '1px solid rgba(176, 141, 87, 0.2)' }}>
                                 <th style={{ padding: '20px', textAlign: 'left', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Item Name / SKU</th>
                                 <th style={{ padding: '20px', textAlign: 'left', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Balance</th>
                                 <th style={{ padding: '20px', textAlign: 'left', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Safety</th>
@@ -168,19 +168,19 @@ const StockList = () => {
                             {loading ? (
                                 <tr><td colSpan="5" style={{ padding: '50px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>Syncing Industrial Ledger...</td></tr>
                             ) : filteredItems.length === 0 ? (
-                                <tr><td colSpan="5" style={{ padding: '50px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>No inventory items registered.</td></tr>
+                                <tr><td colSpan="5" style={{ padding: '50px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>No inventory items registered.</td></tr>
                             ) : filteredItems.map(item => (
-                                <tr key={item.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.3s' }} className="stock-row">
+                                <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.3s' }} className="stock-row">
                                     <td style={{ padding: '25px 20px' }}>
-                                        <div style={{ fontWeight: '800', color: '#fff', fontSize: '16px', marginBottom: '5px' }}>{item.name}</div>
-                                        <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '900', letterSpacing: '1px' }}>{item.category}</div>
+                                        <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '16px', marginBottom: '5px' }}>{item.name}</div>
+                                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '900', letterSpacing: '1px' }}>{item.category}</div>
                                     </td>
                                     <td style={{ padding: '20px' }}>
-                                        <div style={{ fontWeight: '900', color: '#fff', fontSize: '18px' }}>{parseFloat(item.current_stock).toLocaleString()} <span style={{ fontSize: '10px', color: '#64748b' }}>{item.unit}</span></div>
+                                        <div style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '18px' }}>{parseFloat(item.current_stock).toLocaleString()} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{item.unit}</span></div>
                                         <div style={{ fontSize: '10px', color: '#10b981', fontWeight: '800' }}>ONLINE</div>
                                     </td>
                                     <td style={{ padding: '20px' }}>
-                                        <div style={{ fontSize: '14px', color: '#94a3b8', fontWeight: '700' }}>{item.safety_level} {item.unit}</div>
+                                        <div style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '700' }}>{item.safety_level} {item.unit}</div>
                                     </td>
                                     <td style={{ padding: '20px', textAlign: 'center' }}>
                                         <StockStatusIndicator current={parseFloat(item.current_stock)} safety={parseFloat(item.safety_level)} />
@@ -218,14 +218,14 @@ const StockList = () => {
 };
 
 const InventoryStatCard = ({ label, value, icon, sub, warning }) => (
-    <GlassCard style={{ padding: '30px', position: 'relative', overflow: 'hidden', border: warning ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid rgba(255,255,255,0.05)' }}>
+    <GlassCard style={{ padding: '30px', position: 'relative', overflow: 'hidden', border: warning ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid var(--border-color)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>{icon}</div>
+            <div style={{ background: 'var(--input-bg)', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>{icon}</div>
             {warning && <div className="pulse-dot" style={{ background: '#f43f5e', width: '8px', height: '8px', borderRadius: '50%' }} />}
         </div>
-        <div style={{ fontSize: '10px', color: '#64748b', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>{label}</div>
-        <div style={{ fontSize: '32px', fontWeight: '900', color: '#fff', marginBottom: '8px', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
-        <div style={{ fontSize: '11px', color: warning ? '#f43f5e' : '#94a3b8', fontWeight: '600' }}>{sub}</div>
+        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>{label}</div>
+        <div style={{ fontSize: '32px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
+        <div style={{ fontSize: '11px', color: warning ? '#f43f5e' : 'var(--text-muted)', fontWeight: '600' }}>{sub}</div>
     </GlassCard>
 );
 

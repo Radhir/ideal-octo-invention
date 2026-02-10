@@ -50,6 +50,10 @@ class Employee(models.Model):
     bio = models.TextField(blank=True, null=True)
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     accent_color = models.CharField(max_length=7, default='#b08d57')
+    
+    # Financial/Accounting Fields
+    commission_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, help_text="Default commission percentage (e.g. 5.00)")
+    total_commissions_earned = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
 
     # Onboarding Fields
     nationality = models.CharField(max_length=100, blank=True, null=True)
@@ -211,6 +215,7 @@ class SalarySlip(models.Model):
     days_present = models.IntegerField(default=30)
     overtime_hours = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     overtime_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    commissions_earned = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     late_deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
     total_additions = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -264,7 +269,7 @@ class SalarySlip(models.Model):
         self.overtime_hours = total_ot
         self.overtime_amount = ot_earned
         
-        self.total_additions = self.overtime_amount + float(self.bonuses)
+        self.total_additions = self.overtime_amount + float(self.bonuses) + float(self.commissions_earned)
         self.total_deductions = deductions
         
         self.net_salary = earnings - deductions
@@ -348,3 +353,16 @@ class WarningLetter(models.Model):
 
     def __str__(self):
         return f"{self.warning_level} - {self.employee.full_name} ({self.date_issued})"
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    title = models.CharField(max_length=255)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} for {self.recipient.username}"
+
+    class Meta:
+        ordering = ['-created_at']

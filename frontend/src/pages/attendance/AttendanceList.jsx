@@ -109,21 +109,21 @@ const AttendanceList = () => {
         return Math.min((diffInSeconds / 36000) * 100, 100);
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '100px', textAlign: 'center' }}>Synchronizing Personnel Nodes...</div>;
+    if (loading) return <div style={{ color: 'var(--text-primary)', padding: '100px', textAlign: 'center', background: 'var(--bg-primary)', minHeight: '100vh' }}>Synchronizing Personnel Nodes...</div>;
 
     return (
-        <div style={{ padding: '40px 30px', background: '#0a0a0a', minHeight: '100vh' }}>
+        <div style={{ padding: '40px 30px', background: 'var(--bg-primary)', minHeight: '100vh' }}>
             <header style={{ marginBottom: '40px' }}>
                 <div style={{ color: '#b08d57', fontWeight: '900', letterSpacing: '4px', fontSize: '12px', marginBottom: '10px' }}>WORKFORCE LOGISTICS</div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
-                        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Attendance Hub</h1>
-                        <p style={{ color: '#94a3b8', fontSize: '18px', marginTop: '10px' }}>Live monitoring of the 10-hour industrial shift lifecycle.</p>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', color: 'var(--text-primary)', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Attendance Hub</h1>
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '18px', marginTop: '10px' }}>Live monitoring of the 10-hour industrial shift lifecycle.</p>
                     </div>
                     <button
                         onClick={() => window.print()}
                         className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-glass)', color: 'var(--text-primary)' }}
                     >
                         <Printer size={20} /> Print Logs
                     </button>
@@ -136,7 +136,7 @@ const AttendanceList = () => {
                     {/* Live Tracking Card */}
                     <GlassCard style={{ padding: '40px', position: 'relative', overflow: 'hidden' }}>
                         <div style={{ position: 'absolute', top: 0, right: 0, padding: '20px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: attendance && !attendance.check_out_time ? '#10b981' : '#64748b' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: attendance && !attendance.check_out_time ? '#10b981' : 'var(--text-muted)' }}>
                                 <Activity size={16} className={attendance && !attendance.clock_out ? 'pulse-anim' : ''} />
                                 <span style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '1px' }}>
                                     {attendance && !attendance.check_out_time ? 'SESSION ACTIVE' : 'NO ACTIVE SESSION'}
@@ -149,7 +149,7 @@ const AttendanceList = () => {
                             <div style={{
                                 fontSize: '5rem',
                                 fontWeight: '900',
-                                color: '#fff',
+                                color: 'var(--text-primary)',
                                 fontFamily: 'monospace',
                                 letterSpacing: '-2px'
                             }}>
@@ -158,28 +158,28 @@ const AttendanceList = () => {
                         </div>
 
                         {/* Progress Bar */}
-                        <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', position: 'relative', marginBottom: '20px' }}>
+                        <div style={{ height: '8px', background: 'var(--border-color)', borderRadius: '4px', position: 'relative', marginBottom: '20px' }}>
                             <div style={{
                                 height: '100%',
                                 width: `${getWorkProgress()}%`,
-                                background: 'linear-gradient(to right, #b08d57, #fff)',
+                                background: 'linear-gradient(to right, #b08d57, var(--text-primary))',
                                 borderRadius: '4px',
                                 boxShadow: '0 0 15px rgba(176,141,87,0.3)',
                                 transition: 'width 1s ease-in-out'
                             }} />
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748b', fontSize: '12px', fontWeight: '800' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '12px', fontWeight: '800' }}>
                             <span>SHIFT START</span>
                             <span>10 HOUR TARGET</span>
                         </div>
 
                         <div style={{ display: 'flex', gap: '20px', marginTop: '40px' }}>
                             {!attendance || !attendance.check_in_time ? (
-                                <button onClick={handleClockIn} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(176,141,87,0.1)', border: '1px solid #b08d57', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
+                                <button onClick={handleClockIn} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(176,141,87,0.1)', border: '1px solid #b08d57', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
                                     <Play size={20} /> INITIATE SHIFT
                                 </button>
                             ) : !attendance.check_out_time ? (
-                                <button onClick={handleClockOut} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(244,63,94,0.1)', border: '1px solid #f43f5e', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
+                                <button onClick={handleClockOut} className="nav-action-btn" style={{ flex: 1, height: '60px', borderRadius: '15px', background: 'rgba(244,63,94,0.1)', border: '1px solid #f43f5e', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontWeight: '800', cursor: 'pointer' }}>
                                     <Square size={20} /> TERMINATE SHIFT
                                 </button>
                             ) : (
@@ -192,24 +192,24 @@ const AttendanceList = () => {
 
                     {/* Today's Logs */}
                     <div>
-                        <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff', marginBottom: '20px' }}>TODAY'S FLEET STATUS</div>
+                        <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '20px' }}>TODAY'S FLEET STATUS</div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                             {allLogs.map(log => (
                                 <GlassCard key={log.id} style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'var(--input-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <UserCheck size={18} color="#b08d57" />
                                         </div>
                                         <div>
-                                            <div style={{ fontWeight: '700', color: '#fff' }}>{log.employee_name}</div>
-                                            <div style={{ fontSize: '11px', color: '#64748b' }}>Shift active since {log.check_in_time}</div>
+                                            <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{log.employee_name}</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Shift active since {log.check_in_time}</div>
                                         </div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
                                         <div style={{ fontSize: '14px', fontWeight: '800', color: log.clock_out ? '#10b981' : '#f59e0b' }}>
                                             {log.check_out_time ? 'COMPLETED' : 'IN_TRANSIT'}
                                         </div>
-                                        <div style={{ fontSize: '11px', color: '#64748b' }}>{log.total_hours} hrs logged</div>
+                                        <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{log.total_hours} hrs logged</div>
                                     </div>
                                 </GlassCard>
                             ))}
@@ -232,7 +232,7 @@ const AttendanceList = () => {
                         </div>
 
                         <div style={{ marginTop: '30px', padding: '20px', background: 'rgba(176,141,87,0.05)', borderRadius: '15px', border: '1px dashed rgba(176,141,87,0.2)' }}>
-                            <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: '1.6' }}>
+                            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
                                 Employee must log a minimum of 9.5 hours to satisfy the industrial performance metric. Breaks are calculated automatically.
                             </div>
                         </div>
@@ -241,13 +241,13 @@ const AttendanceList = () => {
                     <GlassCard style={{ padding: '30px', background: 'linear-gradient(135deg, rgba(176,141,87,0.05), transparent)' }}>
                         <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '2px', marginBottom: '15px' }}>SYSTEM ANALYTICS</div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                            <div style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>
-                                <div style={{ fontSize: '11px', color: '#64748b' }}>Load Balance</div>
-                                <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>Optimal</div>
+                            <div style={{ padding: '15px', background: 'var(--input-bg)', borderRadius: '12px' }}>
+                                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Load Balance</div>
+                                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>Optimal</div>
                             </div>
-                            <div style={{ padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>
-                                <div style={{ fontSize: '11px', color: '#64748b' }}>OT Projected</div>
-                                <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>1.2 hrs</div>
+                            <div style={{ padding: '15px', background: 'var(--input-bg)', borderRadius: '12px' }}>
+                                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>OT Projected</div>
+                                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>1.2 hrs</div>
                             </div>
                         </div>
                     </GlassCard>
@@ -273,8 +273,8 @@ const RosterItem = ({ icon: Icon, label, value }) => (
             <Icon size={16} color="#b08d57" />
         </div>
         <div>
-            <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '15px', fontWeight: '700', color: '#fff', marginTop: '2px' }}>{value}</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
+            <div style={{ fontSize: '15px', fontWeight: '700', color: 'var(--text-primary)', marginTop: '2px' }}>{value}</div>
         </div>
     </div>
 );

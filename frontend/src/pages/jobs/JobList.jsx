@@ -68,21 +68,21 @@ const JobList = () => {
                     <button
                         onClick={() => navigate('/job-board')}
                         className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-glass)', color: 'var(--text-primary)', transition: 'all 0.3s' }}
                     >
                         <Kanban size={20} /> Board View
                     </button>
                     <button
                         onClick={() => window.print()}
                         className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-glass)', color: 'var(--text-primary)', transition: 'all 0.3s' }}
                     >
                         <Printer size={20} /> Print Registry
                     </button>
                     <button
                         onClick={() => window.open(`/forms/utils/generate-pdf/JobCard/0/`, '_blank')}
                         className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid var(--border-color)', background: 'var(--bg-glass)', color: 'var(--text-primary)', transition: 'all 0.3s' }}
                     >
                         <Printer size={20} /> Export PDF
                     </button>
@@ -104,7 +104,7 @@ const JobList = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <button className="glass-card" style={{ padding: '0 15px', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>
+                <button className="glass-card" style={{ padding: '0 15px', border: '1px solid var(--border-color)', background: 'var(--bg-glass)', color: 'var(--text-primary)', cursor: 'pointer', transition: 'all 0.3s' }}>
                     <Filter size={18} />
                 </button>
             </div>
@@ -126,11 +126,12 @@ const JobList = () => {
                                     width: '50px',
                                     height: '50px',
                                     borderRadius: '12px',
-                                    background: 'rgba(255,255,255,0.05)',
+                                    background: 'var(--input-bg)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    border: `1px solid ${getStatusColor(job.status)}22`
+                                    border: `1px solid ${getStatusColor(job.status)}44`,
+                                    transition: 'all 0.3s'
                                 }}>
                                     <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: getStatusColor(job.status), boxShadow: `0 0 10px ${getStatusColor(job.status)}` }}></div>
                                 </div>
@@ -142,13 +143,13 @@ const JobList = () => {
                                             {job.status_display}
                                         </span>
                                     </div>
-                                    <div style={{ fontWeight: '600', fontSize: '16px' }}>{job.customer_name}</div>
-                                    <div style={{ color: '#94a3b8', fontSize: '13px' }}>{job.brand} {job.model} • {job.registration_number}</div>
+                                    <div style={{ fontWeight: '600', fontSize: '16px', color: 'var(--text-primary)' }}>{job.customer_name}</div>
+                                    <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>{job.brand} {job.model} • {job.registration_number}</div>
                                 </div>
 
                                 <div style={{ textAlign: 'right', marginRight: '20px' }}>
-                                    <div style={{ fontSize: '14px', fontWeight: '600' }}>AED {job.net_amount}</div>
-                                    <div style={{ fontSize: '11px', color: '#94a3b8' }}>{new Date(job.date).toLocaleDateString()}</div>
+                                    <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>AED {job.net_amount}</div>
+                                    <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{new Date(job.date).toLocaleDateString()}</div>
                                 </div>
                             </div>
                             <ChevronRight size={24} style={{ color: '#94a3b8' }} />

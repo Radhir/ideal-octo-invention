@@ -14,11 +14,12 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        # Enforce Write Access: Only Managers/Admins can post global messages or initiate
-        # Technician can only reply if we want? Or just strictly Read Only per user request "Read-Only for lower roles"
-        # User request: "Roles with write access: Director, Manager... Roles with read-only access: Service Advisor, others."
+        # Enforce Write Access: Only Managers/Admins can post global messages
         
-        user_role = getattr(self.request.user.hr_profile, 'role', '').lower()
+        user_role = ''
+        if hasattr(self.request.user, 'hr_profile'):
+            user_role = getattr(self.request.user.hr_profile, 'role', '').lower()
+        
         allowed_writers = ['owner', 'director', 'manager', 'admin', 'head', 'lead', 'incharge']
         
         if not any(r in user_role for r in allowed_writers) and not self.request.user.is_superuser:

@@ -1,6 +1,7 @@
 from django.db import models
 
 class Checklist(models.Model):
+    job_card = models.ForeignKey('job_cards.JobCard', on_delete=models.SET_NULL, null=True, blank=True, related_name='checklists')
     checklist_number = models.CharField(max_length=50, unique=True)
     vehicle_brand = models.CharField(max_length=100)
     vehicle_model = models.CharField(max_length=100)

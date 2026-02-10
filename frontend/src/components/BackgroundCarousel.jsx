@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 const BackgroundCarousel = () => {
+    const { theme } = useTheme();
     const location = useLocation();
     const isAuthPage = ['/login', '/register', '/portal'].some(path => location.pathname.startsWith(path));
 
@@ -66,7 +68,8 @@ const BackgroundCarousel = () => {
         return () => clearInterval(interval);
     }, [loaded, assets.length]);
 
-    if (isAuthPage) return null;
+    // Hide on auth pages OR in light mode for a clean white background
+    if (isAuthPage || theme === 'light') return null;
 
     return (
         <div style={{
@@ -77,7 +80,7 @@ const BackgroundCarousel = () => {
             height: '100%',
             zIndex: -1,
             overflow: 'hidden',
-            background: '#0a0c10', // Fallback dark color
+            background: 'var(--bg-primary)', // Use theme-aware background
         }}>
             {/* Show fallback gradient while loading */}
             {!loaded && (

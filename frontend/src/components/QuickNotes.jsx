@@ -27,21 +27,21 @@ const QuickNotes = () => {
     return (
         <div style={{
             marginTop: '40px',
-            background: 'rgba(0, 0, 0, 0.3)',
+            background: 'var(--bg-glass)',
             backdropFilter: 'blur(10px)',
-            borderRadius: '16px',
-            border: '1px solid rgba(255, 255, 255, 0.05)',
-            padding: '20px',
+            borderRadius: '24px',
+            border: '1.5px solid var(--gold-border)',
+            padding: '25px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '10px',
+            gap: '12px',
             maxWidth: '100%',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
+            boxShadow: '0 15px 45px rgba(0,0,0,0.1)'
         }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#b08d57' }}>
-                    <PenLine size={16} />
-                    <span style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--gold)' }}>
+                    <PenLine size={18} />
+                    <span style={{ fontSize: '12px', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>
                         Executive Notepad
                     </span>
                 </div>
@@ -51,12 +51,12 @@ const QuickNotes = () => {
                         background: 'transparent',
                         border: 'none',
                         cursor: 'pointer',
-                        color: '#64748b',
-                        padding: '4px'
+                        color: 'var(--text-muted)',
+                        padding: '6px'
                     }}
                     title="Clear Notes"
                 >
-                    <Trash2 size={14} />
+                    <Trash2 size={16} />
                 </button>
             </div>
 
@@ -66,25 +66,28 @@ const QuickNotes = () => {
                 placeholder="Type your quick notes, memos, or reminders here..."
                 style={{
                     width: '100%',
-                    minHeight: '120px',
-                    background: 'transparent',
-                    border: 'none',
-                    color: '#e2e8f0',
-                    fontSize: '14px',
+                    minHeight: '150px',
+                    background: 'var(--input-bg)',
+                    border: '1.5px solid var(--gold-border)',
+                    borderRadius: '12px',
+                    padding: '15px',
+                    color: 'var(--text-primary)',
+                    fontSize: '15px',
                     lineHeight: '1.6',
                     resize: 'vertical',
                     fontFamily: 'inherit',
-                    outline: 'none'
+                    outline: 'none',
+                    fontWeight: '900'
                 }}
             />
 
             <div style={{
-                borderTop: '1px solid rgba(255,255,255,0.05)',
-                paddingTop: '10px',
+                borderTop: '1px solid var(--border-color)',
+                paddingTop: '15px',
                 display: 'flex',
                 justifyContent: 'flex-end'
             }}>
-                <span style={{ fontSize: '10px', color: '#475569' }}>
+                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700' }}>
                     {note.length} chars • Auto-saved
                 </span>
             </div>

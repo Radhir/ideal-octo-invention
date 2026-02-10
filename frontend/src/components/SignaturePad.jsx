@@ -42,24 +42,26 @@ const SignaturePad = ({ label, onSave }) => {
 
     return (
         <div style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'var(--bg-glass)',
+            border: '1px solid var(--border-color)',
             borderRadius: '12px',
             padding: '16px',
-            marginTop: '16px'
+            marginTop: '16px',
+            transition: 'all 0.3s ease'
         }}>
-            <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: '#e2e8f0', marginBottom: '10px' }}>
+            <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: 'var(--text-primary)', marginBottom: '10px' }}>
                 {label}
             </label>
 
             <div style={{
                 position: 'relative',
-                border: '2px dashed rgba(255, 255, 255, 0.2)',
+                border: '2px dashed var(--border-color)',
                 borderRadius: '8px',
-                background: 'rgba(0, 0, 0, 0.2)',
+                background: 'var(--input-bg)',
                 height: '150px',
                 overflow: 'hidden',
-                cursor: 'crosshair'
+                cursor: 'crosshair',
+                transition: 'all 0.3s ease'
             }}>
                 {!hasSignature && (
                     <div style={{
@@ -67,11 +69,12 @@ const SignaturePad = ({ label, onSave }) => {
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        color: 'rgba(255, 255, 255, 0.3)',
+                        color: 'var(--text-muted)',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px',
-                        pointerEvents: 'none'
+                        pointerEvents: 'none',
+                        opacity: 0.5
                     }}>
                         <PenTool size={16} />
                         <span style={{ fontSize: '12px' }}>Sign Here</span>
@@ -95,15 +98,16 @@ const SignaturePad = ({ label, onSave }) => {
                     onClick={clearSignature}
                     style={{
                         background: 'transparent',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                        color: '#94a3b8',
+                        border: '1px solid var(--border-color)',
+                        color: 'var(--text-secondary)',
                         padding: '6px 12px',
                         borderRadius: '6px',
                         fontSize: '12px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        gap: '4px',
+                        transition: 'all 0.2s ease'
                     }}
                 >
                     <Eraser size={12} /> Clear

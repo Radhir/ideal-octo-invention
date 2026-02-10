@@ -1,101 +1,46 @@
 #!/bin/bash
 # ============================================
-# EliteShine ERP - Hostinger VPS Deployment
-# Server: srv1306978.hstgr.cloud (72.61.250.35)
+# EliteShine ERP - Production Deployment Script
+# Optimized for CI/CD pipelines
 # ============================================
 
 set -e
 
 echo "=========================================="
-echo "  EliteShine ERP - Deployment Script"
+echo "  EliteShine ERP - Deployment Automation"
 echo "=========================================="
 
-# Step 1: Install Docker if not present
+# Step 1: Ensure Docker is ready
 if ! command -v docker &> /dev/null; then
-    echo "[1/5] Installing Docker..."
-    apt-get update
-    apt-get install -y ca-certificates curl gnupg
-    install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    chmod a+r /etc/apt/keyrings/docker.gpg
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-    apt-get update
-    apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-    systemctl enable docker
-    systemctl start docker
-    echo "Docker installed successfully!"
-else
-    echo "[1/5] Docker already installed."
+    echo "Error: Docker not installed on host."
+    exit 1
 fi
 
-# Step 2: Setup project directory & .env
-echo "[2/5] Setting up project..."
+# Step 2: Setup Environment
 PROJECT_DIR="/opt/eliteshine"
-mkdir -p $PROJECT_DIR/certbot/conf $PROJECT_DIR/certbot/www
+mkdir -p $PROJECT_DIR
 
 if [ ! -f $PROJECT_DIR/.env ]; then
-    SECRET_KEY=$(openssl rand -base64 50 | tr -d '\n')
-    DB_PASSWORD=$(openssl rand -base64 24 | tr -d '=/+\n')
-
-    cat > $PROJECT_DIR/.env << EOF
-POSTGRES_DB=eliteshine_erp
-POSTGRES_USER=eliteshine_user
-POSTGRES_PASSWORD=${DB_PASSWORD}
-USE_POSTGRES=True
-DB_HOST=db
-DB_PORT=5432
-DEBUG=False
-SECRET_KEY=${SECRET_KEY}
-ALLOWED_HOSTS=srv1306978.hstgr.cloud,72.61.250.35,localhost
-CORS_ALLOWED_ORIGINS=http://srv1306978.hstgr.cloud,http://72.61.250.35
-CSRF_TRUSTED_ORIGINS=http://srv1306978.hstgr.cloud,http://72.61.250.35
-VITE_API_BASE_URL=/api
-EOF
-    echo "Generated .env with secure credentials:"
-    echo "  DB Password: ${DB_PASSWORD}"
-    echo "  (Save these somewhere safe!)"
+    echo "Warning: .env not found in $PROJECT_DIR. Using environment defaults."
 fi
 
-# Step 3: Open firewall
-echo "[3/5] Configuring firewall..."
-if command -v ufw &> /dev/null; then
-    ufw allow 80/tcp 2>/dev/null || true
-    ufw allow 443/tcp 2>/dev/null || true
-    ufw allow 22/tcp 2>/dev/null || true
-fi
-
-# Step 3.5: Extract project files
-echo "[3.5/5] Extracting files..."
-if [ -f "project-clean.zip" ]; then
-    echo "Extracting project-clean.zip to $PROJECT_DIR..."
-    # Install unzip if missing
-    if ! command -v unzip &> /dev/null; then
-        apt-get install -y unzip
-    fi
-    unzip -o project-clean.zip -d $PROJECT_DIR
-    rm project-clean.zip
-fi
-
-if [ -f "patch.zip" ]; then
-    echo "Applying patch.zip to $PROJECT_DIR..."
-    unzip -o patch.zip -d $PROJECT_DIR
-    rm patch.zip
-fi
-
-# Step 4: Build and start
-echo "[4/5] Building and starting containers..."
+# Step 3: Deployment Logic
+echo "[1/3] Refreshing container stack..."
+# Auth is handled in GitHub Actions before running this
 cd $PROJECT_DIR
-docker compose up --build -d
+docker compose pull
 
-# Step 5: Verify
-echo "[5/5] Checking containers..."
-sleep 10
+echo "[2/3] Restarting services with latest builds..."
+docker compose up -d
+
+echo "[3/3] Running post-deployment hooks..."
+docker compose exec -T backend python manage.py migrate --noinput
+docker compose exec -T backend python manage.py collectstatic --noinput
+
+echo "Pruning stale images..."
+docker image prune -f
+
+echo "=========================================="
+echo "  EliteShine ERP - Deployment Successful!"
+echo "=========================================="
 docker compose ps
-
-echo ""
-echo "=========================================="
-echo "  Deployment Complete!"
-echo "=========================================="
-echo "  http://72.61.250.35"
-echo "  http://srv1306978.hstgr.cloud"
-echo "=========================================="
