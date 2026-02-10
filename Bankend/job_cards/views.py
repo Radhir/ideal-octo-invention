@@ -219,6 +219,30 @@ class JobCardTaskViewSet(viewsets.ModelViewSet):
 class JobCardPhotoViewSet(viewsets.ModelViewSet):
     queryset = JobCardPhoto.objects.all()
     serializer_class = JobCardPhotoSerializer
+    permission_classes = [AllowAny]
+    
+    @action(detail=False, methods=['get'], permission_classes=[AllowAny])
+    def random_backgrounds(self, request):
+        """
+        Return random job card photos for use in the dynamic background carousel.
+        Limit to 10 images by default.
+        """
+        limit = int(request.query_params.get('limit', 10))
+        
+        # Get random photos - prefer "After" photos if caption contains "after"
+        photos = JobCardPhoto.objects.filter(
+            job_card__status__in=['CLOSED', 'DELIVERY']  # Only from completed/ready jobs
+        ).order_by('?')[:limit]
+        
+        backgrounds = []
+        for photo in photos:
+            backgrounds.append({
+                'id': photo.id,
+                'url': request.build_absolute_uri(photo.image.url) if photo.image else None,
+                'caption': photo.caption or f"Job #{photo.job_card.job_card_number}"
+            })
+        
+        return Response(backgrounds)
 
 class ServiceCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ServiceCategory.objects.all()

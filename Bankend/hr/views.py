@@ -39,6 +39,64 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     permission_classes = [IsEliteAdmin]
 
+    @action(detail=False, methods=['get'])
+    def technician_leaderboard(self, request):
+        from job_cards.models import JobCard
+        from django.db.models import Count, Sum, Q
+        
+        # Aggregate closed jobs by technician (CharField in JobCard)
+        stats = JobCard.objects.filter(status='CLOSED').values('assigned_technician').annotate(
+            total_jobs=Count('id'),
+            total_revenue=Sum('net_amount'),
+            qc_passes=Count('id', filter=Q(qc_sign_off=True))
+        ).order_by('-total_revenue')
+        
+        # Calculate rates
+        leaderboard = []
+        for entry in stats:
+            if not entry['assigned_technician']: continue
+            
+            pass_rate = (entry['qc_passes'] / entry['total_jobs'] * 100) if entry['total_jobs'] > 0 else 0
+            leaderboard.append({
+                'technician': entry['assigned_technician'],
+                'jobs_closed': entry['total_jobs'],
+                'revenue_generated': float(entry['total_revenue'] or 0),
+                'qc_pass_rate': round(pass_rate, 1)
+            })
+            
+        return Response(leaderboard)
+
+    def perform_create(self, serializer):
+        from django.contrib.auth.models import User
+        import random
+        import string
+        
+        # 1. Extract non-model data or handle User creation
+        full_name = self.request.data.get('fullName', 'New Employee')
+        email = self.request.data.get('workEmail', '')
+        emp_id = self.request.data.get('employee_id', '')
+        
+        # Generate username from employee_id or name
+        username = emp_id.lower().replace('-', '_') if emp_id else full_name.lower().replace(' ', '.')
+        if User.objects.filter(username=username).exists():
+            username += f"_{random.randint(100, 999)}"
+            
+        # Create User
+        names = full_name.split(' ', 1)
+        first_name = names[0]
+        last_name = names[1] if len(names) > 1 else ''
+        
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=User.objects.make_random_password(),
+            first_name=first_name,
+            last_name=last_name
+        )
+        
+        # 2. Map and Save Employee
+        serializer.save(user=user)
+
 class HRRuleViewSet(viewsets.ModelViewSet):
     queryset = HRRule.objects.all()
     serializer_class = HRRuleSerializer

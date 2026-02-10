@@ -35,7 +35,7 @@ const AttendanceList = () => {
             setRoster(myRoster);
 
             // Fetch current attendance
-            const attendRes = await api.get('/hr/api/attendance/');
+            const attendRes = await api.get('/forms/attendance/api/records/');
             const todayAttend = attendRes.data.find(a => a.date === todayStr);
             setAttendance(todayAttend);
             setAllLogs(attendRes.data);

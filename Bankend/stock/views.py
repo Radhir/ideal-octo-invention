@@ -50,15 +50,23 @@ class StockItemViewSet(viewsets.ModelViewSet):
         )['value'] or 0
         low_stock_count = StockItem.objects.filter(current_stock__lte=F('safety_level')).count()
         
-        # Category breakdown
+        # Category breakdown with valuation
         breakdown = []
         for cat, label in StockItem.CATEGORIES:
-            count = StockItem.objects.filter(category=cat).count()
+            items = StockItem.objects.filter(category=cat)
+            count = items.count()
             if count > 0:
-                breakdown.append({'label': label, 'count': count})
+                cat_value = items.aggregate(
+                    val=Sum(F('current_stock') * F('unit_cost'))
+                )['val'] or 0
+                breakdown.append({
+                    'label': label, 
+                    'count': count,
+                    'value': float(cat_value)
+                })
 
         return Response({
-            'total_value': total_value,
+            'total_value': float(total_value),
             'low_stock_count': low_stock_count,
             'total_items': StockItem.objects.count(),
             'category_breakdown': breakdown

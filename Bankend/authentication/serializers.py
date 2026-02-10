@@ -72,8 +72,10 @@ class UserSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request:
             return False
+            
+        # Safely check for user attribute on the request object
         user = getattr(request, 'user', None)
-        if not user or not user.is_authenticated:
+        if user is None or not getattr(user, 'is_authenticated', False):
             return False
         # User views their own profile
         if user == obj:

@@ -4,6 +4,8 @@ from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from .models import PPFWarrantyRegistration
 from .forms import PPFWarrantyRegistrationForm
 from .serializers import PPFWarrantySerializer
@@ -23,6 +25,48 @@ def ppf_warranty_create(request):
 def ppf_warranty_list(request):
     warranties = PPFWarrantyRegistration.objects.all().order_by('-created_at')
     return render(request, 'forms/ppf_warranty_list.html', {'warranties': warranties})
+
+class WarrantyPortalView(APIView):
+    """Public warranty portal accessible via QR code"""
+    permission_classes = [AllowAny]
+
+    def get(self, request, token):
+        warranty = get_object_or_404(PPFWarrantyRegistration, portal_token=token)
+        
+        # Build warranty data for public display
+        data = {
+            'certificate_number': f"PPF-{warranty.id:05d}",
+            'customer_name': warranty.full_name,
+            'vehicle': {
+                'brand': warranty.vehicle_brand,
+                'model': warranty.vehicle_model,
+                'year': warranty.vehicle_year,
+                'color': warranty.vehicle_color,
+                'license_plate': warranty.license_plate,
+                'vin': warranty.vin
+            },
+            'warranty': {
+                'installation_date': warranty.installation_date,
+                'duration_years': warranty.warranty_duration_years,
+                'expiry_date': warranty.expiry_date,
+                'film_brand': warranty.film_brand,
+                'film_type': warranty.film_type,
+                'film_lot_number': warranty.film_lot_number,
+                'roll_number': warranty.roll_number,
+                'coverage_area': warranty.coverage_area,
+                'branch': warranty.get_branch_location_display()
+            },
+            'qr_code_url': request.build_absolute_uri(warranty.qr_code.url) if warranty.qr_code else None,
+            'terms': [
+                'Valid only with original purchase invoice',
+                'Does not cover damage from accidents or misuse',
+                'Annual inspection recommended for coverage validity',
+                'Film warranty as per manufacturer specifications',
+                'Installation warranty guaranteed by Elite Shine'
+            ]
+        }
+        
+        return Response(data)
 
 class PPFWarrantyViewSet(viewsets.ModelViewSet):
     queryset = PPFWarrantyRegistration.objects.all().order_by('-created_at')

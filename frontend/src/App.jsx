@@ -83,6 +83,9 @@ const AttendanceBoard = lazy(() => import('./pages/hr/AttendanceBoard'));
 const TeamManagement = lazy(() => import('./pages/hr/TeamManagement'));
 const AccessManagement = lazy(() => import('./pages/hr/AccessManagement'));
 const HRHub = lazy(() => import('./pages/hr/HRHub'));
+const TechnicianAnalytics = lazy(() => import('./pages/hr/TechnicianAnalytics'));
+const CustomerLiveTracker = lazy(() => import('./pages/public/CustomerLiveTracker'));
+const WarrantyPortalView = lazy(() => import('./pages/public/WarrantyPortalView'));
 
 // Finance
 const FinanceOverview = lazy(() => import('./pages/finance/FinanceOverview'));
@@ -117,6 +120,9 @@ const InventoryManagement = lazy(() => import('./pages/elitepro/InventoryManagem
 const FormsHub = lazy(() => import('./pages/hubs/FormsHub'));
 const MediaLibrary = lazy(() => import('./pages/hubs/MediaLibrary'));
 const WorkshopHub = lazy(() => import('./pages/workshop/WorkshopHub'));
+const WorkshopDelayForm = lazy(() => import('./pages/workshop/WorkshopDelayForm'));
+const WorkshopIncidentForm = lazy(() => import('./pages/workshop/WorkshopIncidentForm'));
+const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const ServiceAdvisorForm = lazy(() => import('./pages/forms/ServiceAdvisorForm'));
 const ChecklistForm = lazy(() => import('./pages/forms/ChecklistForm'));
 const PPFWarrantyForm = lazy(() => import('./pages/forms/PPFWarrantyForm'));
@@ -156,6 +162,8 @@ function App() {
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/register" element={<RegisterPage />} />
                   <Route path="/portal/:token" element={<CustomerPortal />} />
+                  <Route path="/track/:token" element={<CustomerLiveTracker />} />
+                  <Route path="/warranty/:token" element={<WarrantyPortalView />} />
                 </Route>
 
                 {/* Main App Routes */}
@@ -216,7 +224,11 @@ function App() {
                   <Route path="/hr/attendance" element={<AttendanceList />} />
                   <Route path="/hr/attendance-board" element={<AttendanceBoard />} />
                   <Route path="/hr/hub" element={<HRHub />} />
+                  <Route path="/hr/analytics" element={<TechnicianAnalytics />} />
                   <Route path="/workshop" element={<WorkshopHub />} />
+                  <Route path="/workshop/delay" element={<WorkshopDelayForm />} />
+                  <Route path="/workshop/incident" element={<WorkshopIncidentForm />} />
+                  <Route path="/projects" element={<ProjectsPage />} />
 
                   {/* ElitePro Trading */}
                   <Route path="/elitepro" element={<EliteProDashboard />} />

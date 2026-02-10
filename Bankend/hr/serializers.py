@@ -28,10 +28,13 @@ class DepartmentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    full_name = serializers.CharField(source='user.get_full_name', read_only=True)
-    username = serializers.CharField(source='user.username', read_only=True)
+    full_name = serializers.CharField(source='user.get_full_name', read_only=True, default='Unknown')
+    username = serializers.CharField(source='user.username', read_only=True, default='anonymous')
+    department = serializers.SlugRelatedField(slug_field='name', queryset=Department.objects.all(), allow_null=True, required=False)
     department_name = serializers.CharField(source='department.name', read_only=True)
+    company = serializers.SlugRelatedField(slug_field='name', queryset=Company.objects.all(), allow_null=True, required=False)
     company_name = serializers.CharField(source='company.name', read_only=True)
+    branch = serializers.SlugRelatedField(slug_field='name', queryset=Branch.objects.all(), allow_null=True, required=False)
     branch_name = serializers.CharField(source='branch.name', read_only=True)
     module_permissions = ModulePermissionSerializer(many=True, read_only=True)
     
@@ -41,7 +44,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'id', 'employee_id', 'username', 'full_name', 'department', 'department_name',
             'company', 'company_name', 'branch', 'branch_name', 'pin_code', 'role', 
             'basic_salary', 'housing_allowance', 'transport_allowance', 'date_joined', 
-            'is_active', 'bio', 'profile_image', 'accent_color', 'module_permissions'
+            'is_active', 'bio', 'profile_image', 'accent_color', 'module_permissions',
+            'nationality', 'gender', 'dob', 'marital_status', 'salary_type',
+            'passport_no', 'passport_expiry', 'visa_uid', 'visa_expiry', 'skills',
+            'uae_address', 'uae_mobile', 'home_country', 'home_address', 'home_mobile',
+            'uae_emer_name', 'uae_emer_phone', 'uae_emer_relation',
+            'home_emer_name', 'home_emer_phone', 'home_emer_relation'
         ]
 
 class HRRuleSerializer(serializers.ModelSerializer):

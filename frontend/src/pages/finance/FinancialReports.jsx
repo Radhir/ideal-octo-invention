@@ -16,6 +16,9 @@ const FinancialReports = () => {
     const [loading, setLoading] = useState(true);
     const [coa, setCoa] = useState([]);
     const [invStats, setInvStats] = useState(null);
+    const [plData, setPlData] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [filters, setFilters] = useState({ search: '', department: 'ALL' });
 
     useEffect(() => {
         fetchData();
@@ -23,14 +26,16 @@ const FinancialReports = () => {
 
     const fetchData = async () => {
         try {
-            const [txRes, coaRes, invRes] = await Promise.all([
+            const [txRes, coaRes, invRes, plRes] = await Promise.all([
                 api.get('/finance/api/transactions/'),
                 api.get('/finance/api/accounts/'),
-                api.get('/forms/stock/api/items/inventory_stats/')
+                api.get('/forms/stock/api/items/inventory_stats/'),
+                api.get(`/reports/api/yearly-pl/?year=${selectedYear}`)
             ]);
             setTransactions(txRes.data);
             setCoa(coaRes.data);
             setInvStats(invRes.data);
+            setPlData(plRes.data);
         } catch (err) {
             console.error('Error fetching reports data', err);
         } finally {
@@ -74,9 +79,17 @@ const FinancialReports = () => {
             </header>
 
             {activeTab === 'LEGER' ? (
-                <LedgerView transactions={transactions} />
+                <LedgerView
+                    transactions={transactions.filter(t => {
+                        const matchesSearch = t.description.toLowerCase().includes(filters.search.toLowerCase()) || t.reference.toLowerCase().includes(filters.search.toLowerCase());
+                        const matchesDept = filters.department === 'ALL' || t.department === filters.department;
+                        return matchesSearch && matchesDept;
+                    })}
+                    filters={filters}
+                    setFilters={setFilters}
+                />
             ) : activeTab === 'PL' ? (
-                <ProfitLossView transactions={transactions} coa={coa} />
+                <ProfitLossView data={plData} year={selectedYear} onYearChange={(yr) => { setSelectedYear(yr); fetchData(); }} />
             ) : (
                 <InventoryView stats={invStats} />
             )}
@@ -110,11 +123,33 @@ const TabButton = ({ active, children, onClick }) => (
     </button>
 );
 
-const LedgerView = ({ transactions }) => (
+const LedgerView = ({ transactions, filters, setFilters }) => (
     <GlassCard style={{ padding: '30px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800' }}>Comprehensive Transaction Ledger</h3>
-            <div style={{ fontSize: '13px', color: '#64748b' }}>Showing all recent journal entries</div>
+            <div>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800' }}>Comprehensive Transaction Ledger</h3>
+                <div style={{ fontSize: '11px', color: '#64748b', marginTop: '5px' }}>AUDIT TRAIL: {transactions.length} ENTRIES FOUND</div>
+            </div>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <input
+                    placeholder="Search transactions..."
+                    value={filters.search}
+                    onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                    style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px 15px', borderRadius: '8px', width: '200px', fontSize: '13px' }}
+                />
+                <select
+                    value={filters.department}
+                    onChange={(e) => setFilters(prev => ({ ...prev, department: e.target.value }))}
+                    style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px 15px', borderRadius: '8px', fontSize: '13px', cursor: 'pointer' }}
+                >
+                    <option value="ALL">All Departments</option>
+                    <option value="OPERATIONS">Operations</option>
+                    <option value="MARKETING">Marketing</option>
+                    <option value="HR">HR & Visa</option>
+                    <option value="INVENTORY">Inventory</option>
+                    <option value="GENERAL">General & Admin</option>
+                </select>
+            </div>
         </div>
         <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -158,35 +193,41 @@ const LedgerView = ({ transactions }) => (
     </GlassCard>
 );
 
-const ProfitLossView = ({ transactions, coa }) => {
-    // Basic P&L aggregation
-    const revenue = transactions.filter(t => t.transaction_type === 'CREDIT').reduce((s, t) => s + parseFloat(t.amount), 0);
-    const expenses = transactions.filter(t => t.transaction_type === 'DEBIT').reduce((s, t) => s + parseFloat(t.amount), 0);
-    const net = revenue - expenses;
+const ProfitLossView = ({ data, year, onYearChange }) => {
+    if (!data) return null;
+    const { p_l_statement, departmental_performance } = data;
 
     return (
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
             <GlassCard style={{ padding: '40px' }}>
-                <h3 style={{ margin: '0 0 30px 0', fontSize: '20px', fontWeight: '900' }}>Profit & Loss Statement</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                    <h3 style={{ margin: 0, fontSize: '20px', fontWeight: '900' }}>Profit & Loss Statement ({year})</h3>
+                    <select
+                        value={year}
+                        onChange={(e) => onYearChange(e.target.value)}
+                        style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer' }}
+                    >
+                        {[2024, 2025, 2026].map(yr => <option key={yr} value={yr} style={{ background: '#1e293b' }}>{yr}</option>)}
+                    </select>
+                </div>
 
                 <SectionHeader>1. OPERATING REVENUE</SectionHeader>
-                <ReportRow label="Service Revenue" value={revenue} primary />
-                <ReportRow label="Other Income" value={0} indent />
-                <ReportRow label="Total Revenue" value={revenue} total />
+                <ReportRow label="Service Revenue" value={p_l_statement.total_revenue} primary />
+                <ReportRow label="Total Revenue" value={p_l_statement.total_revenue} total />
 
                 <div style={{ height: '30px' }}></div>
 
                 <SectionHeader>2. OPERATING EXPENSES</SectionHeader>
-                <ReportRow label="Cost of Operations" value={expenses} primary />
-                <ReportRow label="Marketing Expense" value={0} indent />
-                <ReportRow label="Salaries & Benefits" value={0} indent />
-                <ReportRow label="Total Expenses" value={expenses} total color="#f43f5e" />
+                {departmental_performance.map((dept, i) => (
+                    <ReportRow key={i} label={dept.name} value={dept.expenses} indent />
+                ))}
+                <ReportRow label="Total Operating Expenses" value={p_l_statement.total_expenses} total color="#f43f5e" />
 
                 <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '2px solid rgba(255,255,255,0.1)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '20px', fontWeight: '900', color: '#fff' }}>NET OPERATING INCOME</span>
-                        <span style={{ fontSize: '24px', fontWeight: '900', color: net >= 0 ? '#10b981' : '#f43f5e' }}>
-                            AED {net.toLocaleString()}
+                        <span style={{ fontSize: '24px', fontWeight: '900', color: p_l_statement.net_profit_loss >= 0 ? '#10b981' : '#f43f5e' }}>
+                            AED {p_l_statement.net_profit_loss.toLocaleString()}
                         </span>
                     </div>
                 </div>
@@ -196,8 +237,8 @@ const ProfitLossView = ({ transactions, coa }) => {
                 <GlassCard style={{ padding: '30px' }}>
                     <h4 style={{ margin: '0 0 20px 0', fontSize: '15px', color: '#b08d57' }}>FISCAL SUMMARY</h4>
                     <SummaryMetric label="Gross Margin" value="100%" color="#10b981" />
-                    <SummaryMetric label="Expense Ratio" value={`${((expenses / revenue) * 100 || 0).toFixed(1)}%`} color="#f43f5e" />
-                    <SummaryMetric label="Net Profit Margin" value={`${((net / revenue) * 100 || 0).toFixed(1)}%`} color="#3b82f6" />
+                    <SummaryMetric label="Expense Ratio" value={`${((p_l_statement.total_expenses / p_l_statement.total_revenue) * 100 || 0).toFixed(1)}%`} color="#f43f5e" />
+                    <SummaryMetric label="Net Profit Margin" value={`${((p_l_statement.net_profit_loss / p_l_statement.total_revenue) * 100 || 0).toFixed(1)}%`} color="#3b82f6" />
                 </GlassCard>
 
                 <GlassCard style={{ padding: '30px', background: 'rgba(176,141,87,0.05)' }}>
@@ -206,7 +247,7 @@ const ProfitLossView = ({ transactions, coa }) => {
                         <h4 style={{ margin: 0, fontWeight: '800' }}>Auditor Note</h4>
                     </div>
                     <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '1.6' }}>
-                        This statement reflects all transactions recorded in the General Ledger as of today. Automated revenue from paid invoices is included.
+                        This statement reflects all transactions recorded in the General Ledger for the selected fiscal year.
                     </p>
                 </GlassCard>
             </div>
@@ -221,7 +262,7 @@ const InventoryView = ({ stats }) => (
 
             <SectionHeader>ASSET CATEGORIES</SectionHeader>
             {stats?.category_breakdown?.map((cat, i) => (
-                <ReportRow key={i} label={cat.label} value={0} primary />
+                <ReportRow key={i} label={cat.label} value={cat.value || 0} primary />
             ))}
 
             <div style={{ marginTop: '50px', paddingTop: '20px', borderTop: '2px solid rgba(255,255,255,0.1)' }}>

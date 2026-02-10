@@ -6,10 +6,9 @@
     width: 100vw;
     height: 100dvh;
     overflow: hidden;
-    background-image: linear-gradient(rgba(10, 12, 16, 0.85), rgba(10, 12, 16, 0.85)), url('/executive_bg.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    /* Static background removed to allow BackgroundCarousel to show through */
+    /* Static background removed to allow BackgroundCarousel to show through */
+    /* background-color: #0a0c10; Removed */
     display: flex;
     flex-direction: column;
 }

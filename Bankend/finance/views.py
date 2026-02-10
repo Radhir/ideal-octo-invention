@@ -17,6 +17,8 @@ class BudgetViewSet(viewsets.ModelViewSet):
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Sum
+from django.utils import timezone
+from datetime import timedelta
 from invoices.models import Invoice
 
 class TransactionViewSet(viewsets.ModelViewSet):
@@ -25,24 +27,70 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def financial_summary(self, request):
-        total_revenue = Invoice.objects.filter(payment_status='PAID').aggregate(total=Sum('grand_total'))['total'] or 0
+        now = timezone.now()
+        first_day_this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        first_day_last_month = (first_day_this_month - timedelta(days=1)).replace(day=1)
+        
+        # Monthly Metrics (This Month)
+        monthly_revenue = Transaction.objects.filter(
+            transaction_type='CREDIT', 
+            date__gte=first_day_this_month
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        
+        monthly_expense = Transaction.objects.filter(
+            transaction_type='DEBIT', 
+            date__gte=first_day_this_month
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        
+        # Monthly Metrics (Last Month)
+        prev_monthly_revenue = Transaction.objects.filter(
+            transaction_type='CREDIT', 
+            date__gte=first_day_last_month,
+            date__lt=first_day_this_month
+        ).aggregate(total=Sum('amount'))['total'] or 0
+        
+        prev_monthly_expense = Transaction.objects.filter(
+            transaction_type='DEBIT', 
+            date__gte=first_day_last_month,
+            date__lt=first_day_this_month
+        ).aggregate(total=Sum('amount'))['total'] or 0
+
+        # Totals
+        total_revenue = Transaction.objects.filter(transaction_type='CREDIT').aggregate(total=Sum('amount'))['total'] or 0
+        total_expenses = Transaction.objects.filter(transaction_type='DEBIT').aggregate(total=Sum('amount'))['total'] or 0
+        total_assets = Account.objects.filter(category__icontains='ASSET').aggregate(total=Sum('balance'))['total'] or 0
+        
+        # Budget Calculations
         budgets = Budget.objects.all()
         budget_data = []
         for b in budgets:
-            # Calculate spent dynamically from paid invoices of the same department
-            invoice_spent = Invoice.objects.filter(department=b.department, payment_status='PAID').aggregate(total=Sum('grand_total'))['total'] or 0
-            # Combine with manual spent field if needed, or just use invoice_spent
-            total_spent = b.spent + invoice_spent
-            
+            # Use specific department filter if department_ref is available, else fallback
+            if b.department_ref:
+                dept_spent = Transaction.objects.filter(department_ref=b.department_ref, transaction_type='DEBIT').aggregate(total=Sum('amount'))['total'] or 0
+            else:
+                dept_spent = Transaction.objects.filter(department=b.department, transaction_type='DEBIT').aggregate(total=Sum('amount'))['total'] or 0
+                
             budget_data.append({
-                'label': b.get_department_display(),
-                'used': total_spent,
+                'label': b.department_ref.name if b.department_ref else b.get_department_display(),
+                'used': dept_spent,
                 'total': b.amount,
-                'percent': (total_spent / b.amount * 100) if b.amount > 0 else 0
+                'percent': (float(dept_spent) / float(b.amount) * 100) if b.amount > 0 else 0
             })
         
         return Response({
-            'total_revenue': total_revenue,
+            'summary': {
+                'total_revenue': total_revenue,
+                'total_expenses': total_expenses,
+                'total_assets': total_assets,
+                'net_worth': total_revenue - total_expenses,
+                'monthly_revenue': monthly_revenue,
+                'monthly_expense': monthly_expense,
+                'monthly_net': monthly_revenue - monthly_expense,
+                'trends': {
+                    'revenue_growth': ((float(monthly_revenue) / float(prev_monthly_revenue) - 1) * 100) if prev_monthly_revenue > 0 else 0,
+                    'expense_growth': ((float(monthly_expense) / float(prev_monthly_expense) - 1) * 100) if prev_monthly_expense > 0 else 0,
+                }
+            },
             'budgets': budget_data,
-            'total_assets': Account.objects.filter(category='ASSET').aggregate(total=Sum('balance'))['total'] or 0
+            'accounts_count': Account.objects.count()
         })

@@ -10,4 +10,5 @@ urlpatterns = [
     path('create/', views.ppf_warranty_create, name='ppf_warranty_create'),
     # API endpoints
     path('api/', include(router.urls)),
+    path('api/portal/<uuid:token>/', views.WarrantyPortalView.as_view(), name='warranty_portal_api'),
 ]

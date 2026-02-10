@@ -5,21 +5,66 @@ const BackgroundCarousel = () => {
     const location = useLocation();
     const isAuthPage = ['/login', '/register', '/portal'].some(path => location.pathname.startsWith(path));
 
-    const assets = [
-        { type: 'video', src: '/bg_vid1.mp4' },
-        { type: 'video', src: '/bg_vid2.mp4' },
-        { type: 'video', src: '/bg_vid3.mp4' },
-        { type: 'video', src: '/bg_vid5.mp4' },
+    // Fallback static assets
+    const staticAssets = [
+        '/backgrounds/Porsche.jpg',
+        '/backgrounds/F1.jpg'
     ];
 
+    const [assets, setAssets] = useState(staticAssets);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
+        // Fetch dynamic backgrounds from ERP
+        const fetchBackgrounds = async () => {
+            try {
+                const response = await fetch('/forms/job-cards/api/photos/random_backgrounds/?limit=8');
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.length > 0) {
+                        const imageUrls = data
+                            .filter(item => item.url)
+                            .map(item => item.url);
+
+                        if (imageUrls.length > 0) {
+                            setAssets(imageUrls);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log('Using static backgrounds:', error);
+                // Keep staticAssets as fallback
+            }
+        };
+
+        fetchBackgrounds();
+    }, []);
+
+    useEffect(() => {
+        // Preload images to prevent flicker or loading issues
+        const preloadImages = async () => {
+            const promises = assets.map((src) => {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = resolve;
+                    img.onerror = resolve; // Continue even if one fails
+                });
+            });
+            await Promise.all(promises);
+            setLoaded(true);
+        };
+        preloadImages();
+    }, [assets]);
+
+    useEffect(() => {
+        if (!loaded) return;
         const interval = setInterval(() => {
             setCurrentIndex((prev) => (prev + 1) % assets.length);
-        }, 12000); // Slightly longer for videos
+        }, 8000);
         return () => clearInterval(interval);
-    }, [assets.length]);
+    }, [loaded, assets.length]);
 
     if (isAuthPage) return null;
 
@@ -32,9 +77,18 @@ const BackgroundCarousel = () => {
             height: '100%',
             zIndex: -1,
             overflow: 'hidden',
-            background: '#000'
+            background: '#0a0c10', // Fallback dark color
         }}>
-            {assets.map((asset, idx) => (
+            {/* Show fallback gradient while loading */}
+            {!loaded && (
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                    background: 'radial-gradient(circle at center, #1a1c20 0%, #000 100%)',
+                }} />
+            )}
+
+            {loaded && assets.map((src, idx) => (
                 <div
                     key={idx}
                     style={{
@@ -43,36 +97,16 @@ const BackgroundCarousel = () => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        transition: 'opacity 3s ease-in-out',
-                        opacity: idx === currentIndex ? 0.25 : 0,
-                        visibility: idx === currentIndex ? 'visible' : 'hidden'
+                        backgroundImage: `url(${src})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        transition: 'opacity 2s ease-in-out',
+                        opacity: idx === currentIndex ? 0.35 : 0,
+                        willChange: 'opacity'
                     }}
-                >
-                    {asset.type === 'video' ? (
-                        <video
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover'
-                            }}
-                        >
-                            <source src={asset.src} type="video/mp4" />
-                        </video>
-                    ) : (
-                        <div style={{
-                            width: '100%',
-                            height: '100%',
-                            backgroundImage: `url(${asset.src})`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center'
-                        }} />
-                    )}
-                </div>
+                />
             ))}
+
             {/* Professional Vingette & Mesh Gradient Overlay */}
             <div style={{
                 position: 'absolute',
@@ -80,8 +114,7 @@ const BackgroundCarousel = () => {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: 'var(--mesh-gradient)',
-                opacity: 0.4,
+                background: 'rgba(0,0,0,0.5)', // darken overall
                 pointerEvents: 'none'
             }} />
             <div style={{
@@ -90,7 +123,7 @@ const BackgroundCarousel = () => {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%), linear-gradient(to bottom, transparent 0%, #0a0c10 100%)',
+                background: 'radial-gradient(circle at center, transparent 0%, #000 120%)',
                 pointerEvents: 'none'
             }} />
         </div>

@@ -85,7 +85,49 @@ class JobCard(models.Model):
     def save(self, *args, **kwargs):
         if not self.portal_token:
             self.portal_token = uuid.uuid4()
+            
+        old_status = None
+        if self.pk:
+            try:
+                old_status = JobCard.objects.get(pk=self.pk).status
+            except JobCard.DoesNotExist:
+                pass
+        
         super().save(*args, **kwargs)
+        
+        # Trigger Financial Transaction on Completion
+        if self.status == 'CLOSED' and old_status != 'CLOSED':
+            self.sync_to_finance()
+
+    def sync_to_finance(self):
+        from finance.models import Transaction, Account, DEPARTMENTS
+        from hr.models import Department
+        
+        # 1. Identify/Create Revenue Account
+        # Using a standard code for Workshop Revenue, e.g., '4001'
+        revenue_account, created = Account.objects.get_or_create(
+            code='4001',
+            defaults={
+                'name': 'Workshop Service Revenue',
+                'category': 'Revenue',
+                'description': 'Automated account for Job Card closed revenue'
+            }
+        )
+        
+        # 2. Identify Department
+        # Try to map branch or related info to a Finance Department
+        # For now, default to 'OPERATIONS' or map if Department model is available
+        target_dept = 'OPERATIONS' 
+        
+        # 3. Create Transaction
+        Transaction.objects.create(
+            account=revenue_account,
+            department=target_dept,
+            amount=self.net_amount,
+            transaction_type='CREDIT',
+            description=f"Revenue recognized from Job Card #{self.job_card_number} | {self.customer_name}",
+            reference=self.job_card_number
+        )
 
     def __str__(self):
         return f"{self.job_card_number} - {self.get_status_display()}"

@@ -19,7 +19,7 @@ const ProjectsPage = () => {
 
     const fetchProjects = async () => {
         try {
-            const res = await api.get('/forms/job-cards/api/jobs/');
+            const res = await api.get('/projects/projects/');
             const data = Array.isArray(res.data) ? res.data : res.data.results || [];
             setJobs(data);
         } catch (err) {

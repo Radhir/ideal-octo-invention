@@ -1,10 +1,37 @@
-import React, { useState } from 'react';
-import { AlertTriangle, Clock, ShieldAlert, CheckCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../api/axios';
+import { AlertTriangle, Clock, ShieldAlert, CheckCircle, Plus } from 'lucide-react';
+import GlassCard from '../../components/GlassCard';
 
 const WorkshopHub = () => {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState(0);
+    const [delays, setDelays] = useState([]);
+    const [incidents, setIncidents] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const tabs = ["Service Delays", "Workshop Incidents", "Performance"];
+
+    useEffect(() => {
+        fetchWorkshopData();
+    }, []);
+
+    const fetchWorkshopData = async () => {
+        setLoading(true);
+        try {
+            const [delayRes, incidentRes] = await Promise.all([
+                api.get('/workshop/api/delays/'),
+                api.get('/workshop/api/incidents/')
+            ]);
+            setDelays(delayRes.data);
+            setIncidents(incidentRes.data);
+        } catch (err) {
+            console.error('Error fetching workshop data', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="p-8 max-w-7xl mx-auto" style={{ color: 'white' }}>
@@ -14,8 +41,30 @@ const WorkshopHub = () => {
                     <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>Manage service delays, incidents, and workshop performance</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="btn-primary">Report Delay</button>
-                    <button style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '0.5rem 1.5rem', borderRadius: '9999px', fontWeight: 'bold', cursor: 'pointer' }}>Report Incident</button>
+                    <button
+                        onClick={() => navigate('/workshop/delay')}
+                        className="btn-primary"
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <Plus size={18} /> Report Delay
+                    </button>
+                    <button
+                        onClick={() => navigate('/workshop/incident')}
+                        style={{
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            color: '#f87171',
+                            border: '1px solid rgba(239, 68, 68, 0.2)',
+                            padding: '0.5rem 1.5rem',
+                            borderRadius: '9999px',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
+                        }}
+                    >
+                        <AlertTriangle size={18} /> Report Incident
+                    </button>
                 </div>
             </div>
 
@@ -40,51 +89,106 @@ const WorkshopHub = () => {
                 ))}
             </div>
 
-            {activeTab === 0 && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                    <div className="glass-card" style={{ padding: '1.5rem' }}>
-                        <div style={{ display: 'flex', gap: '1rem' }}>
-                            <div style={{ padding: '0.75rem', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderRadius: '0.75rem' }}>
-                                <Clock style={{ color: '#f59e0b' }} size={24} />
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Delay #SD-2024-001</h3>
-                                    <span style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold' }}>Customer Informed</span>
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '5rem', color: '#64748b' }}>SYNCHRONIZING OPERATIONAL DATA...</div>
+            ) : (
+                <>
+                    {activeTab === 0 && (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+                            {delays.length > 0 ? delays.map(delay => (
+                                <GlassCard key={delay.id} style={{ padding: '1.5rem' }}>
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <div style={{ padding: '0.75rem', backgroundColor: 'rgba(245, 158, 11, 0.1)', borderRadius: '0.75rem', height: 'fit-content' }}>
+                                            <Clock style={{ color: '#f59e0b' }} size={24} />
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800' }}>{delay.delay_number}</h3>
+                                                <span style={{
+                                                    backgroundColor: delay.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                                                    color: delay.severity === 'CRITICAL' ? '#ef4444' : '#f59e0b',
+                                                    fontSize: '0.7rem',
+                                                    padding: '0.2rem 0.6rem',
+                                                    borderRadius: '4px',
+                                                    fontWeight: 'bold',
+                                                    textTransform: 'uppercase'
+                                                }}>
+                                                    {delay.severity}
+                                                </span>
+                                            </div>
+                                            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '0.5rem' }}>Job Card: #{delay.job_card_number}</p>
+                                            <p style={{ color: '#cbd5e1', marginTop: '1rem', fontStyle: 'italic', fontSize: '0.9rem' }}>"{delay.delay_reason}"</p>
+                                            <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#64748b' }}>
+                                                <span>Reported by: {delay.reported_by_name || 'System'}</span>
+                                                <span>{new Date(delay.reported_at).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </GlassCard>
+                            )) : (
+                                <div className="glass-card" style={{ gridColumn: '1/-1', textAlign: 'center', padding: '5rem', color: '#64748b' }}>
+                                    <CheckCircle size={48} style={{ color: '#10b981', marginBottom: '1rem', opacity: 0.5 }} />
+                                    <h3>No Active Delays</h3>
+                                    <p>Workshop timeline is currently optimal.</p>
                                 </div>
-                                <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '0.5rem' }}>Job Card: JC-00892 | Ford Mustang</p>
-                                <p style={{ color: '#cbd5e1', marginTop: '1rem', fontStyle: 'italic', fontSize: '0.9rem' }}>"Waiting for specialized parts from supplier. Estimated delay: 4 hours."</p>
-                                <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#64748b' }}>
-                                    <span>Reported by: Radhir</span>
-                                    <span>2 hours ago</span>
+                            )}
+                        </div>
+                    )}
+
+                    {activeTab === 1 && (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+                            {incidents.length > 0 ? incidents.map(incident => (
+                                <GlassCard key={incident.id} style={{ padding: '1.5rem', borderLeft: '4px solid #ef4444' }}>
+                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                        <div style={{ padding: '0.75rem', backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: '0.75rem', height: 'fit-content' }}>
+                                            <ShieldAlert style={{ color: '#ef4444' }} size={24} />
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '800' }}>{incident.incident_number}</h3>
+                                                <span style={{
+                                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                                    color: '#ef4444',
+                                                    fontSize: '0.7rem',
+                                                    padding: '0.2rem 0.6rem',
+                                                    borderRadius: '4px',
+                                                    fontWeight: 'bold'
+                                                }}>{incident.severity}</span>
+                                            </div>
+                                            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginTop: '0.5rem' }}>Type: {incident.incident_type.replace('_', ' ')}</p>
+                                            <p style={{ color: '#cbd5e1', marginTop: '1rem', fontSize: '0.9rem' }}>{incident.incident_description}</p>
+                                            <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#64748b' }}>
+                                                <span>Location: {incident.incident_location}</span>
+                                                <span>{new Date(incident.incident_date).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </GlassCard>
+                            )) : (
+                                <div className="glass-card" style={{ gridColumn: '1/-1', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5rem', textAlign: 'center' }}>
+                                    <CheckCircle size={48} style={{ color: '#10b981', marginBottom: '1rem', opacity: 0.5 }} />
+                                    <h3>Zero Incidents</h3>
+                                    <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>Safe-zone maintained. No incidents reported.</p>
                                 </div>
-                            </div>
+                            )}
                         </div>
-                    </div>
-                </div>
-            )}
+                    )}
 
-            {activeTab === 1 && (
-                <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '5rem', textAlign: 'center' }}>
-                    <CheckCircle size={48} style={{ color: '#10b981', marginBottom: '1rem' }} />
-                    <h3 style={{ margin: 0 }}>All Clear</h3>
-                    <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>No active workshop incidents reported in the last 24 hours.</p>
-                </div>
-            )}
-
-            {activeTab === 2 && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
-                    {[
-                        { label: 'Avg. Delay Duration', value: '1.4 hrs' },
-                        { label: 'Resolution Rate', value: '94%' },
-                        { label: 'Incidents (MTD)', value: '2' }
-                    ].map(stat => (
-                        <div key={stat.label} className="glass-card" style={{ padding: '1.5rem' }}>
-                            <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: 0 }}>{stat.label}</p>
-                            <h2 style={{ fontSize: '2rem', margin: '0.5rem 0 0' }}>{stat.value}</h2>
+                    {activeTab === 2 && (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                            {[
+                                { label: 'Avg. Delay Duration', value: delays.length > 0 ? (delays.reduce((acc, d) => acc + parseFloat(d.delay_duration_hours || 0), 0) / delays.length).toFixed(1) + ' hrs' : '0 hrs' },
+                                { label: 'Active Delays', value: delays.length },
+                                { label: 'Incidents Total', value: incidents.length }
+                            ].map(stat => (
+                                <div key={stat.label} className="glass-card" style={{ padding: '1.5rem' }}>
+                                    <p style={{ color: '#94a3b8', fontSize: '0.85rem', margin: 0 }}>{stat.label}</p>
+                                    <h2 style={{ fontSize: '2rem', margin: '0.5rem 0 0' }}>{stat.value}</h2>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
+                    )}
+                </>
             )}
         </div>
     );

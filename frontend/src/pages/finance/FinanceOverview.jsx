@@ -3,7 +3,7 @@ import api from '../../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
-    DollarSign, BarChart3, PieChart, TrendingUp,
+    DollarSign, BarChart3, PieChart, TrendingUp, TrendingDown,
     ArrowUpRight, ArrowDownRight, Wallet, Receipt,
     Briefcase, FileText, Download, Filter, Plus, ChevronRight
 } from 'lucide-react';
@@ -26,25 +26,22 @@ const FinanceOverview = () => {
 
     const fetchData = async () => {
         try {
-            const [accRes, summaryRes, txRes] = await Promise.all([
+            const [accRes, summaryRes] = await Promise.all([
                 api.get('/finance/api/accounts/'),
-                api.get('/finance/api/transactions/financial_summary/'),
-                api.get('/finance/api/transactions/')
+                api.get('/finance/api/transactions/financial_summary/')
             ]);
 
-            // Derive expenses and net profit from transactions
-            const rev = parseFloat(summaryRes.data.total_revenue) || 0;
-            const exp = txRes.data.filter(t => t.transaction_type === 'DEBIT').reduce((s, t) => s + parseFloat(t.amount), 0);
-            const net = rev - exp;
+            const { summary, budgets } = summaryRes.data;
 
             setAccounts(accRes.data);
             setStats({
-                total_assets: summaryRes.data.total_assets >= 1000000 ? (summaryRes.data.total_assets / 1000000).toFixed(1) + 'M' : (summaryRes.data.total_assets / 1000).toFixed(1) + 'K',
-                monthly_revenue: rev >= 1000 ? (rev / 1000).toFixed(1) + 'K' : rev,
-                monthly_expense: exp >= 1000 ? (exp / 1000).toFixed(1) + 'K' : exp,
-                net_profit: net >= 1000 ? (net / 1000).toFixed(1) + 'K' : net
+                total_assets: summary.total_assets >= 1000000 ? (summary.total_assets / 1000000).toFixed(1) + 'M' : (summary.total_assets / 1000).toFixed(1) + 'K',
+                monthly_revenue: summary.monthly_revenue >= 1000 ? (summary.monthly_revenue / 1000).toFixed(1) + 'K' : summary.monthly_revenue,
+                monthly_expense: summary.monthly_expense >= 1000 ? (summary.monthly_expense / 1000).toFixed(1) + 'K' : summary.monthly_expense,
+                net_profit: summary.monthly_net >= 1000 ? (summary.monthly_net / 1000).toFixed(1) + 'K' : summary.monthly_net,
+                trends: summary.trends
             });
-            setLiveBudgets(summaryRes.data.budgets);
+            setLiveBudgets(budgets);
         } catch (err) {
             console.error('Error fetching finance data', err);
         } finally {
@@ -91,10 +88,10 @@ const FinanceOverview = () => {
                 <>
                     {/* Top Stats */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '40px' }}>
-                        <StatCard label="Total Assets" value={`AED ${stats.total_assets}`} icon={<Wallet color="#3b82f6" />} trend="+12%" />
-                        <StatCard label="Monthly Revenue" value={`AED ${stats.monthly_revenue}`} icon={<TrendingUp color="#10b981" />} trend="+8%" />
-                        <StatCard label="Monthly Expense" value={`AED ${stats.monthly_expense}`} icon={<Receipt color="#f43f5e" />} trend="-3%" inverse />
-                        <StatCard label="Net Profit" value={`AED ${stats.net_profit}`} icon={<ArrowUpRight color="#b08d57" />} trend="+15%" />
+                        <StatCard label="Total Assets" value={`AED ${stats.total_assets}`} icon={<Wallet color="#3b82f6" />} />
+                        <StatCard label="Monthly Revenue" value={`AED ${stats.monthly_revenue}`} icon={<TrendingUp color="#10b981" />} trend={true} trendValue={stats.trends?.revenue_growth} />
+                        <StatCard label="Monthly Expense" value={`AED ${stats.monthly_expense}`} icon={<Receipt color="#f43f5e" />} trend={true} trendValue={stats.trends?.expense_growth} inverse />
+                        <StatCard label="Monthly Net" value={`AED ${stats.net_profit}`} icon={<ArrowUpRight color="#b08d57" />} />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
@@ -171,10 +168,26 @@ const FinanceOverview = () => {
     );
 };
 
-const StatCard = ({ label, value, icon, trend, inverse }) => (
+const StatCard = ({ label, value, icon, trend, trendValue, inverse }) => (
     <GlassCard style={{ padding: '25px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
             <div style={{ background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '12px' }}>{icon}</div>
+            {trend && trendValue !== undefined && (
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    fontSize: '12px',
+                    fontWeight: '800',
+                    color: (trendValue >= 0) ? (inverse ? '#f43f5e' : '#10b981') : (inverse ? '#10b981' : '#f43f5e'),
+                    background: (trendValue >= 0) ? (inverse ? '#f43f5e11' : '#10b98111') : (inverse ? '#10b98111' : '#f43f5e11'),
+                    padding: '4px 8px',
+                    borderRadius: '6px'
+                }}>
+                    {trendValue >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                    {Math.abs(trendValue).toFixed(1)}%
+                </div>
+            )}
         </div>
         <div style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '5px' }}>{label}</div>
         <div style={{ fontSize: '24px', fontWeight: '900', color: '#fff' }}>{value}</div>

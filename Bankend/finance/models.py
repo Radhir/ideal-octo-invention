@@ -49,6 +49,7 @@ class Transaction(models.Model):
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
     description = models.TextField()
     reference = models.CharField(max_length=100, blank=True) # Invoice #, Receipt #
+    receipt = models.ImageField(upload_to='receipts/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -60,6 +61,9 @@ class Transaction(models.Model):
             else:
                 self.account.balance -= self.amount
             self.account.save()
+
+    def delete(self, *args, **kwargs):
+        raise PermissionError("Transaction history is part of the permanent audit trail and cannot be removed.")
 
     def __str__(self):
         return f"{self.transaction_type} - {self.amount} ({self.account.name})"

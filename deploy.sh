@@ -64,6 +64,24 @@ if command -v ufw &> /dev/null; then
     ufw allow 22/tcp 2>/dev/null || true
 fi
 
+# Step 3.5: Extract project files
+echo "[3.5/5] Extracting files..."
+if [ -f "project-clean.zip" ]; then
+    echo "Extracting project-clean.zip to $PROJECT_DIR..."
+    # Install unzip if missing
+    if ! command -v unzip &> /dev/null; then
+        apt-get install -y unzip
+    fi
+    unzip -o project-clean.zip -d $PROJECT_DIR
+    rm project-clean.zip
+fi
+
+if [ -f "patch.zip" ]; then
+    echo "Applying patch.zip to $PROJECT_DIR..."
+    unzip -o patch.zip -d $PROJECT_DIR
+    rm patch.zip
+fi
+
 # Step 4: Build and start
 echo "[4/5] Building and starting containers..."
 cd $PROJECT_DIR
