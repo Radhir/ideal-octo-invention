@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft, Truck, User, MapPin, Calendar, Car } from 'lucide-react';
+import { Save, ArrowLeft, Truck, User, MapPin, Calendar, Car, EyeOff } from 'lucide-react';
 
 const PickDropForm = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const payload = location.state?.payload || location.state?.jobCard;
+
+    const { user } = useAuth();
+    const isManager = user?.role === 'MANAGER' || user?.role === 'ADMIN' || user?.is_superuser;
 
     const [formData, setFormData] = useState({
         job_card: payload?.id || '',
@@ -43,7 +47,8 @@ const PickDropForm = () => {
                     api.get('/forms/job-cards/api/jobs/')
                 ]);
                 setEmployees(empRes.data);
-                setJobCards(jcRes.data);
+                // Filter for released jobs
+                setJobCards(jcRes.data.filter(jc => jc.is_released));
             } catch (err) {
                 console.error('Error fetching Logistics metadata', err);
             }
@@ -104,7 +109,18 @@ const PickDropForm = () => {
                                     </div>
                                     <div>
                                         <label style={labelStyle}>Contact #</label>
-                                        <input name="phone" className="form-control" value={formData.phone} onChange={handleChange} required />
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                name="phone"
+                                                className="form-control"
+                                                value={!isManager && formData.phone ? formData.phone.replace(/.(?=.{4})/g, '*') : formData.phone}
+                                                onChange={handleChange}
+                                                required
+                                                readOnly={!isManager}
+                                                style={!isManager ? { background: 'rgba(255,255,255,0.03)', color: '#64748b' } : {}}
+                                            />
+                                            {!isManager && <EyeOff size={14} style={{ position: 'absolute', right: '10px', top: '12px', opacity: 0.5 }} />}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

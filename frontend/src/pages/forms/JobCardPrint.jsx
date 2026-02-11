@@ -36,6 +36,7 @@ const JobCardPrint = ({ jobCardData: propData }) => {
                     km: jc.kilometers
                 },
                 description: jc.job_description,
+                inspection_notes: jc.initial_inspection_notes,
                 financials: {
                     total: parseFloat(jc.total_amount || 0).toFixed(2),
                     vat: parseFloat(jc.vat_amount || 0).toFixed(2),
@@ -138,14 +139,27 @@ const JobCardPrint = ({ jobCardData: propData }) => {
                     </div>
                 </div>
 
-                {/* Job Description */}
-                <div className="job-description">
-                    <div className="section-header">
-                        <FileText size={18} />
-                        <h3>Job Description</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '40px' }}>
+                    {/* Job Description */}
+                    <div className="job-description">
+                        <div className="section-header">
+                            <FileText size={18} />
+                            <h3>Job Description</h3>
+                        </div>
+                        <div className="description-field" style={{ whiteSpace: 'pre-wrap', padding: '15px', background: '#f9f9f9', borderRadius: '8px', minHeight: '80px', fontSize: '13px' }}>
+                            {displayData.description}
+                        </div>
                     </div>
-                    <div className="description-field" style={{ whiteSpace: 'pre-wrap', padding: '15px', background: '#f9f9f9', borderRadius: '8px', minHeight: '80px' }}>
-                        {displayData.description}
+
+                    {/* Inspection Notes */}
+                    <div className="job-description">
+                        <div className="section-header">
+                            <FileText size={18} />
+                            <h3>Internal Inspection Notes</h3>
+                        </div>
+                        <div className="description-field" style={{ whiteSpace: 'pre-wrap', padding: '15px', background: '#f9f9f9', borderRadius: '8px', minHeight: '80px', fontSize: '13px' }}>
+                            {displayData.inspection_notes || "No internal notes provided."}
+                        </div>
                     </div>
                 </div>
 

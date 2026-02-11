@@ -134,6 +134,13 @@ class JobCardViewSet(viewsets.ModelViewSet):
             Booking.objects.filter(id=booking_id).update(status='ARRIVED')
 
     @action(detail=True, methods=['post'])
+    def release(self, request, pk=None):
+        job_card = self.get_object()
+        job_card.is_released = True
+        job_card.save()
+        return Response({'status': 'released', 'is_released': True})
+
+    @action(detail=True, methods=['post'])
     def advance_status(self, request, pk=None):
         job_card = self.get_object()
         next_status_map = {

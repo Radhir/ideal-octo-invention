@@ -154,6 +154,9 @@ const DashboardView = ({ teams }) => {
 };
 
 const AdvisorSheetsView = () => {
+    const { user } = useAuth();
+    const isManager = user?.role === 'MANAGER' || user?.role === 'ADMIN' || user?.is_superuser;
+
     const advisors = ['Anish', 'Suraj', 'Rony'];
     const [selectedAdvisor, setSelectedAdvisor] = useState('Anish');
     const [entries, setEntries] = useState([]);
@@ -228,7 +231,7 @@ const AdvisorSheetsView = () => {
                             {entries.map((entry, idx) => (
                                 <tr key={idx}>
                                     <td>{entry.job_card || 'N/A'}</td>
-                                    <td>{entry.notes.split('|')[0] || 'N/A'}</td>
+                                    <td>{!isManager && entry.notes.split('|')[0] ? '***' : entry.notes.split('|')[0] || 'N/A'}</td>
                                     <td>{entry.notes.split('|')[1] || 'N/A'}</td>
                                     <td>{entry.team_name || 'N/A'}</td>
                                     <td><span className="badge progress">Assigned</span></td>

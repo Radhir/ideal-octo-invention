@@ -155,9 +155,31 @@ const JobDetail = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
                 <div className="main-content">
                     <GlassCard style={{ padding: '30px', marginBottom: '30px' }}>
-                        <h3 style={sectionTitleStyle}>Job Status: {job.status_display}</h3>
-                        <div style={{ color: 'var(--text-primary)', fontSize: '15px', lineHeight: '1.6', background: 'var(--input-bg)', padding: '20px', borderRadius: '15px', border: '1px solid var(--border-color)', transition: 'all 0.3s' }}>
-                            {job.job_description}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h3 style={{ ...sectionTitleStyle, margin: 0 }}>Job Status: {job.status_display}</h3>
+                            {job.is_released ? (
+                                <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                                    RELEASED FOR SCHEDULE
+                                </span>
+                            ) : (
+                                <span style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                                    PENDING MANAGER RELEASE
+                                </span>
+                            )}
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div>
+                                <label style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Primary Complaints</label>
+                                <div style={{ color: 'var(--text-primary)', fontSize: '14px', lineHeight: '1.6', background: 'var(--input-bg)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                                    {job.job_description || 'No description provided'}
+                                </div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Internal Notes / Inspection</label>
+                                <div style={{ color: 'var(--text-primary)', fontSize: '14px', lineHeight: '1.6', background: 'var(--input-bg)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                                    {job.initial_inspection_notes || 'No internal notes'}
+                                </div>
+                            </div>
                         </div>
                     </GlassCard>
 

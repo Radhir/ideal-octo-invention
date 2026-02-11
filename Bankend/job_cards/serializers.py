@@ -21,6 +21,7 @@ class JobCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobCard
         fields = '__all__'
+        read_only_fields = ('is_released',)
 
     def create(self, validated_data):
         # Auto-link or create Customer Profile based on Phone

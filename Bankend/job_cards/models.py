@@ -81,6 +81,7 @@ class JobCard(models.Model):
     feedback_notes = models.TextField(blank=True)
     
     portal_token = models.UUIDField(default=uuid.uuid4, null=True, blank=True)
+    is_released = models.BooleanField(default=False, help_text="Released by manager for scheduling/workshop")
     sla_clock_start = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

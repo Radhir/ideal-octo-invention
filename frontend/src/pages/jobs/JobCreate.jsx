@@ -30,6 +30,7 @@ const JobCreate = () => {
         color: '',
         kilometers: '',
         job_description: '',
+        initial_inspection_notes: '',
         service_advisor: '',
         status: 'RECEPTION',
         selected_services: [],
@@ -141,6 +142,7 @@ const JobCreate = () => {
                 brand: formData.brand,
                 model: formData.model,
                 year: parseInt(formData.year, 10) || new Date().getFullYear(),
+                color: formData.color,
                 kilometers: formData.kilometers ? parseInt(formData.kilometers, 10) : 0,
                 service_advisor: formData.service_advisor ? parseInt(formData.service_advisor, 10) : null,
                 total_amount: formData.total_price ? parseFloat(formData.total_price) : 0.00,
@@ -149,7 +151,8 @@ const JobCreate = () => {
                 status: 'RECEPTION',
                 job_description: (formData.job_description ? formData.job_description + '\n\n' : '') +
                     'Selected Services:\n' +
-                    (formData.selected_services || []).map(s => `- ${s.name} (AED ${s.price})`).join('\n')
+                    (formData.selected_services || []).map(s => `- ${s.name} (AED ${s.price})`).join('\n'),
+                initial_inspection_notes: formData.initial_inspection_notes || ""
             };
 
             // Optional: link to lead/booking if they exist
@@ -470,7 +473,14 @@ const JobCreate = () => {
 
                         <div style={{ marginTop: '20px' }}>
                             <label style={labelStyle}>Internal Notes / Additional Complaints</label>
-                            <textarea name="job_description" className="form-control" rows="2" onChange={handleChange} placeholder="Any specific requirements or existing damages..."></textarea>
+                            <textarea
+                                name="initial_inspection_notes"
+                                className="form-control"
+                                rows="2"
+                                value={formData.initial_inspection_notes}
+                                onChange={handleChange}
+                                placeholder="Any specific requirements or existing damages..."
+                            ></textarea>
                         </div>
                     </div>
 

@@ -79,47 +79,52 @@ const WorkshopDiary = () => {
                 <MetricCard label="Sales Revenue" value={`AED ${(history[0]?.revenue || 0).toLocaleString()}`} icon={TrendingUp} color="#ec4899" />
             </div>
 
-            <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
-                    <thead>
-                        <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
-                            <th style={{ padding: '20px' }}>Date</th>
-                            <th style={{ padding: '20px' }}>New Bookings</th>
-                            <th style={{ padding: '20px' }}>Jobs Received</th>
-                            <th style={{ padding: '20px' }}>Jobs Closed</th>
-                            <th style={{ padding: '20px' }}>Daily Revenue</th>
-                            <th style={{ padding: '20px' }}>Audit Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {history.map((entry) => (
-                            <tr key={entry.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }}>
-                                <td style={{ padding: '20px', fontWeight: '700', color: '#b08d57' }}>{entry.date}</td>
-                                <td style={{ padding: '20px' }}>{entry.new_bookings_count}</td>
-                                <td style={{ padding: '20px' }}>{entry.new_jobs_count}</td>
-                                <td style={{ padding: '20px' }}>{entry.closed_jobs_count}</td>
-                                <td style={{ padding: '20px', fontWeight: '800' }}>AED {parseFloat(entry.revenue || 0).toLocaleString()}</td>
-                                <td style={{ padding: '20px' }}>
-                                    <span style={{
-                                        padding: '5px 12px',
-                                        borderRadius: '20px',
-                                        fontSize: '11px',
-                                        background: 'rgba(16, 185, 129, 0.1)',
-                                        color: '#10b981',
-                                        border: '1px solid rgba(16, 185, 129, 0.2)'
-                                    }}>Verified</span>
-                                </td>
+            <ActiveOperations />
+
+            <div style={{ marginTop: '40px' }}>
+                <h2 style={{ color: '#fff', marginBottom: '20px', fontSize: '1.5rem', fontWeight: '800' }}>Historical Snapshots</h2>
+                <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
+                        <thead>
+                            <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
+                                <th style={{ padding: '20px' }}>Date</th>
+                                <th style={{ padding: '20px' }}>New Bookings</th>
+                                <th style={{ padding: '20px' }}>Jobs Received</th>
+                                <th style={{ padding: '20px' }}>Jobs Closed</th>
+                                <th style={{ padding: '20px' }}>Daily Revenue</th>
+                                <th style={{ padding: '20px' }}>Audit Status</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {history.length === 0 && (
-                    <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
-                        <AlertCircle size={40} style={{ margin: '0 auto 15px auto', opacity: 0.5 }} />
-                        <p>No operational snapshots captured yet.</p>
-                    </div>
-                )}
-            </GlassCard>
+                        </thead>
+                        <tbody>
+                            {history.map((entry) => (
+                                <tr key={entry.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }}>
+                                    <td style={{ padding: '20px', fontWeight: '700', color: '#b08d57' }}>{entry.date}</td>
+                                    <td style={{ padding: '20px' }}>{entry.new_bookings_count}</td>
+                                    <td style={{ padding: '20px' }}>{entry.new_jobs_count}</td>
+                                    <td style={{ padding: '20px' }}>{entry.closed_jobs_count}</td>
+                                    <td style={{ padding: '20px', fontWeight: '800' }}>AED {parseFloat(entry.revenue || 0).toLocaleString()}</td>
+                                    <td style={{ padding: '20px' }}>
+                                        <span style={{
+                                            padding: '5px 12px',
+                                            borderRadius: '20px',
+                                            fontSize: '11px',
+                                            background: 'rgba(16, 185, 129, 0.1)',
+                                            color: '#10b981',
+                                            border: '1px solid rgba(16, 185, 129, 0.2)'
+                                        }}>Verified</span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {history.length === 0 && (
+                        <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
+                            <AlertCircle size={40} style={{ margin: '0 auto 15px auto', opacity: 0.5 }} />
+                            <p>No operational snapshots captured yet.</p>
+                        </div>
+                    )}
+                </GlassCard>
+            </div>
 
             <style>{`
                 .spin { animation: rotate 1s linear infinite; }
@@ -140,5 +145,89 @@ const MetricCard = ({ label, value, icon: Icon, color }) => (
         </div>
     </GlassCard>
 );
+
+const ActiveOperations = () => {
+    const [pendingJobs, setPendingJobs] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchPending = async () => {
+        try {
+            const res = await api.get('/forms/job-cards/api/jobs/');
+            // Filter locally for unreleased jobs (or update API to filter)
+            setPendingJobs(res.data.filter(j => !j.is_released));
+        } catch (err) {
+            console.error('Error fetching pending jobs', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchPending();
+    }, []);
+
+    const releaseJob = async (jobId) => {
+        if (!confirm('Release this job card for workshop scheduling?')) return;
+        try {
+            await api.post(`/forms/job-cards/api/jobs/${jobId}/release/`);
+            fetchPending();
+        } catch (err) {
+            alert('Release failed: ' + (err.response?.data?.error || 'Unknown error'));
+        }
+    };
+
+    if (loading) return null;
+
+    return (
+        <div style={{ marginTop: '30px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 style={{ color: '#fff', margin: 0, fontSize: '1.5rem', fontWeight: '800' }}>Active Operations - Pending Release</h2>
+                <span style={{ background: '#b08d57', color: '#fff', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '700' }}>
+                    {pendingJobs.length} JOBS HOLDING
+                </span>
+            </div>
+
+            <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
+                    <thead>
+                        <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
+                            <th style={{ padding: '20px' }}>Job #</th>
+                            <th style={{ padding: '20px' }}>Customer</th>
+                            <th style={{ padding: '20px' }}>Vehicle</th>
+                            <th style={{ padding: '20px' }}>Amount</th>
+                            <th style={{ padding: '20px' }}>Created</th>
+                            <th style={{ padding: '20px' }}>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {pendingJobs.map((job) => (
+                            <tr key={job.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                <td style={{ padding: '20px', fontWeight: '700', color: '#b08d57' }}>#{job.job_card_number}</td>
+                                <td style={{ padding: '20px' }}>{job.customer_name}</td>
+                                <td style={{ padding: '20px' }}>{job.brand} {job.model}</td>
+                                <td style={{ padding: '20px', fontWeight: '700' }}>AED {job.net_amount}</td>
+                                <td style={{ padding: '20px' }}>{new Date(job.created_at).toLocaleDateString()}</td>
+                                <td style={{ padding: '20px' }}>
+                                    <button
+                                        onClick={() => releaseJob(job.id)}
+                                        className="btn-primary"
+                                        style={{ padding: '8px 16px', fontSize: '12px', background: '#10b981' }}
+                                    >
+                                        Release for Schedule
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {pendingJobs.length === 0 && (
+                    <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
+                        All current jobs have been released to workshop.
+                    </div>
+                )}
+            </GlassCard>
+        </div>
+    );
+};
 
 export default WorkshopDiary;
