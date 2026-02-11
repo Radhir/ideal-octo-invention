@@ -86,18 +86,23 @@ const AccessManagement = () => {
 
     return (
         <div style={{ padding: '24px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)', transition: 'all 0.3s' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '32px' }}>
-                <Shield size={32} color="var(--gold)" />
-                <h1 style={{ fontSize: '28px', fontWeight: '900', fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)' }}>
-                    Elite Security <span style={{ color: 'var(--gold)' }}>& Access Control</span>
-                </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+                <div style={{ background: 'var(--gold-glow)', padding: '12px', borderRadius: '12px', border: '1px solid var(--gold-border)' }}>
+                    <Shield size={32} color="var(--gold)" />
+                </div>
+                <div>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Security Operations</div>
+                    <h1 style={{ fontSize: '2.5rem', fontWeight: '900', fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', margin: 0 }}>
+                        ACCESS <span style={{ color: 'var(--gold)' }}>CONTROL</span>
+                    </h1>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Employee List */}
-                <div style={{ background: 'var(--card-bg)', border: '1.5px solid var(--gold-border)', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', height: 'fit-content' }}>
-                    <div style={{ padding: '16px', background: 'var(--bg-secondary)', borderBottom: '1.5px solid var(--gold-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontWeight: '700', color: 'var(--gold)', letterSpacing: '1px', fontSize: '14px', textTransform: 'uppercase' }}>Employee Directory</span>
+                <div style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', height: 'fit-content' }}>
+                    <div style={{ padding: '20px', background: 'var(--bg-glass)', borderBottom: '1.5px solid var(--gold-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: '900', color: 'var(--gold)', letterSpacing: '1px', fontSize: '12px', textTransform: 'uppercase' }}>Personnel Nodes</span>
                         <User size={20} color="var(--gold)" />
                     </div>
                     <div style={{ maxHeight: '600px', overflowY: 'auto' }} className="custom-scrollbar">
@@ -126,11 +131,11 @@ const AccessManagement = () => {
                 {/* Permission Matrix */}
                 <div className="lg:col-span-2 space-y-6">
                     {selectedEmployee ? (
-                        <div style={{ background: 'var(--card-bg)', border: '1.5px solid var(--gold-border)', borderRadius: '16px', padding: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                        <div style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', borderRadius: '20px', padding: '30px', boxShadow: '0 10px 40px rgba(0,0,0,0.2)' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
                                 <div>
-                                    <h2 style={{ fontSize: '20px', fontWeight: '800', color: 'var(--text-primary)' }}>Permission Matrix: <span style={{ color: 'var(--gold)' }}>{selectedEmployee.full_name}</span></h2>
-                                    <p style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>Configure granular sector access for this operative.</p>
+                                    <h2 style={{ fontSize: '22px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase' }}>Protocols: <span style={{ color: 'var(--gold)' }}>{selectedEmployee.full_name}</span></h2>
+                                    <p style={{ fontSize: '12px', color: 'var(--gold)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px' }}>Configure granular operational clearance</p>
                                 </div>
                                 <button
                                     onClick={savePermissions}
@@ -138,20 +143,23 @@ const AccessManagement = () => {
                                     style={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        gap: '8px',
-                                        padding: '10px 24px',
+                                        gap: '10px',
+                                        padding: '12px 30px',
                                         background: 'var(--gold)',
                                         color: '#000',
-                                        fontWeight: '800',
+                                        fontWeight: '900',
                                         borderRadius: '8px',
-                                        border: 'none',
+                                        border: '1.5px solid var(--gold-border)',
                                         cursor: 'pointer',
                                         transition: 'all 0.3s',
-                                        opacity: saving ? 0.5 : 1
+                                        opacity: saving ? 0.5 : 1,
+                                        textTransform: 'uppercase',
+                                        fontSize: '11px',
+                                        letterSpacing: '1px'
                                     }}
                                 >
                                     <Save size={18} />
-                                    {saving ? 'Encrypting...' : 'Save Protocols'}
+                                    {saving ? 'ENCRYPTING...' : 'SAVE PROTOCOLS'}
                                 </button>
                             </div>
 
@@ -165,12 +173,12 @@ const AccessManagement = () => {
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
                                     <thead>
-                                        <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--gold)', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                            <th style={{ padding: '12px 0' }}>Module Sector</th>
-                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>View</th>
-                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>Create</th>
-                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>Edit</th>
-                                            <th style={{ padding: '12px 0', textAlign: 'center' }}>Delete</th>
+                                        <tr style={{ borderBottom: '1.5px solid var(--gold-border)', color: 'var(--gold)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '900' }}>
+                                            <th style={{ padding: '15px 0' }}>Module Sector</th>
+                                            <th style={{ padding: '15px 0', textAlign: 'center' }}>View</th>
+                                            <th style={{ padding: '15px 0', textAlign: 'center' }}>Create</th>
+                                            <th style={{ padding: '15px 0', textAlign: 'center' }}>Edit</th>
+                                            <th style={{ padding: '15px 0', textAlign: 'center' }}>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -211,9 +219,11 @@ const AccessManagement = () => {
                             textAlign: 'center',
                             boxShadow: 'inset 0 0 20px rgba(0,0,0,0.02)'
                         }}>
-                            <Lock size={64} color="var(--gold)" style={{ opacity: 0.2, marginBottom: '24px', margin: '0 auto' }} />
-                            <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--gold)', opacity: 0.4 }}>Secured Access Control</h2>
-                            <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>Select an employee from the directory to configure their operational permissions.</p>
+                            <div style={{ background: 'var(--gold-glow)', padding: '30px', borderRadius: '50%', marginBottom: '24px', border: '1.5px solid var(--gold-border)' }}>
+                                <Lock size={64} color="var(--gold)" style={{ opacity: 0.8 }} />
+                            </div>
+                            <h2 style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '2px' }}>Operational Clearance</h2>
+                            <p style={{ color: 'var(--gold)', marginTop: '8px', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase' }}>Select an operative to modify clearance levels</p>
                         </div>
                     )}
                 </div>

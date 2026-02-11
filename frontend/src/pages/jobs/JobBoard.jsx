@@ -29,7 +29,7 @@ const columns = [
 
 const JobBoard = () => {
     const [jobs, setJobs] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [_loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {

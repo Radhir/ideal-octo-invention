@@ -31,12 +31,9 @@ const JobDetail = () => {
 
     const steps = [
         { key: 'RECEPTION', label: 'Reception', icon: <PenTool size={18} /> },
-        { key: 'ESTIMATION', label: 'Estimation', icon: <FileText size={18} /> },
-        { key: 'WORK_ASSIGNMENT', label: 'Assignment', icon: <Wrench size={18} /> },
-        { key: 'WIP', label: 'WIP', icon: <Clock size={18} /> },
-        { key: 'QC', label: 'QC Approval', icon: <ShieldCheck size={18} /> },
-        { key: 'INVOICING', label: 'Invoicing', icon: <FileText size={18} /> },
-        { key: 'DELIVERY', label: 'Delivery', icon: <Truck size={18} /> },
+        { key: 'ESTIMATION_ASSIGNMENT', label: 'Estimation & Assignment', icon: <FileText size={18} /> },
+        { key: 'WIP_QC', label: 'Work In Progress & QC', icon: <Clock size={18} /> },
+        { key: 'INVOICING_DELIVERY', label: 'Invoicing & Delivery', icon: <Package size={18} /> },
     ];
 
     useEffect(() => {
@@ -78,7 +75,7 @@ const JobDetail = () => {
     if (loading) return <div style={{ padding: '50px', textAlign: 'center' }}>Loading...</div>;
     if (!job) return <div style={{ padding: '50px', textAlign: 'center' }}>Job Not Found</div>;
 
-    const currentStepIndex = steps.findIndex(s => s.key === job.status);
+    const _currentStepIndex = steps.findIndex(s => s.key === job.status);
 
     return (
         <div style={{ padding: '30px 20px' }}>
@@ -141,7 +138,7 @@ const JobDetail = () => {
                             </button>
                         </>
                     ) : (
-                        job.status === 'INVOICING' && (
+                        job.status === 'INVOICING_DELIVERY' && (
                             <button onClick={generateInvoice} className="btn-primary" style={{ background: '#b08d57', color: '#000', fontWeight: '900', padding: '10px 25px', borderRadius: '12px' }}>Generate Invoice</button>
                         )
                     )}
@@ -262,6 +259,20 @@ const JobDetail = () => {
                     justifyContent: 'space-between',
                     gap: '15px'
                 }}>
+                    <button
+                        onClick={() => navigate(`/checklists/new?job_card=${job.id}`)}
+                        className="btn-outline"
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <ClipboardList size={18} /> CHECKLIST
+                    </button>
+                    <button
+                        onClick={() => setAdvanceModal(true)}
+                        className="btn-primary"
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <ArrowRight size={18} /> NEXT STEP
+                    </button>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <AlertCircle color="#ef4444" size={24} />
                         <div>

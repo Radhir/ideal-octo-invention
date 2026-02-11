@@ -19,17 +19,23 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
+        date = self.request.query_params.get('date')
         
         # Admin sees all
         if user.is_staff or user.is_superuser:
-            return Attendance.objects.all().order_by('-date', '-check_in_time')
-        
-        # Regular users see their own
-        try:
-            employee = Employee.objects.get(user=user)
-            return Attendance.objects.filter(employee=employee).order_by('-date', '-check_in_time')
-        except Employee.DoesNotExist:
-            return Attendance.objects.none()
+            queryset = Attendance.objects.all()
+        else:
+            # Regular users see their own
+            try:
+                employee = Employee.objects.get(user=user)
+                queryset = Attendance.objects.filter(employee=employee)
+            except Employee.DoesNotExist:
+                return Attendance.objects.none()
+
+        if date:
+            queryset = queryset.filter(date=date)
+            
+        return queryset.order_by('-date', '-check_in_time')
 
     @action(detail=False, methods=['post'], url_path='check-in')
     def check_in(self, request):

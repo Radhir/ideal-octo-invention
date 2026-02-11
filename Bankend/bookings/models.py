@@ -17,6 +17,7 @@ class Booking(models.Model):
     
     # Linked to industrial Catalog
     service_category = models.ForeignKey('job_cards.ServiceCategory', on_delete=models.SET_NULL, null=True, blank=True)
+    service = models.ForeignKey('job_cards.Service', on_delete=models.SET_NULL, null=True, blank=True)
     
     booking_date = models.DateField()
     booking_time = models.TimeField()

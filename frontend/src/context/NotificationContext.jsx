@@ -1,10 +1,8 @@
-import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import api from '../api/axios';
 import { useAuth } from './AuthContext';
 
 const NotificationContext = createContext();
-
-export const useNotifications = () => useContext(NotificationContext);
 
 export const NotificationProvider = ({ children }) => {
     const { user } = useAuth();
@@ -33,7 +31,7 @@ export const NotificationProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, [fetchNotifications]);
 
-    const markAsRead = async (id) => {
+    const markAsRead = useCallback(async (id) => {
         try {
             await api.post(`/hr/api/notifications/${id}/mark_as_read/`);
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
@@ -41,9 +39,9 @@ export const NotificationProvider = ({ children }) => {
         } catch (err) {
             console.error('Error marking notification as read:', err);
         }
-    };
+    }, []);
 
-    const markAllAsRead = async () => {
+    const markAllAsRead = useCallback(async () => {
         try {
             await api.post('/hr/api/notifications/mark_all_as_read/');
             setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
@@ -51,18 +49,28 @@ export const NotificationProvider = ({ children }) => {
         } catch (err) {
             console.error('Error marking all notifications as read:', err);
         }
-    };
+    }, []);
+
+    const value = useMemo(() => ({
+        notifications,
+        unreadCount,
+        loading,
+        fetchNotifications,
+        markAsRead,
+        markAllAsRead
+    }), [notifications, unreadCount, loading, fetchNotifications, markAsRead, markAllAsRead]);
 
     return (
-        <NotificationContext.Provider value={{
-            notifications,
-            unreadCount,
-            loading,
-            fetchNotifications,
-            markAsRead,
-            markAllAsRead
-        }}>
+        <NotificationContext.Provider value={value}>
             {children}
         </NotificationContext.Provider>
     );
+};
+
+export const useNotifications = () => {
+    const context = useContext(NotificationContext);
+    if (!context) {
+        throw new Error('useNotifications must be used within a NotificationProvider');
+    }
+    return context;
 };

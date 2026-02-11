@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Account, AccountCategory, Budget, Transaction
+from .models import Account, AccountCategory, Budget, Transaction, Commission
 
 class AccountCategorySerializer(serializers.ModelSerializer):
     class Meta:

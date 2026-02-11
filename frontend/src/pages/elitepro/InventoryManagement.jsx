@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
-import { Package, Plus, Search, AlertTriangle, TrendingDown, TrendingUp, Edit2, Archive, X } from 'lucide-react';
+import { Package, Plus, Search, AlertTriangle, TrendingUp, Edit2, Archive, X } from 'lucide-react';
 import './InventoryManagement.css';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
@@ -35,11 +35,7 @@ const InventoryManagement = () => {
     });
     const [saving, setSaving] = useState(false);
 
-    useEffect(() => {
-        fetchProducts();
-    }, [filter]);
-
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             const endpoint = filter === 'low-stock'
                 ? `${API_BASE}/logistics/api/products/low-stock/`
@@ -52,7 +48,11 @@ const InventoryManagement = () => {
             console.error('Error fetching products:', error);
             setLoading(false);
         }
-    };
+    }, [filter]);
+
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
 
     const getStockStatus = (product) => {
         if (product.current_stock === 0) return { label: 'Out of Stock', color: '#ef4444' };

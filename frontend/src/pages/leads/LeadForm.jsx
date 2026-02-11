@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
@@ -49,8 +49,12 @@ const LeadForm = () => {
     const [activeCategory, setActiveCategory] = useState('');
     const [selectedServices, setSelectedServices] = useState([]);
     const [formData, setFormData] = useState({
+        salutation: 'Mr.',
         customer_name: '',
+        phone_prefix: '+971 5',
+        phone_suffix_code: '0',
         phone: '',
+        full_phone: '',
         email: '',
         source: '',
         interested_service: '',
@@ -135,17 +139,20 @@ const LeadForm = () => {
         });
     };
 
-    useEffect(() => {
-        const fetchEmployees = async () => {
-            try {
-                const res = await api.get('/hr/api/employees/');
-                setEmployees(res.data);
-            } catch (err) {
-                console.error('Error fetching employees', err);
-            }
-        };
-        fetchEmployees();
+    const fileInputRef = useRef(null);
+
+    const fetchEmployees = useCallback(async () => {
+        try {
+            const res = await api.get('/hr/api/employees/');
+            setEmployees(res.data);
+        } catch (err) {
+            console.error('Error fetching employees', err);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchEmployees();
+    }, [fetchEmployees]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -181,13 +188,13 @@ const LeadForm = () => {
 
             // Use FormData for multipart upload
             const formDataPayload = new FormData();
-            formDataPayload.append('customer_name', formData.customer_name);
-            formDataPayload.append('phone', formData.phone);
+            formDataPayload.append('customer_name', `${formData.salutation} ${formData.customer_name}`);
+            formDataPayload.append('phone', `${formData.phone_prefix}${formData.phone_suffix_code}${formData.phone}`);
             formDataPayload.append('email', formData.email || '');
             formDataPayload.append('source', formData.source);
             formDataPayload.append('interested_service', servicesSummary || formData.interested_service);
             formDataPayload.append('priority', formData.priority);
-            formDataPayload.append('estimated_value', subtotal > 0 ? subtotal.toFixed(2) : formData.estimated_value || '0');
+            formDataPayload.append('estimated_value', subtotal > 0 ? subtotal.toFixed(2) : (formData.estimated_value ? parseFloat(formData.estimated_value).toFixed(2) : '0.00'));
             formDataPayload.append('assigned_to', formData.assigned_to || '');
             formDataPayload.append('follow_up_date', formData.follow_up_date || '');
             formDataPayload.append('notes', enrichedNotes);
@@ -282,17 +289,42 @@ const LeadForm = () => {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', marginBottom: '25px' }}>
                             <div>
                                 <label style={labelStyle}>Full Name / Corporate</label>
-                                <input name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required
-                                    placeholder="John Doe / ACME Corp"
-                                    style={inputStyle} />
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <select
+                                        name="salutation"
+                                        className="form-control"
+                                        value={formData.salutation}
+                                        onChange={handleChange}
+                                        style={{ width: '80px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px' }}
+                                    >
+                                        <option value="Mr.">Mr.</option>
+                                        <option value="Mrs.">Mrs.</option>
+                                        <option value="Ms.">Ms.</option>
+                                    </select>
+                                    <input name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required
+                                        placeholder="John Doe / ACME Corp"
+                                        style={{ ...inputStyle, flex: 1 }} />
+                                </div>
                             </div>
                             <div>
                                 <label style={labelStyle}>Primary Contact</label>
-                                <div style={{ position: 'relative' }}>
-                                    <Phone size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} />
+                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                                    <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
+                                    <select
+                                        name="phone_suffix_code"
+                                        className="form-control"
+                                        value={formData.phone_suffix_code}
+                                        onChange={handleChange}
+                                        style={{ width: '60px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px', padding: '0 5px' }}
+                                    >
+                                        {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
+                                            <option key={num} value={num}>{num}</option>
+                                        ))}
+                                    </select>
                                     <input name="phone" className="form-control" value={formData.phone} onChange={handleChange} required
-                                        placeholder="+971 50 XXX XXXX"
-                                        style={{ ...inputStyle, paddingLeft: '38px' }} />
+                                        placeholder="1234567"
+                                        maxLength="7"
+                                        style={inputStyle} />
                                 </div>
                             </div>
                         </div>

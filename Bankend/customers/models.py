@@ -5,6 +5,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=20, unique=True)
     email = models.EmailField(blank=True, null=True)
     address = models.TextField(blank=True)
+    stripe_customer_id = models.CharField(max_length=100, blank=True, null=True, db_index=True)
     
     # Metrics
     total_spend = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

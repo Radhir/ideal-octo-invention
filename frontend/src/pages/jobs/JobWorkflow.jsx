@@ -16,12 +16,10 @@ import GlassCard from '../../components/GlassCard';
 
 const steps = [
     { id: 'RECEPTION', label: 'Step 1: Reception', icon: Camera, color: '#3b82f6' },
-    { id: 'ESTIMATION', label: 'Step 2: Estimation', icon: FileText, color: '#f59e0b' },
-    { id: 'WORK_ASSIGNMENT', label: 'Step 3: Assignment', icon: User, color: '#8b5cf6' },
-    { id: 'WIP', label: 'Step 4: WIP', icon: Clock, color: '#10b981' },
-    { id: 'QC', label: 'Step 5: QC Approval', icon: ShieldCheck, color: '#ef4444' },
-    { id: 'INVOICING', label: 'Step 6: Invoicing', icon: CreditCard, color: '#b08d57' },
-    { id: 'DELIVERY', label: 'Step 7: Delivery', icon: Truck, color: '#2dd4bf' },
+    { id: 'ESTIMATION_ASSIGNMENT', label: 'Step 2: Estimation & Assignment', icon: FileText, color: '#f59e0b' },
+    { id: 'WIP_QC', label: 'Step 3: WIP & QC', icon: Clock, color: '#10b981' },
+    { id: 'INVOICING_DELIVERY', label: 'Step 4: Invoicing & Delivery', icon: CreditCard, color: '#b08d57' },
+    { id: 'CLOSED', label: 'Step 5: Closed', icon: CheckCircle2, color: '#2dd4bf' },
 ];
 
 const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
@@ -90,10 +88,11 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
                     {currentIndex < steps.length - 1 && (
                         <button
                             onClick={() => {
-                                if (currentStatus === 'RECEPTION' && (!jobData.checklists || jobData.checklists.length === 0)) {
-                                    alert('Error: Vehicle Intake Checklist is missing. You must complete the checklist before proceeding to Estimation.');
-                                    return;
-                                }
+                                // Blocking check removed as per "Software Remarks"
+                                // if (currentStatus === 'RECEPTION' && (!jobData.checklists || jobData.checklists.length === 0)) {
+                                //     alert('Error: Vehicle Intake Checklist is missing. You must complete the checklist before proceeding to Estimation.');
+                                //     return;
+                                // }
                                 onStatusChange(steps[currentIndex + 1].id);
                             }}
                             style={{
@@ -129,12 +128,10 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
 const getStepDescription = (status) => {
     switch (status) {
         case 'RECEPTION': return 'Initial vehicle walkthrough, photography of existing damages, and collection of customer keys.';
-        case 'ESTIMATION': return 'Technicians are assessing the vehicle components to provide a comprehensive cost and parts estimation.';
-        case 'WORK_ASSIGNMENT': return 'Assigning specific tasks to technicians and moving vehicle to the designated service bay.';
-        case 'WIP': return 'Hands-on service execution. Detailing, polishing, mechanical, or body work is currently in progress.';
-        case 'QC': return 'Final quality checks being performed by Team Leads and Floor In-charge to ensure "Elite Shine" standards.';
-        case 'INVOICING': return 'Preparing final bill, calculating VAT, applying approved discounts, and processing payment.';
-        case 'DELIVERY': return 'Final vehicle hand-over to the customer. Collecting feedback and awarding loyalty points.';
+        case 'ESTIMATION_ASSIGNMENT': return 'Assessing vehicle components for quote and assigning to a technician/bay.';
+        case 'WIP_QC': return 'Work is in progress and final quality checks being performed to ensure "Elite Shine" standards.';
+        case 'INVOICING_DELIVERY': return 'Final bill preparation and handing over vehicle to the customer.';
+        case 'CLOSED': return 'Job Card is officially closed and archived.';
         default: return 'Job processing complete.';
     }
 };
@@ -153,52 +150,28 @@ const getStepBadges = (status, jobData) => {
                 { label: 'Advisor', value: jobData.service_advisor || 'Unassigned', ok: !!(jobData.service_advisor) },
             ];
             break;
-        case 'ESTIMATION':
+        case 'ESTIMATION_ASSIGNMENT':
             badges = [
                 { label: 'Subtotal (Net)', value: jobData.total_amount ? `AED ${jobData.total_amount}` : 'Pending', ok: parseFloat(jobData.total_amount) > 0 },
-                { label: 'VAT (5%)', value: jobData.vat_amount ? `AED ${jobData.vat_amount}` : 'Pending', ok: parseFloat(jobData.vat_amount) > 0 },
-                { label: 'Discount', value: jobData.discount_amount ? `AED ${jobData.discount_amount}` : 'None', ok: true },
                 { label: 'Grand Total', value: jobData.net_amount ? `AED ${jobData.net_amount}` : 'Pending', ok: parseFloat(jobData.net_amount) > 0 },
-            ];
-            break;
-        case 'WORK_ASSIGNMENT':
-            badges = [
                 { label: 'Technician', value: jobData.assigned_technician || 'Unassigned', ok: !!(jobData.assigned_technician) },
-                { label: 'Bay', value: jobData.assigned_bay || 'Unassigned', ok: !!(jobData.assigned_bay) },
                 { label: 'Timeline', value: jobData.estimated_timeline ? new Date(jobData.estimated_timeline).toLocaleDateString() : 'Not Set', ok: !!(jobData.estimated_timeline) },
-                { label: 'Kilometers', value: jobData.kilometers ? jobData.kilometers.toLocaleString() : 'N/A', ok: true },
             ];
             break;
-        case 'WIP':
+        case 'WIP_QC':
             badges = [
-                { label: 'Technician', value: jobData.assigned_technician || 'Unassigned', ok: !!(jobData.assigned_technician) },
-                { label: 'Bay', value: jobData.assigned_bay || 'Unassigned', ok: !!(jobData.assigned_bay) },
+                { label: 'Main Status', value: 'WIP/QC', ok: true },
+                { label: 'QC Cleared', value: jobData.qc_sign_off ? 'Yes' : 'Pending', ok: jobData.qc_sign_off },
                 { label: 'Pre-Work OK', value: jobData.pre_work_head_sign_off ? 'Approved' : 'Pending', ok: jobData.pre_work_head_sign_off },
-                { label: 'Vehicle', value: `${jobData.brand || ''} ${jobData.color || ''}`.trim() || 'N/A', ok: true },
+                { label: 'Bay', value: jobData.assigned_bay || 'Unassigned', ok: !!(jobData.assigned_bay) },
             ];
             break;
-        case 'QC':
+        case 'INVOICING_DELIVERY':
             badges = [
-                { label: 'QC Inspector', value: jobData.qc_sign_off ? 'Approved' : 'Pending', ok: jobData.qc_sign_off },
-                { label: 'Pre-Work Head', value: jobData.pre_work_head_sign_off ? 'Approved' : 'Pending', ok: jobData.pre_work_head_sign_off },
-                { label: 'Post-Work Head', value: jobData.post_work_head_sign_off ? 'Approved' : 'Pending', ok: jobData.post_work_head_sign_off },
-                { label: 'Floor Incharge', value: jobData.floor_incharge_sign_off ? 'Approved' : 'Pending', ok: jobData.floor_incharge_sign_off },
-            ];
-            break;
-        case 'INVOICING':
-            badges = [
-                { label: 'Total', value: jobData.net_amount ? `AED ${jobData.net_amount}` : 'Pending', ok: parseFloat(jobData.net_amount) > 0 },
-                { label: 'Advance', value: jobData.advance_amount ? `AED ${jobData.advance_amount}` : 'None', ok: true },
-                { label: 'Balance', value: jobData.balance_amount ? `AED ${jobData.balance_amount}` : 'Calculated', ok: true },
-                { label: 'QC Cleared', value: jobData.qc_sign_off ? 'Yes' : 'No', ok: jobData.qc_sign_off },
-            ];
-            break;
-        case 'DELIVERY':
-            badges = [
-                { label: 'Signature', value: jobData.customer_signature ? 'Collected' : 'Pending', ok: !!(jobData.customer_signature) },
-                { label: 'Feedback', value: jobData.feedback_notes ? 'Received' : 'Pending', ok: !!(jobData.feedback_notes) },
-                { label: 'Loyalty Pts', value: jobData.loyalty_points || '0', ok: (jobData.loyalty_points || 0) > 0 },
-                { label: 'Net Total', value: jobData.net_amount ? `AED ${jobData.net_amount}` : 'N/A', ok: true },
+                { label: 'Grand Total', value: `AED ${jobData.net_amount}`, ok: true },
+                { label: 'Payment', value: jobData.invoice?.is_paid ? 'Paid' : 'Unpaid', ok: jobData.invoice?.is_paid },
+                { label: 'Deliverable', value: 'Ready', ok: true },
+                { label: 'Signature', value: jobData.signature_data ? 'Signed' : 'Pending', ok: !!(jobData.signature_data) },
             ];
             break;
         default:

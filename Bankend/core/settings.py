@@ -12,9 +12,13 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load .env from project root
+load_dotenv(os.path.join(BASE_DIR.parent, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -32,12 +36,14 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'guardian',
     'rest_framework',
     'drf_spectacular',
     'rest_framework_simplejwt',
@@ -76,6 +82,7 @@ INSTALLED_APPS = [
     'logistics',
     'reports',  # Sales and performance reporting
     'workshop',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -91,6 +98,9 @@ MIDDLEWARE = [
     # Custom error handling
     'core.middleware.ErrorHandlingMiddleware',
     'core.middleware.APIExceptionMiddleware',
+    # Audit & Context
+    'core.middleware.AuditMiddleware',
+    'crum.CurrentRequestUserMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -112,6 +122,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
 
 
 # Database Selection
@@ -155,6 +166,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -187,7 +203,29 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'core.exceptions.custom_exception_handler',
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour',
+        'login': '10/minute',
+        'password_reset': '5/hour',
+        'portal': '30/minute',
+        'warranty': '30/minute',
+    }
 }
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() in ('true', '1')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'Elite Shine ERP <noreply@eliteshine.ae>')
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'EliteShine ERP API',
@@ -274,3 +312,57 @@ CACHES = {
 STRIPE_SECRET_KEY = 'sk_test_placeholder'
 STRIPE_PUBLISHABLE_KEY = 'pk_test_placeholder'
 STRIPE_WEBHOOK_SECRET = 'whsec_placeholder'
+
+# Channels
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [os.environ.get('REDIS_URL', 'redis://redis:6379/0')],
+        },
+    },
+}
+
+# Celery
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+# Celery Beat Schedule
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'detect-sla-violations-hourly': {
+        'task': 'contracts.sla.tasks.detect_sla_violations',
+        'schedule': crontab(minute=0), # Every hour
+    },
+    'low-stock-alerts-daily': {
+        'task': 'notifications.tasks.check_low_stock',
+        'schedule': crontab(hour=8, minute=0), # 8 AM daily
+    },
+}
+
+# Sentry Configuration
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+SENTRY_DSN = os.environ.get('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        send_default_pii=True
+    )
+
+# Twilio
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+TWILIO_WHATSAPP_NUMBER = os.environ.get('TWILIO_WHATSAPP_NUMBER')
+TWILIO_SMS_NUMBER = os.environ.get('TWILIO_SMS_NUMBER')
+
+# Frontend URL
+# Audit Item 7: Move hardcoded FRONTEND_URL to settings
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')

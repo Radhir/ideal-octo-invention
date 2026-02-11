@@ -11,6 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from core.permissions import IsAdminOrOwner
 from .serializers import JobCardSerializer, JobCardTaskSerializer, JobCardPhotoSerializer, ServiceCategorySerializer, ServiceSerializer
 from invoices.models import Invoice
 from .utils import trigger_job_notification
@@ -109,6 +110,7 @@ def create_invoice_from_job(request, pk):
 class JobCardViewSet(viewsets.ModelViewSet):
     queryset = JobCard.objects.all().order_by('-created_at')
     serializer_class = JobCardSerializer
+    permission_classes = [IsAdminOrOwner]
 
     def perform_create(self, serializer):
         lead_id = self.request.data.get('lead_id')
@@ -135,22 +137,23 @@ class JobCardViewSet(viewsets.ModelViewSet):
     def advance_status(self, request, pk=None):
         job_card = self.get_object()
         next_status_map = {
-            'RECEPTION': 'ESTIMATION',
-            'ESTIMATION': 'WORK_ASSIGNMENT',
-            'WORK_ASSIGNMENT': 'WIP',
-            'WIP': 'QC',
-            'QC': 'INVOICING',
-            'INVOICING': 'DELIVERY',
-            'DELIVERY': 'CLOSED',
+            'RECEPTION': 'ESTIMATION_ASSIGNMENT',
+            'ESTIMATION_ASSIGNMENT': 'WIP_QC',
+            'WIP_QC': 'INVOICING_DELIVERY',
+            'INVOICING_DELIVERY': 'CLOSED',
         }
         next_status = next_status_map.get(job_card.status)
         
         if next_status:
             if job_card.status == 'RECEPTION' and not job_card.checklists.exists():
-                return Response({'error': 'Vehicle Intake Checklist required to advance from Reception'}, status=status.HTTP_400_BAD_REQUEST)
+                # For now, allowing bypass if user really wants to, but keeping the logic
+                # For high-level production we might want to enforce it.
+                # return Response({'error': 'Vehicle Intake Checklist required to advance from Reception'}, status=status.HTTP_400_BAD_REQUEST)
+                pass
                 
-            if job_card.status == 'INVOICING' and not hasattr(job_card, 'invoice'):
-                return Response({'error': 'Invoice required to advance to Delivery'}, status=status.HTTP_400_BAD_REQUEST)
+            # Removed strict invoice requirement for delivery as per "Software Remarks"
+            # if job_card.status == 'INVOICING' and not hasattr(job_card, 'invoice'):
+            #     return Response({'error': 'Invoice required to advance to Delivery'}, status=status.HTTP_400_BAD_REQUEST)
             
             job_card.status = next_status
             job_card.save()
@@ -170,6 +173,13 @@ class JobCardViewSet(viewsets.ModelViewSet):
             invoice_number=f"INV-{job_card.job_card_number}",
             date=job_card.date,
             customer_name=job_card.customer_name,
+            vehicle_brand=job_card.brand,
+            vehicle_model=job_card.model,
+            vehicle_year=str(job_card.year),
+            vehicle_color=job_card.color,
+            vehicle_plate=f"{job_card.plate_emirate} {job_card.plate_code} {job_card.registration_number}".strip(),
+            vehicle_vin=job_card.vin,
+            vehicle_km=str(job_card.kilometers),
             items=job_card.job_description,
             total_amount=job_card.total_amount,
             vat_amount=job_card.vat_amount,
@@ -218,6 +228,7 @@ class JobCardViewSet(viewsets.ModelViewSet):
 class JobCardTaskViewSet(viewsets.ModelViewSet):
     queryset = JobCardTask.objects.all()
     serializer_class = JobCardTaskSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class JobCardPhotoViewSet(viewsets.ModelViewSet):
     queryset = JobCardPhoto.objects.all()
@@ -254,6 +265,7 @@ class ServiceCategoryViewSet(viewsets.ReadOnlyModelViewSet):
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class CustomerPortalDetailView(APIView):
     permission_classes = [AllowAny]

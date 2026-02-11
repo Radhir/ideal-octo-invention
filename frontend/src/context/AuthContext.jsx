@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import api from '../api/axios';
 
@@ -7,6 +7,27 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const logout = useCallback(() => {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        sessionStorage.setItem('justLoggedOut', 'true');
+        setUser(null);
+    }, []);
+
+    const fetchProfile = useCallback(async () => {
+        try {
+            const res = await api.get('/api/auth/profile/');
+            setUser(res.data);
+            return true;
+        } catch (err) {
+            console.error('Failed to fetch profile', err);
+            if (err.response?.status === 401) {
+                logout();
+            }
+            return false;
+        }
+    }, [logout]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -28,21 +49,7 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         };
         checkAuth();
-    }, []);
-
-    const fetchProfile = async () => {
-        try {
-            const res = await api.get('/api/auth/profile/');
-            setUser(res.data);
-            return true;
-        } catch (err) {
-            console.error('Failed to fetch profile', err);
-            if (err.response?.status === 401) {
-                logout();
-            }
-            return false;
-        }
-    };
+    }, [fetchProfile, logout]);
 
     const login = async (username, password) => {
         try {
@@ -61,14 +68,6 @@ export const AuthProvider = ({ children }) => {
             console.error('Login failed', err);
             return false;
         }
-    };
-
-
-    const logout = () => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-        sessionStorage.setItem('justLoggedOut', 'true');
-        setUser(null);
     };
 
     return (

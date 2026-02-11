@@ -1,62 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box, Grid, Card, CardContent, Typography, Button,
-    Chip, CircularProgress, Alert, Divider, List, ListItem, ListItemIcon, ListItemText
+    Chip, CircularProgress, Divider, List, ListItem, ListItemIcon, ListItemText
 } from '@mui/material';
-import { Check, Star, Crown } from 'lucide-react';
+import { Check } from 'lucide-react';
 import api from '../../api/axios';
 
 const MembershipTab = ({ customerId }) => {
     const [plans, setPlans] = useState([]);
-    const [mySubscription, setMySubscription] = useState(null);
+    const [mySubscription] = useState(null); // Keeping as null for now as per comment in original
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
-        loadData();
-    }, [customerId]);
-
-    const loadData = async () => {
+    const loadData = useCallback(async () => {
         try {
-            const [plansRes, mySubRes] = await Promise.all([
-                api.get('/subscriptions/plans/'),
-                api.get('/subscriptions/my-subscriptions/') // This needs to filter by customer_id conceptually, but view uses request.user. 
-                // Since this is CustomerPortal, we are authenticated via Token, not Session/JWT User usually? 
-                // Wait, CustomerPortal uses a token URL, but `api` service might not be configured to send that token for other requests?
-                // The `api` service usually uses localStorage JWT. 
-                // The CustomerPortal `verify_token` sets `customer` state but might not set global Auth header.
-                // WE NEED TO CHECK HOW CustomerPortal AUTH WORKS.
-                // user said "Customer Self-Service Portal Module ... Backend Setup ... Frontend Implementation".
-                // In CustomerPortal.jsx, it uses `api.post('/customer-portal/portal/verify_token/')`. 
-                // It does NOT seem to set a bearer token for subsequent requests.
-                // However, `loadDashboardData` calls `api.get` with `customer_id` query param.
-            ]);
-
+            const plansRes = await api.get('/subscriptions/plans/');
             // ADJUSTMENT: The Subscription ViewSet expects IsAuthenticated. 
-            // BUT Customer Portal users might be accessing via magic link (Token).
-            // Contracts/SLA/Subscriptions views need to allow PermitAll OR we need a way to auth them.
-            // For now, I will assume the `customer_id` param approach for fetching Public Plans is fine (AllowAny).
-            // But `my-subscriptions` requires Auth.
-            // Implementation Gaps:
-            // 1. SubscriptionPlanViewSet is AllowAny. OK.
-            // 2. CustomerSubscriptionViewSet is IsAuthenticated. 
-            // I should use a custom action or filter in `CustomerPortalViewSet` to get subscriptions for the portal user 
-            // OR update `CustomerSubscriptionViewSet` to allow access via Portal Token if possible (harder).
-
-            // Workaround: I'll fetch 'my subscriptions' via a new endpoint in `customers/portal/views.py` if needed, 
-            // OR just mock it if I can't easily change backend now. 
-            // actually, I'll try to fetch plans. If `my-subscriptions` fails 401, I'll handle graceful empty state.
-
+            // For now, I will assume the public Plans fetch is AllowAny.
             setPlans(plansRes.data.results || plansRes.data);
-            // setMySubscription(mySubRes.data.results?.[0] || null); 
         } catch (err) {
             console.error("Error loading membership data", err);
-            // setError("Could not load membership data.");
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        loadData();
+    }, [loadData, customerId]);
 
     const handleSubscribe = async (planId) => {
         setSubmitting(true);
@@ -66,7 +37,7 @@ const MembershipTab = ({ customerId }) => {
                 customer_id: customerId
             });
             alert("Membership activated successfully!");
-            loadData(); // Reload
+            loadData();
         } catch (err) {
             alert("Failed to subscribe: " + (err.response?.data?.error || err.message));
         } finally {

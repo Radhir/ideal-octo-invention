@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
+import api from '../../api/axios';
 import {
-    Trophy, Users, Target, Activity,
-    TrendingUp, CheckCircle, Clock
+    Trophy, Activity,
+    TrendingUp, CheckCircle
 } from 'lucide-react';
 import '../../layouts/AppLayout.css';
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
     <div className="glass-card p-6" style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.05)',
+        background: 'var(--input-bg)',
+        border: '1.5px solid var(--gold-border)',
         borderRadius: '20px'
     }}>
         <div className="flex justify-between items-start mb-4">
             <div>
-                <p className="text-gray-400 text-sm uppercase tracking-widest mb-1">{title}</p>
-                <h3 className="text-3xl font-bold text-white">{value}</h3>
+                <p style={{ color: 'var(--gold)', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>{title}</p>
+                <h3 style={{ fontSize: '2rem', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</h3>
             </div>
-            <div className={`p-3 rounded-xl bg-${color}-500/10`}>
-                <Icon size={24} className={`text-${color}-400`} />
+            <div style={{ padding: '12px', borderRadius: '12px', background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
+                <Icon size={24} style={{ color: 'var(--gold)' }} />
             </div>
         </div>
     </div>
@@ -28,35 +28,35 @@ const TechnicianAnalytics = () => {
     const [leaderboard, setLeaderboard] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('/hr/api/employees/technician_leaderboard/');
-                setLeaderboard(response.data);
-                setLoading(false);
-            } catch (err) {
-                console.error('Leaderboard fetch failed', err);
-                setLoading(false);
-            }
-        };
-        fetchData();
+    const fetchData = useCallback(async () => {
+        try {
+            const response = await api.get('/hr/api/employees/technician_leaderboard/');
+            setLeaderboard(response.data);
+            setLoading(false);
+        } catch (err) {
+            console.error('Leaderboard fetch failed', err);
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const totals = leaderboard.reduce((acc, curr) => ({
         jobs: acc.jobs + curr.jobs_closed,
         revenue: acc.revenue + curr.revenue_generated
     }), { jobs: 0, revenue: 0 });
 
-    if (loading) return <div className="p-12 text-white">Calculating Performance...</div>;
+    if (loading) return <div className="p-12" style={{ color: 'var(--text-primary)', fontWeight: '900' }}>CALCULATING PERFORMANCE...</div>;
 
     return (
-        <div className="p-8">
+        <div className="p-8" style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
                 <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-gray-500 bg-clip-text text-transparent">
-                        ROI Intelligence
-                    </h1>
-                    <p className="text-gray-400 mt-2 italic">Workshop throughput & elite detailing metrics</p>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Performance Intelligence</div>
+                    <h1 style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif', margin: 0 }}>ROI ANALYTICS</h1>
+                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem' }}>Workshop throughput & elite detailing metrics</p>
                 </div>
             </div>
 
@@ -82,54 +82,55 @@ const TechnicianAnalytics = () => {
             </div>
 
             <div className="glass-card overflow-hidden" style={{
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.05)',
+                background: 'var(--input-bg)',
+                border: '1.5px solid var(--gold-border)',
                 borderRadius: '24px'
             }}>
-                <div className="p-8 border-b border-white/5 bg-white/5 flex items-center gap-3">
-                    <Trophy size={20} className="text-[#b08d57]" />
-                    <h2 className="text-xl font-bold text-white">Elite Technician Leaderboard</h2>
+                <div className="p-8 border-b border-gold-border flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <Trophy size={24} style={{ color: 'var(--gold)' }} />
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: '900', color: 'var(--text-primary)', margin: 0 }}>ELITE TECHNICIAN LEADERBOARD</h2>
+                    </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="text-gray-500 text-xs uppercase tracking-widest">
-                                <th className="p-6">Technician</th>
-                                <th className="p-6">Jobs Closed</th>
-                                <th className="p-6">Revenue Contribution</th>
-                                <th className="p-6 text-center">QC Precision</th>
-                                <th className="p-6">Status</th>
+                            <tr style={{ background: 'var(--gold-glow)', borderBottom: '1.5px solid var(--gold-border)' }}>
+                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Technician</th>
+                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Jobs Closed</th>
+                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Revenue Contribution</th>
+                                <th className="p-6 text-center" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>QC Precision</th>
+                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Status</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5 text-gray-300">
+                        <tbody className="divide-y divide-gold-border text-text-primary">
                             {leaderboard.map((tech, i) => (
-                                <tr key={i} className="hover:bg-white/5 transition-colors group">
+                                <tr key={i} className="hover:bg-gold-glow transition-colors group">
                                     <td className="p-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#b08d57] to-black flex items-center justify-center font-bold text-white">
+                                        <div className="flex items-center gap-4">
+                                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: 'var(--gold)' }}>
                                                 {tech.technician.charAt(0)}
                                             </div>
-                                            <span className="font-semibold text-white group-hover:text-[#b08d57] transition-colors">
+                                            <span style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '15px' }}>
                                                 {tech.technician}
                                             </span>
                                         </div>
                                     </td>
-                                    <td className="p-6 font-mono">{tech.jobs_closed}</td>
-                                    <td className="p-6 text-green-400 font-bold">AED {tech.revenue_generated.toLocaleString()}</td>
+                                    <td className="p-6" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>{tech.jobs_closed}</td>
+                                    <td className="p-6" style={{ fontWeight: '900', color: 'var(--gold)' }}>AED {tech.revenue_generated.toLocaleString()}</td>
                                     <td className="p-6">
                                         <div className="flex flex-col items-center gap-2">
-                                            <span className="text-xs">{tech.qc_pass_rate}%</span>
-                                            <div className="w-24 h-1 bg-white/10 rounded-full overflow-hidden">
+                                            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)' }}>{tech.qc_pass_rate}%</span>
+                                            <div style={{ width: '100px', height: '6px', background: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden', border: '1px solid var(--gold-border)' }}>
                                                 <div
-                                                    className="h-full bg-amber-400 transition-all duration-1000"
-                                                    style={{ width: `${tech.qc_pass_rate}%` }}
+                                                    style={{ width: `${tech.qc_pass_rate}%`, height: '100%', background: 'var(--gold)', transition: 'all 1s ease' }}
                                                 />
                                             </div>
                                         </div>
                                     </td>
                                     <td className="p-6">
                                         {i === 0 && (
-                                            <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold uppercase tracking-tighter">Top Performer</span>
+                                            <span style={{ px: '12px', py: '4px', borderRadius: '4px', background: 'var(--gold)', color: '#000', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Top Performer</span>
                                         )}
                                     </td>
                                 </tr>

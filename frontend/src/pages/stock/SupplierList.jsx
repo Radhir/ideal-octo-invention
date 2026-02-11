@@ -9,7 +9,7 @@ import {
 
 const SupplierList = () => {
     const [suppliers, setSuppliers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [_loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('ALL');
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
@@ -20,11 +20,7 @@ const TransactionEntry = () => {
         receipt: null
     });
 
-    useEffect(() => {
-        fetchAccounts();
-    }, []);
-
-    const fetchAccounts = async () => {
+    const fetchAccounts = useCallback(async () => {
         try {
             const res = await api.get('/finance/api/accounts/');
             setAccounts(res.data);
@@ -33,7 +29,11 @@ const TransactionEntry = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchAccounts();
+    }, [fetchAccounts]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -139,12 +139,15 @@ const TransactionEntry = () => {
                                         border: '1.5px solid var(--gold-border)',
                                         color: 'var(--text-primary)',
                                         width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '12px',
-                                        fontSize: '14px',
+                                        padding: '18px',
+                                        borderRadius: '15px',
+                                        fontSize: '15px',
                                         fontWeight: '900',
                                         outline: 'none',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        appearance: 'none',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
                                     }}>
                                     <option value="" style={{ background: 'var(--bg-secondary)' }}>Select Account...</option>
                                     {accounts.map(acc => (
@@ -160,15 +163,18 @@ const TransactionEntry = () => {
                                         border: '1.5px solid var(--gold-border)',
                                         color: 'var(--text-primary)',
                                         width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '12px',
-                                        fontSize: '14px',
+                                        padding: '18px',
+                                        borderRadius: '15px',
+                                        fontSize: '15px',
                                         fontWeight: '900',
                                         outline: 'none',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        appearance: 'none',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
                                     }}>
-                                    <option value="DEBIT" style={{ background: 'var(--bg-secondary)' }}>Debit (Expenditure)</option>
-                                    <option value="CREDIT" style={{ background: 'var(--bg-secondary)' }}>Credit (Revenue/Capital)</option>
+                                    <option value="DEBIT" style={{ background: 'var(--bg-secondary)' }}>DEBIT (EXPENDITURE)</option>
+                                    <option value="CREDIT" style={{ background: 'var(--bg-secondary)' }}>CREDIT (REVENUE/CAPITAL)</option>
                                 </select>
                             </div>
                             <div>
@@ -179,11 +185,12 @@ const TransactionEntry = () => {
                                         border: '1.5px solid var(--gold-border)',
                                         color: 'var(--text-primary)',
                                         width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '12px',
-                                        fontSize: '18px',
+                                        padding: '18px',
+                                        borderRadius: '15px',
+                                        fontSize: '24px',
                                         fontWeight: '900',
-                                        outline: 'none'
+                                        outline: 'none',
+                                        fontFamily: 'Outfit, sans-serif'
                                     }} />
                             </div>
 
@@ -209,18 +216,19 @@ const TransactionEntry = () => {
                                         border: '1.5px solid var(--gold-border)',
                                         color: 'var(--text-primary)',
                                         width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '12px',
+                                        padding: '18px',
+                                        borderRadius: '15px',
                                         fontSize: '14px',
                                         fontWeight: '900',
                                         outline: 'none',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
+                                        textTransform: 'uppercase'
                                     }}>
-                                    <option value="GENERAL" style={{ background: 'var(--bg-secondary)' }}>General & Admin</option>
-                                    <option value="OPERATIONS" style={{ background: 'var(--bg-secondary)' }}>Operations</option>
-                                    <option value="MARKETING" style={{ background: 'var(--bg-secondary)' }}>Marketing</option>
-                                    <option value="HR" style={{ background: 'var(--bg-secondary)' }}>HR & Visa</option>
-                                    <option value="INVENTORY" style={{ background: 'var(--bg-secondary)' }}>Inventory</option>
+                                    <option value="GENERAL" style={{ background: 'var(--bg-secondary)' }}>GENERAL & ADMIN</option>
+                                    <option value="OPERATIONS" style={{ background: 'var(--bg-secondary)' }}>OPERATIONS</option>
+                                    <option value="MARKETING" style={{ background: 'var(--bg-secondary)' }}>MARKETING</option>
+                                    <option value="HR" style={{ background: 'var(--bg-secondary)' }}>HR & VISA</option>
+                                    <option value="INVENTORY" style={{ background: 'var(--bg-secondary)' }}>INVENTORY</option>
                                 </select>
                             </div>
                             <div>
@@ -231,11 +239,13 @@ const TransactionEntry = () => {
                                         border: '1.5px solid var(--gold-border)',
                                         color: 'var(--text-primary)',
                                         width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '12px',
-                                        fontSize: '14px',
+                                        padding: '18px',
+                                        borderRadius: '15px',
+                                        fontSize: '15px',
                                         fontWeight: '900',
-                                        outline: 'none'
+                                        outline: 'none',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '1px'
                                     }} />
                             </div>
                             <div style={{ gridColumn: '1 / -1' }}>
@@ -246,19 +256,21 @@ const TransactionEntry = () => {
                                         border: '1.5px solid var(--gold-border)',
                                         color: 'var(--text-primary)',
                                         width: '100%',
-                                        padding: '15px',
-                                        borderRadius: '12px',
+                                        padding: '18px',
+                                        borderRadius: '15px',
                                         resize: 'none',
                                         fontFamily: 'inherit',
-                                        fontSize: '14px',
+                                        fontSize: '15px',
                                         fontWeight: '900',
-                                        outline: 'none'
+                                        outline: 'none',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
                                     }}></textarea>
                             </div>
                         </div>
 
-                        <button type="submit" className="btn-primary" style={{ width: '100%', height: '60px', borderRadius: '15px', fontSize: '1.2rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', border: '1.5px solid var(--gold-border)' }}>
-                            <CreditCard size={24} /> Commit to Ledger
+                        <button type="submit" className="btn-primary" style={{ width: '100%', height: '70px', borderRadius: '35px', fontSize: '1.3rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', border: '2px solid var(--gold-border)', background: 'var(--gold)', color: '#000', letterSpacing: '1px' }}>
+                            <CreditCard size={28} /> COMMIT TO LEDGER
                         </button>
                     </GlassCard>
 

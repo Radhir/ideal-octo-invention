@@ -104,9 +104,28 @@ class APIExceptionMiddleware:
         )
         
         return JsonResponse({
-            'success': False,
-            'error': {
-                'type': type(exception).__name__,
-                'message': str(exception)
-            }
+            'error': 'Internal Server Error',
+            'detail': str(exception)
         }, status=500)
+
+class AuditMiddleware:
+    """Capture request metadata for AuditLog"""
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # Capture IP
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+            
+        # Attach to request for signals
+        request.audit_ip = ip
+        request.audit_user_agent = request.META.get('HTTP_USER_AGENT', '')[:500]
+        request.audit_endpoint = request.path
+        request.audit_method = request.method
+        
+        response = self.get_response(request)
+        return response

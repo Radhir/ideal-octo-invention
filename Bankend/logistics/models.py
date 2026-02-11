@@ -272,3 +272,24 @@ class Pickup(models.Model):
     
     def __str__(self):
         return f"Pickup {self.pickup_number} - {self.status}"
+
+class PurchaseEntry(models.Model):
+    purchase_number = models.CharField(max_length=50, unique=True)
+    date = models.DateField()
+    vendor_name = models.CharField(max_length=255)
+    
+    # Items can be a simple text field or a M2M to Product
+    items_detail = models.TextField(help_text="format: Item|Qty|Price")
+    
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    vat_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    payment_status = models.CharField(max_length=20, choices=[('UNPAID', 'Unpaid'), ('PARTIAL', 'Partial'), ('PAID', 'Paid')], default='UNPAID')
+    received_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Purchase {self.purchase_number} - {self.vendor_name}"

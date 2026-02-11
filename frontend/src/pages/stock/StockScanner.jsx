@@ -5,7 +5,7 @@ import { Camera, RefreshCw, ArrowUp, ArrowDown, Package, X, CheckCircle, AlertCi
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 const StockScanner = () => {
-    const [scannedResult, setScannedResult] = useState(null);
+    const [_scannedResult, setScannedResult] = useState(null);
     const [mode, setMode] = useState('EXIT'); // EXIT (Consumption) or ENTRY (Restock)
     const [isScanning, setIsScanning] = useState(false);
     const [lastLog, setLastLog] = useState(null);

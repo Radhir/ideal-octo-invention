@@ -6,6 +6,8 @@ services:
     env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     networks:
       - eliteshine_network
     restart: unless-stopped

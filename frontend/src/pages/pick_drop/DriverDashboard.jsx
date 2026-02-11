@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     MapPin, Truck, Phone, Clock, AlertCircle,
@@ -8,12 +7,6 @@ import {
 
 const DriverDashboard = () => {
     const [trips, setTrips] = useState([]);
-    const [stats, setStats] = useState({
-        total: 14,
-        warning: 3,
-        transit: 7,
-        delivered: 8
-    });
 
     useEffect(() => {
         // Mocking some data for the map-centric view

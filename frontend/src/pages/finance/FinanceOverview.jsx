@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import { useNavigate, Link } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
-    DollarSign, BarChart3, PieChart, TrendingUp, TrendingDown,
-    ArrowUpRight, ArrowDownRight, Wallet, Receipt,
-    Briefcase, FileText, Download, Filter, Plus, ChevronRight,
+    TrendingUp, TrendingDown,
+    ArrowUpRight, Wallet, Receipt,
+    FileText, Plus, ChevronRight,
     ClipboardList, Award
 } from 'lucide-react';
 
@@ -21,11 +21,7 @@ const FinanceOverview = () => {
     });
     const [liveBudgets, setLiveBudgets] = useState([]);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const [accRes, summaryRes] = await Promise.all([
                 api.get('/finance/api/accounts/'),
@@ -48,7 +44,11 @@ const FinanceOverview = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     return (
         <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
@@ -90,9 +90,9 @@ const FinanceOverview = () => {
                     <button
                         className="btn-primary"
                         onClick={() => navigate('/finance/transaction')}
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1.5px solid var(--gold-border)' }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1.5px solid var(--gold-border)', height: '50px', padding: '0 25px', borderRadius: '25px', fontSize: '12px', fontWeight: '900', background: 'var(--gold)', color: '#000' }}
                     >
-                        <Plus size={20} /> New Transaction
+                        <Plus size={20} /> NEW TRANSACTION
                     </button>
                 </div>
             </header>
@@ -121,20 +121,20 @@ const FinanceOverview = () => {
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
-                                        <tr style={{ borderBottom: '2.5px solid var(--gold-border)', color: 'var(--gold)', fontSize: '12px', textTransform: 'uppercase', background: 'var(--input-bg)' }}>
-                                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '900' }}>Code</th>
-                                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '900' }}>Account Name</th>
-                                            <th style={{ padding: '15px', textAlign: 'left', fontWeight: '900' }}>Category</th>
-                                            <th style={{ padding: '15px', textAlign: 'right', fontWeight: '900' }}>Balance</th>
+                                        <tr style={{ borderBottom: '2.5px solid var(--gold-border)', color: 'var(--gold)', fontSize: '11px', textTransform: 'uppercase', background: 'var(--input-bg)', letterSpacing: '2px' }}>
+                                            <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Ledger Node</th>
+                                            <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Account Name</th>
+                                            <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Classification</th>
+                                            <th style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '900' }}>Master Balance</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {accounts.slice(0, 8).map(acc => (
-                                            <tr key={acc.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                                <td style={{ padding: '15px', fontWeight: '900', color: 'var(--gold)' }}>{acc.code}</td>
-                                                <td style={{ padding: '15px', fontWeight: '900', color: 'var(--text-primary)' }}>{acc.name}</td>
-                                                <td style={{ padding: '15px', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: '800' }}>{acc.category}</td>
-                                                <td style={{ padding: '15px', textAlign: 'right', fontWeight: '900', color: 'var(--text-primary)', fontSize: '16px' }}>AED {parseFloat(acc.balance).toLocaleString()}</td>
+                                            <tr key={acc.id} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)' }}>
+                                                <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--gold)', fontSize: '13px' }}>#{acc.code}</td>
+                                                <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{acc.name}</td>
+                                                <td style={{ padding: '18px 15px', fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase' }}>{acc.category}</td>
+                                                <td style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '900', color: 'var(--text-primary)', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }}>AED {parseFloat(acc.balance).toLocaleString()}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -201,12 +201,12 @@ const StatCard = ({ label, value, icon, trend, trendValue, inverse }) => (
                     border: `1px solid ${(trendValue >= 0) ? (inverse ? '#f43f5e40' : '#10b98140') : (inverse ? '#10b98140' : '#f43f5e40')}`
                 }}>
                     {trendValue >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                    {Math.abs(trendValue).toFixed(1)}%
+                    {Math.abs(trendValue).toFixed(1)}% GROWTH
                 </div>
             )}
         </div>
-        <div style={{ fontSize: '12px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '5px', fontWeight: '900' }}>{label}</div>
-        <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
+        <div style={{ fontSize: '11px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px', fontWeight: '900' }}>{label}</div>
+        <div style={{ fontSize: '32px', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
     </GlassCard>
 );
 
@@ -219,8 +219,8 @@ const BudgetProgress = ({ label, used, total, percent, color, warning }) => {
                     AED {used.toLocaleString()} <span style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>/ {total.toLocaleString()}</span>
                 </span>
             </div>
-            <div style={{ width: '100%', height: '8px', background: 'var(--input-bg)', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
-                <div style={{ width: `${Math.min(percent, 100)}%`, height: '100%', background: color, borderRadius: '4px' }}></div>
+            <div style={{ width: '100%', height: '10px', background: 'var(--input-bg)', borderRadius: '5px', overflow: 'hidden', border: '1.5px solid var(--gold-border)' }}>
+                <div style={{ width: `${Math.min(percent, 100)}%`, height: '100%', background: color, borderRadius: '5px', boxShadow: `0 0 10px ${color}44` }}></div>
             </div>
         </div>
     );

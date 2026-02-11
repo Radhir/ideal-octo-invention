@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import SignaturePad from '../../components/SignaturePad';
 import OCRScanner from '../../components/OCRScanner';
-import { Car, AlertCircle, CheckCircle, Save } from 'lucide-react';
+import { Car } from 'lucide-react';
 
 const ServiceAdvisorForm = () => {
     const [searchParams] = useSearchParams();
@@ -14,7 +14,7 @@ const ServiceAdvisorForm = () => {
     const [vehicleData, setVehicleData] = useState({
         name: '', model: '', plate: '', jobCard: '', odo: '', jobId: jobId || ''
     });
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
 
     const checklistItems = [
         "Dashboard Condition", "Steering Wheel", "Gear Lever", "AC Functionality",
@@ -23,13 +23,7 @@ const ServiceAdvisorForm = () => {
         "Sunroof", "Horn", "Floor Mats"
     ];
 
-    useEffect(() => {
-        if (jobId) {
-            fetchJobData();
-        }
-    }, [jobId]);
-
-    const fetchJobData = async () => {
+    const fetchJobData = useCallback(async () => {
         setLoading(true);
         try {
             const res = await api.get(`/forms/job-cards/api/jobs/${jobId}/`);
@@ -47,16 +41,21 @@ const ServiceAdvisorForm = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [jobId]);
+
+    useEffect(() => {
+        if (jobId) {
+            fetchJobData();
+        }
+    }, [jobId, fetchJobData]);
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         try {
             const submissionData = {
                 ...vehicleData,
                 job_card: vehicleData.jobId,
                 date: new Date().toISOString().split('T')[0],
-                // Add other sections like checklist, inventory later or if needed
             };
             await api.post('/forms/checklists/api/checklists/', submissionData);
             alert('Checklist Submitted Successfully!');
@@ -68,7 +67,7 @@ const ServiceAdvisorForm = () => {
     };
 
     return (
-        <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px', color: 'var(--text-primary)' }}>
+        <form onSubmit={handleSubmit} style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px', color: 'var(--text-primary)' }}>
 
             {/* Header Area */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -226,7 +225,7 @@ const ServiceAdvisorForm = () => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '20px', paddingBottom: '40px' }}>
-                <button style={{
+                <button type="button" style={{
                     padding: '12px 24px',
                     borderRadius: '8px',
                     background: 'var(--bg-glass)',
@@ -237,7 +236,7 @@ const ServiceAdvisorForm = () => {
                 }}>
                     Save Draft
                 </button>
-                <button style={{
+                <button type="submit" style={{
                     padding: '12px 24px',
                     borderRadius: '8px',
                     background: 'linear-gradient(135deg, var(--gold) 0%, var(--gold-mute) 100%)',
@@ -251,7 +250,7 @@ const ServiceAdvisorForm = () => {
                     Submit Inspection
                 </button>
             </div>
-        </div>
+        </form>
     );
 };
 

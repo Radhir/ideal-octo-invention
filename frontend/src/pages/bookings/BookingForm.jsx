@@ -13,12 +13,17 @@ const BookingForm = () => {
 
     const [employees, setEmployees] = useState([]);
     const [categories, setCategories] = useState([]);
+    const [services, setServices] = useState([]);
     const [formData, setFormData] = useState({
+        salutation: 'Mr.',
         customer_name: leadData?.customer_name || '',
+        phone_prefix: '+971 5',
+        phone_suffix_code: '0',
         phone: leadData?.phone || '',
         v_registration_no: '',
         vehicle_details: '',
         service_category: '',
+        service: '',
         booking_date: new Date().toISOString().split('T')[0],
         booking_time: '10:00',
         advisor: '',
@@ -31,12 +36,14 @@ const BookingForm = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [empRes, catRes] = await Promise.all([
+                const [empRes, catRes, svcRes] = await Promise.all([
                     api.get('/hr/api/employees/'),
-                    api.get('/forms/job-cards/api/service-categories/')
+                    api.get('/forms/job-cards/api/service-categories/'),
+                    api.get('/forms/job-cards/api/services/')
                 ]);
                 setEmployees(empRes.data);
                 setCategories(catRes.data);
+                setServices(svcRes.data);
             } catch (err) {
                 console.error('Error fetching form metadata', err);
             }
@@ -53,6 +60,8 @@ const BookingForm = () => {
         try {
             const submissionData = {
                 ...formData,
+                customer_name: `${formData.salutation} ${formData.customer_name}`,
+                phone: `${formData.phone_prefix}${formData.phone_suffix_code}${formData.phone}`,
                 vehicle_details: `${formData.brand} ${formData.model} - ${formData.color}`
             };
             await api.post('/forms/bookings/api/list/', submissionData);
@@ -90,11 +99,39 @@ const BookingForm = () => {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
                                 <div>
                                     <label style={labelStyle}>Customer Full Name</label>
-                                    <input name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required />
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <select
+                                            name="salutation"
+                                            className="form-control"
+                                            value={formData.salutation}
+                                            onChange={handleChange}
+                                            style={{ width: '80px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px' }}
+                                        >
+                                            <option value="Mr.">Mr.</option>
+                                            <option value="Mrs.">Mrs.</option>
+                                            <option value="Ms.">Ms.</option>
+                                        </select>
+                                        <input name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required style={{ flex: 1 }} />
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Contact Number</label>
-                                    <input name="phone" className="form-control" value={formData.phone} onChange={handleChange} required />
+                                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                                        <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
+                                        <select
+                                            name="phone_suffix_code"
+                                            className="form-control"
+                                            value={formData.phone_suffix_code}
+                                            onChange={handleChange}
+                                            style={{ width: '60px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px', padding: '0 5px' }}
+                                        >
+                                            {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
+                                                <option key={num} value={num}>{num}</option>
+                                            ))}
+                                        </select>
+                                        <input name="phone" className="form-control" value={formData.phone} onChange={handleChange} required
+                                            placeholder="1234567" maxLength="7" />
+                                    </div>
                                 </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px' }}>
@@ -159,13 +196,38 @@ const BookingForm = () => {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                 <div>
                                     <label style={labelStyle}>Core Service Type</label>
-                                    <select name="service_category" className="form-control" onChange={handleChange} required>
-                                        <option value="">Select Service...</option>
+                                    <select name="service_category" className="form-control" onChange={handleChange} required value={formData.service_category}>
+                                        <option value="">Select Category...</option>
                                         {categories.map(cat => (
                                             <option key={cat.id} value={cat.id}>{cat.name}</option>
                                         ))}
                                     </select>
                                 </div>
+                                {formData.service_category && (
+                                    <div style={{ marginTop: '10px' }}>
+                                        <label style={labelStyle}>Specific Service</label>
+                                        <select
+                                            name="service"
+                                            className="form-control"
+                                            onChange={(e) => {
+                                                const sId = e.target.value;
+                                                const selectedSvc = services.find(s => s.id === parseInt(sId));
+                                                setFormData({
+                                                    ...formData,
+                                                    service: sId,
+                                                    estimated_total: selectedSvc ? parseFloat(selectedSvc.price) : parseFloat(formData.estimated_total || 0)
+                                                });
+                                            }}
+                                            required
+                                            value={formData.service}
+                                        >
+                                            <option value="">Select Specific Service...</option>
+                                            {services.filter(s => s.category === parseInt(formData.service_category)).map(svc => (
+                                                <option key={svc.id} value={svc.id}>{svc.name} - AED {svc.price}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
                                 <div>
                                     <label style={labelStyle}>Estimated Quotation (AED)</label>
                                     <div style={{ position: 'relative' }}>

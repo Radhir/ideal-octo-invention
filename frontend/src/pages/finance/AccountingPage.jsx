@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -18,13 +18,9 @@ const AccountingPage = () => {
     const [page, setPage] = useState(1);
     const perPage = 15;
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
-            const [txRes, accRes, summaryRes] = await Promise.all([
+            const [txRes, accRes, _summaryRes] = await Promise.all([
                 api.get('/finance/api/transactions/').catch(() => ({ data: [] })),
                 api.get('/finance/api/accounts/').catch(() => ({ data: [] })),
                 api.get('/finance/api/transactions/financial_summary/').catch(() => ({ data: {} }))
@@ -38,7 +34,11 @@ const AccountingPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const totalDebit = transactions.reduce((s, t) => s + (parseFloat(t.debit_amount) || 0), 0);
     const totalCredit = transactions.reduce((s, t) => s + (parseFloat(t.credit_amount) || 0), 0);
@@ -109,8 +109,8 @@ const AccountingPage = () => {
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
                             style={{
-                                width: '100%', padding: '10px 10px 10px 36px', background: 'var(--input-bg)',
-                                border: '1.5px solid var(--gold-border)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '800'
+                                width: '100%', padding: '12px 12px 12px 40px', background: 'var(--input-bg)',
+                                border: '1.5px solid var(--gold-border)', borderRadius: '12px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.5px'
                             }}
                         />
                     </div>
@@ -119,9 +119,11 @@ const AccountingPage = () => {
                             key={f}
                             onClick={() => { setFilterType(f); setPage(1); }}
                             style={{
-                                padding: '10px 20px', borderRadius: '10px', border: filterType === f ? '1.5px solid var(--gold-border)' : '1.5px solid var(--border-color)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
-                                background: filterType === f ? 'var(--gold-glow)' : 'var(--input-bg)',
-                                color: 'var(--text-primary)'
+                                padding: '12px 24px', borderRadius: '12px', border: filterType === f ? '1.5px solid var(--gold-border)' : '1.5px solid rgba(176,141,87,0.2)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
+                                background: filterType === f ? 'var(--gold)' : 'var(--input-bg)',
+                                color: filterType === f ? '#000' : 'var(--text-primary)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px'
                             }}
                         >{f}</button>
                     ))}
@@ -133,25 +135,25 @@ const AccountingPage = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-primary)', fontSize: '14px' }}>
                     <thead>
                         <tr style={{ background: 'var(--input-bg)', textAlign: 'left', borderBottom: '2.5px solid var(--gold-border)' }}>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Date</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Reference</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Description</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Account</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px', textAlign: 'right' }}>Debit (AED)</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px', textAlign: 'right' }}>Credit (AED)</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Post Date</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Ref Token</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Description / Narrative</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Target Account</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px', textAlign: 'right' }}>Debit (Out)</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px', textAlign: 'right' }}>Credit (In)</th>
                         </tr>
                     </thead>
                     <tbody>
                         {paginated.length > 0 ? paginated.map((t, i) => (
-                            <tr key={t.id || i} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                <td style={{ padding: '16px', color: 'var(--gold)', fontWeight: '900' }}>{t.date || '-'}</td>
-                                <td style={{ padding: '16px', fontWeight: '900', color: 'var(--text-primary)' }}>{t.reference || '-'}</td>
-                                <td style={{ padding: '16px', color: 'var(--text-secondary)', fontWeight: '800' }}>{t.description || '-'}</td>
-                                <td style={{ padding: '16px', color: 'var(--text-primary)', fontWeight: '800' }}>{t.account_name || t.account || '-'}</td>
-                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.debit_amount) > 0 ? '#3b82f6' : 'var(--text-secondary)' }}>
+                            <tr key={t.id || i} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)' }}>
+                                <td style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', fontSize: '12px' }}>{t.date || '-'}</td>
+                                <td style={{ padding: '18px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '13px' }}>{t.reference || '-'}</td>
+                                <td style={{ padding: '18px', color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t.description || '-'}</td>
+                                <td style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', fontSize: '13px' }}>{t.account_name || t.account || '-'}</td>
+                                <td style={{ padding: '18px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.debit_amount) > 0 ? '#ef4444' : 'var(--text-secondary)', fontSize: '16px', fontFamily: 'Outfit, sans-serif' }}>
                                     {parseFloat(t.debit_amount) > 0 ? parseFloat(t.debit_amount).toLocaleString() : '-'}
                                 </td>
-                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.credit_amount) > 0 ? '#10b981' : 'var(--text-secondary)' }}>
+                                <td style={{ padding: '18px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.credit_amount) > 0 ? '#10b981' : 'var(--text-secondary)', fontSize: '16px', fontFamily: 'Outfit, sans-serif' }}>
                                     {parseFloat(t.credit_amount) > 0 ? parseFloat(t.credit_amount).toLocaleString() : '-'}
                                 </td>
                             </tr>
@@ -185,13 +187,13 @@ const AccountingPage = () => {
 };
 
 const LedgerStat = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px', border: '1.5px solid var(--gold-border)' }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--gold-border)' }}>
-            <Icon size={24} color="var(--gold)" />
+    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '20px', border: '1.5px solid var(--gold-border)' }}>
+        <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--gold-border)' }}>
+            <Icon size={28} color="var(--gold)" />
         </div>
         <div>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '22px', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
+            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '5px' }}>{label}</div>
+            <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
         </div>
     </GlassCard>
 );

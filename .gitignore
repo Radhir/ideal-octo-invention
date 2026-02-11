@@ -39,4 +39,6 @@ pgdata/
 # Large files
 *.mp4
 *.pdf
+*.tar.gz
+*.zip
 nul

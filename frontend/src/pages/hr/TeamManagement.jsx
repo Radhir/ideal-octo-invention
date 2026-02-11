@@ -125,35 +125,35 @@ const TeamManagement = () => {
     };
 
     return (
-        <div style={{ padding: '30px 20px' }}>
+        <div style={{ padding: '30px 20px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '5px' }}>
                         <button
-                            onClick={() => window.location.href = '/hr'}
-                            style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}
+                            onClick={() => window.location.href = '/hr/hub'}
+                            style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--gold)', cursor: 'pointer', padding: '8px', borderRadius: '10px' }}
                         >
                             <ArrowLeft size={22} />
                         </button>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>TEAMS</h1>
+                        <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>TEAMS</h1>
                     </div>
-                    <p style={{ color: '#94a3b8', marginLeft: '37px' }}>Team Management & Member Assignment</p>
+                    <p style={{ color: 'var(--gold)', marginLeft: '45px', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px' }}>Workforce Structure & Member Assignment</p>
                 </div>
                 <button
-                    className="btn-primary"
+                    className="glass-card"
                     onClick={() => { setShowForm(!showForm); setEditingId(null); setForm({ name: '', description: '', leader: '', members: [] }); }}
-                    style={{ fontSize: '12px', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '8px' }}
+                    style={{ fontSize: '12px', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 25px', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)', color: 'var(--text-primary)', textTransform: 'uppercase' }}
                 >
-                    {showForm ? <X size={16} /> : <Plus size={16} />}
+                    {showForm ? <X size={16} color="var(--gold)" /> : <Plus size={16} color="var(--gold)" />}
                     {showForm ? 'Cancel' : 'New Team'}
                 </button>
             </header>
 
             {/* Create / Edit Form */}
             {showForm && (
-                <GlassCard style={{ padding: '30px', marginBottom: '30px' }}>
-                    <h3 style={{ color: '#b08d57', fontWeight: '800', marginBottom: '20px' }}>
-                        {editingId ? 'Edit Team' : 'Create New Team'}
+                <GlassCard style={{ padding: '30px', marginBottom: '30px', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
+                    <h3 style={{ color: 'var(--gold)', fontWeight: '900', marginBottom: '20px', textTransform: 'uppercase', fontSize: '1.25rem' }}>
+                        {editingId ? 'Edit Performance Unit' : 'Initialize New Team'}
                     </h3>
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
@@ -166,6 +166,7 @@ const TeamManagement = () => {
                                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                                     required
                                     placeholder="e.g. Detailing Bay A"
+                                    style={{ background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--gold-border)', fontWeight: '900' }}
                                 />
                             </div>
                             <div>
@@ -174,10 +175,11 @@ const TeamManagement = () => {
                                     className="form-control"
                                     value={form.leader}
                                     onChange={(e) => setForm({ ...form, leader: e.target.value })}
+                                    style={{ background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--gold-border)', fontWeight: '900' }}
                                 >
-                                    <option value="">-- Select Leader --</option>
+                                    <option value="">-- Select Executive Lead --</option>
                                     {employees.map(emp => (
-                                        <option key={emp.id} value={emp.id}>{emp.full_name} ({emp.role})</option>
+                                        <option key={emp.id} value={emp.id} style={{ background: 'var(--bg-primary)' }}>{emp.full_name} ({emp.role})</option>
                                     ))}
                                 </select>
                             </div>
@@ -189,6 +191,7 @@ const TeamManagement = () => {
                                 rows={2}
                                 value={form.description}
                                 onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                style={{ background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--gold-border)', fontWeight: '900' }}
                                 placeholder="Brief description of this team's responsibility"
                             />
                         </div>
@@ -201,14 +204,15 @@ const TeamManagement = () => {
                                         type="button"
                                         onClick={() => toggleMember(emp.id)}
                                         style={{
-                                            padding: '6px 14px',
-                                            borderRadius: '20px',
-                                            fontSize: '12px',
-                                            fontWeight: '700',
-                                            border: form.members.includes(emp.id) ? '1px solid #b08d57' : '1px solid rgba(255,255,255,0.1)',
-                                            background: form.members.includes(emp.id) ? 'rgba(176,141,87,0.2)' : 'rgba(255,255,255,0.03)',
-                                            color: form.members.includes(emp.id) ? '#b08d57' : '#94a3b8',
-                                            cursor: 'pointer'
+                                            padding: '8px 16px',
+                                            borderRadius: '8px',
+                                            fontSize: '11px',
+                                            fontWeight: '900',
+                                            border: form.members.includes(emp.id) ? '1.5px solid var(--gold)' : '1px solid var(--border-color)',
+                                            background: form.members.includes(emp.id) ? 'var(--gold-glow)' : 'var(--bg-glass)',
+                                            color: form.members.includes(emp.id) ? 'var(--text-primary)' : 'var(--text-secondary)',
+                                            cursor: 'pointer',
+                                            textTransform: 'uppercase'
                                         }}
                                     >
                                         {emp.full_name}
@@ -216,8 +220,8 @@ const TeamManagement = () => {
                                 ))}
                             </div>
                         </div>
-                        <button type="submit" className="btn-primary" style={{ fontWeight: '800' }}>
-                            {editingId ? 'Update Team' : 'Create Team'}
+                        <button type="submit" className="glass-card" style={{ fontWeight: '900', padding: '12px 30px', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', background: 'var(--gold-glow)', cursor: 'pointer', textTransform: 'uppercase' }}>
+                            {editingId ? 'COMMIT CHANGES' : 'INITIALIZE UNIT'}
                         </button>
                     </form>
                 </GlassCard>
@@ -225,12 +229,12 @@ const TeamManagement = () => {
 
             {/* Search */}
             <div style={{ marginBottom: '30px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={18} />
+                <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gold)' }} size={18} />
                 <input
                     type="text"
                     className="form-control"
-                    placeholder="Search teams..."
-                    style={{ paddingLeft: '45px', height: '50px' }}
+                    placeholder="Search performance units..."
+                    style={{ paddingLeft: '45px', height: '50px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)', fontWeight: '900' }}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -238,24 +242,24 @@ const TeamManagement = () => {
 
             {/* Stats Row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px', marginBottom: '30px' }}>
-                <GlassCard style={{ padding: '20px', textAlign: 'center' }}>
-                    <Shield size={22} color="#b08d57" />
-                    <div style={{ fontSize: '28px', fontWeight: '900', color: '#fff', marginTop: '8px' }}>{teams.length}</div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' }}>Total Teams</div>
+                <GlassCard style={{ padding: '20px', textAlign: 'center', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
+                    <Shield size={24} color="var(--gold)" />
+                    <div style={{ fontSize: '28px', fontWeight: '900', color: 'var(--text-primary)', marginTop: '8px' }}>{teams.length}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--gold)', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '1px' }}>Total Teams</div>
                 </GlassCard>
-                <GlassCard style={{ padding: '20px', textAlign: 'center' }}>
-                    <Users size={22} color="#8400ff" />
-                    <div style={{ fontSize: '28px', fontWeight: '900', color: '#fff', marginTop: '8px' }}>
+                <GlassCard style={{ padding: '20px', textAlign: 'center', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
+                    <Users size={24} color="var(--gold)" />
+                    <div style={{ fontSize: '28px', fontWeight: '900', color: 'var(--text-primary)', marginTop: '8px' }}>
                         {teams.reduce((sum, t) => sum + (t.member_count || 0), 0)}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' }}>Assigned Members</div>
+                    <div style={{ fontSize: '11px', color: 'var(--gold)', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '1px' }}>Assigned Members</div>
                 </GlassCard>
-                <GlassCard style={{ padding: '20px', textAlign: 'center' }}>
-                    <Crown size={22} color="#f59e0b" />
-                    <div style={{ fontSize: '28px', fontWeight: '900', color: '#fff', marginTop: '8px' }}>
+                <GlassCard style={{ padding: '20px', textAlign: 'center', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
+                    <Crown size={24} color="var(--gold)" />
+                    <div style={{ fontSize: '28px', fontWeight: '900', color: 'var(--text-primary)', marginTop: '8px' }}>
                         {teams.filter(t => t.leader).length}
                     </div>
-                    <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '700' }}>With Leaders</div>
+                    <div style={{ fontSize: '11px', color: 'var(--gold)', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '1px' }}>With Leaders</div>
                 </GlassCard>
             </div>
 
@@ -269,39 +273,39 @@ const TeamManagement = () => {
                         <p style={{ color: '#94a3b8', marginTop: '15px' }}>No teams found. Create your first team above.</p>
                     </GlassCard>
                 ) : filteredTeams.map(team => (
-                    <GlassCard key={team.id} style={{ padding: '25px' }}>
+                    <GlassCard key={team.id} style={{ padding: '25px', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                 <div style={{
                                     width: '50px', height: '50px', borderRadius: '12px',
-                                    background: 'linear-gradient(135deg, #b08d5733, transparent)',
+                                    background: 'var(--gold-glow)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    border: '1px solid rgba(176,141,87,0.2)'
+                                    border: '1.5px solid var(--gold-border)'
                                 }}>
-                                    <Users size={24} color="#b08d57" />
+                                    <Users size={24} color="var(--gold)" />
                                 </div>
                                 <div>
-                                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800' }}>{team.name}</h3>
+                                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)' }}>{team.name}</h3>
                                     {team.description && (
-                                        <p style={{ color: '#94a3b8', fontSize: '13px', margin: '4px 0 0' }}>{team.description}</p>
+                                        <p style={{ color: 'var(--gold)', fontSize: '11px', fontWeight: '900', margin: '4px 0 0', textTransform: 'uppercase' }}>{team.description}</p>
                                     )}
                                 </div>
                             </div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <span style={{
-                                    padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800',
-                                    background: 'rgba(176,141,87,0.15)', color: '#b08d57'
+                                    padding: '6px 16px', borderRadius: '6px', fontSize: '10px', fontWeight: '900',
+                                    background: 'var(--gold-glow)', color: 'var(--text-primary)', border: '1px solid var(--gold-border)', textTransform: 'uppercase'
                                 }}>
-                                    {team.member_count || 0} members
+                                    {team.member_count || 0} MEMBERS
                                 </span>
-                                <button onClick={() => handleEdit(team)} style={iconBtnStyle} title="Edit">
-                                    <UserPlus size={16} color="#94a3b8" />
+                                <button onClick={() => handleEdit(team)} style={iconBtnStyle} title="Edit Unit">
+                                    <UserPlus size={18} color="var(--gold)" />
                                 </button>
-                                <button onClick={() => handleDelete(team.id)} style={iconBtnStyle} title="Delete">
-                                    <Trash2 size={16} color="#ef4444" />
+                                <button onClick={() => handleDelete(team.id)} style={iconBtnStyle} title="Decommission Unit">
+                                    <Trash2 size={18} color="#ef4444" />
                                 </button>
                                 <button onClick={() => setExpandedTeam(expandedTeam === team.id ? null : team.id)} style={iconBtnStyle}>
-                                    {expandedTeam === team.id ? <ChevronUp size={16} color="#94a3b8" /> : <ChevronDown size={16} color="#94a3b8" />}
+                                    {expandedTeam === team.id ? <ChevronUp size={18} color="var(--gold)" /> : <ChevronDown size={18} color="var(--gold)" />}
                                 </button>
                             </div>
                         </div>
@@ -309,9 +313,9 @@ const TeamManagement = () => {
                         {/* Leader Badge */}
                         {team.leader_name && (
                             <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <Crown size={14} color="#f59e0b" />
-                                <span style={{ fontSize: '13px', fontWeight: '700', color: '#f59e0b' }}>Leader:</span>
-                                <span style={{ fontSize: '13px', color: '#e2e8f0' }}>{team.leader_name}</span>
+                                <Crown size={16} color="var(--gold)" />
+                                <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '1px' }}>Executive Lead:</span>
+                                <span style={{ fontSize: '14px', color: 'var(--text-primary)', fontWeight: '900' }}>{team.leader_name}</span>
                             </div>
                         )}
 
@@ -398,10 +402,11 @@ const TeamManagement = () => {
 const labelStyle = {
     display: 'block',
     fontSize: '11px',
-    fontWeight: '700',
+    fontWeight: '900',
     textTransform: 'uppercase',
-    color: '#64748b',
-    marginBottom: '6px'
+    color: 'var(--gold)',
+    marginBottom: '8px',
+    letterSpacing: '1px'
 };
 
 const iconBtnStyle = {

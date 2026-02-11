@@ -96,8 +96,8 @@ const RegisterPage = () => {
         setLoading(true);
         try {
             // Create user account first
-            const { confirmPassword, profile_photo, ...userData } = form;
-            const userResponse = await api.post('/api/auth/register/', {
+            const { confirmPassword: _confirmPassword, profile_photo, ...userData } = form;
+            const _userResponse = await api.post('/api/auth/register/', {
                 username: form.username,
                 email: form.email,
                 password: form.password,

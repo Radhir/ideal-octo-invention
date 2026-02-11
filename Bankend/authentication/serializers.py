@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework import serializers
+from guardian.shortcuts import get_objects_for_user
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -70,23 +71,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def _can_view_financials(self, obj):
         request = self.context.get('request')
-        if not request:
+        if not request or not request.user.is_authenticated:
             return False
             
-        # Safely check for user attribute on the request object
-        user = getattr(request, 'user', None)
-        if user is None or not getattr(user, 'is_authenticated', False):
-            return False
-        # User views their own profile
-        if user == obj:
+        user = request.user
+        # Superuser can see everything
+        if user.is_superuser:
             return True
-        # Owner/Admin views any profile
-        try:
-            role = user.hr_profile.role.lower()
-            if 'owner' in role or 'admin' in role or 'managing director' in role:
-                return True
-        except:
-            pass
+            
+        # Check if user has object permission for this specific employee profile
+        # Note: hr_profile is the Employee model instance
+        if hasattr(obj, 'hr_profile'):
+            return user.has_perm('hr.view_financials', obj.hr_profile)
+            
         return False
 
     def get_basic_salary(self, obj):

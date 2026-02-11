@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import GlassCard from '../../components/GlassCard';
 import { ChevronLeft, ChevronRight, Clock, User } from 'lucide-react';
 

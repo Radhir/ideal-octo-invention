@@ -1,22 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import GlassCard from '../components/GlassCard';
-import { motion } from 'framer-motion';
 import MagneticButton from '../components/MagneticButton';
 import {
-    Activity, Clipboard, ShieldCheck, Droplets, PaintBucket, Wrench, ShieldAlert, Video,
-    UserPlus, LayoutDashboard, Users, Calendar, MessageSquare,
-    Calculator, Receipt, TrendingUp, BarChart3,
-    UserCircle, CheckSquare, Truck, Bell,
-    Package, ShoppingCart, Construction, HardHat,
-    Globe, Shield, LayoutGrid, Building2,
-    Settings, FileJson, Image,
-    ChevronRight, ArrowRight
+    Activity, Calculator, Package, Settings, Globe, UserCircle, UserPlus
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import QuickNotes from '../components/QuickNotes';
 import AccordionMenu from '../components/AccordionMenu';
 import { usePermissions } from '../context/PermissionContext';
 import EmployeeDashboard from './dashboard/EmployeeDashboard';
+import MeetingRoomWidget from '../components/MeetingRoomWidget';
 
 const CATEGORIES = [
     {
@@ -88,9 +80,9 @@ const CATEGORIES = [
         color: '#f59e0b',
         modules: [
             { name: 'Stock Inventory', path: '/stock' },
-            { name: 'Procurement', path: '/requests' }, // Using Requests as Procurement for now
+            { name: 'Procurement', path: '/stock/procurement' },
             { name: 'Asset Control', path: '/stock' },
-            { name: 'Manufacturing', path: '/construction' },
+            { name: 'Manufacturing', path: '/elitepro/inventory' },
         ]
     },
     {
@@ -102,9 +94,9 @@ const CATEGORIES = [
         color: '#b08d57',
         modules: [
             { name: 'Company Strategy', path: '/mission-control', permission: 'settings' },
-            { name: 'Risk & Audit', path: '/construction', permission: 'settings' },
+            { name: 'Risk & Audit', path: '/risk-management', permission: 'settings' },
             { name: 'Portfolio Hub', path: '/portfolio', permission: 'all' },
-            { name: 'Branch Management', path: '/construction', permission: 'settings' },
+            { name: 'Branch Management', path: '/admin/branches', permission: 'settings' },
         ]
     },
     {
@@ -115,21 +107,15 @@ const CATEGORIES = [
         description: 'Backend utilities, dynamic models, and system-wide settings.',
         color: '#2dd4bf',
         modules: [
-            { name: 'Global Settings', path: '/construction', permission: 'settings' },
-            { name: 'Forms Hub', path: '/construction', permission: 'settings' },
-            { name: 'Media Library', path: '/construction', permission: 'settings' },
+            { name: 'Global Settings', path: '/admin/branches', permission: 'settings' },
+            { name: 'Forms Hub', path: '/forms', permission: 'settings' },
+            { name: 'Media Library', path: '/media', permission: 'settings' },
         ]
     }
 ];
 
-import MeetingRoomWidget from '../components/MeetingRoomWidget';
-
-// ... imports remain ...
-
 const HomePage = () => {
-    const navigate = useNavigate();
-    const [activeIdx, setActiveIdx] = useState(0);
-    const { hasPermission, isAdmin } = usePermissions();
+    const { hasPermission } = usePermissions();
 
     // Regular employees only see the limited dashboard
     if (!hasPermission('dashboard')) {

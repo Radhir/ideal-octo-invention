@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -15,11 +15,7 @@ const BillingPage = () => {
     const [tab, setTab] = useState('ALL');
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        fetchBilling();
-    }, []);
-
-    const fetchBilling = async () => {
+    const fetchBilling = useCallback(async () => {
         try {
             const res = await api.get('/forms/invoices/api/list/');
             const data = Array.isArray(res.data) ? res.data : res.data.results || [];
@@ -29,7 +25,11 @@ const BillingPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchBilling();
+    }, [fetchBilling]);
 
     const totalBilled = invoices.reduce((s, i) => s + (parseFloat(i.grand_total) || 0), 0);
     const paidInvoices = invoices.filter(i => i.payment_status === 'PAID');
@@ -102,8 +102,8 @@ const BillingPage = () => {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             style={{
-                                width: '100%', padding: '10px 10px 10px 36px', background: 'var(--input-bg)',
-                                border: '1.5px solid var(--gold-border)', borderRadius: '10px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '800'
+                                width: '100%', padding: '12px 12px 12px 40px', background: 'var(--input-bg)',
+                                border: '1.5px solid var(--gold-border)', borderRadius: '12px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.5px'
                             }}
                         />
                     </div>
@@ -112,9 +112,11 @@ const BillingPage = () => {
                             key={t}
                             onClick={() => setTab(t)}
                             style={{
-                                padding: '10px 18px', borderRadius: '10px', border: tab === t ? '1.5px solid var(--gold-border)' : '1.5px solid var(--border-color)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
-                                background: tab === t ? 'var(--gold-glow)' : 'var(--input-bg)',
-                                color: 'var(--text-primary)'
+                                padding: '12px 24px', borderRadius: '12px', border: tab === t ? '1.5px solid var(--gold-border)' : '1.5px solid rgba(176,141,87,0.2)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
+                                background: tab === t ? 'var(--gold)' : 'var(--input-bg)',
+                                color: tab === t ? '#000' : 'var(--text-primary)',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1px'
                             }}
                         >{t}</button>
                     ))}
@@ -126,24 +128,24 @@ const BillingPage = () => {
                 <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-primary)', fontSize: '14px' }}>
                     <thead>
                         <tr style={{ background: 'var(--input-bg)', textAlign: 'left', borderBottom: '2.5px solid var(--gold-border)' }}>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Invoice #</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Customer</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Date</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px', textAlign: 'right' }}>Amount (AED)</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Status</th>
-                            <th style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '12px' }}>Method</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Invoice ID</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Client Narrative</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Post Date</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px', textAlign: 'right' }}>Grand Total</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Fiscal Status</th>
+                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Method</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredInvoices.length > 0 ? filteredInvoices.map((inv, i) => (
-                            <tr key={inv.id || i} style={{ borderBottom: '1px solid var(--border-color)', cursor: 'pointer' }}
+                            <tr key={inv.id || i} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)', cursor: 'pointer' }}
                                 onClick={() => navigate(`/invoices/${inv.id}`)}>
-                                <td style={{ padding: '16px', fontWeight: '900', color: 'var(--gold)' }}>{inv.invoice_number || `INV-${inv.id}`}</td>
-                                <td style={{ padding: '16px', fontWeight: '900', color: 'var(--text-primary)' }}>{inv.customer_name || '-'}</td>
-                                <td style={{ padding: '16px', color: 'var(--text-secondary)', fontWeight: '800' }}>{inv.date || inv.created_at?.split('T')[0] || '-'}</td>
-                                <td style={{ padding: '16px', textAlign: 'right', fontWeight: '900', color: 'var(--text-primary)', fontSize: '15px' }}>{parseFloat(inv.grand_total || 0).toLocaleString()}</td>
-                                <td style={{ padding: '16px' }}>{getStatusBadge(inv.payment_status)}</td>
-                                <td style={{ padding: '16px', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '800' }}>{inv.payment_method || 'Cash'}</td>
+                                <td style={{ padding: '18px', fontWeight: '900', color: 'var(--gold)', fontSize: '14px' }}>{inv.invoice_number || `INV-${inv.id}`}</td>
+                                <td style={{ padding: '18px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{inv.customer_name || '-'}</td>
+                                <td style={{ padding: '18px', color: 'var(--text-secondary)', fontWeight: '900', fontSize: '12px' }}>{inv.date || inv.created_at?.split('T')[0] || '-'}</td>
+                                <td style={{ padding: '18px', textAlign: 'right', fontWeight: '900', color: 'var(--text-primary)', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }}>{parseFloat(inv.grand_total || 0).toLocaleString()}</td>
+                                <td style={{ padding: '18px' }}>{getStatusBadge(inv.payment_status)}</td>
+                                <td style={{ padding: '18px', color: 'var(--text-primary)', fontSize: '13px', fontWeight: '900', textTransform: 'uppercase' }}>{inv.payment_method || 'CASH'}</td>
                             </tr>
                         )) : (
                             <tr>
@@ -160,13 +162,13 @@ const BillingPage = () => {
 };
 
 const BillingStat = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px', border: '1.5px solid var(--gold-border)' }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--gold-border)' }}>
-            <Icon size={24} color="var(--gold)" />
+    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '20px', border: '1.5px solid var(--gold-border)' }}>
+        <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--gold-border)' }}>
+            <Icon size={28} color="var(--gold)" />
         </div>
         <div>
-            <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '22px', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
+            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '5px' }}>{label}</div>
+            <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
         </div>
     </GlassCard>
 );

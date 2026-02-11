@@ -4,6 +4,7 @@ from django.db.models import Sum
 from rest_framework import viewsets
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+from core.permissions import IsAdminOrOwner
 from .models import WorkshopDiary
 from .serializers import WorkshopDiarySerializer
 from job_cards.models import JobCard
@@ -62,8 +63,18 @@ def get_dashboard_stats_api(request):
     return Response(get_dashboard_stats(request))
 
 class WorkshopDiaryViewSet(viewsets.ModelViewSet):
-    queryset = WorkshopDiary.objects.all().order_by('-date')
     serializer_class = WorkshopDiarySerializer
+    permission_classes = [IsAdminOrOwner]
+
+    def get_queryset(self):
+        queryset = WorkshopDiary.objects.all().order_by('-date')
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        if start_date:
+            queryset = queryset.filter(date__gte=start_date)
+        if end_date:
+            queryset = queryset.filter(date__lte=end_date)
+        return queryset
 
     @action(detail=False, methods=['post'])
     def capture_snapshot(self, request):

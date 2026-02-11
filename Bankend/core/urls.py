@@ -45,8 +45,6 @@ urlpatterns = [
     path('forms/attendance/', include('attendance.urls')),
     path('finance/', include('finance.urls')),
     path('hr/', include('hr.urls')),
-    # Central PDF generation can stay in forms_app or move
-    path('forms/utils/', include('forms_app.urls')),
     path('customers/', include('customers.urls')),
     path('forms/scheduling/', include('scheduling.urls')),
     path('forms/notifications/', include('notifications.urls')),

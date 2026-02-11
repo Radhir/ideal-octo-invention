@@ -18,6 +18,15 @@ class Invoice(models.Model):
     customer_name = models.CharField(max_length=255)
     customer_trn = models.CharField(max_length=50, blank=True, verbose_name="Customer TRN")
     
+    # Vehicle Info (inherited from Job Card)
+    vehicle_brand = models.CharField(max_length=100, blank=True)
+    vehicle_model = models.CharField(max_length=100, blank=True)
+    vehicle_year = models.CharField(max_length=10, blank=True)
+    vehicle_color = models.CharField(max_length=50, blank=True)
+    vehicle_plate = models.CharField(max_length=50, blank=True)
+    vehicle_vin = models.CharField(max_length=50, blank=True)
+    vehicle_km = models.CharField(max_length=50, blank=True)
+    
     # Billing details
     items = models.TextField(help_text="format: item|qty|price per line")
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -51,18 +60,27 @@ class Invoice(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        # Calculate balance due
+        # Initial balance calculation based on known advance payments
+        if self.job_card:
+            total_payments = self.job_card.payments.filter(
+                payment_type__in=['ADVANCE', 'PARTIAL', 'FINAL']
+            ).aggregate(models.Sum('amount'))['amount__sum'] or 0
+            self.advance_paid = total_payments
+            
         self.balance_due = self.grand_total - self.advance_paid
         
-        # Detect payment status change to PAID
+        # Auto-update status based on balance
+        if self.balance_due <= 0 and self.grand_total > 0:
+            self.payment_status = 'PAID'
+        
+        # Detect payment status change to PAID for revenue recording
         if self.pk:
             old_instance = Invoice.objects.get(pk=self.pk)
             if old_instance.payment_status != 'PAID' and self.payment_status == 'PAID':
                 self.record_revenue_transaction()
             self.update_workshop_diary()
         elif self.payment_status == 'PAID':
-            # This is a new invoice already marked as paid
-            super().save(*args, **kwargs) # Save first to get PK
+            super().save(*args, **kwargs)
             self.record_revenue_transaction()
             self.update_workshop_diary()
             return
@@ -142,12 +160,16 @@ class Payment(models.Model):
         # Update job card advance amount
         if self.job_card:
             total_advance = self.job_card.payments.filter(
-                payment_type__in=['ADVANCE', 'PARTIAL']
+                payment_type__in=['ADVANCE', 'PARTIAL', 'FINAL']
             ).aggregate(models.Sum('amount'))['amount__sum'] or 0
             
             self.job_card.advance_amount = total_advance
             self.job_card.balance_amount = self.job_card.net_amount - total_advance
             self.job_card.save()
+
+            # Also update linked invoice if it exists
+            if hasattr(self.job_card, 'invoice'):
+                self.job_card.invoice.save()
     
     def __str__(self):
         return f"Payment #{self.payment_slip_number} - {self.amount} AED ({self.payment_type})"

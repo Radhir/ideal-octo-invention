@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { PenTool, Eraser, Check } from 'lucide-react';
 
-const SignaturePad = ({ label, onSave }) => {
+const SignaturePad = ({ label, onSave: _onSave }) => {
     const canvasRef = useRef(null);
     const [isDrawing, setIsDrawing] = useState(false);
     const [hasSignature, setHasSignature] = useState(false);

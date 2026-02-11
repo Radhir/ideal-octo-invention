@@ -3,8 +3,8 @@ from notifications.models import NotificationLog
 
 
 def _get_portal_url(job_card):
-    """Build portal URL from settings or default."""
-    base = getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')
+    """Build portal URL from settings."""
+    base = settings.FRONTEND_URL
     return f"{base}/portal/{job_card.portal_token}"
 
 
@@ -51,16 +51,31 @@ def trigger_job_notification(job_card):
         ),
     }
 
+    from notifications.tasks import send_whatsapp_message, send_sms_message
+
     msg = status_messages.get(job_card.status)
     if not msg:
         return
 
-    # Send on both WhatsApp and SMS channels
-    for channel in ('WHATSAPP', 'SMS'):
-        NotificationLog.objects.create(
-            recipient=job_card.phone,
-            notification_type=channel,
-            subject=f"Job Update: {job_card.get_status_display()}",
-            message=msg,
-            content_object=job_card,
-        )
+    # Create logs and trigger tasks
+    # WhatsApp
+    wa_log = NotificationLog.objects.create(
+        recipient=job_card.phone,
+        notification_type='WHATSAPP',
+        subject=f"Job Update: {job_card.get_status_display()}",
+        message=msg,
+        content_object=job_card,
+        status='QUEUED'
+    )
+    send_whatsapp_message.delay(wa_log.id)
+
+    # SMS
+    sms_log = NotificationLog.objects.create(
+        recipient=job_card.phone,
+        notification_type='SMS',
+        subject=f"Job Update: {job_card.get_status_display()}",
+        message=msg,
+        content_object=job_card,
+        status='QUEUED'
+    )
+    send_sms_message.delay(sms_log.id)

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     Award, TrendingUp, Users,
-    CheckCircle, Clock, ArrowLeft, Search, Filter
+    CheckCircle, Clock, ArrowLeft
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DateRangePicker from '../../components/finance/DateRangePicker';
@@ -16,11 +16,7 @@ const CommissionDashboard = () => {
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(1)).toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
             const res = await api.get(`/finance/api/commissions/summary/?start_date=${startDate}&end_date=${endDate}`);
@@ -31,7 +27,11 @@ const CommissionDashboard = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [startDate, endDate]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     return (
         <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
@@ -77,23 +77,24 @@ const CommissionDashboard = () => {
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         alignItems: 'center',
-                                        padding: '15px',
+                                        padding: '20px',
                                         background: 'var(--input-bg)',
-                                        borderRadius: '12px',
-                                        border: '1.5px solid var(--border-color)'
+                                        borderRadius: '15px',
+                                        border: '1.5px solid var(--gold-border)',
+                                        marginBottom: '10px'
                                     }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                                             <div style={{ width: '40px', height: '40px', background: 'var(--gold-border)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: 'var(--gold)' }}>
                                                 {item.employee__full_name[0]}
                                             </div>
                                             <div>
-                                                <div style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '15px' }}>{item.employee__full_name}</div>
-                                                <div style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '800' }}>{item.jobs} Commissions Linked</div>
+                                                <div style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{item.employee__full_name}</div>
+                                                <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{item.jobs} COMMISSIONS LINKED</div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontWeight: '900', fontSize: '20px', color: 'var(--text-primary)' }}>AED {parseFloat(item.earned).toLocaleString()}</div>
-                                            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Current Balance</div>
+                                            <div style={{ fontWeight: '900', fontSize: '24px', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>AED {parseFloat(item.earned).toLocaleString()}</div>
+                                            <div style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px' }}>LEDGER BALANCE</div>
                                         </div>
                                     </div>
                                 ))}
@@ -120,10 +121,10 @@ const CommissionDashboard = () => {
                             </p>
                             <button
                                 className="btn-primary"
-                                style={{ width: '100%', marginTop: '20px', border: '1.5px solid var(--gold-border)' }}
+                                style={{ width: '100%', marginTop: '30px', height: '60px', borderRadius: '30px', fontSize: '1.2rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', border: '2px solid var(--gold-border)', background: 'var(--gold)', color: '#000', letterSpacing: '1px' }}
                                 onClick={() => navigate('/hr/payroll')}
                             >
-                                GO TO PAYROLL CONSOLE
+                                <Users size={24} /> GO TO PAYROLL CONSOLE
                             </button>
                         </GlassCard>
                     </div>
@@ -133,12 +134,14 @@ const CommissionDashboard = () => {
     );
 };
 
-const StatCard = ({ icon, label, value }) => (
+const StatCard = ({ icon: Icon, label, value }) => (
     <GlassCard style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '20px', border: '1.5px solid var(--gold-border)' }}>
-        <div style={{ background: 'var(--gold-glow)', padding: '15px', borderRadius: '12px', border: '1px solid var(--gold-border)' }}>{icon}</div>
+        <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--gold-border)' }}>
+            <Icon size={28} color="var(--gold)" />
+        </div>
         <div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '900', textTransform: 'uppercase' }}>{label}</div>
-            <div style={{ fontSize: '1.6rem', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
+            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '5px' }}>{label}</div>
+            <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
         </div>
     </GlassCard>
 );

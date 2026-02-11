@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../../api/axios';
+
 import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import { ArrowLeft, Save, DollarSign, Briefcase, Calendar, Tag } from 'lucide-react';
@@ -46,26 +46,26 @@ const BudgetManager = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                         <div style={{ gridColumn: '1 / -1' }}>
                             <label className="form-label" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>Select Account</label>
-                            <select name="account" className="form-control" onChange={handleChange} required style={{ background: 'var(--input-bg)', border: '1.5px solid var(--border-color)', color: 'var(--text-primary)', fontWeight: '800' }}>
-                                <option value="">Choose Account Category...</option>
-                                <option value="6010">Staff Salaries</option>
-                                <option value="6100">Workshop Rent</option>
-                                <option value="6200">Social Media Ads</option>
-                                <option value="6109">Car Wash Materials</option>
+                            <select name="account" className="form-control" onChange={handleChange} required style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', fontWeight: '900', padding: '15px', borderRadius: '12px', outline: 'none', appearance: 'none' }}>
+                                <option value="">CHOOSE ACCOUNT CATEGORY...</option>
+                                <option value="6010">STAFF SALARIES</option>
+                                <option value="6100">WORKSHOP RENT</option>
+                                <option value="6200">SOCIAL MEDIA ADS</option>
+                                <option value="6109">CAR WASH MATERIALS</option>
                             </select>
                         </div>
                         <div>
                             <label className="form-label" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>Budget Period</label>
-                            <input name="period" className="form-control" value={formData.period} onChange={handleChange} placeholder="e.g. 2024-Q1" style={{ background: 'var(--input-bg)', border: '1.5px solid var(--border-color)', color: 'var(--text-primary)', fontWeight: '800' }} />
+                            <input name="period" className="form-control" value={formData.period} onChange={handleChange} placeholder="e.g. 2024-Q1" style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', fontWeight: '900', padding: '15px', borderRadius: '12px', outline: 'none', textTransform: 'uppercase' }} />
                         </div>
                         <div>
                             <label className="form-label" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>Allocation Amount (AED)</label>
-                            <input name="amount" className="form-control" type="number" onChange={handleChange} placeholder="0.00" required style={{ background: 'var(--input-bg)', border: '1.5px solid var(--border-color)', color: 'var(--text-primary)', fontWeight: '800' }} />
+                            <input name="amount" className="form-control" type="number" onChange={handleChange} placeholder="0.00" required style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', fontWeight: '900', padding: '15px', borderRadius: '12px', outline: 'none', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }} />
                         </div>
                     </div>
 
-                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '40px', height: '55px', fontSize: '1.1rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', border: '1.5px solid var(--gold-border)' }}>
-                        <Save size={20} /> Commit Allocation
+                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '40px', height: '65px', borderRadius: '35px', fontSize: '1.2rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', border: '2px solid var(--gold-border)', background: 'var(--gold)', color: '#000', letterSpacing: '1px' }}>
+                        <Save size={24} /> COMMIT ALLOCATION
                     </button>
                 </GlassCard>
             </form>

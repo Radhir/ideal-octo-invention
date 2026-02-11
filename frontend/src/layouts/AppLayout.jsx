@@ -13,7 +13,7 @@ import './AppLayout.css';
 
 // AppLayout: Stable Executive Framework
 const AppLayout = () => {
-    const { logout, user } = useAuth();
+    useAuth();
     const navigate = useNavigate();
     const [currentTime, setCurrentTime] = useState(new Date());
 

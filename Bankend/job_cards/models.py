@@ -6,17 +6,14 @@ import uuid
 class JobCard(models.Model):
     STATUS_CHOICES = [
         ('RECEPTION', 'Reception'),
-        ('ESTIMATION', 'Estimation'),
-        ('WORK_ASSIGNMENT', 'Work Assignment'),
-        ('WIP', 'Work In Progress'),
-        ('QC', 'Quality Check'),
-        ('INVOICING', 'Invoicing'),
-        ('DELIVERY', 'Ready for Delivery'),
+        ('ESTIMATION_ASSIGNMENT', 'Estimation & Assignment'),
+        ('WIP_QC', 'Work In Progress & QC'),
+        ('INVOICING_DELIVERY', 'Invoicing & Delivery'),
         ('CLOSED', 'Closed'),
     ]
 
     job_card_number = models.CharField(max_length=50, unique=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='RECEPTION')
+    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='RECEPTION')
     date = models.DateField()
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     
@@ -24,7 +21,6 @@ class JobCard(models.Model):
     customer_name = models.CharField(max_length=255)
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
-    related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     phone = models.CharField(max_length=20)
     address = models.TextField(blank=True)
@@ -70,7 +66,6 @@ class JobCard(models.Model):
     bank_name = models.CharField(max_length=255, blank=True)
     account_number = models.CharField(max_length=50, blank=True)
     iban = models.CharField(max_length=50, blank=True)
-    branch = models.CharField(max_length=100, blank=True)
     
     # QC Sign-offs
     qc_sign_off = models.BooleanField(default=False)
@@ -86,12 +81,18 @@ class JobCard(models.Model):
     feedback_notes = models.TextField(blank=True)
     
     portal_token = models.UUIDField(default=uuid.uuid4, null=True, blank=True)
+    sla_clock_start = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         if not self.portal_token:
             self.portal_token = uuid.uuid4()
+            
+        # Start SLA clock when status moves to Estimation
+        if self.status == 'ESTIMATION_ASSIGNMENT' and not self.sla_clock_start:
+            from django.utils import timezone
+            self.sla_clock_start = timezone.now()
             
         old_status = None
         if self.pk:

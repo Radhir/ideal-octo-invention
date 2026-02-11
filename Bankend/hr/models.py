@@ -98,7 +98,12 @@ class Employee(models.Model):
 
     @property
     def full_name(self):
-        return self.user.get_full_name()
+        return f"{self.user.first_name} {self.user.last_name}"
+
+    class Meta:
+        permissions = [
+            ('view_financials', 'Can view employee financial details'),
+        ]
 
     def __str__(self):
         return f"{self.full_name} ({self.employee_id})"

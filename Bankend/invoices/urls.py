@@ -10,4 +10,5 @@ urlpatterns = [
     path('create/', views.invoice_create, name='invoice_create'),
     # API
     path('api/', include(router.urls)),
+    path('api/ar-aging/', views.ARAgingReportView.as_view(), name='ar-aging'),
 ]

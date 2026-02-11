@@ -38,6 +38,7 @@ const SalesDashboard = lazy(() => import('./pages/dashboard/SalesDashboard'));
 const AdvisorDashboard = lazy(() => import('./pages/dashboard/AdvisorDashboard'));
 const AdvisorDailyReport = lazy(() => import('./pages/dashboard/AdvisorDailyReport'));
 const MissionControl = lazy(() => import('./pages/MissionControl'));
+const RiskAuditPage = lazy(() => import('./pages/RiskAuditPage'));
 
 const JobList = lazy(() => import('./pages/jobs/JobList'));
 const JobCreate = lazy(() => import('./pages/jobs/JobCreate'));
@@ -73,6 +74,8 @@ const StockScanner = lazy(() => import('./pages/stock/StockScanner'));
 
 const EmployeeDirectory = lazy(() => import('./pages/hr/EmployeeDirectory'));
 const EmployeeRegistration = lazy(() => import('./pages/hr/EmployeeRegistration'));
+const EmployeeEdit = lazy(() => import('./pages/hr/EmployeeEdit'));
+const PurchaseEntry = lazy(() => import('./pages/logistics/PurchaseEntry'));
 const PayrollConsole = lazy(() => import('./pages/hr/PayrollConsole'));
 const HRRules = lazy(() => import('./pages/hr/HRRules'));
 const HRRoster = lazy(() => import('./pages/hr/HRRoster'));
@@ -211,6 +214,8 @@ function App() {
                       <Route path="/analytics" element={<AnalyticsDashboard />} />
                       <Route path="/hr" element={<EmployeeDirectory />} />
                       <Route path="/hr/register" element={<EmployeeRegistration />} />
+                      <Route path="/hr/employee/:id/edit" element={<EmployeeEdit />} />
+                      <Route path="/logistics/purchase" element={<PurchaseEntry />} />
                       <Route path="/hr/payroll" element={<PayrollConsole />} />
                       <Route path="/hr/rules" element={<HRRules />} />
                       <Route path="/hr/roster" element={<HRRoster />} />
@@ -221,6 +226,7 @@ function App() {
                       <Route path="/workshop" element={<WorkshopHub />} />
                       <Route path="/workshop/delay" element={<WorkshopDelayForm />} />
                       <Route path="/workshop/incident" element={<WorkshopIncidentForm />} />
+                      <Route path="/risk-management" element={<RiskAuditPage />} />
                       <Route path="/projects" element={<ProjectsPage />} />
 
                       <Route path="/elitepro" element={<EliteProDashboard />} />

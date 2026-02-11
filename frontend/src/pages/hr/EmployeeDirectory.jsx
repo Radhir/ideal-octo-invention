@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import { useNavigate } from 'react-router-dom';
 import {
-    Users, UserPlus, Search, Filter,
+    Users, UserPlus, Search,
     MoreVertical, ShieldCheck, Mail, Phone,
     Briefcase, Calendar, DollarSign, Eye, Edit, XCircle, FileText
 } from 'lucide-react';
@@ -14,11 +14,7 @@ const EmployeeDirectory = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
-
-    const fetchEmployees = async () => {
+    const fetchEmployees = useCallback(async () => {
         try {
             const res = await api.get('/hr/api/employees/');
             setEmployees(res.data);
@@ -27,7 +23,11 @@ const EmployeeDirectory = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchEmployees();
+    }, [fetchEmployees]);
 
     const filteredEmployees = employees.filter(emp =>
         emp.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,8 +38,9 @@ const EmployeeDirectory = () => {
         <div style={{ padding: '30px 20px' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
                 <div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--gold)', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>WORKFORCE</h1>
-                    <p style={{ color: 'var(--text-secondary)' }}>Human Capital Management & Payroll</p>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Executive HR Monitoring</div>
+                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>WORKFORCE</h1>
+                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem' }}>Human Capital Management & Strategic Payroll</p>
                 </div>
                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
                     <CircleButton
@@ -83,7 +84,7 @@ const EmployeeDirectory = () => {
                     type="text"
                     className="form-control"
                     placeholder="Search by name, ID or role..."
-                    style={{ paddingLeft: '45px', height: '50px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)' }}
+                    style={{ paddingLeft: '45px', height: '50px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)', fontWeight: '900' }}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -126,11 +127,23 @@ const EmployeeCard = ({ employee, navigate }) => {
         { icon: <Eye size={14} />, label: 'View Profile', onClick: () => navigate(`/hr/employee/${employee.id}`) },
         { icon: <Edit size={14} />, label: 'Edit Details', onClick: () => navigate(`/hr/employee/${employee.id}/edit`) },
         { icon: <FileText size={14} />, label: 'Salary Slip', onClick: () => navigate(`/hr/payroll?employee=${employee.id}`) },
-        { icon: <XCircle size={14} />, label: 'Deactivate', onClick: () => alert(`Deactivate ${employee.full_name}?`), danger: true },
+        {
+            icon: <XCircle size={14} />, label: 'Deactivate', onClick: async () => {
+                if (window.confirm(`Are you sure you want to deactivate ${employee.full_name}?`)) {
+                    try {
+                        await api.delete(`/hr/api/employees/${employee.id}/`);
+                        window.location.reload(); // Simple reload to refresh list
+                    } catch (err) {
+                        console.error('Error deactivating employee', err);
+                        alert('Failed to deactivate employee');
+                    }
+                }
+            }, danger: true
+        },
     ];
 
     return (
-        <GlassCard style={{ padding: '25px', position: 'relative' }}>
+        <GlassCard style={{ padding: '25px', position: 'relative', border: '1.5px solid var(--gold-border)' }}>
             {/* 3-Dot Menu */}
             <div ref={menuRef} style={{ position: 'absolute', top: '20px', right: '20px' }}>
                 <div
@@ -177,8 +190,8 @@ const EmployeeCard = ({ employee, navigate }) => {
                     <Users size={28} color="var(--gold)" />
                 </div>
                 <div>
-                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>{employee.full_name}</h3>
-                    <div style={{ color: 'var(--gold)', fontSize: '12px', fontWeight: '700' }}>{employee.role}</div>
+                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)' }}>{employee.full_name}</h3>
+                    <div style={{ color: 'var(--gold)', fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{employee.role}</div>
                 </div>
             </div>
 
@@ -272,7 +285,7 @@ const CircleButton = ({ icon, label, onClick }) => (
                 e.currentTarget.style.background = 'var(--input-bg)';
             }}
             onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-color)';
+                e.currentTarget.style.borderColor = 'var(--gold-border)';
                 e.currentTarget.style.boxShadow = 'none';
                 e.currentTarget.style.background = 'var(--bg-glass)';
             }}

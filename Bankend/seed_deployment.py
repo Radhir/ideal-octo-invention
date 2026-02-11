@@ -6,24 +6,25 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 django.setup()
 
 from django.contrib.auth.models import User
-from hr.models import Employee, Department, Company, Branch
+from hr.models import Employee, Department, Company
+from locations.models import Branch
 
 def seed_deployment_data():
     from django.db import transaction
     
     with transaction.atomic():
-        print("Cleaning up existing data...")
-        Employee.objects.all().delete()
-        User.objects.exclude(is_superuser=True).delete()
-        Department.objects.all().delete()
-        Branch.objects.all().delete()
-        Company.objects.all().delete()
+        # print("Cleaning up existing data...")
+        # for m in [Employee, User, Department, Branch, Company]:
+        #     if m == User:
+        #         m.objects.exclude(is_superuser=True).delete()
+        #     else:
+        #         m.objects.all().delete()
 
         shine, _ = Company.objects.get_or_create(name="Elite Shine", defaults={'trn': '100XXXXXXXXXXXX'})
         trading, _ = Company.objects.get_or_create(name="ElitePro Trading", defaults={'trn': '100YYYYYYYYYYYY'})
         
-        Branch.objects.get_or_create(name="Elite Shine Main", company=shine)
-        Branch.objects.get_or_create(name="ElitePro Trading Main", company=trading)
+        main_branch, _ = Branch.objects.get_or_create(name="Elite Shine Main", defaults={'code': 'DXB-001', 'is_head_office': True})
+        Branch.objects.get_or_create(name="ElitePro Trading Main", defaults={'code': 'DXB-002', 'is_head_office': False})
 
         admin_data = [
             ("radhir", "Owner", shine),
@@ -130,18 +131,28 @@ def seed_deployment_data():
             return final
 
         for u, r, c in admin_data:
-            user, _ = User.objects.get_or_create(username=u.lower(), defaults={
+            user, created = User.objects.get_or_create(username=u.lower(), defaults={
                 'email': f"{u}@eliteshine.com",
                 'is_active': True,
                 'is_staff': True
             })
-            Employee.objects.create(
+            if u.lower() == 'radhir':
+                user.set_password("Elite123!")
+                user.save()
+            else:
+                 user.set_password("Elite123!")
+                 user.save()
+            
+            Employee.objects.get_or_create(
                 user=user,
-                employee_id=get_unique_emp_id(f"ES-ADM-{u.upper()}"),
-                company=c,
-                role=r,
-                pin_code=str(pin_counter).zfill(6),
-                date_joined='2024-01-01'
+                defaults={
+                    'employee_id': get_unique_emp_id(f"ES-ADM-{u.upper()}"),
+                    'company': c,
+                    'role': r,
+                    'branch': main_branch,
+                    'pin_code': str(pin_counter).zfill(6),
+                    'date_joined': '2024-01-01'
+                }
             )
             pin_counter += 1
 
@@ -151,14 +162,19 @@ def seed_deployment_data():
                 'email': f"{username}@eliteshine.com",
                 'is_active': True
             })
-            Employee.objects.create(
+            user.set_password("Elite123!")
+            user.save()
+            Employee.objects.get_or_create(
                 user=user,
-                employee_id=get_unique_emp_id(f"ES-{username.upper().replace('.', '')[:5]}"),
-                department=dept,
-                company=company,
-                role=role,
-                pin_code=str(pin_counter).zfill(6),
-                date_joined='2024-01-01'
+                defaults={
+                    'employee_id': get_unique_emp_id(f"ES-{username.upper().replace('.', '')[:5]}"),
+                    'department': dept,
+                    'company': company,
+                    'role': role,
+                    'branch': main_branch,
+                    'pin_code': str(pin_counter).zfill(6),
+                    'date_joined': '2024-01-01'
+                }
             )
             pin_counter += 1
                 

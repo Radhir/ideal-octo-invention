@@ -35,7 +35,7 @@ const ForecastPage = () => {
     };
 
     // Compute forecast metrics
-    const totalRevenue = invoices.reduce((s, i) => s + (parseFloat(i.grand_total) || 0), 0);
+    const _totalRevenue = invoices.reduce((s, i) => s + (parseFloat(i.grand_total) || 0), 0);
     const avgJobValue = jobs.length > 0 ? jobs.reduce((s, j) => s + (parseFloat(j.net_amount) || 0), 0) / jobs.length : 0;
     const activeJobs = jobs.filter(j => j.status !== 'CLOSED').length;
     const pipelineValue = jobs.filter(j => j.status !== 'CLOSED').reduce((s, j) => s + (parseFloat(j.net_amount) || 0), 0);

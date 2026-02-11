@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import {
-    BarChart3, Calendar, ClipboardList, Car, Paintbrush, Package,
+    BarChart3, ClipboardList, Car, Paintbrush, Package,
     TrendingUp, Clock, UserCheck, AlertCircle, CheckCircle2, Save,
-    FileText, Download, Printer, Send, Search, Filter, Plus, Trash2, DollarSign,
-    Camera, Globe, Share2
+    FileText, Download, Printer, Send, Plus, Trash2, DollarSign,
+    Camera
 } from 'lucide-react';
 import './SchedulePage.css';
 
@@ -14,11 +14,7 @@ const SchedulePage = () => {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchTeams();
-    }, []);
-
-    const fetchTeams = async () => {
+    const fetchTeams = useCallback(async () => {
         try {
             const response = await api.get('/forms/scheduling/teams/');
             setTeams(response.data);
@@ -27,7 +23,11 @@ const SchedulePage = () => {
             console.error('Error fetching teams:', error);
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchTeams();
+    }, [fetchTeams]);
 
     const navItems = [
         { id: 'dashboard', label: 'Dashboard', icon: <BarChart3 size={20} />, color: '#3498db' },
@@ -159,23 +159,19 @@ const AdvisorSheetsView = () => {
     const [entries, setEntries] = useState([]);
     const [newEntry, setNewEntry] = useState({ job_card_no: '', customer_name: '', car_model: '', service: 'PPF' });
 
-    useEffect(() => {
-        fetchEntries();
-    }, [selectedAdvisor]);
-
-    const fetchEntries = async () => {
+    const fetchEntries = useCallback(async () => {
         try {
-            const response = await api.get(`/forms/scheduling/advisor-sheets/?advisor=${selectedAdvisor}`);
             // Assuming entries are stored in a specific format or we use assignments
-            // For simplicity, let's fetch assignments for this advisor's jobs if linked, 
-            // but the model AdvisorSheet is more for totals. 
-            // Let's use assignments for the list.
             const assignments = await api.get('/forms/scheduling/assignments/');
             setEntries(assignments.data.filter(a => a.notes.includes(selectedAdvisor))); // Mock filter for now
         } catch (error) {
             console.error('Error fetching advisor entries:', error);
         }
-    };
+    }, [selectedAdvisor]);
+
+    useEffect(() => {
+        fetchEntries();
+    }, [fetchEntries]);
 
     const handleAdd = async () => {
         try {
@@ -250,18 +246,18 @@ const AdvisorSheetsView = () => {
 const TeamView = ({ section, teams }) => {
     const [assignments, setAssignments] = useState([]);
 
-    useEffect(() => {
-        fetchAssignments();
-    }, []);
-
-    const fetchAssignments = async () => {
+    const fetchAssignments = useCallback(async () => {
         try {
             const resp = await api.get('/forms/scheduling/assignments/');
             setAssignments(resp.data);
         } catch (error) {
             console.error('Error fetching assignments:', error);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchAssignments();
+    }, [fetchAssignments]);
 
     const assignSlot = async (teamId, slotNum, isOvertime = false) => {
         const jobCard = prompt("Enter Job Card ID (Number):");
@@ -277,7 +273,7 @@ const TeamView = ({ section, teams }) => {
                 notes: `Assigned to ${section}`
             });
             fetchAssignments();
-        } catch (error) {
+        } catch (_unused) {
             alert("Error assigning slot. Make sure Job Card ID exists.");
         }
     };
@@ -411,18 +407,18 @@ const PerformanceReportsView = () => {
     const [period, setPeriod] = useState('daily');
     const [reportData, setReportData] = useState(null);
 
-    useEffect(() => {
-        fetchReport();
-    }, [period]);
-
-    const fetchReport = async () => {
+    const fetchReport = useCallback(async () => {
         try {
             const resp = await api.get(`/forms/scheduling/daily-closing/aggregation_report/?period=${period}`);
             setReportData(resp.data);
         } catch (error) {
             console.error("error fetching report", error);
         }
-    };
+    }, [period]);
+
+    useEffect(() => {
+        fetchReport();
+    }, [fetchReport]);
 
     return (
         <div className="reports-view animate-fade-in">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
@@ -16,11 +16,7 @@ const WorkshopDiary = () => {
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(1)).toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
             const res = await api.get(`/reports/api/workshop-diary/?start_date=${startDate}&end_date=${endDate}`);
@@ -31,7 +27,11 @@ const WorkshopDiary = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [startDate, endDate]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     return (
         <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
@@ -71,26 +71,26 @@ const WorkshopDiary = () => {
                     <GlassCard style={{ padding: '30px', border: '1.5px solid var(--gold-border)' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
-                                <tr style={{ borderBottom: '2.5px solid var(--gold-border)', color: 'var(--gold)', fontSize: '12px', textTransform: 'uppercase', fontWeight: '900' }}>
-                                    <th style={{ padding: '15px', textAlign: 'left' }}>Date</th>
-                                    <th style={{ padding: '15px', textAlign: 'left' }}>Job ID</th>
-                                    <th style={{ padding: '15px', textAlign: 'left' }}>Customer / Vehicle</th>
-                                    <th style={{ padding: '15px', textAlign: 'left' }}>Status</th>
-                                    <th style={{ padding: '15px', textAlign: 'left' }}>Advisor</th>
-                                    <th style={{ padding: '15px', textAlign: 'right' }}>Net Amount</th>
+                                <tr style={{ borderBottom: '2.5px solid var(--gold-border)', color: 'var(--gold)', fontSize: '11px', textTransform: 'uppercase', background: 'var(--input-bg)', letterSpacing: '2px' }}>
+                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Post Date</th>
+                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Job Token</th>
+                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Client / Asset</th>
+                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Operational Status</th>
+                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Commanding Advisor</th>
+                                    <th style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '900' }}>Revenue Yield</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {entries.map(entry => (
-                                    <tr key={entry.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'all 0.2s' }} className="hover-row">
-                                        <td style={{ padding: '15px', fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '800' }}>{new Date(entry.date).toLocaleDateString()}</td>
-                                        <td style={{ padding: '15px', fontWeight: '900', color: 'var(--gold)' }}>#{entry.number}</td>
-                                        <td style={{ padding: '15px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px' }}>{entry.customer}</td>
-                                        <td style={{ padding: '15px' }}>
+                                    <tr key={entry.id} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)', transition: 'all 0.2s' }} className="hover-row">
+                                        <td style={{ padding: '18px 15px', fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900' }}>{new Date(entry.date).toLocaleDateString()}</td>
+                                        <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--gold)', fontSize: '14px' }}>#{entry.number}</td>
+                                        <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{entry.customer}</td>
+                                        <td style={{ padding: '18px 15px' }}>
                                             <StatusBadge status={entry.status} />
                                         </td>
-                                        <td style={{ padding: '15px', fontSize: '14px', color: 'var(--text-primary)', fontWeight: '900' }}>{entry.advisor || '--'}</td>
-                                        <td style={{ padding: '15px', textAlign: 'right', fontWeight: '900', fontSize: '18px', color: 'var(--text-primary)' }}>
+                                        <td style={{ padding: '18px 15px', fontSize: '14px', color: 'var(--text-primary)', fontWeight: '900', textTransform: 'uppercase' }}>{entry.advisor || '--'}</td>
+                                        <td style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '900', fontSize: '18px', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>
                                             AED {parseFloat(entry.net_amount).toLocaleString()}
                                         </td>
                                     </tr>
@@ -115,9 +115,9 @@ const WorkshopDiary = () => {
 const SummaryCard = ({ icon, label, value }) => (
     <GlassCard style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '20px', border: '1.5px solid var(--gold-border)' }}>
         <div style={{ background: 'var(--gold-glow)', padding: '15px', borderRadius: '12px', border: '1px solid var(--gold-border)' }}>{icon}</div>
-        <div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '800', textTransform: 'uppercase' }}>{label}</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</div>
+        <div style={{ flex: 1 }}>
+            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '5px' }}>{label}</div>
+            <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
         </div>
     </GlassCard>
 );
@@ -135,15 +135,16 @@ const StatusBadge = ({ status }) => {
         <span style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '5px',
-            padding: '4px 10px',
-            borderRadius: '8px',
+            gap: '8px',
+            padding: '6px 14px',
+            borderRadius: '25px',
             fontSize: '10px',
             fontWeight: '900',
-            background: `${s.color}25`,
+            background: `${s.color}15`,
             color: s.color === '#64748b' ? 'var(--text-secondary)' : s.color,
             textTransform: 'uppercase',
-            border: `1.5px solid ${s.color}60`
+            border: `1.5px solid ${s.color}60`,
+            letterSpacing: '1px'
         }}>
             {s.icon} {s.label}
         </span>

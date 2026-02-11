@@ -1,10 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useAuth } from './AuthContext';
 
 const BranchContext = createContext();
-
-export const useBranch = () => useContext(BranchContext);
 
 export const BranchProvider = ({ children }) => {
     const { user } = useAuth();
@@ -12,15 +10,7 @@ export const BranchProvider = ({ children }) => {
     const [currentBranch, setCurrentBranch] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (user) {
-            fetchBranches();
-        } else {
-            setLoading(false);
-        }
-    }, [user]);
-
-    const fetchBranches = async () => {
+    const fetchBranches = useCallback(async () => {
         try {
             const res = await api.get('/api/locations/branches/');
             const branchList = res.data.results || res.data;
@@ -43,7 +33,15 @@ export const BranchProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            fetchBranches();
+        } else {
+            setLoading(false);
+        }
+    }, [user, fetchBranches]);
 
     const switchBranch = (branchId) => {
         const branch = branches.find(b => b.id === branchId);
@@ -61,3 +59,5 @@ export const BranchProvider = ({ children }) => {
         </BranchContext.Provider>
     );
 };
+
+export const useBranch = () => useContext(BranchContext);

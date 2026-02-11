@@ -179,7 +179,7 @@ const MeetingRoomWidget = () => {
                             </div>
                         )}
                         {messages.map((msg, idx) => {
-                            const isMe = msg.sender_name === (user.full_name || user.username); // Simplified check
+                            const _isMe = msg.sender_name === (user.full_name || user.username); // Simplified check
                             return (
                                 <div key={idx} style={{
                                     alignSelf: 'flex-start',

@@ -14,7 +14,10 @@ const JobCreate = () => {
     const [formData, setFormData] = useState({
         job_card_number: `JC-${Math.floor(1000 + Math.random() * 9000)}`,
         date: new Date().toISOString().split('T')[0],
+        salutation: 'Mr.',
         customer_name: '',
+        phone_prefix: '+971 5',
+        phone_suffix_code: '0',
         phone_number: '',
         address: '',
         license_plate: '',
@@ -27,10 +30,12 @@ const JobCreate = () => {
         color: '',
         kilometers: '',
         job_description: '',
-        service_advisor: 'Admin',
+        service_advisor: '',
         status: 'RECEPTION',
         selected_services: [],
-        total_price: 0
+        total_price: 0,
+        vat_amount: 0,
+        net_amount: 0
     });
 
     const [activeCategory, setActiveCategory] = useState('');
@@ -59,7 +64,7 @@ const JobCreate = () => {
                 phone_number: b.phone || '',
                 license_plate: b.v_registration_no || '',
                 date: b.booking_date || new Date().toISOString().split('T')[0],
-                service_advisor: b.advisor_name || 'Admin',
+                service_advisor: '',
                 booking_id: b.id,
                 lead_id: b.related_lead || ''
             }));
@@ -78,9 +83,9 @@ const JobCreate = () => {
     const addService = (service) => {
         if (formData.selected_services.find(s => s.name === service.name)) return;
         const newServices = [...formData.selected_services, service];
-        const subtotal = newServices.reduce((sum, s) => sum + parseFloat(s.price), 0);
-        const vat = subtotal * 0.05;
-        const total = subtotal + vat;
+        const subtotal = parseFloat(newServices.reduce((sum, s) => sum + parseFloat(s.price), 0).toFixed(2));
+        const vat = parseFloat((subtotal * 0.05).toFixed(2));
+        const total = parseFloat((subtotal + vat).toFixed(2));
         setFormData({
             ...formData,
             selected_services: newServices,
@@ -93,8 +98,8 @@ const JobCreate = () => {
     const removeService = (index) => {
         const newServices = formData.selected_services.filter((_, i) => i !== index);
         const subtotal = newServices.reduce((sum, s) => sum + parseFloat(s.price), 0);
-        const vat = subtotal * 0.05;
-        const total = subtotal + vat;
+        const vat = parseFloat((subtotal * 0.05).toFixed(2));
+        const total = parseFloat((subtotal + vat).toFixed(2));
         setFormData({
             ...formData,
             selected_services: newServices,
@@ -107,29 +112,61 @@ const JobCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Strictly construct only valid model fields to avoid 400 Bad Request
             const submissionData = {
-                ...formData,
-                phone: formData.phone_number,
+                job_card_number: formData.job_card_number + "-" + Math.floor(Math.random() * 999),
+                date: formData.date,
+                customer_name: `${formData.salutation} ${formData.customer_name}`,
+                phone: `${formData.phone_prefix}${formData.phone_suffix_code}${formData.phone_number}`,
+                address: formData.address || "",
                 registration_number: formData.license_plate,
-                kilometers: formData.kilometers,
-                total_amount: formData.total_price,
-                vat_amount: formData.vat_amount || 0,
-                net_amount: formData.net_amount || formData.total_price,
+                plate_emirate: formData.plate_emirate || "Dubai",
+                plate_code: formData.plate_code || "A",
+                vin: formData.vin,
+                brand: formData.brand,
+                model: formData.model,
+                year: parseInt(formData.year, 10) || new Date().getFullYear(),
+                kilometers: formData.kilometers ? parseInt(formData.kilometers, 10) : 0,
+                service_advisor: formData.service_advisor ? parseInt(formData.service_advisor, 10) : null,
+                total_amount: formData.total_price ? parseFloat(formData.total_price) : 0.00,
+                vat_amount: formData.vat_amount ? parseFloat(formData.vat_amount) : 0.00,
+                net_amount: formData.net_amount ? parseFloat(formData.net_amount) : 0.00,
+                status: 'RECEPTION',
                 job_description: (formData.job_description ? formData.job_description + '\n\n' : '') +
                     'Selected Services:\n' +
-                    formData.selected_services.map(s => `- ${s.name} (AED ${s.price})`).join('\n')
+                    (formData.selected_services || []).map(s => `- ${s.name} (AED ${s.price})`).join('\n')
             };
 
+            // Optional: link to lead/booking if they exist
+            if (formData.lead_id) submissionData.lead_id = formData.lead_id;
+            if (formData.booking_id) submissionData.booking_id = formData.booking_id;
+
+            console.log('Raw Service Advisor:', formData.service_advisor);
+            console.log('Constructed Payload:', submissionData);
+
             const res = await api.post('/forms/job-cards/api/jobs/', submissionData);
-            alert('Job Card Created! Proceeding to Vehicle Intake Checklist.');
+            alert('Job Card Created successfully!');
             navigate(`/service-advisor/form?jobId=${res.data.id}`);
         } catch (err) {
-            console.error('Error creating job card', err);
+            console.error('Full Error Object:', err);
             let errorMessage = 'Failed to create Job Card.';
+
             if (err.response && err.response.data) {
-                errorMessage = 'Validation Error:\n' + Object.entries(err.response.data)
+                // DRF validation errors are usually an object with field names
+                const serverData = err.response.data;
+                const fieldErrors = Object.entries(serverData)
                     .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
                     .join('\n');
+
+                errorMessage = `Validation Error (Status: ${err.response.status}):\n${fieldErrors}`;
+
+                // If it's a non-field error
+                if (serverData.non_field_errors) {
+                    errorMessage += `\nGeneral: ${serverData.non_field_errors.join(', ')}`;
+                }
+                if (serverData.detail) {
+                    errorMessage += `\nDetail: ${serverData.detail}`;
+                }
             }
             alert(errorMessage);
         }
@@ -154,14 +191,60 @@ const JobCreate = () => {
                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1.1fr) 1fr', gap: '30px', marginBottom: '20px' }}>
                         <div className="section">
                             <h3 style={sectionTitleStyle}>RECEPTION & CUSTOMER</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '15px', marginBottom: '12px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(400px, 1fr) 1fr', gap: '20px', marginBottom: '15px' }}>
                                 <div>
                                     <label style={labelStyle}>Customer Name</label>
-                                    <input type="text" name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required style={{ height: '36px' }} />
+                                    <div style={{ display: 'flex', gap: '8px' }}>
+                                        <select
+                                            name="salutation"
+                                            className="form-control"
+                                            value={formData.salutation}
+                                            onChange={handleChange}
+                                            style={{ width: '80px', height: '36px', background: 'var(--input-bg)' }}
+                                        >
+                                            <option value="Mr.">Mr.</option>
+                                            <option value="Mrs.">Mrs.</option>
+                                            <option value="Ms.">Ms.</option>
+                                        </select>
+                                        <input
+                                            type="text"
+                                            name="customer_name"
+                                            className="form-control"
+                                            placeholder="Enter Full Name"
+                                            value={formData.customer_name}
+                                            onChange={handleChange}
+                                            required
+                                            style={{ flex: 1, height: '36px' }}
+                                        />
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={labelStyle}>Phone Number</label>
-                                    <input type="text" name="phone_number" className="form-control" value={formData.phone_number} onChange={handleChange} required style={{ height: '36px' }} />
+                                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                                        <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
+                                        <select
+                                            name="phone_suffix_code"
+                                            className="form-control"
+                                            value={formData.phone_suffix_code}
+                                            onChange={handleChange}
+                                            style={{ width: '60px', height: '36px', background: 'var(--input-bg)' }}
+                                        >
+                                            {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
+                                                <option key={num} value={num}>{num}</option>
+                                            ))}
+                                        </select>
+                                        <input
+                                            type="text"
+                                            name="phone_number"
+                                            className="form-control"
+                                            placeholder="7-digits"
+                                            value={formData.phone_number}
+                                            onChange={handleChange}
+                                            required
+                                            style={{ flex: 1, height: '36px' }}
+                                            maxLength="7"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div style={{ marginBottom: '12px' }}>
@@ -179,7 +262,7 @@ const JobCreate = () => {
                             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '12px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Brand</label>
-                                    <select name="brand" className="form-control" value={formData.brand} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
+                                    <select name="brand" className="form-control" value={formData.brand} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }} autoComplete="off">
                                         {CAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
                                     </select>
                                 </div>
@@ -206,7 +289,7 @@ const JobCreate = () => {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                                 <div>
                                     <label style={labelStyle}>Year</label>
-                                    <select name="year" className="form-control" value={formData.year} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
+                                    <select name="year" className="form-control" value={formData.year} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }} autoComplete="off">
                                         {YEAR_CHOICES.map(y => <option key={y} value={y}>{y}</option>)}
                                     </select>
                                 </div>
@@ -359,8 +442,8 @@ const JobCreate = () => {
                                     required
                                 >
                                     <option value="">Select Advisor...</option>
-                                    {users.map(u => (
-                                        <option key={u.id} value={u.username}>{u.first_name || u.username}</option>
+                                    {users.filter(u => u.hr_profile).map(u => (
+                                        <option key={u.hr_profile.id || u.id} value={u.hr_profile.id}>{u.first_name || u.username}</option>
                                     ))}
                                 </select>
                             </div>

@@ -1,0 +1,41 @@
+
+R:\webplot\frontend\src\components\AccordionMenu.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\components\BranchSwitcher.jsx
+  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\components\EliteCommandTerminal.jsx
+    3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  229:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  227 |     const [mounted, setMounted] = useState(false);
+  228 |     useEffect(() => {
+> 229 |         setMounted(true);
+      |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  230 |         return () => setMounted(false);
+  231 |     }, []);
+  232 |  react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\components\FloatingDock.jsx
+  2:27  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\components\MeetingRoomWidget.jsx
+    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
+  182:35  error  'isMe' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\components\QuickAccessHub.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\components\UserDropdown.jsx
+   14:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  158:27  error  'Icon' is defined but never used                                               no-unused-vars
+
+Γ£û 10 problems (10 errors, 0 warnings)
+

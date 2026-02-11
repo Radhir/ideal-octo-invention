@@ -66,6 +66,21 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             
         return Response(leaderboard)
 
+    def destroy(self, request, *args, **kwargs):
+        # Override delete to just deactivate
+        employee = self.get_object()
+        user = employee.user
+        
+        # Deactivate
+        user.is_active = False
+        user.save()
+        
+        employee.is_active = False
+        employee.save()
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
     def perform_create(self, serializer):
         from django.contrib.auth.models import User
         import random
@@ -106,6 +121,13 @@ class PayrollViewSet(viewsets.ModelViewSet):
     queryset = Payroll.objects.all()
     serializer_class = PayrollSerializer
     permission_classes = [IsEliteAdmin]
+
+    def get_queryset(self):
+        queryset = self.queryset
+        month = self.request.query_params.get('month')
+        if month:
+            queryset = queryset.filter(month__month=month.split('-')[1], month__year=month.split('-')[0])
+        return queryset.order_by('-month')
 
 
     @action(detail=False, methods=['post'])
@@ -181,6 +203,13 @@ class PayrollViewSet(viewsets.ModelViewSet):
 class RosterViewSet(viewsets.ModelViewSet):
     queryset = Roster.objects.all()
     serializer_class = RosterSerializer
+
+    def get_queryset(self):
+        queryset = self.queryset
+        date = self.request.query_params.get('date')
+        if date:
+            queryset = queryset.filter(shift_start__date=date)
+        return queryset.order_by('shift_start')
 
 class HRAttendanceViewSet(viewsets.ModelViewSet):
     queryset = HRAttendance.objects.all()
@@ -287,16 +316,34 @@ class MistakeViewSet(viewsets.ModelViewSet):
     serializer_class = MistakeSerializer
 
 class SalarySlipViewSet(viewsets.ModelViewSet):
-    queryset = SalarySlip.objects.all().order_by('-month')
+    queryset = SalarySlip.objects.all()
     serializer_class = SalarySlipSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return SalarySlip.objects.all().order_by('-month')
+        return SalarySlip.objects.filter(employee__user=user).order_by('-month')
+
 class EmployeeDocumentViewSet(viewsets.ModelViewSet):
-    queryset = EmployeeDocument.objects.all().order_by('employee__user__first_name')
+    queryset = EmployeeDocument.objects.all()
     serializer_class = EmployeeDocumentSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return EmployeeDocument.objects.all().order_by('employee__user__first_name')
+        return EmployeeDocument.objects.filter(employee__user=user).order_by('created_at')
+
 class WarningLetterViewSet(viewsets.ModelViewSet):
-    queryset = WarningLetter.objects.all().order_by('-date_issued')
+    queryset = WarningLetter.objects.all()
     serializer_class = WarningLetterSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return WarningLetter.objects.all().order_by('-date_issued')
+        return WarningLetter.objects.filter(employee__user=user).order_by('-date_issued')
 
 class NotificationViewSet(viewsets.ModelViewSet):
     serializer_class = NotificationSerializer

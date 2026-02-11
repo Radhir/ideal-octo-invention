@@ -26,7 +26,7 @@ const ReportsPage = () => {
         totalRevenue: 0,
     });
     const [jobs, setJobs] = useState([]);
-    const [invoices, setInvoices] = useState([]);
+    const [_invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {

@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../../api/axios';
-import { useNavigate } from 'react-router-dom';
 import GlassCard from '../../components/GlassCard';
 import {
     Mail, MessageSquare, Instagram, Facebook,
-    Trash2, UserPlus, Search, Filter,
+    Trash2, UserPlus, Search,
     Zap, Sparkles, RefreshCw, X, Bell
 } from 'lucide-react';
 
 const MockInbox = () => {
-    const navigate = useNavigate();
     const [messages, setMessages] = useState([]);
     const [filter, setFilter] = useState('ALL');
     const [searchTerm, setSearchTerm] = useState('');
@@ -77,23 +75,7 @@ const MockInbox = () => {
         }, 800);
     };
 
-    // Fetch Automated Notifications + Inbox Leads
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    useEffect(() => {
-        if (filter === 'SENT' || filter === 'ALL') {
-            fetchData();
-            // Auto-poll every 15 seconds
-            pollRef.current = setInterval(fetchData, 15000);
-        }
-        return () => {
-            if (pollRef.current) clearInterval(pollRef.current);
-        };
-    }, [filter]);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const [notifRes, leadRes] = await Promise.all([
                 api.get('/forms/notifications/api/logs/'),
@@ -125,19 +107,32 @@ const MockInbox = () => {
                 isLead: true
             }));
 
-            // setAlertCount(sentLogs.length);
+            setAlertCount(sentLogs.filter(l => l.unread).length);
 
-            // Merge: Real Inbox Leads + Sent Logs + (Existing mocks if you want, but better to clear mocks for real test)
-            // For now, we prepend real leads to messages
             setMessages(prev => {
-                // Keep mocks that are not real leads or logs
                 const existingMocks = prev.filter(m => !m.isLead && !m.isLog);
                 return [...mappedLeads, ...sentLogs, ...existingMocks];
             });
         } catch (err) {
             console.error("Failed to fetch inbox data", err);
         }
-    };
+    }, []);
+
+    // Initial Fetch
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    // Polling Fetch
+    useEffect(() => {
+        if (filter === 'SENT' || filter === 'ALL') {
+            fetchData();
+            pollRef.current = setInterval(fetchData, 15000);
+        }
+        return () => {
+            if (pollRef.current) clearInterval(pollRef.current);
+        };
+    }, [filter, fetchData]);
 
     const convertToLead = async (msg) => {
         try {
@@ -210,7 +205,7 @@ const MockInbox = () => {
                         {isGenerating ? 'Intercepting...' : 'Simulate Incoming Lead'}
                     </button>
                     <button
-                        onClick={fetchNotifications}
+                        onClick={fetchData}
                         style={{ ...actionButtonStyle, background: '#F59E0B', color: '#000', border: 'none' }}
                         title="Refresh Sent Logs"
                     >

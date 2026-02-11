@@ -70,7 +70,7 @@ const MissionControl = () => {
     const handlePrevMonth = () => setViewDate(new Date(currentYear, currentMonth - 1, 1));
     const handleNextMonth = () => setViewDate(new Date(currentYear, currentMonth + 1, 1));
 
-    const renderCalendar = () => {
+    const _renderCalendar = () => {
         const days = [];
         const totalDays = daysInMonth(currentMonth, currentYear);
         const startDay = firstDayOfMonth(currentMonth, currentYear);

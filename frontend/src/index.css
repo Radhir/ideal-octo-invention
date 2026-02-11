@@ -29,19 +29,27 @@
 }
 
 [data-theme='light'] {
-  --bg-primary: #ffffff; /* Absolute white for maximum brightness */
-  --bg-secondary: #f8fafc; /* Very light slate for secondary */
-  --bg-glass: rgba(255, 255, 255, 1); /* Solid white glass */
-  --glass-border: #8c6d3e; /* Darker, solid gold border */
-  --gold-border: #8c6d3e; /* Consistent dark gold border */
-  --text-primary: #000000 !important; /* Absolute black forced */
-  --text-secondary: #0f172a; /* Near black for secondary */
-  --text-muted: #334155;
-  --border-color: rgba(0, 0, 0, 0.2); /* Stronger border contrast */
+  --bg-primary: #f8fafc; /* Soft slate white */
+  --bg-secondary: #ffffff; /* Pure white for secondary elements */
+  --bg-glass: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(176, 141, 87, 0.3); 
+  --gold-border: rgba(176, 141, 87, 0.4);
+  --text-primary: #0f172a; /* Slate 900 for high readability */
+  --text-secondary: #475569; /* Slate 600 */
+  --text-muted: #64748b; /* Slate 500 */
+  --border-color: rgba(15, 23, 42, 0.08); /* Subtle dark border */
   --card-bg: #ffffff;
-  --input-bg: #ffffff;
+  --input-bg: #f1f5f9;
+  
+  --header-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 0%, transparent 100%);
+  --status-bar-bg: rgba(255, 255, 255, 0.7);
+  --mesh-gradient: none;
+}
 
-  --mesh-gradient: none; /* Clean white background for clarity */
+:root {
+  /* Default Theme Variables (Dark) */
+  --header-bg: linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, transparent 100%);
+  --status-bar-bg: rgba(15, 23, 42, 0.6);
 }
 
 * {
@@ -150,7 +158,7 @@ body {
   padding: 1.5em;
   border-radius: 24px;
   border: 1.5px solid var(--border-color); /* Thicker border */
-  background: var(--bg-secondary);
+  background: var(--card-bg);
   font-weight: 400; /* Increased weight for visibility */
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
@@ -316,7 +324,7 @@ body {
   left: 12px;
   font-size: 10px;
   color: var(--gold);
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   padding: 0 8px;
   border-radius: 4px;
 }

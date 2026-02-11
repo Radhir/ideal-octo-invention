@@ -26,7 +26,7 @@
     z-index: 1000;
     pointer-events: none;
     transition: all 0.3s ease;
-    background: linear-gradient(to bottom, rgba(15, 23, 42, 0.6) 0%, transparent 100%);
+    background: var(--header-bg);
 }
 
 .header-left {
@@ -58,7 +58,7 @@
     font-family: 'Outfit', sans-serif;
     font-size: 16px;
     font-weight: 900;
-    color: #fff;
+    color: var(--text-primary);
     letter-spacing: 4px;
     margin: 0;
     text-shadow: 0 0 20px rgba(176, 141, 87, 0.3);
@@ -78,7 +78,7 @@
 }
 
 .status-clock-group {
-    background: rgba(15, 23, 42, 0.6);
+    background: var(--status-bar-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -97,21 +97,21 @@
 }
 
 .status-text {
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 
 .status-time {
-    color: #fff;
+    color: var(--text-primary);
     font-size: 12px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
 }
 
 .status-user-group {
-    background: rgba(15, 23, 42, 0.6);
+    background: var(--status-bar-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -124,7 +124,7 @@
     pointer-events: auto;
     cursor: pointer;
     padding: 10px;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--input-bg);
     backdrop-filter: blur(10px);
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -159,7 +159,7 @@
     .app-header {
         padding: 10px 15px;
         justify-content: flex-end;
-        background: rgba(15, 23, 42, 0.95);
+        background: var(--bg-primary);
         backdrop-filter: blur(10px);
     }
 

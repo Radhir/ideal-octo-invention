@@ -2,25 +2,21 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageSquare, Rocket, Shield, Settings, Briefcase, Building,
-    ClipboardList, FileText, Calendar, X, MapPin, Clock, Menu, Users, Zap
+    ClipboardList, FileText, Calendar, X, MapPin, Clock, Menu, Users, Zap, ShoppingCart
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { usePermissions } from '../context/PermissionContext';
 import EliteCommandTerminal from './EliteCommandTerminal';
 
 const QuickAccessHub = () => {
-    const { user } = useAuth();
-    const { hasPermission, isAdmin } = usePermissions();
+    const { hasPermission } = usePermissions();
     const [isOpen, setIsOpen] = useState(false);
     const [terminalOpen, setTerminalOpen] = useState(false);
-    const [buttonPos, setButtonPos] = useState({ x: 0, y: 0 });
+    const [buttonPos] = useState({ x: 0, y: 0 });
     const clickCountRef = useRef(0);
     const lastClickTime = useRef(0);
     const navigate = useNavigate();
     const constraintsRef = useRef(null);
-
-    const isElite = user && ['radhir', 'ruchika', 'afsar'].includes(user.username.toLowerCase());
 
     const handleHubClick = () => {
         const now = Date.now();
@@ -53,6 +49,7 @@ const QuickAccessHub = () => {
         { name: 'Chat', icon: MessageSquare, path: '/chat', color: '#8b5cf6', permission: 'all' },
         { name: 'Access Control', icon: Shield, path: '/hr/access', color: '#ef4444', permission: 'settings' },
         { name: 'Branch Mgr', icon: Building, path: '/admin/branches', color: '#8b5cf6', permission: 'settings' },
+        { name: 'Purchase Entry', icon: ShoppingCart, path: '/logistics/purchase', color: 'var(--gold)', permission: 'finance' },
         { name: 'Project Board', icon: Rocket, path: '/projects', color: '#8b5cf6', permission: 'job_cards' },
         { name: 'Leads Registry', icon: Users, path: '/leads', color: '#ec4899', permission: 'job_cards' },
         { name: 'Capture Lead', icon: Zap, path: '/leads/create', color: '#ef4444', permission: 'job_cards' },
@@ -61,7 +58,6 @@ const QuickAccessHub = () => {
     // Filter modules based on permissions
     const filteredModules = modules.filter(mod => {
         if (!mod.permission) return true;
-        if (mod.permission === 'all' && isAdmin()) return true;
         return hasPermission(mod.permission);
     });
 
@@ -234,6 +230,7 @@ const QuickAccessHub = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onTap={handleHubClick}
+                style={{ x: buttonPos.x, y: buttonPos.y }}
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
             </motion.button>

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import GlassCard from '../../components/GlassCard';
 import {
     ChevronRight, ChevronDown, Folder, FileText,
-    Plus, DollarSign, PieChart, Activity, Printer, ArrowLeft
+    DollarSign, PieChart, Printer, ArrowLeft
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PrintHeader from '../../components/PrintHeader';
@@ -15,11 +15,7 @@ const ChartOfAccounts = () => {
     const [summary, setSummary] = useState({ total_assets: 0, liabilities: 0, equity: 0 });
     const [expandedGroups, setExpandedGroups] = useState(new Set(['ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE']));
 
-    useEffect(() => {
-        fetchData();
-    }, []);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const [accRes, summaryRes] = await Promise.all([
                 api.get('/finance/api/accounts/'),
@@ -36,7 +32,11 @@ const ChartOfAccounts = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const toggleGroup = (group) => {
         const next = new Set(expandedGroups);
@@ -129,16 +129,16 @@ const ChartOfAccounts = () => {
                                             gap: '15px',
                                             padding: '12px 20px',
                                             borderRadius: '12px',
-                                            border: '1.5px solid var(--border-color)',
+                                            border: '1.5px solid var(--gold-border)',
                                             background: 'var(--input-bg)',
                                             transition: 'transform 0.2s'
                                         }}
-                                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(5px)'; e.currentTarget.style.borderColor = 'var(--gold-border)'; }}
-                                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'var(--border-color)'; }}
+                                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(5px)'; e.currentTarget.style.boxShadow = '0 0 10px var(--gold-glow)'; }}
+                                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = 'none'; }}
                                         >
-                                            <div style={{ width: '45px', color: 'var(--gold)', fontSize: '13px', fontWeight: '900' }}>#{acc.code}</div>
-                                            <div style={{ flex: 1, color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px' }}>{acc.name}</div>
-                                            <div style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '16px' }}>AED {parseFloat(acc.balance).toLocaleString()}</div>
+                                            <div style={{ width: '45px', color: 'var(--gold)', fontSize: '12px', fontWeight: '900', letterSpacing: '0.5px' }}>#{acc.code}</div>
+                                            <div style={{ flex: 1, color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{acc.name}</div>
+                                            <div style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }}>AED {parseFloat(acc.balance).toLocaleString()}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -174,12 +174,12 @@ const ChartOfAccounts = () => {
 };
 
 const SummaryRow = ({ label, value, color }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(176,141,87,0.1)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: color }}></div>
-            <span style={{ color: 'var(--text-secondary)', fontSize: '14px', fontWeight: '800' }}>{label}</span>
+            <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: color, border: '1px solid rgba(255,255,255,0.1)' }}></div>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</span>
         </div>
-        <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '16px' }}>AED {value}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }}>AED {value}</span>
     </div>
 );
 

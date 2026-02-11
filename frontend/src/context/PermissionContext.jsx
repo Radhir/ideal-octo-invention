@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 
 /**
@@ -65,7 +65,7 @@ export const PermissionProvider = ({ children }) => {
     const { user } = useAuth();
 
     // Determine user's role
-    const getUserRole = () => {
+    const role = useMemo(() => {
         if (!user) return ROLES.EMPLOYEE;
 
         const username = user.username?.toLowerCase();
@@ -81,48 +81,49 @@ export const PermissionProvider = ({ children }) => {
         }
 
         // Check role from backend
-        const role = user.role?.toLowerCase();
-        if (role?.includes('owner') || role?.includes('director')) return ROLES.OWNER;
-        if (role?.includes('admin') || role?.includes('manager')) return ROLES.ADMIN;
+        const userRole = user.role?.toLowerCase();
+        if (userRole?.includes('owner') || userRole?.includes('director')) return ROLES.OWNER;
+        if (userRole?.includes('admin') || userRole?.includes('manager')) return ROLES.ADMIN;
 
         return ROLES.EMPLOYEE;
-    };
+    }, [user]);
 
-    const role = getUserRole();
-    const permissions = ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS[ROLES.EMPLOYEE];
+    const permissions = useMemo(() => ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS[ROLES.EMPLOYEE], [role]);
 
     // Check if user has a specific permission
-    const hasPermission = (permission) => {
+    const hasPermission = useMemo(() => (permission) => {
         if (permissions.includes('all')) return true;
         return permissions.includes(permission);
-    };
+    }, [permissions]);
 
     // Check if user has any of the given permissions
-    const hasAnyPermission = (perms) => {
+    const hasAnyPermission = useMemo(() => (perms) => {
         if (permissions.includes('all')) return true;
         return perms.some(p => permissions.includes(p));
-    };
+    }, [permissions]);
 
     // Check if user is owner
-    const isOwner = () => role === ROLES.OWNER;
+    const isOwner = useMemo(() => () => role === ROLES.OWNER, [role]);
 
     // Check if user is admin or higher
-    const isAdmin = () => [ROLES.OWNER, ROLES.ADMIN].includes(role);
+    const isAdmin = useMemo(() => () => [ROLES.OWNER, ROLES.ADMIN].includes(role), [role]);
 
     // Check if user is at least a manager
-    const isManager = () => [ROLES.OWNER, ROLES.ADMIN, ROLES.MANAGER].includes(role);
+    const isManager = useMemo(() => () => [ROLES.OWNER, ROLES.ADMIN, ROLES.MANAGER].includes(role), [role]);
+
+    const value = useMemo(() => ({
+        role,
+        permissions,
+        hasPermission,
+        hasAnyPermission,
+        isOwner,
+        isAdmin,
+        isManager,
+        ROLES,
+    }), [role, permissions, hasPermission, hasAnyPermission, isOwner, isAdmin, isManager]);
 
     return (
-        <PermissionContext.Provider value={{
-            role,
-            permissions,
-            hasPermission,
-            hasAnyPermission,
-            isOwner,
-            isAdmin,
-            isManager,
-            ROLES,
-        }}>
+        <PermissionContext.Provider value={value}>
             {children}
         </PermissionContext.Provider>
     );
