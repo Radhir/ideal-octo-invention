@@ -11,15 +11,34 @@ const BookingForm = () => {
     const location = useLocation();
     const leadData = location.state?.lead;
 
+    const parseCustomerData = (name = '', phone = '') => {
+        let salutation = 'Mr.';
+        let cleanName = name;
+        if (name.startsWith('Mr. ')) { salutation = 'Mr.'; cleanName = name.replace('Mr. ', ''); }
+        else if (name.startsWith('Mrs. ')) { salutation = 'Mrs.'; cleanName = name.replace('Mrs. ', ''); }
+        else if (name.startsWith('Ms. ')) { salutation = 'Ms.'; cleanName = name.replace('Ms. ', ''); }
+
+        let phoneSuffix = '0';
+        let cleanPhone = phone;
+        if (phone.startsWith('+971 5')) {
+            phoneSuffix = phone.charAt(6) || '0';
+            cleanPhone = phone.substring(7);
+        }
+        return { salutation, cleanName, phoneSuffix, cleanPhone };
+    };
+
+    const { salutation: initSal, cleanName: initName, phoneSuffix: initSuffix, cleanPhone: initPhone } = parseCustomerData(leadData?.customer_name, leadData?.phone);
+
     const [employees, setEmployees] = useState([]);
     const [categories, setCategories] = useState([]);
     const [services, setServices] = useState([]);
+
     const [formData, setFormData] = useState({
-        salutation: 'Mr.',
-        customer_name: leadData?.customer_name || '',
+        salutation: initSal,
+        customer_name: initName,
         phone_prefix: '+971 5',
-        phone_suffix_code: '0',
-        phone: leadData?.phone || '',
+        phone_suffix_code: initSuffix,
+        phone: initPhone,
         v_registration_no: '',
         vehicle_details: '',
         service_category: '',

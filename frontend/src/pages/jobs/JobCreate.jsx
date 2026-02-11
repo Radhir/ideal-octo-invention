@@ -45,28 +45,43 @@ const JobCreate = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const parseCustomerData = (name = '', phone = '') => {
+        let salutation = 'Mr.';
+        let cleanName = name;
+        if (name.startsWith('Mr. ')) { salutation = 'Mr.'; cleanName = name.replace('Mr. ', ''); }
+        else if (name.startsWith('Mrs. ')) { salutation = 'Mrs.'; cleanName = name.replace('Mrs. ', ''); }
+        else if (name.startsWith('Ms. ')) { salutation = 'Ms.'; cleanName = name.replace('Ms. ', ''); }
+
+        let phoneSuffix = '0';
+        let cleanPhone = phone;
+        if (phone.startsWith('+971 5')) {
+            phoneSuffix = phone.charAt(6) || '0';
+            cleanPhone = phone.substring(7);
+        }
+
+        return { salutation, cleanName, phoneSuffix, cleanPhone };
+    };
+
     useEffect(() => {
         fetchUsers();
-        if (location.state && location.state.lead) {
-            const lead = location.state.lead;
+        if (location.state && (location.state.lead || location.state.booking)) {
+            const data = location.state.lead || location.state.booking;
+            const { salutation, cleanName, phoneSuffix, cleanPhone } = parseCustomerData(data.customer_name, data.phone || data.phone_number);
+
             setFormData(prev => ({
                 ...prev,
-                customer_name: lead.customer_name || '',
-                phone_number: lead.phone || '',
-                job_description: lead.notes || '',
-                lead_id: lead.id
-            }));
-        } else if (location.state && location.state.booking) {
-            const b = location.state.booking;
-            setFormData(prev => ({
-                ...prev,
-                customer_name: b.customer_name || '',
-                phone_number: b.phone || '',
-                license_plate: b.v_registration_no || '',
-                date: b.booking_date || new Date().toISOString().split('T')[0],
-                service_advisor: '',
-                booking_id: b.id,
-                lead_id: b.related_lead || ''
+                salutation,
+                customer_name: cleanName,
+                phone_suffix_code: phoneSuffix,
+                phone_number: cleanPhone,
+                license_plate: data.v_registration_no || data.license_plate || '',
+                date: data.booking_date || new Date().toISOString().split('T')[0],
+                job_description: data.notes || '',
+                lead_id: data.id || '',
+                brand: data.brand || 'Toyota',
+                model: data.model || '',
+                year: data.year || '2025',
+                color: data.color || '',
             }));
         }
     }, [location.state]);
