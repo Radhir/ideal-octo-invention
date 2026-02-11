@@ -8,7 +8,10 @@ import SignaturePad from '../../components/SignaturePad';
 const CeramicForm = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        salutation: 'Mr.',
         full_name: '',
+        phone_prefix: '+971 5',
+        phone_suffix_code: '0',
         contact_number: '',
         email: '',
         vehicle_brand: '',
@@ -31,7 +34,12 @@ const CeramicForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/forms/ceramic/api/warranties/', formData);
+            const submissionData = {
+                ...formData,
+                full_name: `${formData.salutation} ${formData.full_name}`,
+                contact_number: `${formData.phone_prefix}${formData.phone_suffix_code}${formData.contact_number}`
+            };
+            await api.post('/forms/ceramic/api/warranties/', submissionData);
             alert('Ceramic Warranty Registered Successfully');
             navigate('/ceramic');
         } catch (err) {
@@ -58,11 +66,39 @@ const CeramicForm = () => {
                             <h3 style={sectionTitleStyle}>Customer Info</h3>
                             <div style={{ marginBottom: '15px' }}>
                                 <label style={labelStyle}>Full Name</label>
-                                <input name="full_name" className="form-control" onChange={handleChange} required />
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <select
+                                        name="salutation"
+                                        className="form-control"
+                                        value={formData.salutation}
+                                        onChange={handleChange}
+                                        style={{ width: '80px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px' }}
+                                    >
+                                        <option value="Mr.">Mr.</option>
+                                        <option value="Mrs.">Mrs.</option>
+                                        <option value="Ms.">Ms.</option>
+                                    </select>
+                                    <input name="full_name" className="form-control" onChange={handleChange} required style={{ flex: 1 }} />
+                                </div>
                             </div>
                             <div style={{ marginBottom: '15px' }}>
                                 <label style={labelStyle}>Contact Number</label>
-                                <input name="contact_number" className="form-control" onChange={handleChange} required />
+                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
+                                    <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
+                                    <select
+                                        name="phone_suffix_code"
+                                        className="form-control"
+                                        value={formData.phone_suffix_code}
+                                        onChange={handleChange}
+                                        style={{ width: '60px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px', padding: '0 5px' }}
+                                    >
+                                        {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
+                                            <option key={num} value={num}>{num}</option>
+                                        ))}
+                                    </select>
+                                    <input name="contact_number" className="form-control" onChange={handleChange} required
+                                        placeholder="1234567" maxLength="7" />
+                                </div>
                             </div>
                             <div style={{ marginBottom: '15px' }}>
                                 <label style={labelStyle}>Email</label>
