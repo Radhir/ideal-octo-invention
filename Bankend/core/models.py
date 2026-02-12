@@ -185,5 +185,58 @@ class LoginHistory(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.login_time.strftime('%Y-%m-%d %H:%M')}"
 
+class DataAccessLog(models.Model):
+    """Track sensitive data access (invoices, customer info, etc.)"""
+    
+    ACCESS_TYPE_CHOICES = [
+        ('VIEW', 'View'),
+        ('EXPORT', 'Export'),
+        ('PRINT', 'Print'),
+        ('EMAIL', 'Email'),
+    ]
+    
+    timestamp = models.DateTimeField(auto_now_add=True, db_index=True)
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    
+    # What was accessed
+    data_type = models.CharField(max_length=100)  # Invoice, Customer, JobCard, etc.
+    record_id = models.IntegerField()
+    access_type = models.CharField(max_length=20, choices=ACCESS_TYPE_CHOICES)
+    
+    # Context
+    reason = models.TextField(blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+        indexes = [
+            models.Index(fields=['user', 'timestamp']),
+            models.Index(fields=['data_type', 'record_id']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user} - {self.access_type} {self.data_type}:{self.record_id}"
 
+
+class SystemChangeLog(models.Model):
+    """Track system configuration changes"""
+    
+    timestamp = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    
+    change_category = models.CharField(max_length=100)  # Settings, Permissions, Configuration
+    change_description = models.TextField()
+    previous_value = models.TextField(blank=True)
+    new_value = models.TextField(blank=True)
+    
+    # Approval (for critical changes)
+    requires_approval = models.BooleanField(default=False)
+    approved_by = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True, related_name='approved_changes')
+    approved_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-timestamp']
+    
+    def __str__(self):
+        return f"{self.change_category} - {self.timestamp.strftime('%Y-%m-%d %H:%M')}"
 
