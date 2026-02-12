@@ -1,4 +1,5 @@
-from rest_framework import viewsets, views
+from rest_framework import viewsets, views, filters
+from locations.filters import BranchFilterBackend
 from rest_framework.response import Response
 from django.db.models import Sum, F, ExpressionWrapper, fields
 from django.utils import timezone
@@ -27,6 +28,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     queryset = Invoice.objects.all().order_by('-date')
     serializer_class = InvoiceSerializer
     permission_classes = [IsAdminOrOwner]
+    filter_backends = [BranchFilterBackend]
 
 class ARAgingReportView(views.APIView):
     permission_classes = [IsAdminOrOwner]

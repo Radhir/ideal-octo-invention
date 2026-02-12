@@ -46,21 +46,25 @@ const Portfolio = () => {
     const fetchAttendance = async () => {
         try {
             const res = await api.get('/forms/attendance/api/records/');
-            setAttendances(res.data);
+            const data = res.data.results || res.data;
+            setAttendances(Array.isArray(data) ? data : []);
             const today = new Date().toISOString().split('T')[0];
-            const active = res.data.find(a => a.date === today && !a.check_out_time);
+            const active = Array.isArray(data) ? data.find(a => a.date === today && !a.check_out_time) : null;
             setAttendance(active || null);
         } catch (err) {
             console.error('Failed to fetch attendance', err);
+            setAttendances([]);
         }
     };
 
     const fetchEmployees = async () => {
         try {
             const res = await api.get('/hr/api/employees/');
-            setEmployees(res.data);
+            const data = res.data.results || res.data;
+            setEmployees(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error('Failed to fetch employees', err);
+            setEmployees([]);
         }
     };
 

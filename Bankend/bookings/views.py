@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
+from locations.filters import BranchFilterBackend
 from .models import Booking
 from .forms import BookingForm
 from .serializers import BookingSerializer
@@ -27,6 +28,7 @@ from rest_framework import status
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all().order_by('-booking_date')
     serializer_class = BookingSerializer
+    filter_backends = [BranchFilterBackend]
 
     @action(detail=True, methods=['post'])
     def convert_to_job(self, request, pk=None):

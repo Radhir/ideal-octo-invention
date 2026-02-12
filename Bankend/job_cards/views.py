@@ -11,6 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from locations.filters import BranchFilterBackend
 from core.permissions import IsAdminOrOwner
 from .serializers import JobCardSerializer, JobCardTaskSerializer, JobCardPhotoSerializer, ServiceCategorySerializer, ServiceSerializer
 from invoices.models import Invoice
@@ -111,6 +112,7 @@ class JobCardViewSet(viewsets.ModelViewSet):
     queryset = JobCard.objects.all().order_by('-created_at')
     serializer_class = JobCardSerializer
     permission_classes = [IsAdminOrOwner]
+    filter_backends = [BranchFilterBackend]
 
     def perform_create(self, serializer):
         lead_id = self.request.data.get('lead_id')

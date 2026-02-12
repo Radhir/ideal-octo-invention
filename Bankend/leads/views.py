@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from rest_framework import viewsets
+from rest_framework import viewsets, filters
+from locations.filters import BranchFilterBackend
 from .models import Lead
 from .forms import LeadForm
 from .serializers import LeadSerializer
@@ -29,6 +30,7 @@ from rest_framework.exceptions import PermissionDenied
 class LeadViewSet(viewsets.ModelViewSet):
     queryset = Lead.objects.all()
     serializer_class = LeadSerializer
+    filter_backends = [BranchFilterBackend]
 
     def get_queryset(self):
         # Default list excludes INBOX (Ghost) leads

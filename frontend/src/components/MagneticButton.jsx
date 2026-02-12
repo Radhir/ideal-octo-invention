@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 
 const MagneticButton = ({ children, className = "", onClick, strength = 0.3 }) => {
     const buttonRef = useRef(null);

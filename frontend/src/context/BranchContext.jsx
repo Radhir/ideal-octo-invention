@@ -48,8 +48,7 @@ export const BranchProvider = ({ children }) => {
         if (branch) {
             setCurrentBranch(branch);
             localStorage.setItem('elite_current_branch', branchId);
-            // Optionally reload page to refresh all data if not using specialized hook
-            // window.location.reload(); 
+            window.location.reload();
         }
     };
 

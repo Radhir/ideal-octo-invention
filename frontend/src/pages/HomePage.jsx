@@ -4,6 +4,7 @@ import MagneticButton from '../components/MagneticButton';
 import {
     Activity, Calculator, Package, Settings, Globe, UserCircle, UserPlus
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import QuickNotes from '../components/QuickNotes';
 import AccordionMenu from '../components/AccordionMenu';
 import { usePermissions } from '../context/PermissionContext';

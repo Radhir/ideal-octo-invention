@@ -1,4 +1,5 @@
 from django.db import models
+from locations.models import Branch
 
 class Booking(models.Model):
     STATUS_CHOICES = [
@@ -10,6 +11,7 @@ class Booking(models.Model):
     ]
     
     customer_name = models.CharField(max_length=255)
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     phone = models.CharField(max_length=20)
     v_registration_no = models.CharField(max_length=50, blank=True, null=True)
@@ -68,6 +70,7 @@ class Booking(models.Model):
             vat_amount=vat_amt,
             net_amount=gross_total,
             balance_amount=gross_total,
+            branch=self.branch,
             custom_fields={},
             # New Links
             related_booking=self,

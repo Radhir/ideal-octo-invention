@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from locations.filters import BranchFilterBackend
 from django.utils import timezone
 from core.permissions import IsAdminOrOwner, IsManager, IsEliteAdmin
 from .models import (
@@ -38,6 +39,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsEliteAdmin]
+    filter_backends = [BranchFilterBackend]
 
     @action(detail=False, methods=['get'])
     def technician_leaderboard(self, request):

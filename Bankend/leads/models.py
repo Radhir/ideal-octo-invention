@@ -1,4 +1,5 @@
 from django.db import models
+from locations.models import Branch
 
 class Lead(models.Model):
     SOURCE_CHOICES = [
@@ -31,6 +32,7 @@ class Lead(models.Model):
     ]
     
     customer_name = models.CharField(max_length=255)
+    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='leads')
     phone = models.CharField(max_length=20)
     email = models.EmailField(blank=True)
     source = models.CharField(max_length=50, choices=SOURCE_CHOICES)
