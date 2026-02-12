@@ -35,46 +35,52 @@ def get_field_changes(instance, created):
     except:
         return None
 
-@receiver(post_save)
-def audit_post_save(sender, instance, created, **kwargs):
-    if sender == AuditLog or issubclass(sender, NoAudit):
-        return
-    if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
-        return
-
-    meta = get_request_metadata()
-    action = 'CREATE' if created else 'UPDATE'
-    changes = None if created else get_field_changes(instance, created)
-
-    AuditLog.objects.create(
-        user=meta.get('user'),
-        ip_address=meta.get('ip'),
-        user_agent=meta.get('ua'),
-        content_type=ContentType.objects.get_for_model(instance),
-        object_id=str(instance.pk),
-        object_repr=str(instance)[:255],
-        action=action,
-        field_changes=changes,
-        endpoint=meta.get('endpoint', ''),
-        method=meta.get('method', ''),
-    )
-
-@receiver(post_delete)
-def audit_post_delete(sender, instance, **kwargs):
-    if sender == AuditLog or issubclass(sender, NoAudit):
-        return
-    if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
-        return
-
-    meta = get_request_metadata()
-    AuditLog.objects.create(
-        user=meta.get('user'),
-        ip_address=meta.get('ip'),
-        user_agent=meta.get('ua'),
-        content_type=ContentType.objects.get_for_model(instance),
-        object_id=str(instance.pk),
-        object_repr=str(instance)[:255],
-        action='DELETE',
-        endpoint=meta.get('endpoint', ''),
-        method=meta.get('method', ''),
-    )
+# @receiver(post_save)
+# def audit_post_save(sender, instance, created, **kwargs):
+#     if sender == AuditLog or issubclass(sender, NoAudit):
+#         return
+#     if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
+#         return
+# 
+#     meta = get_request_metadata()
+#     action = 'CREATE' if created else 'UPDATE'
+#     changes = None if created else get_field_changes(instance, created)
+# 
+#     try:
+#         AuditLog.objects.create(
+#             user=meta.get('user'),
+#             ip_address=meta.get('ip'),
+#             user_agent=meta.get('ua'),
+#             content_type=ContentType.objects.get_for_model(instance),
+#             object_id=str(instance.pk),
+#             object_repr=str(instance)[:255],
+#             action=action,
+#             field_changes=changes,
+#             endpoint=meta.get('endpoint', ''),
+#             method=meta.get('method', ''),
+#         )
+#     except Exception as e:
+#         print(f"Audit failed: {e}")
+# 
+# @receiver(post_delete)
+# def audit_post_delete(sender, instance, **kwargs):
+#     if sender == AuditLog or issubclass(sender, NoAudit):
+#         return
+#     if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
+#         return
+# 
+#     meta = get_request_metadata()
+#     try:
+#         AuditLog.objects.create(
+#             user=meta.get('user'),
+#             ip_address=meta.get('ip'),
+#             user_agent=meta.get('ua'),
+#             content_type=ContentType.objects.get_for_model(instance),
+#             object_id=str(instance.pk),
+#             object_repr=str(instance)[:255],
+#             action='DELETE',
+#             endpoint=meta.get('endpoint', ''),
+#             method=meta.get('method', ''),
+#         )
+#     except Exception as e:
+#         print(f"Audit delete failed: {e}")
