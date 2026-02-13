@@ -23,9 +23,9 @@ const EliteProDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             const [shipmentsRes, productsRes, ordersRes] = await Promise.all([
-                api.get(`${API_BASE}/logistics/api/shipments/in-transit/`),
-                api.get(`${API_BASE}/logistics/api/products/low-stock/`),
-                api.get(`${API_BASE}/logistics/api/sales-orders/pending-payment/`)
+                api.get('/logistics/api/shipments/in-transit/'),
+                api.get('/logistics/api/products/low-stock/'),
+                api.get('/logistics/api/sales-orders/pending-payment/')
             ]);
 
             setShipments(shipmentsRes.data.slice(0, 5));

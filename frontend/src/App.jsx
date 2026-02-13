@@ -217,7 +217,8 @@ function App() {
                       <Route path="/finance/reports" element={<FinancialReports />} />
                       <Route path="/workshop-diary" element={<WorkshopDiary />} />
                       <Route path="/analytics" element={<AnalyticsDashboard />} />
-                      <Route path="/hr" element={<EmployeeDirectory />} />
+                      <Route path="/hr" element={<HRHub />} />
+                      <Route path="/hr/directory" element={<EmployeeDirectory />} />
                       <Route path="/hr/register" element={<EmployeeRegistration />} />
                       <Route path="/hr/employee/:id/edit" element={<EmployeeEdit />} />
                       <Route path="/logistics/purchase" element={<PurchaseEntry />} />
@@ -226,7 +227,6 @@ function App() {
                       <Route path="/hr/roster" element={<HRRoster />} />
                       <Route path="/hr/attendance" element={<AttendanceList />} />
                       <Route path="/hr/attendance-board" element={<AttendanceBoard />} />
-                      <Route path="/hr/hub" element={<HRHub />} />
                       <Route path="/hr/analytics" element={<TechnicianAnalytics />} />
                       <Route path="/workshop" element={<WorkshopHub />} />
                       <Route path="/workshop/delay" element={<WorkshopDelayForm />} />

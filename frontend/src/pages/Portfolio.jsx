@@ -375,7 +375,7 @@ const Portfolio = () => {
 
                 <div style={styles.banner}>
                     <img
-                        src="/backgrounds/Premium_Office.jpg"
+                        src="/backgrounds/elite_shine_bg.jpg"
                         alt="Background"
                         style={styles.bannerImg}
                         onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200'; }}

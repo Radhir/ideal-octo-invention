@@ -27,7 +27,7 @@ const InventoryManagement = () => {
 
     const fetchProducts = useCallback(async () => {
         try {
-            const response = await api.get(`${API_BASE}/logistics/api/products/`);
+            const response = await api.get('/logistics/api/products/');
             setProducts(response.data);
             setLoading(false);
         } catch (error) {
@@ -76,9 +76,9 @@ const InventoryManagement = () => {
         e.preventDefault();
         try {
             if (editingProduct) {
-                await api.put(`${API_BASE}/logistics/api/products/${editingProduct.id}/`, formData);
+                await api.put(`/logistics/api/products/${editingProduct.id}/`, formData);
             } else {
-                await api.post(`${API_BASE}/logistics/api/products/`, formData);
+                await api.post('/logistics/api/products/', formData);
             }
             setShowForm(false);
             fetchProducts();

@@ -43,7 +43,7 @@ const ShipmentManagement = () => {
 
     const fetchShipments = async () => {
         try {
-            const response = await api.get(`${API_BASE}/logistics/api/shipments/`);
+            const response = await api.get('/logistics/api/shipments/');
             setShipments(response.data);
             setLoading(false);
         } catch (error) {
@@ -108,9 +108,9 @@ const ShipmentManagement = () => {
         e.preventDefault();
         try {
             if (editingShipment) {
-                await api.put(`${API_BASE}/logistics/api/shipments/${editingShipment.id}/`, formData);
+                await api.put(`/logistics/api/shipments/${editingShipment.id}/`, formData);
             } else {
-                await api.post(`${API_BASE}/logistics/api/shipments/`, formData);
+                await api.post('/logistics/api/shipments/', formData);
             }
             setShowForm(false);
             fetchShipments();
