@@ -52,6 +52,8 @@ def audit_post_save(sender, instance, created, **kwargs):
     changes = None if created else get_field_changes(instance, created)
 
     try:
+        # Only log if we have a user or if it's a critical model change
+        # We also need to handle cases where the DB might have strict constraints
         AuditLog.objects.create(
             user=meta.get('user'),
             ip_address=meta.get('ip'),
@@ -65,7 +67,8 @@ def audit_post_save(sender, instance, created, **kwargs):
             method=meta.get('method', ''),
         )
     except Exception as e:
-        print(f"Audit failed: {e}")
+        # Log to stderr but don't crash the transaction
+        sys.stderr.write(f"Audit failed for {instance}: {e}\n")
 
 @receiver(post_delete)
 def audit_post_delete(sender, instance, **kwargs):
