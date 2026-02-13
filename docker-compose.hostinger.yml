@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: eliteshine_erp
+      POSTGRES_USER: eliteshine_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme123}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    image: python:3.11-slim
+    working_dir: /app
+    command: >
+      sh -c " apt-get update && apt-get install -y git && git clone https://github.com/Radhir/ideal-octo-invention.git /tmp/repo && cp -r /tmp/repo/Bankend/* /app/ && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000 "
+    environment:
+      - DEBUG=False
+      - USE_POSTGRES=True
+      - DB_HOST=db
+      - DB_NAME=eliteshine_erp
+      - DB_USER=eliteshine_user
+      - DB_PASSWORD=${DB_PASSWORD:-changeme123}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend:
+    image: node:18-alpine
+    working_dir: /app
+    command: >
+      sh -c " apk add --no-cache git && git clone https://github.com/Radhir/ideal-octo-invention.git /tmp/repo && cp -r /tmp/repo/frontend/* /app/ && npm install && npm run build && npx serve -s dist -l 3000 "
+    ports:
+      - "80:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
