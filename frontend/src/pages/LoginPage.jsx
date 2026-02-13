@@ -223,73 +223,81 @@ const LoginPage = () => {
                         />
                     </div>
 
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={isAuthenticating}
-                        className="animate-slide-up"
-                        style={{
-                            width: '100%',
-                            background: '#fff',
-                            border: 'none',
-                            borderRadius: '100px',
-                            padding: '14px',
-                            color: '#000',
-                            fontSize: '12px',
-                            fontWeight: '800',
-                            letterSpacing: '3px',
-                            textTransform: 'uppercase',
-                            cursor: 'pointer',
-                            transition: 'all 0.3s ease',
-                            animationDelay: '0.5s'
-                        }}
-                        onMouseEnter={(e) => {
-                            e.target.style.transform = 'scale(1.05)';
-                            e.target.style.boxShadow = '0 0 40px rgba(255, 255, 255, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.target.style.transform = 'scale(1)';
-                            e.target.style.boxShadow = 'none';
-                        }}
-                    >
-                        {isAuthenticating ? 'Authenticating...' : 'Enter System'}
-                    </button>
-                </form>
-
-                {/* Error Message */}
-                {error && (
-                    <div
-                        className="animate-slide-up"
-                        style={{
-                            marginTop: '30px',
-                            color: '#ef4444',
-                            fontSize: '11px',
-                            letterSpacing: '2px',
-                            fontWeight: '700'
-                        }}
-                    >
-                        {error}
-                    </div>
-                )}
             </div>
 
-            {/* Bottom Brand Line */}
-            <div style={{
-                position: 'absolute',
-                bottom: '30px',
-                left: '50%',
+            {/* Auto-Login Countdown Indicator (replaces button) */}
+            {countdown !== null && !isAuthenticating && (
+                <div
+                    className="animate-fade-in"
+                    style={{
+                        textAlign: 'center',
+                        marginTop: '40px',
+                        color: 'rgba(255, 255, 255, 0.6)',
+                        fontSize: '14px',
+                        fontWeight: '300',
+                        letterSpacing: '2px',
+                        fontFamily: 'Outfit, sans-serif'
+                    }}
+                >
+                    AUTHENTICATING IN {countdown}s...
+                </div>
+            )}
+
+            {/* Authenticating State */}
+            {isAuthenticating && (
+                <div
+                    className="animate-fade-in"
+                    style={{
+                        textAlign: 'center',
+                        marginTop: '40px',
+                        color: '#b08d57', // gold accent
+                        fontSize: '14px',
+                        fontWeight: '500',
+                        letterSpacing: '2px',
+                        fontFamily: 'Outfit, sans-serif'
+                    }}
+                >
+                    VERIFYING CREDENTIALS...
+                </div>
+            )}
+        </form>
+
+                {/* Error Message */ }
+    {
+        error && (
+            <div
+                className="animate-slide-up"
+                style={{
+                    marginTop: '30px',
+                    color: '#ef4444',
+                    fontSize: '11px',
+                    letterSpacing: '2px',
+                    fontWeight: '700'
+                }}
+            >
+                {error}
+            </div>
+        )
+    }
+            </div >
+
+    {/* Bottom Brand Line */ }
+    < div style = {{
+    position: 'absolute',
+        bottom: '30px',
+            left: '50%',
                 transform: 'translateX(-50%)',
-                fontSize: '10px',
-                fontWeight: '600',
-                color: 'rgba(255,255,255,0.2)',
-                letterSpacing: '5px',
-                zIndex: 1,
-                textAlign: 'center',
-                width: '100%'
-            }}>
-                ELITE SHINE GROUP OF COMPANIES
-            </div>
-        </div>
+                    fontSize: '10px',
+                        fontWeight: '600',
+                            color: 'rgba(255,255,255,0.2)',
+                                letterSpacing: '5px',
+                                    zIndex: 1,
+                                        textAlign: 'center',
+                                            width: '100%'
+}}>
+    ELITE SHINE GROUP OF COMPANIES
+            </div >
+        </div >
     );
 };
 
