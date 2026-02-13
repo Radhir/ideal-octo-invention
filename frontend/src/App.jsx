@@ -41,7 +41,7 @@ const MissionControl = lazy(() => import('./pages/MissionControl'));
 const RiskAuditPage = lazy(() => import('./pages/RiskAuditPage'));
 
 const JobList = lazy(() => import('./pages/jobs/JobList'));
-const JobCreate = lazy(() => import('./pages/jobs/JobCreate'));
+const JobCardHub = lazy(() => import('./pages/jobs/JobCardHub'));
 const JobCardBuilder = lazy(() => import('./pages/jobs/JobCardBuilder'));
 const JobDetail = lazy(() => import('./pages/jobs/JobDetail'));
 const JobBoard = lazy(() => import('./pages/jobs/JobBoard'));
@@ -175,9 +175,10 @@ function App() {
                       <Route path="/ceramic" element={<CeramicList />} />
                       <Route path="/ceramic/create" element={<CeramicForm />} />
                       <Route path="/ceramic/:id" element={<CeramicDetail />} />
-                      <Route path="/job-cards" element={<JobList />} />
+                      <Route path="/job-cards" element={<JobCardHub />} />
+                      <Route path="/job-cards/list" element={<JobList />} />
                       <Route path="/job-board" element={<JobBoard />} />
-                      <Route path="/job-cards/create" element={<JobCreate />} />
+                      <Route path="/job-cards/create" element={<JobCardBuilder />} />
                       <Route path="/jobs/builder" element={<JobCardBuilder />} />
                       <Route path="/job-cards/:id" element={<JobDetail />} />
                       <Route path="/estimates/:id" element={<EstimateDetail />} />

@@ -109,6 +109,7 @@ def create_invoice_from_job(request, pk):
 
 # API Views
 class JobCardViewSet(viewsets.ModelViewSet):
+    module_name = 'Operations'
     queryset = JobCard.objects.all().order_by('-created_at')
     serializer_class = JobCardSerializer
     permission_classes = [IsAdminOrOwner]

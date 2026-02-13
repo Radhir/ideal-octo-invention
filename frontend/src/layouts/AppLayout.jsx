@@ -8,7 +8,7 @@ import {
     UserCircle, ShieldCheck
 } from 'lucide-react';
 import UserDropdown from '../components/UserDropdown';
-import BottomNav from '../components/BottomNav';
+import UniversalBottomNav from '../components/UniversalBottomNav';
 import QuickAccessHub from '../components/QuickAccessHub';
 import BranchSwitcher from '../components/BranchSwitcher';
 import NotificationBell from '../components/NotificationBell';
@@ -101,8 +101,8 @@ const AppLayout = () => {
                 </div>
             </aside>
 
-            {/* Mobile Navigation */}
-            <BottomNav />
+            {/* Premium Universal Navigation */}
+            <UniversalBottomNav />
             <QuickAccessHub />
         </div>
     );

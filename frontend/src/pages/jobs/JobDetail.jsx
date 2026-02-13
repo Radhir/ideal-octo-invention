@@ -1,24 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../api/axios';
-import { useParams, useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
 import {
-    ArrowLeft,
-    ChevronRight,
-    CheckCircle2,
-    Clock,
-    PenTool,
-    Wrench,
-    ShieldCheck,
-    FileText,
-    Truck,
-    Plus,
-    Save,
-    Activity,
-    Package,
-    Printer,
-    AlertCircle
-} from 'lucide-react';
+    PortfolioPage, PortfolioTitle, PortfolioButton,
+    PortfolioStats, PortfolioGrid, PortfolioCard,
+    PortfolioDetailBox
+} from '../../components/PortfolioComponents';
 import JobWorkflow from './JobWorkflow';
 import PrintHeader from '../../components/PrintHeader';
 import SignaturePad from '../../components/SignaturePad';
@@ -55,7 +39,6 @@ const JobDetail = () => {
         try {
             const res = await api.post(`/forms/job-cards/api/jobs/${id}/advance_status/`);
             alert(`Workflow advanced to ${res.data.display}`);
-            // Refetch full job data so all computed fields update
             await fetchJob();
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to advance workflow');
@@ -66,134 +49,100 @@ const JobDetail = () => {
         try {
             const res = await api.post(`/forms/job-cards/api/jobs/${id}/create_invoice/`);
             alert(`Invoice ${res.data.invoice_number} generated!`);
-            // Optionally navigate to invoice detail
+            await fetchJob();
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to generate invoice');
         }
     };
 
-    if (loading) return <div style={{ padding: '50px', textAlign: 'center' }}>Loading...</div>;
-    if (!job) return <div style={{ padding: '50px', textAlign: 'center' }}>Job Not Found</div>;
-
-    const _currentStepIndex = steps.findIndex(s => s.key === job.status);
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>RETRIEVING ASSET DOSSIER...</div></PortfolioPage>;
+    if (!job) return <PortfolioPage>Job Not Found</PortfolioPage>;
 
     return (
-        <div style={{ padding: '30px 20px' }}>
+        <PortfolioPage breadcrumb={`Operations / Job Cards / ${job.job_card_number}`}>
             <PrintHeader title={`Job Card: ${job.job_card_number}`} />
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <button
-                        onClick={() => navigate('/job-cards')}
-                        style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-color)', padding: '8px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)', transition: 'all 0.3s' }}
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <div>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.5rem', margin: 0, color: 'var(--text-primary)' }}>{job.customer_name}</h1>
-                        <p style={{ color: 'var(--gold)', fontSize: '14px', margin: 0, fontWeight: '700' }}>#{job.job_card_number}</p>
-                    </div>
-                </div>
 
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                        onClick={() => navigate(`/estimates/${id}`)}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'rgba(176, 141, 87, 0.15)', color: '#fff', border: '1px solid rgba(176, 141, 87, 0.4)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
-                    >
-                        <FileText size={18} color="#b08d57" /> Quotation
-                    </button>
-                    <button
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle={`Registered to ${job.customer_name} • ${job.brand} ${job.model}`}>
+                    JOB DOSSIER
+                </PortfolioTitle>
+                <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+                    <PortfolioButton
+                        variant="secondary"
                         onClick={() => {
-                            const link = `${window.location.origin}/portal/${job.portal_token}`;
+                            const link = `${window.location.host}/portal/${job.portal_token}`;
                             navigator.clipboard.writeText(link);
-                            alert('Customer Portal Link copied to clipboard!');
+                            alert('Customer Portal Link copied!');
                         }}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', transition: 'all 0.3s' }}
                     >
-                        <ShieldCheck size={18} color="var(--gold)" /> Share Portal
-                    </button>
-                    <button
+                        <ShieldCheck size={18} style={{ marginRight: '10px' }} /> SHARE PORTAL
+                    </PortfolioButton>
+                    <PortfolioButton
+                        variant="secondary"
                         onClick={() => window.open(`/forms/utils/generate-pdf/JobCard/${id}/`, '_blank')}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--bg-glass)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', transition: 'all 0.3s' }}
                     >
-                        <Printer size={18} /> Res. Job Card
-                    </button>
+                        <Printer size={18} style={{ marginRight: '10px' }} /> JOB TICKET
+                    </PortfolioButton>
 
-                    {/* Invoice Actions */}
                     {job.invoice ? (
-                        <>
-                            <button
-                                onClick={() => navigate(`/invoices/${job.invoice.id}`)}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--gold)', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '12px', fontWeight: '900', transition: 'all 0.3s' }}
-                            >
-                                <FileText size={18} /> View Invoice
-                            </button>
-                            <button
-                                onClick={() => window.open(`/forms/utils/generate-pdf/Invoice/${job.invoice.id}/`, '_blank')}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', background: 'var(--bg-glass)', border: '1px solid var(--border-color)', color: 'var(--text-primary)', padding: '10px 20px', borderRadius: '12px', fontWeight: '700', transition: 'all 0.3s' }}
-                            >
-                                <Printer size={18} /> Print Invoice
-                            </button>
-                        </>
+                        <PortfolioButton variant="gold" onClick={() => navigate(`/invoices/${job.invoice.id}`)}>
+                            <FileText size={18} style={{ marginRight: '10px' }} /> VIEW INVOICE
+                        </PortfolioButton>
                     ) : (
                         job.status === 'INVOICING_DELIVERY' && (
-                            <button onClick={generateInvoice} className="btn-primary" style={{ background: '#b08d57', color: '#000', fontWeight: '900', padding: '10px 25px', borderRadius: '12px' }}>Generate Invoice</button>
+                            <PortfolioButton variant="gold" onClick={generateInvoice}>
+                                GENERATE INVOICE
+                            </PortfolioButton>
                         )
                     )}
                 </div>
-            </header>
+            </div>
 
             {/* Industrial Workflow Mission Control */}
-            <JobWorkflow
-                currentStatus={job.status}
-                onStatusChange={advanceWorkflow}
-                jobData={job}
-            />
+            <div style={{ marginBottom: '60px' }}>
+                <JobWorkflow
+                    currentStatus={job.status}
+                    onStatusChange={advanceWorkflow}
+                    jobData={job}
+                />
+            </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-                <div className="main-content">
-                    <GlassCard style={{ padding: '30px', marginBottom: '30px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h3 style={{ ...sectionTitleStyle, margin: 0 }}>Job Status: {job.status_display}</h3>
+            <PortfolioGrid columns="2fr 1fr">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <div style={glassCardStyle}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                            <h3 style={sectionTitleStyle}>OPERATIONAL STATUS: {job.status_display.toUpperCase()}</h3>
                             {job.is_released ? (
-                                <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                                    RELEASED FOR SCHEDULE
-                                </span>
+                                <span style={badgeStyleSuccess}>RELEASED FOR PRODUCTION</span>
                             ) : (
-                                <span style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                                    PENDING MANAGER RELEASE
-                                </span>
+                                <span style={badgeStyleWarning}>PENDING MANAGEMENT CLEARANCE</span>
                             )}
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                            <div>
-                                <label style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Primary Complaints</label>
-                                <div style={{ color: 'var(--text-primary)', fontSize: '14px', lineHeight: '1.6', background: 'var(--input-bg)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                                    {job.job_description || 'No description provided'}
-                                </div>
-                            </div>
-                            <div>
-                                <label style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '8px', display: 'block' }}>Internal Notes / Inspection</label>
-                                <div style={{ color: 'var(--text-primary)', fontSize: '14px', lineHeight: '1.6', background: 'var(--input-bg)', padding: '15px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                                    {job.initial_inspection_notes || 'No internal notes'}
-                                </div>
-                            </div>
-                        </div>
-                    </GlassCard>
 
-                    {/* Customer Authorization Section */}
-                    <GlassCard style={{ padding: '30px', marginBottom: '30px', border: '1px solid rgba(176, 141, 87, 0.2)' }}>
-                        <h3 style={sectionTitleStyle}>Customer Authorization</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                            <PortfolioDetailBox label="PRIMARY COMPLAINTS / SERVICES">
+                                {job.job_description || 'No complaints logged.'}
+                            </PortfolioDetailBox>
+                            <PortfolioDetailBox label="INTERNAL ADVISOR INTELLIGENCE">
+                                {job.initial_inspection_notes || 'No internal intelligence available.'}
+                            </PortfolioDetailBox>
+                        </div>
+                    </div>
+
+                    <div style={glassCardStyle}>
+                        <h3 style={sectionTitleStyle}>CUSTOMER AUTHORIZATION</h3>
                         {job.signature_data ? (
-                            <div style={{ textAlign: 'center', background: '#fff', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                                <img src={job.signature_data} alt="Customer Signature" style={{ maxHeight: '150px' }} />
-                                <p style={{ color: 'var(--text-muted)', fontSize: '11px', marginTop: '10px' }}>Digitally signed on {new Date(job.updated_at).toLocaleDateString()}</p>
+                            <div style={signatureDisplayBox}>
+                                <img src={job.signature_data} alt="Customer Signature" style={{ maxHeight: '180px', filter: 'contrast(1.2)' }} />
+                                <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginTop: '15px', fontWeight: '800' }}>
+                                    DIGITALLY AUTHENTICATED ON {new Date(job.updated_at).toLocaleDateString().toUpperCase()}
+                                </div>
                             </div>
                         ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', textAlign: 'center' }}>Vehicle reception signature required to proceed with works.</p>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '25px', padding: '40px' }}>
+                                <p style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '14px', textAlign: 'center', maxWidth: '400px' }}>
+                                    Vehicle reception signature is mandatory to initiate the production workflow.
+                                </p>
                                 <SignaturePad
                                     onSave={async (data) => {
                                         try {
@@ -207,155 +156,108 @@ const JobDetail = () => {
                                 />
                             </div>
                         )}
-                    </GlassCard>
+                    </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                        <GlassCard style={{ padding: '20px' }}>
-                            <h4 style={sectionTitleStyle}>Vehicle Details</h4>
-                            <InfoItem label="Registration" value={job.registration_number} />
-                            <InfoItem label="Brand/Model" value={`${job.brand} ${job.model}`} />
-                            <InfoItem label="VIN" value={job.vin} />
-                            <InfoItem label="Kilometers" value={job.kilometers} />
-                        </GlassCard>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                        <div style={glassCardStyle}>
+                            <h4 style={sectionTitleStyle}>ASSET ATTRIBUTES</h4>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                <InfoItem label="Registration" value={job.registration_number} />
+                                <InfoItem label="Vin / Chassis" value={job.vin} />
+                                <InfoItem label="Total Odometer" value={`${job.kilometers} KM`} />
+                            </div>
+                        </div>
 
-                        <GlassCard style={{ padding: '20px' }}>
-                            <h4 style={sectionTitleStyle}>Work Assignment</h4>
+                        <div style={glassCardStyle}>
+                            <h4 style={sectionTitleStyle}>PRODUCTION ASSIGNMENT</h4>
                             {job.assigned_technician ? (
-                                <>
-                                    <InfoItem label="Technician" value={job.assigned_technician} />
-                                    <InfoItem label="Bay" value={job.assigned_bay} />
-                                    <InfoItem label="Timeline" value={job.estimated_timeline ? new Date(job.estimated_timeline).toLocaleString() : 'N/A'} />
-                                </>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                    <InfoItem label="Assigned Technician" value={job.assigned_technician} />
+                                    <InfoItem label="Workshop Bay" value={job.assigned_bay} />
+                                    <InfoItem label="Production Deadline" value={job.estimated_timeline ? new Date(job.estimated_timeline).toLocaleString() : 'PENDING'} />
+                                </div>
                             ) : (
-                                <p style={{ color: '#94a3b8', fontSize: '13px' }}>Waiting for assignment...</p>
+                                <div style={{ color: 'rgba(232, 218, 206, 0.3)', fontSize: '13px', fontStyle: 'italic', padding: '10px' }}>
+                                    Awaiting technical allocation...
+                                </div>
                             )}
-                        </GlassCard>
+                        </div>
                     </div>
                 </div>
 
-                <div className="sidebar">
-                    <GlassCard style={{ padding: '20px', marginBottom: '20px' }}>
-                        <h4 style={sectionTitleStyle}>Financial Summary</h4>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ color: 'var(--text-secondary)' }}>Subtotal (Net)</span>
-                            <span style={{ color: 'var(--text-primary)' }}>AED {job.total_amount}</span>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ color: 'var(--text-secondary)' }}>VAT (5%)</span>
-                            <span style={{ color: 'var(--text-primary)' }}>AED {job.vat_amount}</span>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid var(--border-color)', fontWeight: '800', fontSize: '1.2rem', color: 'var(--gold)' }}>
-                            <span>Grand Total</span>
-                            <span>AED {job.net_amount}</span>
-                        </div>
-                    </GlassCard>
-
-                    <GlassCard style={{ padding: '20px' }}>
-                        <h4 style={sectionTitleStyle}>QC Checkpoints</h4>
-                        <QCItem label="Pre-work Approval" checked={job.pre_work_head_sign_off} />
-                        <QCItem label="Post-work Sign-off" checked={job.post_work_head_sign_off} />
-                        <QCItem label="QC Inspector" checked={job.qc_sign_off} />
-                        <QCItem label="Floor Incharge" checked={job.floor_incharge_sign_off} />
-                    </GlassCard>
-                </div>
-                <style>{`
-                @media print {
-                    .sidebar { display: block !important; width: 100% !important; margin-top: 20px !important; }
-                    .main-content { margin-bottom: 20px !important; }
-                    .glass-card { background: #fff !important; border: 1px solid #eee !important; box-shadow: none !important; color: #000 !important; margin-bottom: 20px !important; }
-                    .JobWorkflow, button, nav, header { display: none !important; }
-                    body { background: #fff !important; }
-                }
-            `}</style>
-            </div>
-            {/* Checklist Enforcement Warning */}
-            {job.status === 'RECEPTION' && (!job.checklists || job.checklists.length === 0) && (
-                <div style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid #ef4444',
-                    borderRadius: '12px',
-                    padding: '15px 20px',
-                    marginBottom: '20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: '15px'
-                }}>
-                    <button
-                        onClick={() => navigate(`/checklists/new?job_card=${job.id}`)}
-                        className="btn-outline"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        <ClipboardList size={18} /> CHECKLIST
-                    </button>
-                    <button
-                        onClick={() => setAdvanceModal(true)}
-                        className="btn-primary"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        <ArrowRight size={18} /> NEXT STEP
-                    </button>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <AlertCircle color="#ef4444" size={24} />
-                        <div>
-                            <div style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '15px' }}>Action Required: Intake Checklist Missing</div>
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>Vehicle cannot proceed to Estimation until the Service Advisor checklist is completed.</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                    <div style={{ ...glassCardStyle, background: 'rgba(176, 141, 87, 0.05)', borderColor: 'rgba(176, 141, 87, 0.2)' }}>
+                        <h4 style={sectionTitleStyle}>FINANCIAL COMMAND</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            <div style={summaryRow}><span style={{ opacity: 0.6 }}>Subtotal (Net)</span> <span>AED {job.total_amount}</span></div>
+                            <div style={summaryRow}><span style={{ opacity: 0.6 }}>VAT (5%)</span> <span>AED {job.vat_amount}</span></div>
+                            <div style={{ ...summaryRow, borderTop: '1px solid rgba(232, 230, 227, 0.1)', paddingTop: '15px', marginTop: '10px' }}>
+                                <span style={{ fontWeight: '800', color: 'var(--cream)' }}>GRAND TOTAL</span>
+                                <span style={{ fontSize: '26px', fontWeight: '900', color: '#10b981', fontFamily: 'var(--font-serif)' }}>AED {job.net_amount}</span>
+                            </div>
                         </div>
                     </div>
-                    <button
-                        onClick={() => navigate(`/service-advisor/form?jobId=${job.id}`)}
-                        style={{
-                            background: '#ef4444',
-                            color: '#fff',
-                            border: 'none',
-                            padding: '10px 20px',
-                            borderRadius: '8px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Complete Checklist
-                    </button>
+
+                    <div style={glassCardStyle}>
+                        <h4 style={sectionTitleStyle}>QUALITY CONTROL</h4>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            <QCItem label="Pre-work Approval" checked={job.pre_work_head_sign_off} />
+                            <QCItem label="Post-work Sign-off" checked={job.post_work_head_sign_off} />
+                            <QCItem label="QC Final Inspection" checked={job.qc_sign_off} />
+                            <QCItem label="Operations Head Release" checked={job.floor_incharge_sign_off} />
+                        </div>
+                    </div>
                 </div>
-            )}
-        </div>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
 };
 
 const InfoItem = ({ label, value }) => (
-    <div style={{ marginBottom: '12px' }}>
-        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '2px' }}>{label}</div>
-        <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)' }}>{value}</div>
+    <div style={{ marginBottom: '5px' }}>
+        <div style={{ fontSize: '10px', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>{label}</div>
+        <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--cream)' }}>{value || 'N/A'}</div>
     </div>
 );
 
 const QCItem = ({ label, checked }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
         <div style={{
-            width: '18px',
-            height: '18px',
-            borderRadius: '4px',
-            border: '2px solid var(--border-color)',
+            width: '20px',
+            height: '20px',
+            borderRadius: '6px',
+            border: `2px solid ${checked ? '#b08d57' : 'rgba(232, 230, 227, 0.1)'}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: checked ? 'var(--gold)' : 'transparent',
-            borderColor: checked ? 'var(--gold)' : 'var(--border-color)',
+            background: checked ? '#b08d57' : 'transparent',
             transition: 'all 0.3s'
         }}>
-            {checked && <CheckCircle2 size={12} color="#000" />}
+            {checked && <CheckCircle2 size={14} color="#000" />}
         </div>
-        <span style={{ fontSize: '13px', color: checked ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{label}</span>
+        <span style={{ fontSize: '13px', fontWeight: '600', color: checked ? 'var(--cream)' : 'rgba(232, 230, 227, 0.3)' }}>{label}</span>
     </div>
 );
 
+const glassCardStyle = {
+    padding: '35px',
+    background: 'rgba(232, 230, 227, 0.03)',
+    border: '1px solid rgba(232, 230, 227, 0.1)',
+    borderRadius: '24px'
+};
+
 const sectionTitleStyle = {
-    fontSize: '12px',
+    fontSize: '11px',
     textTransform: 'uppercase',
     color: 'var(--gold)',
-    marginBottom: '20px',
-    fontWeight: '800',
-    letterSpacing: '1px'
+    marginBottom: '30px',
+    fontWeight: '900',
+    letterSpacing: '2px'
 };
+
+const badgeStyleSuccess = { background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '6px 16px', borderRadius: '30px', fontSize: '10px', fontWeight: '900', border: '1px solid rgba(16, 185, 129, 0.2)', letterSpacing: '1px' };
+const badgeStyleWarning = { background: 'rgba(239, 68, 68, 0.1)', color: '#f43f5e', padding: '6px 16px', borderRadius: '30px', fontSize: '10px', fontWeight: '900', border: '1px solid rgba(239, 68, 68, 0.2)', letterSpacing: '1px' };
+const summaryRow = { display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'rgba(232, 230, 227, 0.6)' };
+const signatureDisplayBox = { textAlign: 'center', background: '#fff', padding: '30px', borderRadius: '20px', border: '1px solid rgba(232, 230, 227, 0.1)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.05)' };
 
 export default JobDetail;

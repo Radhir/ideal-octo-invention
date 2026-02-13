@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
+import {
+    PortfolioPage, PortfolioTitle, PortfolioButton,
+    PortfolioStats, PortfolioGrid
+} from '../../components/PortfolioComponents';
 import {
     MoreHorizontal,
     Plus,
@@ -13,23 +16,23 @@ import {
     Truck,
     CreditCard,
     FileText,
-    Camera
+    Camera,
+    ChevronRight,
+    Search
 } from 'lucide-react';
 import PrintHeader from '../../components/PrintHeader';
 
 const columns = [
-    { id: 'RECEPTION', label: 'Reception', icon: Camera, color: '#3b82f6' },
-    { id: 'ESTIMATION', label: 'Estimation', icon: FileText, color: '#f59e0b' },
-    { id: 'WORK_ASSIGNMENT', label: 'Assignment', icon: User, color: '#8b5cf6' },
-    { id: 'WIP', label: 'In Progress', icon: Clock, color: '#10b981' },
-    { id: 'QC', label: 'QC Check', icon: CheckCircle2, color: '#ec4899' },
-    { id: 'INVOICING', label: 'Invoicing', icon: CreditCard, color: '#b08d57' },
-    { id: 'DELIVERY', label: 'Delivery', icon: Truck, color: '#2dd4bf' },
+    { id: 'RECEPTION', label: 'Reception', icon: Camera, color: '#b08d57' },
+    { id: 'ESTIMATION_ASSIGNMENT', label: 'Estimation', icon: FileText, color: '#6366f1' },
+    { id: 'WIP_QC', label: 'Production / QC', icon: CheckCircle2, color: '#10b981' },
+    { id: 'INVOICING_DELIVERY', label: 'Delivery', icon: Truck, color: '#f59e0b' },
 ];
 
 const JobBoard = () => {
     const [jobs, setJobs] = useState([]);
-    const [_loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -47,153 +50,260 @@ const JobBoard = () => {
         }
     };
 
-    const advanceJob = async (jobId, currentStatus) => {
-        if (!confirm('Are you sure you want to advance this job to the next stage?')) return;
-
+    const advanceJob = async (jobId) => {
         try {
             await api.post(`/forms/job-cards/api/jobs/${jobId}/advance_status/`);
-            fetchJobs(); // Refresh to see change
+            fetchJobs();
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to advance workflow');
         }
     };
 
-    const getJobsByStatus = (status) => jobs.filter(j => j.status === status);
+    const getJobsByStatus = (status) => {
+        return jobs.filter(j => {
+            const matchesStatus = j.status === status;
+            const matchesSearch = !searchQuery ||
+                j.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                j.job_card_number?.toLowerCase().includes(searchQuery.toLowerCase());
+            return matchesStatus && matchesSearch;
+        });
+    };
+
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>LOADING PRODUCTION FLOW...</div></PortfolioPage>;
 
     return (
-        <div style={{ padding: '30px', height: '100vh', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
+        <PortfolioPage breadcrumb="Operations / Workshop">
             <PrintHeader title="Job Workflow Board" />
 
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexShrink: 0 }}>
-                <div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '1.8rem', margin: 0 }}>Job Operations</h1>
-                    <p style={{ color: '#94a3b8', margin: 0 }}>Kanban Workflow View</p>
-                </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="Real-time production pipeline and asset flow monitoring.">
+                    WORKSHOP BOARD
+                </PortfolioTitle>
                 <div style={{ display: 'flex', gap: '15px' }}>
-                    <button
-                        onClick={() => navigate('/job-cards')}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
-                    >
-                        <LayoutList size={20} /> List View
-                    </button>
-                    <button
-                        onClick={() => navigate('/job-cards/create')}
-                        className="btn-primary"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        <Plus size={20} /> Open Job Card
-                    </button>
+                    <div style={searchContainerStyle}>
+                        <Search size={16} color="rgba(232, 230, 227, 0.4)" />
+                        <input
+                            type="text"
+                            placeholder="Find asset..."
+                            style={searchInputStyle}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <PortfolioButton onClick={() => navigate('/job-cards/list')} variant="secondary">
+                        <LayoutList size={18} style={{ marginRight: '10px' }} /> LIST VIEW
+                    </PortfolioButton>
+                    <PortfolioButton onClick={() => navigate('/jobs/builder')} variant="gold">
+                        <Plus size={18} style={{ marginRight: '10px' }} /> NEW COMMAND
+                    </PortfolioButton>
                 </div>
-            </header>
+            </div>
 
-            <div style={{
-                display: 'flex',
-                gap: '20px',
-                overflowX: 'auto',
-                paddingBottom: '20px',
-                flex: 1,
-                alignItems: 'stretch'
-            }}>
+            <div style={boardWrapperStyle}>
                 {columns.map(col => (
-                    <div key={col.id} style={{ minWidth: '320px', width: '320px', display: 'flex', flexDirection: 'column' }}>
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            marginBottom: '15px',
-                            background: `rgba(${parseInt(col.color.slice(1, 3), 16)}, ${parseInt(col.color.slice(3, 5), 16)}, ${parseInt(col.color.slice(5, 7), 16)}, 0.1)`,
-                            padding: '10px',
-                            borderRadius: '10px',
-                            border: `1px solid ${col.color}44`
-                        }}>
-                            <col.icon size={18} color={col.color} />
-                            <span style={{ fontWeight: '800', color: '#fff', fontSize: '14px', textTransform: 'uppercase' }}>{col.label}</span>
-                            <span style={{ marginLeft: 'auto', background: 'rgba(0,0,0,0.3)', padding: '2px 8px', borderRadius: '10px', fontSize: '10px', color: '#94a3b8' }}>
-                                {getJobsByStatus(col.id).length}
-                            </span>
+                    <div key={col.id} style={columnContainerStyle}>
+                        <div style={columnHeaderStyle(col.color)}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <col.icon size={16} color={col.color} />
+                                <span style={columnLabelStyle}>{col.label.toUpperCase()}</span>
+                            </div>
+                            <span style={countBadgeStyle}>{getJobsByStatus(col.id).length}</span>
                         </div>
 
-                        <div style={{
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: '15px',
-                            overflowY: 'auto',
-                            paddingRight: '5px'
-                        }}>
+                        <div style={cardsContainerStyle}>
                             {getJobsByStatus(col.id).map(job => (
-                                <GlassCard
+                                <div
                                     key={job.id}
-                                    style={{
-                                        padding: '15px',
-                                        cursor: 'pointer',
-                                        borderLeft: `4px solid ${col.color}`,
-                                        transition: 'transform 0.2s',
-                                        position: 'relative'
-                                    }}
+                                    style={kanbanCardStyle}
                                     onClick={() => navigate(`/job-cards/${job.id}`)}
                                 >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                                        <span style={{ fontSize: '11px', fontWeight: '800', color: col.color }}>#{job.job_card_number}</span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                                        <span style={jcNumberStyle}>#{job.job_card_number}</span>
                                         <button
+                                            style={advanceBtnStyle}
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                advanceJob(job.id, job.status);
+                                                advanceJob(job.id);
                                             }}
-                                            style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer' }}
-                                            title="Advance Workflow"
                                         >
-                                            <MoreHorizontal size={16} />
+                                            <ChevronRight size={14} />
                                         </button>
                                     </div>
 
-                                    <div style={{ fontWeight: '700', color: '#fff', fontSize: '14px', marginBottom: '2px' }}>{job.customer_name}</div>
-                                    <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '10px' }}>{job.brand} {job.model}</div>
+                                    <div style={customerNameStyle}>{job.customer_name}</div>
+                                    <div style={vehicleInfoStyle}>{job.brand} {job.model}</div>
 
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <span style={{ fontSize: '11px', color: '#64748b' }}>{new Date(job.created_at).toLocaleDateString()}</span>
-                                        <span style={{ fontSize: '13px', fontWeight: '700', color: '#b08d57' }}>
-                                            AED {job.net_amount || '0'}
-                                        </span>
+                                    <div style={cardFooterStyle}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <div style={statusDotStyle(col.color)} />
+                                            <span style={{ fontSize: '9px', fontWeight: '900', color: 'rgba(232, 230, 227, 0.4)', letterSpacing: '0.5px' }}>{job.status_display.toUpperCase()}</span>
+                                        </div>
+                                        <div style={priceStyle}>AED {job.net_amount}</div>
                                     </div>
-                                </GlassCard>
+                                </div>
                             ))}
                             {getJobsByStatus(col.id).length === 0 && (
-                                <div style={{
-                                    padding: '30px',
-                                    textAlign: 'center',
-                                    border: '2px dashed rgba(255,255,255,0.05)',
-                                    borderRadius: '12px',
-                                    color: '#64748b',
-                                    fontSize: '12px'
-                                }}>
-                                    No jobs
-                                </div>
+                                <div style={emptyColumnStyle}>NO ASSETS IN {col.label.toUpperCase()}</div>
                             )}
                         </div>
                     </div>
                 ))}
             </div>
-            {/* Custom Scrollbar Styles for the board */}
-            <style>{`
-                ::-webkit-scrollbar {
-                    width: 6px;
-                    height: 6px;
-                }
-                ::-webkit-scrollbar-track {
-                    background: rgba(0,0,0,0.1); 
-                }
-                ::-webkit-scrollbar-thumb {
-                    background: rgba(255,255,255,0.1); 
-                    borderRadius: 3px;
-                }
-                ::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255,255,255,0.2); 
-                }
-            `}</style>
-        </div>
+        </PortfolioPage>
     );
+};
+
+// Styles
+const boardWrapperStyle = {
+    display: 'flex',
+    gap: '24px',
+    overflowX: 'auto',
+    paddingBottom: '40px',
+    alignItems: 'stretch',
+    minHeight: '600px'
+};
+
+const columnContainerStyle = {
+    minWidth: '320px',
+    width: '320px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px'
+};
+
+const columnHeaderStyle = (color) => ({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '16px 20px',
+    background: 'rgba(232, 230, 227, 0.02)',
+    border: '1px solid rgba(232, 230, 227, 0.08)',
+    borderRadius: '16px',
+    borderLeft: `2px solid ${color}`
+});
+
+const columnLabelStyle = {
+    fontSize: '11px',
+    fontWeight: '900',
+    color: 'var(--cream)',
+    letterSpacing: '1px'
+};
+
+const countBadgeStyle = {
+    fontSize: '10px',
+    fontWeight: '900',
+    color: 'rgba(232, 230, 227, 0.3)',
+    background: 'rgba(232, 230, 227, 0.05)',
+    padding: '4px 10px',
+    borderRadius: '8px'
+};
+
+const cardsContainerStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+    flex: 1
+};
+
+const kanbanCardStyle = {
+    padding: '24px',
+    background: 'rgba(232, 230, 227, 0.03)',
+    border: '1px solid rgba(232, 230, 227, 0.08)',
+    borderRadius: '20px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    ':hover': {
+        background: 'rgba(232, 230, 227, 0.05)',
+        transform: 'translateY(-2px)',
+        borderColor: 'rgba(232, 230, 227, 0.15)'
+    }
+};
+
+const jcNumberStyle = {
+    fontSize: '10px',
+    fontWeight: '900',
+    color: 'var(--gold)',
+    letterSpacing: '1px'
+};
+
+const advanceBtnStyle = {
+    background: 'rgba(232, 230, 227, 0.05)',
+    border: 'none',
+    color: 'var(--gold)',
+    padding: '4px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+};
+
+const customerNameStyle = {
+    fontSize: '15px',
+    fontWeight: '700',
+    color: 'var(--cream)',
+    marginBottom: '4px'
+};
+
+const vehicleInfoStyle = {
+    fontSize: '12px',
+    color: 'rgba(232, 230, 227, 0.4)',
+    fontWeight: '600',
+    marginBottom: '20px'
+};
+
+const cardFooterStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: '16px',
+    borderTop: '1px solid rgba(232, 230, 227, 0.05)'
+};
+
+const priceStyle = {
+    fontSize: '13px',
+    fontWeight: '900',
+    color: '#10b981',
+    fontFamily: 'var(--font-serif)'
+};
+
+const statusDotStyle = (color) => ({
+    width: '6px',
+    height: '6px',
+    borderRadius: '50%',
+    background: color,
+    boxShadow: `0 0 10px ${color}60`
+});
+
+const emptyColumnStyle = {
+    padding: '40px 20px',
+    textAlign: 'center',
+    fontSize: '10px',
+    fontWeight: '900',
+    color: 'rgba(232, 230, 227, 0.15)',
+    border: '1px dashed rgba(232, 230, 227, 0.05)',
+    borderRadius: '16px',
+    letterSpacing: '1px'
+};
+
+const searchContainerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    background: 'rgba(232, 230, 227, 0.05)',
+    border: '1px solid rgba(232, 230, 227, 0.1)',
+    borderRadius: '12px',
+    padding: '0 15px',
+    height: '42px'
+};
+
+const searchInputStyle = {
+    background: 'none',
+    border: 'none',
+    color: '#fff',
+    fontSize: '13px',
+    outline: 'none',
+    width: '150px'
 };
 
 export default JobBoard;
