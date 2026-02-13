@@ -179,7 +179,7 @@ const LoginPage = () => {
                                 letterSpacing: '0.5px'
                             }}
                             onFocus={(e) => {
-                                e.target.style.borderBottomColor = 'var(--gold)';
+                                e.target.style.borderBottomColor = '#b08d57';
                             }}
                             onBlur={(e) => {
                                 e.target.style.borderBottomColor = 'rgba(255, 255, 255, 0.2)';
@@ -215,7 +215,7 @@ const LoginPage = () => {
                                 letterSpacing: '0.5px'
                             }}
                             onFocus={(e) => {
-                                e.target.style.borderBottomColor = 'var(--gold)';
+                                e.target.style.borderBottomColor = '#b08d57';
                             }}
                             onBlur={(e) => {
                                 e.target.style.borderBottomColor = 'rgba(255, 255, 255, 0.2)';
@@ -223,81 +223,76 @@ const LoginPage = () => {
                         />
                     </div>
 
+                    {/* Auto-Login Countdown Indicator */}
+                    {countdown !== null && !isAuthenticating && (
+                        <div
+                            className="animate-fade-in"
+                            style={{
+                                textAlign: 'center',
+                                marginTop: '40px',
+                                color: 'rgba(255, 255, 255, 0.6)',
+                                fontSize: '14px',
+                                fontWeight: '300',
+                                letterSpacing: '2px',
+                                fontFamily: 'Outfit, sans-serif'
+                            }}
+                        >
+                            AUTHENTICATING IN {countdown}s...
+                        </div>
+                    )}
+
+                    {/* Authenticating State */}
+                    {isAuthenticating && (
+                        <div
+                            className="animate-fade-in"
+                            style={{
+                                textAlign: 'center',
+                                marginTop: '40px',
+                                color: '#b08d57',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                letterSpacing: '2px',
+                                fontFamily: 'Outfit, sans-serif'
+                            }}
+                        >
+                            VERIFYING CREDENTIALS...
+                        </div>
+                    )}
+                </form>
+
+                {/* Error Message */}
+                {error && (
+                    <div
+                        className="animate-slide-up"
+                        style={{
+                            marginTop: '30px',
+                            color: '#ef4444',
+                            fontSize: '11px',
+                            letterSpacing: '2px',
+                            fontWeight: '700'
+                        }}
+                    >
+                        {error}
+                    </div>
+                )}
             </div>
 
-            {/* Auto-Login Countdown Indicator (replaces button) */}
-            {countdown !== null && !isAuthenticating && (
-                <div
-                    className="animate-fade-in"
-                    style={{
-                        textAlign: 'center',
-                        marginTop: '40px',
-                        color: 'rgba(255, 255, 255, 0.6)',
-                        fontSize: '14px',
-                        fontWeight: '300',
-                        letterSpacing: '2px',
-                        fontFamily: 'Outfit, sans-serif'
-                    }}
-                >
-                    AUTHENTICATING IN {countdown}s...
-                </div>
-            )}
-
-            {/* Authenticating State */}
-            {isAuthenticating && (
-                <div
-                    className="animate-fade-in"
-                    style={{
-                        textAlign: 'center',
-                        marginTop: '40px',
-                        color: '#b08d57', // gold accent
-                        fontSize: '14px',
-                        fontWeight: '500',
-                        letterSpacing: '2px',
-                        fontFamily: 'Outfit, sans-serif'
-                    }}
-                >
-                    VERIFYING CREDENTIALS...
-                </div>
-            )}
-        </form>
-
-                {/* Error Message */ }
-    {
-        error && (
-            <div
-                className="animate-slide-up"
-                style={{
-                    marginTop: '30px',
-                    color: '#ef4444',
-                    fontSize: '11px',
-                    letterSpacing: '2px',
-                    fontWeight: '700'
-                }}
-            >
-                {error}
-            </div>
-        )
-    }
-            </div >
-
-    {/* Bottom Brand Line */ }
-    < div style = {{
-    position: 'absolute',
-        bottom: '30px',
-            left: '50%',
+            {/* Bottom Brand Line */}
+            <div style={{
+                position: 'fixed',
+                bottom: '40px',
+                left: '50%',
                 transform: 'translateX(-50%)',
-                    fontSize: '10px',
-                        fontWeight: '600',
-                            color: 'rgba(255,255,255,0.2)',
-                                letterSpacing: '5px',
-                                    zIndex: 1,
-                                        textAlign: 'center',
-                                            width: '100%'
-}}>
-    ELITE SHINE GROUP OF COMPANIES
-            </div >
-        </div >
+                color: 'rgba(255, 255, 255, 0.3)',
+                fontSize: '10px',
+                letterSpacing: '5px',
+                fontWeight: '300',
+                zIndex: 2,
+                whiteSpace: 'nowrap'
+            }}>
+                ELITE SHINE GROUP OF COMPANIES
+            </div>
+        </div>
     );
 };
 
