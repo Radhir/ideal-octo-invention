@@ -59,7 +59,7 @@ const Portfolio = () => {
 
     const profileData = {
         name: user?.full_name || user?.username || 'Elite Member',
-        role: user?.role || 'Verified Expert',
+        role: user?.role || 'Elite Specialist',
         image: user?.username === 'ravit' ? '/BGRAVIT.png' : (user?.profile_image || '/radhir.jpg'),
         joinDate: user?.date_joined || '2024',
         hoursLogged: attendances.length > 0
@@ -202,7 +202,7 @@ const Portfolio = () => {
         },
         itemsGrid: {
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: '20px',
             marginTop: '40px',
             borderTop: '1px solid rgba(255,255,255,0.1)',
@@ -214,7 +214,7 @@ const Portfolio = () => {
         cardImg: {
             width: '100%',
             height: '350px',
-            background: 'linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.5))',
+            background: 'linear-gradient(45deg, #1a1a1a, #2a2a2a)',
             backgroundColor: '#111',
             marginBottom: '20px',
             display: 'flex',
@@ -225,6 +225,7 @@ const Portfolio = () => {
             letterSpacing: '2px',
             opacity: 0.8,
             border: '1px solid rgba(255,255,255,0.05)',
+            cursor: 'pointer',
         },
         itemTitle: {
             fontSize: '0.85rem',
@@ -275,7 +276,7 @@ const Portfolio = () => {
             {/* Header / Nav */}
             <header style={styles.header}>
                 <div style={styles.navLeft}>
-                    <span onClick={() => setIsMenuOpen(!isMenuOpen)} style={{ cursor: 'pointer', fontSize: '1.2rem' }}>
+                    <span onClick={() => setIsMenuOpen(!isMenuOpen)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                         {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
                     </span>
                     <span style={{ opacity: 0.3 }}>•</span>
@@ -288,7 +289,7 @@ const Portfolio = () => {
                 </div>
             </header>
 
-            {/* Slide-out Menu */}
+            {/* Slide-out Sidebar Menu */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <>
@@ -308,10 +309,10 @@ const Portfolio = () => {
                         >
                             <div style={{ marginBottom: '40px' }}>
                                 <div style={{ fontSize: '0.7rem', letterSpacing: '3px', opacity: 0.4, marginBottom: '10px' }}>AUTHENTICATED SESSION</div>
-                                <div style={{ fontWeight: 'bold' }}>{profileData.name}</div>
+                                <div style={{ fontWeight: 'bold' }}>{profileData.name.toUpperCase()}</div>
                             </div>
 
-                            {navItems.map((item, i) => (
+                            {navItems.map((item) => (
                                 <motion.div
                                     key={item.name}
                                     whileHover={{ x: 10, opacity: 1 }}
@@ -327,7 +328,7 @@ const Portfolio = () => {
                             ))}
 
                             <div style={{ marginTop: 'auto', fontSize: '0.7rem', opacity: 0.3 }}>
-                                © 2026 ELITE SHINE GROUP<br />ALL SYSTEMS OPERATIONAL
+                                © 2026 ELITE SHINE GROUP<br />CORE SYSTEMS OPERATIONAL
                             </div>
                         </motion.div>
                     </>
@@ -352,7 +353,7 @@ const Portfolio = () => {
                 />
 
                 <div style={{ ...styles.infoBox, bottom: '100px', left: '5%' }}>
-                    <p>Verified Elite Member.<br />Welcome to the core,<br /><strong>{profileData.firstName}.</strong></p>
+                    <p>Verified Elite Member.<br />Welcome to the core,<br /><strong>{profileData.name.split(' ')[0].toUpperCase()}.</strong></p>
                     <div style={styles.btnDark} onClick={() => !attendance ? handleClockIn() : navigate('/hr/attendance')}>
                         {attendance ? '[ ACTIVE ]' : '[ CLOCK IN ]'}
                     </div>
@@ -376,7 +377,7 @@ const Portfolio = () => {
                         <div style={styles.gridItem}>
                             <motion.div
                                 whileHover={{ scale: 1.02 }}
-                                style={{ ...styles.cardImg, background: 'linear-gradient(45deg, #1a1a1a, #2a2a2a)' }}
+                                style={styles.cardImg}
                             >
                                 <div style={{ textAlign: 'center' }}>
                                     <Clock size={48} style={{ marginBottom: '20px', color: '#b08d57' }} />
@@ -389,7 +390,7 @@ const Portfolio = () => {
                         <div style={styles.gridItem}>
                             <motion.div
                                 whileHover={{ scale: 1.02 }}
-                                style={{ ...styles.cardImg, background: 'linear-gradient(45deg, #2a2a2a, #1a1a1a)' }}
+                                style={styles.cardImg}
                                 onClick={() => navigate('/hr/team')}
                             >
                                 <div style={{ textAlign: 'center' }}>
@@ -403,7 +404,7 @@ const Portfolio = () => {
                         <div style={styles.gridItem}>
                             <motion.div
                                 whileHover={{ scale: 1.02 }}
-                                style={{ ...styles.cardImg, background: 'linear-gradient(45deg, #111, #333)' }}
+                                style={styles.cardImg}
                                 onClick={() => navigate('/finance/invoices')}
                             >
                                 <div style={{ textAlign: 'center' }}>
