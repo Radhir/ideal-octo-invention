@@ -7,11 +7,8 @@ const BackgroundCarousel = () => {
     const location = useLocation();
     const isAuthPage = ['/login', '/register', '/portal'].some(path => location.pathname.startsWith(path));
 
-    // Fallback static assets
-    const staticAssets = [
-        '/backgrounds/Porsche.jpg',
-        '/backgrounds/F1.jpg'
-    ];
+    // Fallback: use a simple gradient if no dynamic backgrounds load
+    const staticAssets = [];
 
     const [assets, setAssets] = useState(staticAssets);
     const [currentIndex, setCurrentIndex] = useState(0);
