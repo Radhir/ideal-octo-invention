@@ -1,5 +1,5 @@
 # Frontend Dockerfile - React/Vite Application
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
@@ -15,6 +15,7 @@ COPY . .
 # Set build arguments
 ARG VITE_API_BASE_URL
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV NODE_OPTIONS=--openssl-legacy-provider
 
 # Build for production
 RUN npm run build
