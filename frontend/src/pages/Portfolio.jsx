@@ -3,30 +3,10 @@ import api from '../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Search, User, Mail, Clock, CreditCard, FileText,
-    Heart, MapPin, Briefcase, Shield, ArrowRight, Users
+    Heart, MapPin, Briefcase, Shield, ArrowRight, Users, Menu
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
-// Helper to get proper image URL
-const getImageUrl = (imagePath) => {
-    if (!imagePath) return '/elite_shine_logo.png';
-    if (imagePath.startsWith('http') || imagePath.startsWith('/')) {
-        if (imagePath.startsWith('/media/')) {
-            return `http://localhost:8000${imagePath}`;
-        }
-        return imagePath;
-    }
-    return `http://localhost:8000/media/${imagePath}`;
-};
-
-// Team members data
-const teamMembers = [
-    { id: 'ruchika', name: 'Ruchika', role: 'Managing Director', image: '/ruchika.jpg', accent: '#b08d57' },
-    { id: 'radhir', name: 'Radhir', role: 'Systems Architect', image: '/radhir.jpg', accent: '#8b5cf6' },
-    { id: 'afsar', name: 'Afsar', role: 'Service Advisor', image: '/afsar.jpg', accent: '#3b82f6' },
-    { id: 'ankit', name: 'Ankit', role: 'Technician', image: '/ankit.jpg', accent: '#10b981' },
-];
 
 const Portfolio = () => {
     const { user } = useAuth();
@@ -72,434 +52,262 @@ const Portfolio = () => {
         try {
             const res = await api.post('/forms/attendance/api/check-in/');
             setAttendance(res.data.data || res.data);
-            fetchAttendance(); // Refresh data
+            fetchAttendance();
         } catch (err) {
             console.error('Clock in failed', err);
-            alert('Clock in failed: ' + (err.response?.data?.error || err.message));
         }
     };
-
 
     const profileData = {
         name: user?.full_name || user?.username || 'Elite Member',
+        firstName: (user?.full_name || user?.username || 'ELITE').split(' ')[0].toUpperCase(),
         role: user?.role || 'Administrator',
-        image: getImageUrl(user?.profile_image),
+        image: user?.profile_image || '/radhir.jpg', // Fallback
         accent: user?.accent_color || '#b08d57',
         department: 'Technology',
         joinDate: user?.date_joined || '2024',
-        hoursLogged: attendances.reduce((sum, a) => sum + parseFloat(a.total_hours || 0), 0).toFixed(1),
+        hoursLogged: attendances.length > 0
+            ? attendances.reduce((sum, a) => sum + parseFloat(a.total_hours || 0), 0).toFixed(1)
+            : '0.0',
     };
 
-    // Merge API employees with static team members
-    const allTeam = [...teamMembers];
-    employees.forEach(emp => {
-        if (!allTeam.find(t => t.id === emp.user?.username?.toLowerCase())) {
-            allTeam.push({
-                id: emp.employee_id,
-                name: `${emp.user?.first_name || ''} ${emp.user?.last_name || ''}`.trim() || emp.user?.username || 'Unknown',
-                role: emp.role || 'Team Member',
-                image: getImageUrl(emp.profile_image),
-                accent: emp.accent_color || '#64748b',
-            });
+    const styles = {
+        container: {
+            background: '#ffffff',
+            minHeight: '100vh',
+            fontFamily: "'Outfit', sans-serif",
+            color: '#1c1c1c',
+            overflowX: 'hidden',
+        },
+        header: {
+            height: '70px',
+            padding: '0 5%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: '1px solid #eee',
+            fontSize: '0.7rem',
+            letterSpacing: '2px',
+            fontWeight: '800',
+            textTransform: 'uppercase',
+            position: 'sticky',
+            top: 0,
+            background: '#fff',
+            zIndex: 1000,
+        },
+        navGroup: {
+            display: 'flex',
+            gap: '30px',
+            alignItems: 'center',
+        },
+        navItem: {
+            cursor: 'pointer',
+            opacity: 0.6,
+            transition: 'opacity 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+        },
+        hero: {
+            height: '95vh',
+            position: 'relative',
+            overflow: 'hidden',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            paddingTop: '5vh',
+        },
+        heroTextBg: {
+            position: 'absolute',
+            top: '20%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            zIndex: 1,
+            pointerEvents: 'none',
+        },
+        heroTitle: {
+            fontSize: '18vw',
+            fontWeight: '900',
+            lineHeight: '0.8',
+            margin: 0,
+            textAlign: 'center',
+            color: '#1c1c1c',
+        },
+        heroImage: {
+            position: 'relative',
+            zIndex: 2,
+            height: '85%',
+            width: 'auto',
+            objectFit: 'contain',
+        },
+        infoBox: {
+            position: 'absolute',
+            zIndex: 3,
+            fontSize: '0.85rem',
+            maxWidth: '220px',
+            lineHeight: '1.6',
+            color: '#444',
+        },
+        btnContact: {
+            marginTop: '20px',
+            padding: '12px 30px',
+            background: '#2d3436',
+            color: 'white',
+            fontSize: '0.7rem',
+            fontWeight: '800',
+            letterSpacing: '2px',
+            cursor: 'pointer',
+            textAlign: 'center',
+        },
+        darkSection: {
+            background: '#0a0c10',
+            color: '#fff',
+            padding: '100px 5%',
+            position: 'relative',
+            minHeight: '100vh',
+        },
+        gridLines: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundImage: `
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+            `,
+            backgroundSize: '100px 100px',
+            pointerEvents: 'none',
+        },
+        contentWrapper: {
+            position: 'relative',
+            zIndex: 10,
+            maxWidth: '1400px',
+            margin: '0 auto',
+        },
+        sectionHeading: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: '80px',
+        },
+        bigHeadline: {
+            fontSize: '3.5rem',
+            fontWeight: '800',
+            lineHeight: '1.1',
+            maxWidth: '700px',
+            textTransform: 'uppercase',
+            letterSpacing: '-2px',
+        },
+        itemGrid: {
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+            gap: '40px',
+            marginTop: '60px',
+        },
+        gridCard: {
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            padding: '40px',
+            transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            cursor: 'pointer',
         }
-    });
+    };
 
     return (
         <div style={styles.container}>
-            {/* Main Bento Container */}
-            <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                style={styles.bentoContainer}
-            >
-                {/* Top Navigation */}
-                <div style={styles.topNav}>
-                    <div style={styles.logoPill}>
-                        <span style={styles.logoText}>ELITE SHINE</span>
-                    </div>
-                    <div style={styles.navActions}>
-                        <div style={styles.iconBtn}><Search size={18} /></div>
-                        <div style={styles.iconBtn}><Users size={18} /></div>
-                        <button style={styles.contactBtn} onClick={() => navigate('/')}>
-                            <ArrowRight size={14} /> Dashboard
-                        </button>
-                    </div>
+            <header style={styles.header}>
+                <div style={styles.navGroup}>
+                    <Menu size={18} />
+                    <div style={styles.navItem} onClick={() => navigate('/dashboard')}>DASHBOARD</div>
+                    <div style={styles.navItem}>MISSION</div>
+                </div>
+                <div style={styles.navGroup}>
+                    <div style={styles.navItem}>SERVICES</div>
+                    <div style={{ ...styles.navItem, opacity: 1 }}>CONTACT</div>
+                </div>
+            </header>
+
+            <section style={styles.hero}>
+                <div style={styles.heroTextBg}>
+                    <h1 style={styles.heroTitle}>ELITE</h1>
+                    <h1 style={styles.heroTitle}>SHINE</h1>
                 </div>
 
-                {/* Main Grid Layout */}
-                <div style={styles.mainGrid}>
-                    {/* Left: Hero Image Section */}
-                    <div style={styles.heroSection}>
-                        <div style={styles.heroImageWrapper}>
-                            <img
-                                src={selectedMember ? selectedMember.image : profileData.image}
-                                alt={selectedMember ? selectedMember.name : profileData.name}
-                                style={styles.heroImage}
-                            />
-                            {/* Floating Labels */}
-                            <motion.div
-                                key={selectedMember?.id || 'self'}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                style={styles.floatingLabel}
-                            >
-                                <span style={styles.labelTitle}>
-                                    {selectedMember ? selectedMember.role : profileData.department}
-                                </span>
-                                <span style={styles.labelSub}>Elite Shine Group</span>
-                            </motion.div>
-                        </div>
+                <motion.img
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 1 }}
+                    src={profileData.image}
+                    alt={profileData.name}
+                    style={styles.heroImage}
+                    onError={(e) => { e.target.src = '/radhir.jpg'; }}
+                />
 
-                        {/* Big Typography */}
-                        <motion.div
-                            key={selectedMember?.id || 'self-text'}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            style={styles.heroText}
-                        >
-                            <h1 style={styles.heroTitle}>
-                                {(selectedMember?.name || profileData.name).split(' ')[0].toUpperCase()}<br />
-                                <span style={{ ...styles.heroHighlight, color: selectedMember?.accent || profileData.accent }}>
-                                    PROFESSIONAL.
-                                </span><br />
-                                VERIFIED.
-                            </h1>
-                        </motion.div>
+                <div style={{ ...styles.infoBox, bottom: '15%', left: '5%' }}>
+                    <p style={{ fontStyle: 'italic', fontSize: '1.1rem', marginBottom: '10px' }}>"Commitment is the bridge between goals and accomplishment."</p>
+                    <div style={styles.btnContact} onClick={() => navigate('/hr/profile')}>VIEW PROFILE</div>
+                </div>
+
+                <div style={{ ...styles.infoBox, bottom: '15%', right: '5%', textAlign: 'right' }}>
+                    <p style={{ fontWeight: '800', color: '#b08d57', letterSpacing: '2px' }}>{profileData.role.toUpperCase()}</p>
+                    <p style={{ fontSize: '0.7rem', opacity: 0.6, marginTop: '5px' }}>MEMBER SINCE {profileData.joinDate.split('-')[0]}</p>
+                </div>
+            </section>
+
+            <section style={styles.darkSection}>
+                <div style={styles.gridLines} />
+                <div style={styles.contentWrapper}>
+                    <div style={styles.sectionHeading}>
+                        <div>
+                            <span style={{ fontSize: '0.7rem', color: '#b08d57', letterSpacing: '5px', display: 'block', marginBottom: '20px' }}>[ PERFORMANCE ]</span>
+                            <h2 style={styles.bigHeadline}>TRUE MASTERY IS A<br />CONTINUOUS JOURNEY.</h2>
+                        </div>
+                        <div style={{ maxWidth: '400px' }}>
+                            <p style={{ fontSize: '0.9rem', opacity: 0.6, lineHeight: '1.8', marginBottom: '30px' }}>
+                                Your professional journey is measured not just in years, but in consistency and dedication. Track your progress and stay connected with the core team.
+                            </p>
+                            <div style={{ ...styles.btnContact, background: '#b08d57', color: '#000' }} onClick={() => !attendance ? handleClockIn() : navigate('/hr/attendance')}>
+                                {attendance ? 'VIEW ATTENDANCE' : '[ CLOCK IN ]'}
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Right: Info Cards */}
-                    <div style={styles.rightColumn}>
-                        {/* Team Members Grid */}
-                        <div style={styles.teamSection}>
-                            <div style={styles.sectionTitle}>
-                                <Users size={16} /> TEAM
-                            </div>
-                            <div style={styles.teamGrid}>
-                                {allTeam.slice(0, 6).map((member, idx) => (
-                                    <motion.div
-                                        key={member.id}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ delay: idx * 0.1 }}
-                                        onClick={() => setSelectedMember(selectedMember?.id === member.id ? null : member)}
-                                        style={{
-                                            ...styles.teamMember,
-                                            borderColor: selectedMember?.id === member.id ? member.accent : 'rgba(255,255,255,0.1)',
-                                            background: selectedMember?.id === member.id ? `${member.accent}20` : '#000',
-                                        }}
-                                    >
-                                        <img src={member.image} alt={member.name} style={styles.teamAvatar} />
-                                        <div style={styles.teamName}>{member.name.split(' ')[0]}</div>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Stats Card */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            style={styles.statCard}
-                        >
-                            <div style={styles.statLabel}>HOURS LOGGED</div>
-                            <div style={styles.statValue}>{profileData.hoursLogged}h</div>
+                    <div style={styles.itemGrid}>
+                        <motion.div whileHover={{ scale: 1.02 }} style={styles.gridCard}>
+                            <Clock size={32} color="#b08d57" style={{ marginBottom: '30px' }} />
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '10px' }}>HOURS LOGGED</h3>
+                            <div style={{ fontSize: '3rem', fontWeight: '900', color: '#fff' }}>{profileData.hoursLogged}H</div>
                         </motion.div>
 
-                        {/* Clock In Card */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.4 }}
-                            onClick={!attendance ? handleClockIn : () => navigate('/hr/attendance')}
-                            style={{
-                                ...styles.clockCard,
-                                background: attendance ? 'rgba(16, 185, 129, 0.15)' : 'rgba(176, 141, 87, 0.15)',
-                                borderColor: attendance ? '#10b981' : profileData.accent,
-                            }}
-                        >
-                            <Clock size={24} color={attendance ? '#10b981' : profileData.accent} />
-                            <span style={{ color: attendance ? '#10b981' : '#fff', fontWeight: '800' }}>
-                                {attendance ? 'ON DUTY' : 'CLOCK IN'}
-                            </span>
+                        <motion.div whileHover={{ scale: 1.02 }} style={styles.gridCard} onClick={() => navigate('/hr/team')}>
+                            <Users size={32} color="#b08d57" style={{ marginBottom: '30px' }} />
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '10px' }}>TEAM NETWORK</h3>
+                            <p style={{ opacity: 0.6, fontSize: '0.9rem' }}>Collaborate with {employees.length || 12} verified experts in the Elite Shine network.</p>
                         </motion.div>
 
-                        {/* Profile Card */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.5 }}
-                            style={styles.profileThumb}
-                        >
-                            <img
-                                src={profileData.image}
-                                alt={profileData.name}
-                                style={styles.thumbImage}
-                            />
-                            <div style={styles.thumbInfo}>
-                                <div style={styles.thumbName}>{profileData.name}</div>
-                                <div style={styles.thumbRole}>{profileData.role}</div>
-                            </div>
+                        <motion.div whileHover={{ scale: 1.02 }} style={styles.gridCard} onClick={() => navigate('/finance/invoices')}>
+                            <CreditCard size={32} color="#b08d57" style={{ marginBottom: '30px' }} />
+                            <h3 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '10px' }}>RESOURCES</h3>
+                            <p style={{ opacity: 0.6, fontSize: '0.9rem' }}>Access internal files, invoices, and professional materials.</p>
                         </motion.div>
                     </div>
                 </div>
-            </motion.div>
+            </section>
 
-            {/* Background Grain */}
-            <div style={styles.grain} />
+            {/* Background Texture Overlay */}
+            <div style={{
+                position: 'fixed',
+                top: 0, left: 0, width: '100%', height: '100%',
+                pointerEvents: 'none',
+                opacity: 0.03,
+                zIndex: 9999,
+                backgroundImage: 'url("https://www.transparenttextures.com/patterns/carbon-fibre.png")'
+            }} />
         </div>
     );
-};
-
-const styles = {
-    container: {
-        minHeight: '100vh',
-        background: 'linear-gradient(180deg, #0a0a0a 0%, #1a1a2e 100%)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px',
-        fontFamily: 'Outfit, sans-serif',
-    },
-    bentoContainer: {
-        width: '100%',
-        maxWidth: '1200px',
-        background: '#111',
-        borderRadius: '40px',
-        border: '1px solid rgba(255,255,255,0.1)',
-        padding: '24px',
-        position: 'relative',
-        overflow: 'hidden',
-    },
-    topNav: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '24px',
-    },
-    logoPill: {
-        background: '#000',
-        padding: '12px 24px',
-        borderRadius: '100px',
-        border: '1px solid rgba(255,255,255,0.1)',
-    },
-    logoText: {
-        color: '#fff',
-        fontWeight: '900',
-        fontSize: '14px',
-        letterSpacing: '3px',
-    },
-    navActions: {
-        display: 'flex',
-        gap: '12px',
-        alignItems: 'center',
-    },
-    iconBtn: {
-        width: '44px',
-        height: '44px',
-        borderRadius: '50%',
-        background: '#000',
-        border: '1px solid rgba(255,255,255,0.1)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        cursor: 'pointer',
-    },
-    contactBtn: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        background: '#fff',
-        color: '#000',
-        border: 'none',
-        borderRadius: '100px',
-        padding: '12px 24px',
-        fontWeight: '700',
-        fontSize: '13px',
-        cursor: 'pointer',
-    },
-    mainGrid: {
-        display: 'grid',
-        gridTemplateColumns: '2fr 1fr',
-        gap: '24px',
-    },
-    heroSection: {
-        position: 'relative',
-        borderRadius: '30px',
-        overflow: 'hidden',
-        background: '#000',
-        minHeight: '500px',
-    },
-    heroImageWrapper: {
-        position: 'absolute',
-        inset: 0,
-    },
-    heroImage: {
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        objectPosition: 'center top',
-        opacity: 0.85,
-    },
-    floatingLabel: {
-        position: 'absolute',
-        top: '30px',
-        left: '30px',
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(10px)',
-        padding: '12px 20px',
-        borderRadius: '15px',
-        border: '1px solid rgba(255,255,255,0.1)',
-    },
-    labelTitle: {
-        color: '#fff',
-        fontSize: '12px',
-        fontWeight: '700',
-        display: 'block',
-    },
-    labelSub: {
-        color: 'rgba(255,255,255,0.5)',
-        fontSize: '11px',
-    },
-    heroText: {
-        position: 'absolute',
-        bottom: '40px',
-        left: '40px',
-        right: '40px',
-    },
-    heroTitle: {
-        fontSize: '3rem',
-        fontWeight: '900',
-        lineHeight: '0.95',
-        margin: 0,
-        color: '#fff',
-        textTransform: 'uppercase',
-        letterSpacing: '-1px',
-    },
-    heroHighlight: {
-        color: '#b08d57',
-    },
-    rightColumn: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-    },
-    teamSection: {
-        background: '#000',
-        borderRadius: '25px',
-        padding: '20px',
-        border: '1px solid rgba(255,255,255,0.1)',
-    },
-    sectionTitle: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        color: 'rgba(255,255,255,0.5)',
-        fontSize: '11px',
-        fontWeight: '700',
-        letterSpacing: '1px',
-        marginBottom: '15px',
-    },
-    teamGrid: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '10px',
-    },
-    teamMember: {
-        background: '#000',
-        borderRadius: '15px',
-        padding: '10px',
-        border: '2px solid rgba(255,255,255,0.1)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '8px',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-    },
-    teamAvatar: {
-        width: '45px',
-        height: '45px',
-        borderRadius: '12px',
-        objectFit: 'cover',
-    },
-    teamName: {
-        color: '#fff',
-        fontSize: '10px',
-        fontWeight: '700',
-        textAlign: 'center',
-    },
-    statCard: {
-        background: '#000',
-        borderRadius: '25px',
-        padding: '20px',
-        border: '1px solid rgba(255,255,255,0.1)',
-    },
-    statLabel: {
-        color: 'rgba(255,255,255,0.5)',
-        fontSize: '11px',
-        fontWeight: '700',
-        letterSpacing: '1px',
-        marginBottom: '8px',
-    },
-    statValue: {
-        color: '#fff',
-        fontSize: '28px',
-        fontWeight: '900',
-    },
-    clockCard: {
-        borderRadius: '25px',
-        padding: '20px',
-        border: '1px solid',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '12px',
-        cursor: 'pointer',
-        fontSize: '13px',
-        letterSpacing: '1px',
-        transition: 'all 0.2s ease',
-    },
-    profileThumb: {
-        background: 'linear-gradient(135deg, rgba(176, 141, 87, 0.2), rgba(0,0,0,0.8))',
-        borderRadius: '25px',
-        padding: '15px',
-        border: '1px solid rgba(176, 141, 87, 0.3)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '15px',
-        marginTop: 'auto',
-    },
-    thumbImage: {
-        width: '50px',
-        height: '50px',
-        borderRadius: '15px',
-        objectFit: 'cover',
-    },
-    thumbInfo: {
-        flex: 1,
-    },
-    thumbName: {
-        color: '#fff',
-        fontSize: '14px',
-        fontWeight: '700',
-    },
-    thumbRole: {
-        color: 'rgba(255,255,255,0.5)',
-        fontSize: '11px',
-    },
-    grain: {
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'transparent',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        opacity: 0.05,
-        pointerEvents: 'none',
-        zIndex: 999,
-        mixBlendMode: 'overlay',
-    },
 };
 
 export default Portfolio;
