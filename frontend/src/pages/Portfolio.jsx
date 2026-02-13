@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Clock, Users, FileText, Menu, X, ArrowRight, LayoutDashboard, Settings, ShieldCheck, UserCircle
+    Clock, Users, FileText, Menu, X, ArrowRight, LayoutDashboard, Settings, ShieldCheck, UserCircle, Briefcase, Mail
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -58,10 +58,10 @@ const Portfolio = () => {
     };
 
     const profileData = {
-        name: user?.full_name || user?.username || 'Elite Member',
-        role: user?.role || 'Elite Specialist',
+        name: (user?.full_name || user?.username || 'Ravoit').toUpperCase(),
+        firstName: (user?.full_name || user?.username || 'Ravoit').split(' ')[0].toUpperCase(),
+        role: user?.role || 'Creative Director & Founder',
         image: user?.username === 'ravit' ? '/BGRAVIT.png' : (user?.profile_image || '/radhir.jpg'),
-        joinDate: user?.date_joined || '2024',
         hoursLogged: attendances.length > 0
             ? attendances.reduce((sum, a) => sum + parseFloat(a.total_hours || 0), 0).toFixed(1)
             : '0.0',
@@ -69,468 +69,409 @@ const Portfolio = () => {
 
     const styles = {
         container: {
-            background: '#ffffff',
+            background: '#1a1a1a', // Dark Charcoal
+            color: '#e8dace', // Cream/Beige
             minHeight: '100vh',
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            color: '#1c1c1c',
             overflowX: 'hidden',
-            paddingBottom: '100px', // Extra space for floating nav
+            padding: '40px 0',
         },
-        header: {
-            background: '#ffffff',
-            borderBottom: '1px solid #e0e0e0',
-            padding: '0 40px',
-            height: '60px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            position: 'sticky',
-            top: 0,
-            zIndex: 2000,
-        },
-        navLeft: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '30px',
-            fontSize: '0.75rem',
-            textTransform: 'uppercase',
-            letterSpacing: '1px',
-            fontWeight: 'bold',
-        },
-        hero: {
-            backgroundColor: '#ffffff',
-            height: '90vh',
+        section: {
+            maxWidth: '900px',
+            margin: '0 auto 120px',
+            padding: '0 20px',
             position: 'relative',
-            overflow: 'hidden',
-            borderBottomLeftRadius: '30px',
-            borderBottomRightRadius: '30px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            paddingTop: '60px',
         },
-        heroTitleContainer: {
-            position: 'absolute',
-            top: '25%',
-            width: '100%',
+        headerBar: {
             display: 'flex',
             justifyContent: 'space-between',
-            padding: '0 5%',
-            zIndex: 1,
-            pointerEvents: 'none',
-        },
-        heroTitle: {
-            fontFamily: "'Arial Black', 'Impact', sans-serif",
-            fontSize: '13vw',
-            color: '#1c1c1c',
-            textTransform: 'uppercase',
-            lineHeight: '0.8',
-            margin: 0,
-        },
-        heroImage: {
-            position: 'relative',
-            zIndex: 2,
-            height: '85%',
-            width: 'auto',
-            objectFit: 'contain',
-            marginTop: '-20px',
-        },
-        infoBox: {
-            position: 'absolute',
-            zIndex: 3,
-            fontSize: '0.8rem',
-            color: '#1c1c1c',
-            maxWidth: '220px',
-            lineHeight: '1.5',
-        },
-        btnDark: {
-            display: 'inline-block',
-            marginTop: '15px',
-            padding: '10px 25px',
-            backgroundColor: '#1c1c1c',
-            color: 'white',
-            fontWeight: 'bold',
-            fontSize: '0.75rem',
-            textTransform: 'uppercase',
-            cursor: 'pointer',
-            borderRadius: '2px',
-        },
-        darkSection: {
-            background: '#1c1c1c',
-            color: '#ffffff',
-            padding: '100px 5%',
-            position: 'relative',
-            minHeight: '100vh',
-        },
-        gridBg: {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundImage: `
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
-            `,
-            backgroundSize: '150px 150px',
-            zIndex: 0,
-            pointerEvents: 'none',
-        },
-        contentWrapper: {
-            position: 'relative',
-            zIndex: 5,
-            maxWidth: '1200px',
-            margin: '0 auto',
-        },
-        sectionHeading: {
-            marginBottom: '80px',
-        },
-        sectionTag: {
-            fontSize: '0.75rem',
-            opacity: 0.5,
-            marginBottom: '15px',
-            display: 'block',
-            textTransform: 'uppercase',
-            letterSpacing: '3px',
-        },
-        mainHeadline: {
-            fontFamily: "'Arial Narrow', sans-serif",
-            fontSize: '3.5rem',
-            textTransform: 'uppercase',
-            lineHeight: '1.1',
-            fontWeight: 'bold',
-            letterSpacing: '-1px',
-        },
-        itemsGrid: {
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '20px',
-            marginTop: '40px',
-            borderTop: '1px solid rgba(255,255,255,0.1)',
-            paddingTop: '60px',
-        },
-        gridItem: {
-            position: 'relative',
-        },
-        cardImg: {
-            width: '100%',
-            height: '350px',
-            background: 'linear-gradient(45deg, #1a1a1a, #2a2a2a)',
-            backgroundColor: '#111',
-            marginBottom: '20px',
-            display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.7rem',
+            fontSize: '0.9rem',
+            opacity: 0.6,
+            marginBottom: '60px',
             textTransform: 'uppercase',
             letterSpacing: '2px',
-            opacity: 0.8,
-            border: '1px solid rgba(255,255,255,0.05)',
-            cursor: 'pointer',
         },
-        itemTitle: {
-            fontSize: '0.85rem',
+        footerBar: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '0.8rem',
+            opacity: 0.5,
+            marginTop: '80px',
+            borderTop: '1px solid rgba(232, 218, 206, 0.1)',
+            paddingTop: '20px',
+        },
+        megaTitle: {
+            fontFamily: "'Impact', 'Arial Black', sans-serif",
+            fontSize: 'clamp(5rem, 15vw, 12rem)',
+            lineHeight: '0.8',
             textTransform: 'uppercase',
-            fontWeight: '900',
-            letterSpacing: '1px',
+            letterSpacing: '-2px',
+            textAlign: 'center',
+            position: 'relative',
+            zIndex: 10,
+            margin: 0,
+            pointerEvents: 'none',
         },
-        // Floating Nav Styles
+        heroImageContainer: {
+            position: 'relative',
+            top: '-60px',
+            zIndex: 5,
+            display: 'flex',
+            justifyContent: 'center',
+            width: '100%',
+        },
+        heroImage: {
+            height: 'clamp(300px, 60vh, 600px)',
+            width: 'auto',
+            objectFit: 'contain',
+        },
+        sectionTitle: {
+            fontFamily: "'Impact', 'Arial Black', sans-serif",
+            fontSize: 'clamp(3rem, 8vw, 6rem)',
+            lineHeight: '0.9',
+            textTransform: 'uppercase',
+            marginBottom: '30px',
+        },
+        bodyText: {
+            fontSize: '1rem',
+            opacity: 0.8,
+            maxWidth: '500px',
+            lineHeight: '1.6',
+        },
+        // Table of Contents Grid
+        tocContent: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: '60px',
+            flexWrap: 'wrap',
+        },
+        tocLeft: {
+            flex: '1.2',
+            minWidth: '300px',
+        },
+        tocRight: {
+            flex: '1',
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '15px',
+            minWidth: '280px',
+        },
+        btnPill: {
+            padding: '14px 20px',
+            borderRadius: '50px',
+            textAlign: 'center',
+            fontSize: '0.85rem',
+            cursor: 'pointer',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            textTransform: 'uppercase',
+            fontWeight: 'bold',
+            letterSpacing: '1px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '10px',
+        },
+        btnOutline: {
+            border: '2px solid #e8dace',
+            background: 'transparent',
+            color: '#e8dace',
+        },
+        btnSolid: {
+            background: '#e8dace',
+            color: '#1a1a1a',
+        },
+        // Introduction Banner
+        banner: {
+            width: '100%',
+            height: '450px',
+            overflow: 'hidden',
+            position: 'relative',
+            marginBottom: '40px',
+            backgroundColor: '#222',
+        },
+        bannerImg: {
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            opacity: 0.7,
+        },
+        bannerTitleOverlay: {
+            position: 'absolute',
+            bottom: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '100%',
+            textAlign: 'center',
+            fontFamily: "'Impact', 'Arial Black', sans-serif",
+            fontSize: 'clamp(4rem, 10vw, 8rem)',
+            textTransform: 'uppercase',
+            color: '#e8dace',
+            zIndex: 15,
+            margin: 0,
+        },
+        // Floating Nav
         floatingNav: {
             position: 'fixed',
             bottom: '30px',
             left: '50%',
             transform: 'translateX(-50%)',
-            background: 'rgba(255, 255, 255, 0.8)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
+            background: 'rgba(232, 218, 206, 0.1)',
+            backdropFilter: 'blur(15px)',
+            WebkitBackdropFilter: 'blur(15px)',
+            border: '1px solid rgba(232, 218, 206, 0.2)',
             borderRadius: '100px',
-            padding: '10px 15px',
+            padding: '8px 12px',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px',
+            gap: '6px',
             zIndex: 3000,
-            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
         },
         navBtn: {
-            width: '45px',
-            height: '45px',
+            width: '42px',
+            height: '42px',
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             cursor: 'pointer',
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            color: '#1c1c1c',
-            backgroundColor: 'transparent',
-            position: 'relative',
+            transition: 'all 0.3s ease',
+            color: '#e8dace',
         },
-        navLabel: {
-            position: 'absolute',
-            bottom: '100%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            padding: '6px 12px',
-            background: '#1c1c1c',
-            color: '#ffffff',
-            fontSize: '0.65rem',
-            borderRadius: '4px',
-            fontWeight: 'bold',
-            letterSpacing: '1px',
-            whiteSpace: 'nowrap',
-            marginBottom: '10px',
-            opacity: 0,
-            pointerEvents: 'none',
-            transition: 'all 0.2s ease',
-        },
-        dropdown: {
+        sidebarMenu: {
             position: 'fixed',
-            top: '60px',
-            left: 0,
-            width: '350px',
-            height: 'calc(100vh - 60px)',
-            background: '#ffffff',
-            borderRight: '1px solid #e0e0e0',
-            padding: '40px',
-            zIndex: 1500,
+            inset: 0,
+            zIndex: 4000,
+            display: 'flex',
+            justifyContent: 'flex-end',
+        },
+        sidebarContent: {
+            width: '100%',
+            maxWidth: '400px',
+            background: '#e8dace',
+            color: '#1a1a1a',
+            height: '100%',
+            padding: '60px 40px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '25px',
-            boxShadow: '20px 0 60px rgba(0,0,0,0.1)',
-        },
-        dropItem: {
-            fontSize: '1.2rem',
-            fontWeight: '800',
-            textTransform: 'uppercase',
-            letterSpacing: '-0.5px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            opacity: 0.7,
-            transition: 'all 0.3s ease',
+            gap: '30px',
+            position: 'relative',
         }
     };
 
     const navItems = [
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
         { name: 'ERP Control', path: '/finance/invoices', icon: FileText },
-        { name: 'Team Network', path: '/hr/team', icon: Users },
-        { name: 'Clock System', path: '/hr/attendance', icon: Clock },
-        { name: 'Profile Settings', path: '/hr/profile', icon: UserCircle },
+        { name: 'Team Hub', path: '/hr/team', icon: Users },
+        { name: 'Attendance', path: '/hr/attendance', icon: Clock },
+        { name: 'Profile', path: '/hr/profile', icon: UserCircle },
         { name: 'Elite Rules', path: '/hr/rules', icon: ShieldCheck }
     ];
 
     return (
         <div style={styles.container}>
-            {/* Header / Nav */}
-            <header style={styles.header}>
-                <div style={styles.navLeft}>
-                    <span onClick={() => setIsMenuOpen(!isMenuOpen)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
-                        {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
-                    </span>
-                    <span style={{ opacity: 0.3 }}>•</span>
-                    <span style={{ cursor: 'pointer' }}>MISSION</span>
-                    <span style={{ opacity: 0.3 }}>•</span>
-                    <span style={{ cursor: 'pointer' }}>ABOUT US</span>
+            {/* Slide 1: Cover Section */}
+            <motion.section
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                style={styles.section}
+            >
+                <div style={styles.headerBar}>
+                    <span>Creative Portfolio</span>
+                    <ArrowRight size={24} strokeWidth={1} />
                 </div>
-                <div style={{ ...styles.navLeft, gap: '10px' }}>
-                    <span style={{ opacity: 0.5 }}>ELITE SHINE GROUP</span>
-                </div>
-            </header>
 
-            {/* Floating Navigation Pill */}
+                <h1 style={styles.megaTitle}>{profileData.firstName}</h1>
+
+                <div style={styles.heroImageContainer}>
+                    <motion.img
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
+                        src={profileData.image}
+                        alt={profileData.name}
+                        style={styles.heroImage}
+                        onError={(e) => { e.target.src = '/radhir.jpg'; }}
+                    />
+                </div>
+
+                <div style={styles.footerBar}>
+                    <span>{user?.full_name || 'Ravoit Digital'}</span>
+                    <span>{user?.email || 'www.eliteshine.ae'}</span>
+                </div>
+            </motion.section>
+
+            {/* Slide 2: Table of Contents / Systems Nav */}
+            <motion.section
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                style={styles.section}
+            >
+                <div style={styles.headerBar}>
+                    <span>Systems Access</span>
+                    <ArrowRight size={24} strokeWidth={1} />
+                </div>
+
+                <div style={styles.tocContent}>
+                    <div style={styles.tocLeft}>
+                        <h2 style={styles.sectionTitle}>TABLE OF<br />SYSTEMS</h2>
+                        <p style={styles.bodyText}>
+                            Welcome to the central node of the Elite Shine ecosystem. Access verified ERP modules, track organizational performance, and manage secure resources through the terminals below.
+                        </p>
+                    </div>
+                    <div style={styles.tocRight}>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/dashboard')}>
+                            Introduction
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/finance/invoices')}>
+                            ERP Control
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/hr/team')}>
+                            Team Network
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/hr/attendance')}>
+                            Time Clock
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/hr/profile')}>
+                            User Profile
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/hr/rules')}>
+                            Elite Rules
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/crm/leads')}>
+                            CRM Hub
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/operations/workshop')}>
+                            Operations
+                        </motion.div>
+                    </div>
+                </div>
+
+                <div style={styles.footerBar}>
+                    <span>Verified Session</span>
+                    <span>System v4.0.2</span>
+                </div>
+            </motion.section>
+
+            {/* Slide 3: Introduction / Action Section */}
+            <motion.section
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                style={styles.section}
+            >
+                <div style={styles.headerBar}>
+                    <span>Executive Summary</span>
+                    <ArrowRight size={24} strokeWidth={1} />
+                </div>
+
+                <div style={styles.banner}>
+                    <img
+                        src="/backgrounds/Premium_Office.jpg"
+                        alt="Background"
+                        style={styles.bannerImg}
+                        onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200'; }}
+                    />
+                    <h2 style={styles.bannerTitleOverlay}>INTRODUCTION</h2>
+                </div>
+
+                <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                    <p style={{ ...styles.bodyText, margin: '0 auto', marginBottom: '40px' }}>
+                        Your journey through the Elite Shine infrastructure starts here. Track your <strong>{profileData.hoursLogged} hours</strong> of professional contribution and maintain peak operational harmony.
+                    </p>
+                    <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        style={{ ...styles.btnPill, ...styles.btnSolid, width: '250px', margin: '0 auto' }}
+                        onClick={() => !attendance ? handleClockIn() : navigate('/hr/attendance')}
+                    >
+                        {attendance ? 'VIEW ACTIVE SESSION' : 'INITIALIZE CLOCK-IN'}
+                    </motion.div>
+                </div>
+
+                <div style={styles.footerBar}>
+                    <span>{profileData.name}</span>
+                    <span>{profileData.role}</span>
+                </div>
+            </motion.section>
+
+            {/* Floating Navigation Bar (Cream Palette) */}
             <motion.div
                 initial={{ y: 100, x: '-50%' }}
                 animate={{ y: 0, x: '-50%' }}
-                transition={{ type: 'spring', damping: 20, stiffness: 100, delay: 1 }}
                 style={styles.floatingNav}
             >
-                {navItems.map((item) => (
-                    <div key={item.name} style={{ position: 'relative' }} className="nav-item-container">
-                        <motion.div
-                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(0,0,0,0.05)' }}
-                            whileTap={{ scale: 0.95 }}
-                            style={styles.navBtn}
-                            onClick={() => navigate(item.path)}
-                            onMouseEnter={(e) => {
-                                const label = e.currentTarget.parentElement.querySelector('.nav-label');
-                                if (label) {
-                                    label.style.opacity = '1';
-                                    label.style.transform = 'translate(-50%, -5px)';
-                                }
-                            }}
-                            onMouseLeave={(e) => {
-                                const label = e.currentTarget.parentElement.querySelector('.nav-label');
-                                if (label) {
-                                    label.style.opacity = '0';
-                                    label.style.transform = 'translate(-50%, 0)';
-                                }
-                            }}
-                        >
-                            <item.icon size={20} strokeWidth={1.5} />
-                            <div className="nav-label" style={styles.navLabel}>
-                                {item.name.toUpperCase()}
-                            </div>
-                        </motion.div>
-                    </div>
+                {navItems.slice(0, 5).map((item) => (
+                    <motion.div
+                        key={item.name}
+                        whileHover={{ backgroundColor: 'rgba(232, 218, 206, 0.2)' }}
+                        style={styles.navBtn}
+                        onClick={() => navigate(item.path)}
+                    >
+                        <item.icon size={20} strokeWidth={1.5} />
+                    </motion.div>
                 ))}
-                <div style={{ width: '1px', height: '24px', background: 'rgba(0,0,0,0.1)', margin: '0 5px' }} />
+                <div style={{ width: '1px', height: '20px', background: 'rgba(232, 218, 206, 0.2)', margin: '0 5px' }} />
                 <motion.div
-                    whileHover={{ scale: 1.1, backgroundColor: '#1c1c1c', color: '#fff' }}
-                    style={{ ...styles.navBtn, backgroundColor: 'rgba(28,28,28,0.05)' }}
+                    whileHover={{ scale: 1.1, color: '#fff' }}
+                    style={styles.navBtn}
                     onClick={() => setIsMenuOpen(true)}
                 >
                     <Menu size={20} />
                 </motion.div>
             </motion.div>
 
-            {/* Slide-out Sidebar Menu (Fallback/Extended) */}
+            {/* Slide-out Sidebar Menu */}
             <AnimatePresence>
                 {isMenuOpen && (
-                    <>
+                    <div style={styles.sidebarMenu}>
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsMenuOpen(false)}
-                            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.2)', zIndex: 1400, backdropFilter: 'blur(5px)' }}
+                            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)' }}
                         />
                         <motion.div
-                            initial={{ x: -350 }}
+                            initial={{ x: '100%' }}
                             animate={{ x: 0 }}
-                            exit={{ x: -350 }}
+                            exit={{ x: '100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            style={styles.dropdown}
+                            style={styles.sidebarContent}
                         >
-                            <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <div>
-                                    <div style={{ fontSize: '0.7rem', letterSpacing: '3px', opacity: 0.4, marginBottom: '10px' }}>AUTHENTICATED SESSION</div>
-                                    <div style={{ fontWeight: 'bold' }}>{profileData.name.toUpperCase()}</div>
-                                </div>
-                                <X size={24} style={{ cursor: 'pointer', opacity: 0.5 }} onClick={() => setIsMenuOpen(false)} />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontFamily: 'Impact', fontSize: '2rem' }}>MENU</span>
+                                <X size={30} style={{ cursor: 'pointer' }} onClick={() => setIsMenuOpen(false)} />
                             </div>
 
-                            {navItems.map((item) => (
-                                <motion.div
-                                    key={item.name}
-                                    whileHover={{ x: 10, opacity: 1 }}
-                                    style={styles.dropItem}
-                                    onClick={() => {
-                                        setIsMenuOpen(false);
-                                        navigate(item.path);
-                                    }}
-                                >
-                                    {item.name}
-                                    <ArrowRight size={16} />
-                                </motion.div>
-                            ))}
+                            <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                {navItems.map((item) => (
+                                    <motion.div
+                                        key={item.name}
+                                        whileHover={{ x: 10 }}
+                                        style={{ fontSize: '1.5rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(0,0,0,0.1)', paddingBottom: '10px' }}
+                                        onClick={() => {
+                                            setIsMenuOpen(false);
+                                            navigate(item.path);
+                                        }}
+                                    >
+                                        {item.name.toUpperCase()}
+                                        <ArrowRight size={20} />
+                                    </motion.div>
+                                ))}
+                            </div>
 
-                            <div style={{ marginTop: 'auto', fontSize: '0.7rem', opacity: 0.3 }}>
-                                © 2026 ELITE SHINE GROUP<br />CORE SYSTEMS OPERATIONAL
+                            <div style={{ marginTop: 'auto', fontSize: '0.8rem', opacity: 0.5 }}>
+                                © 2026 ELITE SHINE GROUP<br />ALL SYSTEMS VERIFIED
                             </div>
                         </motion.div>
-                    </>
+                    </div>
                 )}
             </AnimatePresence>
-
-            {/* Hero Section */}
-            <section style={styles.hero}>
-                <div style={styles.heroTitleContainer}>
-                    <h1 style={styles.heroTitle}>POINT OF</h1>
-                    <h1 style={styles.heroTitle}>SUPPORT</h1>
-                </div>
-
-                <motion.img
-                    initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-                    src={profileData.image}
-                    alt={profileData.name}
-                    style={styles.heroImage}
-                    onError={(e) => { e.target.src = '/radhir.jpg'; }}
-                />
-
-                <div style={{ ...styles.infoBox, bottom: '100px', left: '5%' }}>
-                    <p>Verified Elite Member.<br />Welcome to the core,<br /><strong>{profileData.name.split(' ')[0].toUpperCase()}.</strong></p>
-                    <div style={styles.btnDark} onClick={() => !attendance ? handleClockIn() : navigate('/hr/attendance')}>
-                        {attendance ? '[ ACTIVE ]' : '[ CLOCK IN ]'}
-                    </div>
-                </div>
-
-                <div style={{ ...styles.infoBox, bottom: '100px', right: '5%', textAlign: 'right' }}>
-                    <p>— {profileData.role.toUpperCase()} —<br />Specialist Status: Active<br />Excellence in Motion.</p>
-                </div>
-            </section>
-
-            {/* Dark Section with Cards */}
-            <section style={styles.darkSection}>
-                <div style={styles.gridBg} />
-                <div style={styles.contentWrapper}>
-                    <div style={styles.sectionHeading}>
-                        <span style={styles.sectionTag}>[ PHILOSOPHY ]</span>
-                        <h2 style={styles.mainHeadline}>YOU DON'T HAVE TO "HANDLE IT".<br />YOU HAVE THE RIGHT TO ASK FOR HELP.</h2>
-                    </div>
-
-                    <div style={styles.itemsGrid}>
-                        <div style={styles.gridItem}>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                style={styles.cardImg}
-                            >
-                                <div style={{ textAlign: 'center' }}>
-                                    <Clock size={48} style={{ marginBottom: '20px', color: '#b08d57' }} />
-                                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>{profileData.hoursLogged}H</div>
-                                </div>
-                            </motion.div>
-                            <div style={styles.itemTitle}>MEETING WITHOUT PRESSURE</div>
-                        </div>
-
-                        <div style={styles.gridItem}>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                style={styles.cardImg}
-                                onClick={() => navigate('/hr/team')}
-                            >
-                                <div style={{ textAlign: 'center' }}>
-                                    <Users size={48} style={{ marginBottom: '20px', color: '#b08d57' }} />
-                                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>{employees.length || 12}</div>
-                                </div>
-                            </motion.div>
-                            <div style={styles.itemTitle}>SEEKING ROOTS, NOT SYMPTOMS</div>
-                        </div>
-
-                        <div style={styles.gridItem}>
-                            <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                style={styles.cardImg}
-                                onClick={() => navigate('/finance/invoices')}
-                            >
-                                <div style={{ textAlign: 'center' }}>
-                                    <FileText size={48} style={{ marginBottom: '20px', color: '#b08d57' }} />
-                                    <div style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>ERP</div>
-                                </div>
-                            </motion.div>
-                            <div style={styles.itemTitle}>SUPPORTING GROWTH</div>
-                        </div>
-                    </div>
-
-                    <div style={{ marginTop: '120px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: '60px' }}>
-                        <div>
-                            <span style={styles.sectionTag}>[ LEGACY ]</span>
-                            <h2 style={{ ...styles.mainHeadline, fontSize: '4.5rem', lineHeight: '0.9' }}>INVEST IN YOUR<br />QUALITY OF LIFE.</h2>
-                        </div>
-                        <div style={{ maxWidth: '350px' }}>
-                            <p style={{ fontSize: '0.85rem', opacity: 0.6, lineHeight: '1.6', marginBottom: '25px' }}>
-                                Knowledge is the first step to harmony. Every action you take here contributes to a smarter, more efficient professional ecosystem.
-                            </p>
-                            <div style={{ ...styles.btnDark, background: '#fff', color: '#000' }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                                [ BACK TO TOP ]
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
         </div>
     );
 };
