@@ -1,21 +1,21 @@
-import os
-import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
-django.setup()
+import requests
+import json
 
-from rest_framework.test import APIClient
-from django.contrib.auth.models import User
+def test_login():
+    url = "http://localhost:8000/api/auth/login/"
+    data = {
+        "username": "admin",
+        "password": "admin123"
+    }
+    
+    print(f"Testing login at {url}...")
+    try:
+        response = requests.post(url, json=data)
+        print(f"Status Code: {response.status_code}")
+        print("Response Content:")
+        print(response.text)
+    except Exception as e:
+        print(f"Connection failed: {e}")
 
-client = APIClient()
-
-# Ensure user exists (created in previous step)
-try:
-    user = User.objects.get(username='radhir')
-    print("User found")
-except User.DoesNotExist:
-    User.objects.create_user('radhir', 'email@example.com', 'admin')
-    print("User created")
-
-response = client.post('/api/auth/login/', {'username': 'radhir', 'password': 'admin'}, format='json')
-print(f"Status: {response.status_code}")
-print(f"Content: {response.content.decode()}")
+if __name__ == "__main__":
+    test_login()

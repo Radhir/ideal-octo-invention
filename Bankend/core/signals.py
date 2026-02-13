@@ -3,7 +3,10 @@ from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 from crum import get_current_request
 from .models import AuditLog, NoAudit
+import sys
 
+# Disable auditing during migrations to prevent transaction errors
+IS_MIGRATING = 'migrate' in sys.argv or 'makemigrations' in sys.argv
 def get_request_metadata():
     request = get_current_request()
     if request:
@@ -37,6 +40,8 @@ def get_field_changes(instance, created):
 
 @receiver(post_save)
 def audit_post_save(sender, instance, created, **kwargs):
+    if IS_MIGRATING:
+        return
     if sender == AuditLog or issubclass(sender, NoAudit):
         return
     if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
@@ -64,6 +69,8 @@ def audit_post_save(sender, instance, created, **kwargs):
 
 @receiver(post_delete)
 def audit_post_delete(sender, instance, **kwargs):
+    if IS_MIGRATING:
+        return
     if sender == AuditLog or issubclass(sender, NoAudit):
         return
     if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):

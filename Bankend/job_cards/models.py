@@ -18,6 +18,7 @@ class JobCard(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     
     # Reception Info
+    title = models.CharField(max_length=10, choices=[('Mr', 'Mr'), ('Mrs', 'Mrs'), ('Ms', 'Ms'), ('Dr', 'Dr')], default='Mr', blank=True)
     customer_name = models.CharField(max_length=255)
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
@@ -25,8 +26,9 @@ class JobCard(models.Model):
     phone = models.CharField(max_length=20)
     address = models.TextField(blank=True)
     
-    registration_number = models.CharField(max_length=50)
-    plate_emirate = models.CharField(max_length=50, blank=True, null=True)
+    registration_number = models.CharField(max_length=50, blank=True, null=True)
+    plate_emirate = models.CharField(max_length=50, blank=True, null=True) # Unified with 'emirate' in UI
+    plate_category = models.CharField(max_length=10, blank=True, null=True) # e.g. 'A', 'B', 'C'
     plate_code = models.CharField(max_length=10, blank=True, null=True)
     vin = models.CharField(max_length=50)
     brand = models.CharField(max_length=100)
@@ -178,6 +180,7 @@ class JobCard(models.Model):
 class JobCardPhoto(models.Model):
     job_card = models.ForeignKey(JobCard, related_name='photos', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='job_card_photos/')
+    panel_name = models.CharField(max_length=100, blank=True, null=True) # e.g., 'Front Bumper', 'Hood'
     caption = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

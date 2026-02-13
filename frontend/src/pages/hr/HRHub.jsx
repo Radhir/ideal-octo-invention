@@ -1,14 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { FileText, Download, AlertCircle, CheckCircle } from 'lucide-react';
+import { FileText, Download, AlertCircle, CheckCircle, DollarSign } from 'lucide-react';
+import { PortfolioPage, PortfolioTitle, PortfolioStats, PortfolioGrid, PortfolioCard } from '../../components/PortfolioComponents';
 
 const HRHub = () => {
     const [slips, setSlips] = useState([]);
     const [documents, setDocuments] = useState([]);
     const [warnings, setWarnings] = useState([]);
-    const [_loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
 
-    const fetchHRData = useCallback(async () => {
+    useEffect(() => {
+        fetchHRData();
+    }, []);
+
+    const fetchHRData = async () => {
         setLoading(true);
         try {
             const [slipRes, docRes, warnRes] = await Promise.all([
@@ -24,117 +29,197 @@ const HRHub = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    };
 
-    useEffect(() => {
-        fetchHRData();
-    }, [fetchHRData]);
+    const totalSalary = slips.reduce((sum, slip) => sum + parseFloat(slip.net_salary || 0), 0);
+    const validDocs = documents.filter(doc => new Date(doc.expiry_date) > new Date()).length;
+
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>Loading...</div></PortfolioPage>;
+
     return (
-        <div className="p-8 max-w-7xl mx-auto" style={{ color: 'var(--text-primary)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Executive Workforce</div>
-                    <h1 style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0, color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>HR Console</h1>
-                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem' }}>Employee documents, salary slips, and warning letters</p>
-                </div>
-            </div>
+        <PortfolioPage breadcrumb="Human Resources">
+            <PortfolioTitle subtitle="Employee documents, salary slips, and compliance records">
+                HR HUB
+            </PortfolioTitle>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-                <div style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div className="glass-card" style={{ padding: '2rem', border: '1.5px solid var(--gold-border)' }}>
-                        <h3 style={{ margin: '0 0 1.5rem 0', fontWeight: '900', color: 'var(--text-primary)', fontSize: '1.25rem' }}>Recent Salary Slips</h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {slips.length === 0 ? (
-                                <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)', fontWeight: '800' }}>No fiscal slips available for current period.</p>
-                            ) : slips.map(slip => (
-                                <div key={slip.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', backgroundColor: 'var(--input-bg)', borderRadius: '1rem', border: '1.5px solid var(--gold-border)' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        <div style={{ padding: '0.75rem', backgroundColor: 'var(--gold-glow)', borderRadius: '0.75rem', border: '1px solid var(--gold-border)' }}>
-                                            <FileText style={{ color: 'var(--gold)' }} size={20} />
-                                        </div>
-                                        <div>
-                                            <p style={{ margin: 0, fontWeight: '900', color: 'var(--text-primary)' }}>Salary Slip - {new Date(slip.month).toLocaleDateString([], { month: 'short', year: 'numeric' })}</p>
-                                            <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '800' }}>Status: {slip.status}</p>
-                                        </div>
+            <PortfolioStats stats={[
+                { value: slips.length, label: 'SALARY SLIPS' },
+                { value: documents.length, label: 'DOCUMENTS', color: validDocs === documents.length ? '#10b981' : '#f59e0b' },
+                { value: warnings.length, label: 'WARNINGS', color: warnings.length > 0 ? '#ef4444' : '#10b981' }
+            ]} />
+
+            {/* Salary Slips */}
+            <h3 style={{
+                fontSize: '24px',
+                fontFamily: 'var(--font-serif)',
+                color: 'var(--cream)',
+                marginBottom: '30px',
+                letterSpacing: '-0.01em'
+            }}>
+                Salary Slips
+            </h3>
+
+            <PortfolioGrid columns="repeat(auto-fill, minmax(350px, 1fr))">
+                {slips.length === 0 ? (
+                    <div style={{
+                        gridColumn: '1/-1',
+                        textAlign: 'center',
+                        padding: '60px',
+                        color: 'rgba(232, 230, 227, 0.5)'
+                    }}>
+                        No salary slips available
+                    </div>
+                ) : slips.map(slip => (
+                    <div
+                        key={slip.id}
+                        style={{
+                            padding: '30px',
+                            background: 'rgba(232, 230, 227, 0.03)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '20px'
+                        }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{
+                                    width: '40px', height: '40px', borderRadius: '10px',
+                                    background: 'rgba(16, 185, 129, 0.1)',
+                                    border: '1px solid rgba(16, 185, 129, 0.2)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                }}>
+                                    <DollarSign size={20} color="#10b981" />
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '16px', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
+                                        {new Date(slip.month).toLocaleDateString([], { month: 'long', year: 'numeric' })}
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-                                        <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '1.1rem' }}>AED {parseFloat(slip.net_salary).toLocaleString()}</span>
-                                        <a href={slip.file} target="_blank" rel="noreferrer" style={{ color: 'var(--gold)' }}>
-                                            <Download size={20} />
-                                        </a>
+                                    <div style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)', marginTop: '2px' }}>
+                                        {slip.status}
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="glass-card" style={{ padding: '2rem', border: '1.5px solid var(--gold-border)' }}>
-                        <h3 style={{ margin: '0 0 1.5rem 0', fontWeight: '900', color: 'var(--text-primary)', fontSize: '1.25rem' }}>Employee Documents</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                            {documents.length === 0 ? (
-                                <p style={{ gridColumn: 'span 2', textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)', fontWeight: '800' }}>No compliance documents hosted.</p>
-                            ) : documents.map(doc => (
-                                <div key={doc.id} style={{ padding: '1.25rem', backgroundColor: 'var(--input-bg)', borderRadius: '1rem', border: '1.5px solid var(--gold-border)' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
-                                        <span style={{
-                                            backgroundColor: new Date(doc.expiry_date) > new Date() ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
-                                            color: new Date(doc.expiry_date) > new Date() ? '#10b981' : '#f43f5e',
-                                            fontSize: '10px', padding: '4px 8px', borderRadius: '4px', fontWeight: '900', border: `1px solid ${new Date(doc.expiry_date) > new Date() ? '#10b98140' : '#f43f5e40'}`
-                                        }}>{new Date(doc.expiry_date) > new Date() ? 'Valid' : 'Expired'}</span>
-                                        <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: '800' }}>Expires: {doc.expiry_date}</span>
-                                    </div>
-                                    <p style={{ margin: 0, fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-primary)' }}>{doc.document_type}</p>
-                                    <p style={{ margin: '0.25rem 0 0 0', color: 'var(--gold)', fontSize: '0.9rem', fontWeight: '800' }}>{doc.document_number}</p>
-                                    <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem' }}>
-                                        <a href={doc.file} target="_blank" rel="noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
-                                            <button style={{ width: '100%', padding: '0.6rem', fontSize: '11px', fontWeight: '900', backgroundColor: 'var(--gold-glow)', border: '1px solid var(--gold-border)', borderRadius: '8px', color: 'var(--text-primary)', cursor: 'pointer' }}>View Record</button>
-                                        </a>
-                                        <a href={doc.file} download style={{ color: 'var(--text-primary)' }}>
-                                            <button style={{ padding: '0.6rem', backgroundColor: 'var(--input-bg)', border: '1px solid var(--border-color)', borderRadius: '8px', color: 'inherit', cursor: 'pointer' }}><Download size={14} /></button>
-                                        </a>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                    <div className="glass-card" style={{ padding: '2rem', border: '1.5px solid var(--gold-border)' }}>
-                        <h3 style={{ margin: '0 0 1.5rem 0', fontWeight: '900', color: 'var(--text-primary)', fontSize: '1.25rem' }}>Disciplinary Status</h3>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', backgroundColor: warnings.length === 0 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)', borderRadius: '1rem', border: `1.5px solid ${warnings.length === 0 ? '#10b98140' : '#f43f5e40'}` }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                {warnings.length === 0 ? <CheckCircle style={{ color: '#10b981' }} size={24} /> : <AlertCircle style={{ color: '#f43f5e' }} size={24} />}
-                                <span style={{ color: warnings.length === 0 ? '#10b981' : '#f43f5e', fontWeight: '900', fontSize: '1.1rem' }}>
-                                    {warnings.length === 0 ? 'Good Standing' : `${warnings.length} Active Warnings`}
-                                </span>
                             </div>
-                        </div>
-                        <div style={{ marginTop: '2.5rem' }}>
-                            <p style={{ color: 'var(--gold)', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '1.5rem' }}>Warning Letters</p>
-                            {warnings.length === 0 ? (
-                                <div style={{ textAlign: 'center', padding: '3rem 1.5rem', border: '2px dashed var(--gold-border)', borderRadius: '1.5rem', background: 'var(--gold-glow)' }}>
-                                    <AlertCircle size={40} style={{ color: 'var(--text-secondary)', marginBottom: '1rem', opacity: 0.5 }} />
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '800', margin: 0 }}>No disciplinary history found.</p>
-                                </div>
-                            ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                    {warnings.map(warn => (
-                                        <div key={warn.id} style={{ padding: '1.25rem', backgroundColor: '#f43f5e10', borderRadius: '1rem', border: '1.5px solid #f43f5e40' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                                                <span style={{ fontWeight: '900', color: '#f43f5e', fontSize: '11px', textTransform: 'uppercase' }}>{warn.warning_level}</span>
-                                                <span style={{ fontSize: '10px', color: 'var(--text-secondary)', fontWeight: '800' }}>{warn.date_issued}</span>
-                                            </div>
-                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: '800', color: 'var(--text-primary)' }}>{warn.reason}</p>
-                                        </div>
-                                    ))}
-                                </div>
+                            {slip.file && (
+                                <a href={slip.file} target="_blank" rel="noreferrer" style={{ color: 'var(--cream)' }}>
+                                    <Download size={20} />
+                                </a>
                             )}
                         </div>
+                        <div style={{ fontSize: '28px', fontFamily: 'var(--font-serif)', color: '#10b981' }}>
+                            AED {parseFloat(slip.net_salary).toLocaleString()}
+                        </div>
+                    </div>
+                ))}
+            </PortfolioGrid>
+
+            {/* Documents */}
+            <h3 style={{
+                fontSize: '24px',
+                fontFamily: 'var(--font-serif)',
+                color: 'var(--cream)',
+                marginTop: '80px',
+                marginBottom: '30px',
+                letterSpacing: '-0.01em'
+            }}>
+                Employee Documents
+            </h3>
+
+            <PortfolioGrid columns="repeat(auto-fill, minmax(300px, 1fr))">
+                {documents.length === 0 ? (
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'rgba(232, 230, 227, 0.5)' }}>
+                        No documents on file
+                    </div>
+                ) : documents.map(doc => {
+                    const isValid = new Date(doc.expiry_date) > new Date();
+                    return (
+                        <div
+                            key={doc.id}
+                            style={{
+                                padding: '25px',
+                                background: 'rgba(232, 230, 227, 0.03)',
+                                border: `1px solid ${isValid ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
+                                borderRadius: '15px'
+                            }}
+                        >
+                            <div style={{
+                                padding: '6px 12px',
+                                background: isValid ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                                color: isValid ? '#10b981' : '#f43f5e',
+                                fontSize: '11px',
+                                borderRadius: '50px',
+                                width: 'fit-content',
+                                marginBottom: '15px',
+                                fontWeight: '500'
+                            }}>
+                                {isValid ? 'Valid' : 'Expired'}
+                            </div>
+                            <div style={{ fontSize: '16px', fontFamily: 'var(--font-serif)', color: 'var(--cream)', marginBottom: '8px' }}>
+                                {doc.document_type}
+                            </div>
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '15px' }}>
+                                {doc.document_number}
+                            </div>
+                            <div style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)' }}>
+                                Expires: {new Date(doc.expiry_date).toLocaleDateString()}
+                            </div>
+                            {doc.file && (
+                                <a href={doc.file} target="_blank" rel="noreferrer" style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    marginTop: '15px',
+                                    color: 'var(--cream)',
+                                    fontSize: '13px',
+                                    textDecoration: 'none'
+                                }}>
+                                    <FileText size={16} /> View Document
+                                </a>
+                            )}
+                        </div>
+                    );
+                })}
+            </PortfolioGrid>
+
+            {/* Warnings */}
+            <h3 style={{
+                fontSize: '24px',
+                fontFamily: 'var(--font-serif)',
+                color: 'var(--cream)',
+                marginTop: '80px',
+                marginBottom: '30px',
+                letterSpacing: '-0.01em'
+            }}>
+                Disciplinary Status
+            </h3>
+
+            <div style={{
+                padding: '30px',
+                background: warnings.length === 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(244, 63, 94, 0.05)',
+                border: `1px solid ${warnings.length === 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)'}`,
+                borderRadius: '20px',
+                maxWidth: '600px'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    {warnings.length === 0 ?
+                        <CheckCircle size={32} color="#10b981" /> :
+                        <AlertCircle size={32} color="#f43f5e" />
+                    }
+                    <div>
+                        <div style={{
+                            fontSize: '20px',
+                            fontFamily: 'var(--font-serif)',
+                            color: warnings.length === 0 ? '#10b981' : '#f43f5e'
+                        }}>
+                            {warnings.length === 0 ? 'Good Standing' : `${warnings.length} Active Warning${warnings.length > 1 ? 's' : ''}`}
+                        </div>
+                        {warnings.length > 0 && (
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginTop: '5px' }}>
+                                Review disciplinary records
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-        </div>
+        </PortfolioPage>
     );
 };
 

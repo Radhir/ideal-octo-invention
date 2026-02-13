@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, X, ChevronRight, Shield, ShieldCheck, Cpu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -77,11 +76,9 @@ const EliteCommandTerminal = ({ isOpen, onClose }) => {
     return (
         <Portal>
             <div className="terminal-overlay" onClick={onClose}>
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="terminal-window"
+                <div
+                    className="terminal-window animate-fade-in"
+                    style={{ animationDuration: '0.3s' }}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="terminal-header">
@@ -114,7 +111,7 @@ const EliteCommandTerminal = ({ isOpen, onClose }) => {
                             autoComplete="off"
                         />
                     </div>
-                </motion.div>
+                </div>
 
                 <style>{`
                     .terminal-overlay {

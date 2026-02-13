@@ -11,7 +11,6 @@ import {
     ChevronDown,
     MoreHorizontal
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const UserDropdown = () => {
     const { user, logout } = useAuth();
@@ -80,77 +79,73 @@ const UserDropdown = () => {
                 <MoreHorizontal size={20} color="#94a3b8" />
             </button>
 
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        variants={menuVariants}
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        style={{
-                            position: 'absolute',
-                            bottom: '100%',
-                            right: 0,
-                            marginBottom: '10px',
-                            width: '260px',
-                            background: 'rgba(15, 23, 42, 0.95)',
-                            backdropFilter: 'blur(30px)',
-                            WebkitBackdropFilter: 'blur(30px)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            borderRadius: '20px',
-                            padding: '10px',
-                            boxShadow: '0 -15px 50px rgba(0, 0, 0, 0.6)',
-                            zIndex: 1001,
-                            overflow: 'hidden'
-                        }}
-                    >
-                        {/* Header */}
-                        <div style={{ padding: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', marginBottom: '8px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '50%',
-                                    background: 'linear-gradient(135deg, #b08d57 0%, #8a6d43 100%)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    color: '#fff'
-                                }}>
-                                    {user?.username?.[0]?.toUpperCase() || 'U'}
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff' }}>{user?.username || 'User'}</div>
-                                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>{user?.email || 'user@eliteshine.ae'}</div>
-                                </div>
+            {isOpen && (
+                <div
+                    className="animate-fade-in"
+                    style={{
+                        position: 'absolute',
+                        bottom: '100%',
+                        right: 0,
+                        marginBottom: '10px',
+                        width: '260px',
+                        background: 'rgba(5, 5, 5, 0.95)', /* bg-deep */
+                        backdropFilter: 'blur(40px)',
+                        WebkitBackdropFilter: 'blur(40px)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: 'var(--radius-xl)',
+                        padding: '12px',
+                        boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.8)',
+                        zIndex: 1001,
+                        overflow: 'hidden',
+                        animationDuration: '0.2s'
+                    }}
+                >
+                    {/* Header */}
+                    <div style={{ padding: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{
+                                width: '40px',
+                                height: '40px',
+                                borderRadius: '50%',
+                                background: '#fff',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                color: '#000'
+                            }}>
+                                {user?.username?.[0]?.toUpperCase() || 'U'}
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff' }}>{user?.username || 'User'}</div>
+                                <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{user?.email || 'user@eliteshine.ae'}</div>
                             </div>
                         </div>
+                    </div>
 
-                        {/* Menu Items */}
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <MenuItem icon={User} label="View profile" shortcut="⌘P" onClick={() => navigate('/portfolio')} />
-                            <MenuItem icon={Settings} label="Settings" shortcut="⌘S" onClick={() => navigate('/settings')} />
-                        </div>
+                    {/* Menu Items */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <MenuItem icon={User} label="View profile" shortcut="⌘P" onClick={() => navigate('/portfolio')} />
+                        <MenuItem icon={Settings} label="Settings" shortcut="⌘S" onClick={() => navigate('/settings')} />
+                    </div>
 
-                        <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.05)', margin: '8px 0' }} />
+                    <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.05)', margin: '8px 0' }} />
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <MenuItem icon={Layers} label="Changelog" />
-                            <MenuItem icon={HelpCircle} label="Support" />
-                            <MenuItem icon={Code} label="API" />
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <MenuItem icon={Layers} label="Changelog" />
+                        <MenuItem icon={HelpCircle} label="Support" />
+                        <MenuItem icon={Code} label="API" />
+                    </div>
 
-                        <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.05)', margin: '8px 0' }} />
+                    <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.05)', margin: '8px 0' }} />
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                            <MenuItem icon={LogOut} label="Log out" shortcut="⌥⇧Q" onClick={handleLogout} destructive />
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <MenuItem icon={LogOut} label="Log out" shortcut="⌥⇧Q" onClick={handleLogout} destructive />
+                    </div>
 
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                </div>
+            )}
         </div>
     );
 };

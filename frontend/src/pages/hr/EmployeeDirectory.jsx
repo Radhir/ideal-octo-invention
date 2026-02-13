@@ -1,20 +1,20 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import { useNavigate } from 'react-router-dom';
-import {
-    Users, UserPlus, Search,
-    MoreVertical, ShieldCheck, Mail, Phone,
-    Briefcase, Calendar, DollarSign, Eye, Edit, XCircle, FileText
-} from 'lucide-react';
+import { Users, UserPlus, Mail, Phone, Briefcase, Calendar } from 'lucide-react';
+import { PortfolioPage, PortfolioTitle, PortfolioButton, PortfolioCard, PortfolioGrid, PortfolioStats } from '../../components/PortfolioComponents';
 
 const EmployeeDirectory = () => {
     const navigate = useNavigate();
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedEmployee, setSelectedEmployee] = useState(null);
 
-    const fetchEmployees = useCallback(async () => {
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
+
+    const fetchEmployees = async () => {
         try {
             const res = await api.get('/hr/api/employees/');
             setEmployees(res.data);
@@ -23,277 +23,166 @@ const EmployeeDirectory = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    };
 
-    useEffect(() => {
-        fetchEmployees();
-    }, [fetchEmployees]);
+    const activeEmployees = employees.filter(emp => emp.is_active !== false);
+    const departments = [...new Set(employees.map(e => e.department).filter(Boolean))];
 
-    const filteredEmployees = employees.filter(emp =>
-        emp.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.employee_id.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>Loading...</div></PortfolioPage>;
 
     return (
-        <div style={{ padding: '30px 20px' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Executive HR Monitoring</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>WORKFORCE</h1>
-                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem' }}>Human Capital Management & Strategic Payroll</p>
-                </div>
-                <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                    <CircleButton
-                        icon={<DollarSign size={18} />}
-                        label="Payroll"
-                        onClick={() => navigate('/hr/payroll')}
-                    />
-                    <CircleButton
-                        icon={<Calendar size={18} />}
-                        label="Roster"
-                        onClick={() => navigate('/hr/roster')}
-                    />
-                    <CircleButton
-                        icon={<ShieldCheck size={18} />}
-                        label="Policies"
-                        onClick={() => navigate('/hr/rules')}
-                    />
-                    <CircleButton
-                        icon={<Users size={18} />}
-                        label="Logs"
-                        onClick={() => navigate('/hr/attendance')}
-                    />
-                    <CircleButton
-                        icon={<Users size={18} />}
-                        label="Teams"
-                        onClick={() => navigate('/hr/teams')}
-                    />
-                    <button
-                        className="btn-primary"
-                        onClick={() => navigate('/hr/register')}
-                        style={{ height: '50px', padding: '0 25px', borderRadius: '25px', fontSize: '12px', fontWeight: '800', marginLeft: '10px' }}
-                    >
-                        <UserPlus size={16} /> REGISTER
-                    </button>
-                </div>
-            </header>
+        <PortfolioPage breadcrumb="Human Resources">
+            {!selectedEmployee ? (
+                <>
+                    <PortfolioTitle>EMPLOYEES</PortfolioTitle>
 
-            <div style={{ marginBottom: '30px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} size={18} />
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by name, ID or role..."
-                    style={{ paddingLeft: '45px', height: '50px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)', fontWeight: '900' }}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
+                    <PortfolioStats stats={[
+                        { value: activeEmployees.length, label: 'ACTIVE' },
+                        { value: departments.length, label: 'DEPARTMENTS' },
+                        { value: employees.length, label: 'TOTAL' }
+                    ]} />
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-                {loading ? (
-                    <p style={{ gridColumn: '1/-1', textAlign: 'center' }}>Loading Workforce...</p>
-                ) : filteredEmployees.length === 0 ? (
-                    <p style={{ gridColumn: '1/-1', textAlign: 'center' }}>No records found.</p>
-                ) : filteredEmployees.map(emp => (
-                    <EmployeeCard key={emp.id} employee={emp} navigate={navigate} />
-                ))}
-            </div>
-        </div>
-    );
-};
+                    <PortfolioButton onClick={() => navigate('/hr/register')} style={{ marginBottom: '60px' }}>
+                        <UserPlus size={18} style={{ display: 'inline', marginRight: '10px', marginBottom: '-3px' }} />
+                        New Employee
+                    </PortfolioButton>
 
-const EmployeeCard = ({ employee, navigate }) => {
-    const [showMenu, setShowMenu] = useState(false);
-    const [showPhone, setShowPhone] = useState(false);
-    const [showEmail, setShowEmail] = useState(false);
-    const menuRef = useRef(null);
+                    <PortfolioGrid>
+                        {activeEmployees.map(emp => (
+                            <PortfolioCard key={emp.id} onClick={() => setSelectedEmployee(emp)}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                                    <div style={{
+                                        width: '50px', height: '50px', borderRadius: '50%',
+                                        background: 'rgba(232, 230, 227, 0.1)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                    }}>
+                                        <Users size={24} color="var(--cream)" opacity={0.5} />
+                                    </div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontSize: '18px', fontFamily: 'var(--font-serif)', marginBottom: '5px' }}>
+                                            {emp.full_name}
+                                        </div>
+                                        <div style={{ fontSize: '12px', opacity: 0.5 }}>
+                                            {emp.role || 'Employee'}
+                                        </div>
+                                    </div>
+                                </div>
 
-    // Close menu on outside click
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (menuRef.current && !menuRef.current.contains(e.target)) {
-                setShowMenu(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    const phoneNumber = employee.uae_mobile || employee.home_mobile || 'N/A';
-    const email = employee.email || `${employee.full_name.replace(/\s/g, '.').toLowerCase()}@eliteshineuae.com`;
-
-    const menuActions = [
-        { icon: <Eye size={14} />, label: 'View Profile', onClick: () => navigate(`/hr/employee/${employee.id}`) },
-        { icon: <Edit size={14} />, label: 'Edit Details', onClick: () => navigate(`/hr/employee/${employee.id}/edit`) },
-        { icon: <FileText size={14} />, label: 'Salary Slip', onClick: () => navigate(`/hr/payroll?employee=${employee.id}`) },
-        {
-            icon: <XCircle size={14} />, label: 'Deactivate', onClick: async () => {
-                if (window.confirm(`Are you sure you want to deactivate ${employee.full_name}?`)) {
-                    try {
-                        await api.delete(`/hr/api/employees/${employee.id}/`);
-                        window.location.reload(); // Simple reload to refresh list
-                    } catch (err) {
-                        console.error('Error deactivating employee', err);
-                        alert('Failed to deactivate employee');
-                    }
-                }
-            }, danger: true
-        },
-    ];
-
-    return (
-        <GlassCard style={{ padding: '25px', position: 'relative', border: '1.5px solid var(--gold-border)' }}>
-            {/* 3-Dot Menu */}
-            <div ref={menuRef} style={{ position: 'absolute', top: '20px', right: '20px' }}>
-                <div
-                    style={{ color: '#64748b', cursor: 'pointer', padding: '4px' }}
-                    onClick={() => setShowMenu(!showMenu)}
-                >
-                    <MoreVertical size={18} />
-                </div>
-                {showMenu && (
-                    <div style={{
-                        position: 'absolute', top: '30px', right: '0', zIndex: 50,
-                        background: 'var(--bg-secondary)', border: '1.5px solid var(--gold-border)',
-                        borderRadius: '12px', padding: '8px 0', minWidth: '180px',
-                        backdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
-                    }}>
-                        {menuActions.map((action, i) => (
-                            <div
-                                key={i}
-                                onClick={() => { action.onClick(); setShowMenu(false); }}
-                                style={{
-                                    display: 'flex', alignItems: 'center', gap: '10px',
-                                    padding: '10px 16px', cursor: 'pointer',
-                                    color: action.danger ? '#ef4444' : 'var(--text-primary)',
-                                    fontSize: '13px', fontWeight: '600',
-                                    transition: 'background 0.2s'
-                                }}
-                                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--input-bg)'}
-                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                            >
-                                {action.icon} {action.label}
-                            </div>
+                                <div style={{ fontSize: '13px', opacity: 0.6 }}>
+                                    {emp.employee_id} • {emp.department || 'General'}
+                                </div>
+                            </PortfolioCard>
                         ))}
+                    </PortfolioGrid>
+                </>
+            ) : (
+                <>
+                    <PortfolioButton
+                        variant="secondary"
+                        onClick={() => setSelectedEmployee(null)}
+                        style={{ marginBottom: '60px' }}
+                    >
+                        ← Back to directory
+                    </PortfolioButton>
+
+                    <h2 style={{
+                        fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+                        fontFamily: 'var(--font-serif)',
+                        fontWeight: '500',
+                        color: 'var(--cream)',
+                        marginBottom: '20px',
+                        letterSpacing: '-0.01em'
+                    }}>
+                        {selectedEmployee.full_name}
+                    </h2>
+
+                    <div style={{
+                        fontSize: '16px',
+                        color: 'rgba(232, 230, 227, 0.7)',
+                        marginBottom: '60px'
+                    }}>
+                        {selectedEmployee.role || 'Employee'} • {selectedEmployee.department || 'General Department'}
                     </div>
-                )}
-            </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
-                <div style={{
-                    width: '60px', height: '60px', borderRadius: '15px',
-                    background: 'var(--input-bg)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    border: '1.5px solid var(--gold-border)'
-                }}>
-                    <Users size={28} color="var(--gold)" />
-                </div>
-                <div>
-                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)' }}>{employee.full_name}</h3>
-                    <div style={{ color: 'var(--gold)', fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{employee.role}</div>
-                </div>
-            </div>
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                        gap: '20px',
+                        marginBottom: '60px',
+                        maxWidth: '900px'
+                    }}>
+                        <div style={{
+                            padding: '25px 30px',
+                            background: 'rgba(232, 230, 227, 0.03)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '15px'
+                        }}>
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                EMPLOYEE ID
+                            </div>
+                            <div style={{ fontSize: '18px', color: 'var(--cream)' }}>
+                                {selectedEmployee.employee_id}
+                            </div>
+                        </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '20px' }}>
-                <InfoItem icon={<ShieldCheck size={14} />} label="ID" value={employee.employee_id} />
-                <InfoItem icon={<Briefcase size={14} />} label="Dept" value={employee.department || '--'} />
-            </div>
+                        <div style={{
+                            padding: '25px 30px',
+                            background: 'rgba(232, 230, 227, 0.03)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '15px'
+                        }}>
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                <Mail size={14} style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                                EMAIL
+                            </div>
+                            <div style={{ fontSize: '14px', color: 'var(--cream)' }}>
+                                {selectedEmployee.email || 'N/A'}
+                            </div>
+                        </div>
 
-            {/* Expandable Info Banners */}
-            {showEmail && (
-                <div style={{
-                    background: 'rgba(176,141,87,0.08)', border: '1px solid rgba(176,141,87,0.2)',
-                    borderRadius: '8px', padding: '8px 12px', marginBottom: '10px',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                }}>
-                    <a href={`mailto:${email}`} style={{ color: '#b08d57', fontSize: '13px', textDecoration: 'none', fontWeight: '600' }}>{email}</a>
-                    <span onClick={() => setShowEmail(false)} style={{ color: '#64748b', cursor: 'pointer', fontSize: '12px' }}>✕</span>
-                </div>
+                        <div style={{
+                            padding: '25px 30px',
+                            background: 'rgba(232, 230, 227, 0.03)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '15px'
+                        }}>
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                <Phone size={14} style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                                PHONE
+                            </div>
+                            <div style={{ fontSize: '14px', color: 'var(--cream)' }}>
+                                {selectedEmployee.uae_mobile || selectedEmployee.home_mobile || 'N/A'}
+                            </div>
+                        </div>
+
+                        <div style={{
+                            padding: '25px 30px',
+                            background: 'rgba(232, 230, 227, 0.03)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '15px'
+                        }}>
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                <Calendar size={14} style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                                JOINED
+                            </div>
+                            <div style={{ fontSize: '14px', color: 'var(--cream)' }}>
+                                {new Date(selectedEmployee.date_joined).toLocaleDateString()}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                        <PortfolioButton onClick={() => navigate(`/hr/employee/${selectedEmployee.id}/edit`)}>
+                            Edit Details
+                        </PortfolioButton>
+                        <PortfolioButton variant="secondary" onClick={() => navigate(`/hr/payroll?employee=${selectedEmployee.id}`)}>
+                            View Payroll
+                        </PortfolioButton>
+                    </div>
+                </>
             )}
-            {showPhone && (
-                <div style={{
-                    background: 'rgba(176,141,87,0.08)', border: '1px solid rgba(176,141,87,0.2)',
-                    borderRadius: '8px', padding: '8px 12px', marginBottom: '10px',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                }}>
-                    <a href={`tel:${phoneNumber}`} style={{ color: '#b08d57', fontSize: '13px', textDecoration: 'none', fontWeight: '600' }}>{phoneNumber}</a>
-                    <span onClick={() => setShowPhone(false)} style={{ color: '#64748b', cursor: 'pointer', fontSize: '12px' }}>✕</span>
-                </div>
-            )}
-
-            <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <ActionIcon icon={<Mail size={16} />} onClick={() => setShowEmail(!showEmail)} active={showEmail} />
-                    <ActionIcon icon={<Phone size={16} />} onClick={() => setShowPhone(!showPhone)} active={showPhone} />
-                </div>
-                <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-                    Since {new Date(employee.date_joined).toLocaleDateString()}
-                </div>
-            </div>
-        </GlassCard>
+        </PortfolioPage>
     );
 };
-
-const InfoItem = ({ icon, label, value }) => (
-    <div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--text-secondary)', fontSize: '10px', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '800' }}>
-            {icon} {label}
-        </div>
-        <div style={{ fontWeight: '900', fontSize: '15px', color: 'var(--text-primary)' }}>{value}</div>
-    </div>
-);
-
-const ActionIcon = ({ icon, onClick, active }) => (
-    <div
-        onClick={onClick}
-        style={{
-            padding: '8px', borderRadius: '8px',
-            background: active ? 'var(--gold-glow)' : 'var(--input-bg)',
-            color: active ? 'var(--gold)' : 'var(--text-secondary)',
-            cursor: 'pointer',
-            border: active ? '1px solid var(--gold-border)' : '1px solid var(--border-color)',
-            transition: 'all 0.2s ease'
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--gold)'; e.currentTarget.style.color = 'var(--gold)'; }}
-        onMouseLeave={(e) => { if (!active) { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)'; } }}
-    >
-        {icon}
-    </div>
-);
-
-const CircleButton = ({ icon, label, onClick }) => (
-    <div
-        onClick={onClick}
-        style={{
-            display: 'flex', flexDirection: 'column', alignItems: 'center',
-            gap: '8px', cursor: 'pointer', transition: 'all 0.3s ease'
-        }}
-    >
-        <div
-            className="glass-card"
-            style={{
-                width: '60px', height: '60px', borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: '1.5px solid var(--gold-border)',
-                background: 'var(--bg-glass)', color: 'var(--text-primary)',
-                transition: 'all 0.3s'
-            }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--gold)';
-                e.currentTarget.style.boxShadow = '0 0 15px var(--gold-glow)';
-                e.currentTarget.style.background = 'var(--input-bg)';
-            }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--gold-border)';
-                e.currentTarget.style.boxShadow = 'none';
-                e.currentTarget.style.background = 'var(--bg-glass)';
-            }}
-        >
-            {icon}
-        </div>
-        <span style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</span>
-    </div>
-);
 
 export default EmployeeDirectory;

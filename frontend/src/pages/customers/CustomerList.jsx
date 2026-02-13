@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
-import { Users, Search, Phone, Mail, MapPin, Plus } from 'lucide-react';
+import { Users, Phone, Mail, MapPin, Plus } from 'lucide-react';
+import { PortfolioPage, PortfolioTitle, PortfolioButton, PortfolioGrid, PortfolioCard, PortfolioStats } from '../../components/PortfolioComponents';
 
 const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCustomer, setSelectedCustomer] = useState(null);
 
     useEffect(() => {
         fetchCustomers();
@@ -15,7 +15,7 @@ const CustomerList = () => {
     const fetchCustomers = async () => {
         try {
             const res = await api.get('/customers/api/');
-            setCustomers(res.data.results || res.data); // Handle pagination or list
+            setCustomers(res.data.results || res.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -23,56 +23,107 @@ const CustomerList = () => {
         }
     };
 
-    const filtered = customers.filter(c =>
-        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        c.phone.includes(searchTerm)
-    );
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>Loading...</div></PortfolioPage>;
 
     return (
-        <div style={{ padding: '30px 20px' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#ec4899', fontWeight: '800', letterSpacing: '2px' }}>RELATIONSHIP MANAGEMENT</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>Customer Database</h1>
-                </div>
-                <button className="btn-primary" style={{ background: '#ec4899' }}>
-                    <Plus size={18} style={{ marginRight: '8px' }} /> New Customer
-                </button>
-            </header>
+        <PortfolioPage breadcrumb="Customer Relations">
+            {!selectedCustomer ? (
+                <>
+                    <PortfolioTitle>CUSTOMERS</PortfolioTitle>
 
-            <div style={{ marginBottom: '30px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: '#ec4899' }} size={20} />
-                <input
-                    type="text"
-                    placeholder="Search customers..."
-                    className="form-control"
-                    style={{ paddingLeft: '55px', borderColor: 'rgba(236,72,153,0.3)' }}
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                />
-            </div>
+                    <PortfolioStats stats={[
+                        { value: customers.length, label: 'TOTAL CUSTOMERS' }
+                    ]} />
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-                {loading ? <div style={{ color: '#fff' }}>Loading Database...</div> : filtered.map(c => (
-                    <GlassCard key={c.id} style={{ padding: '25px', position: 'relative', borderTop: '4px solid #ec4899' }}>
-                        <h3 style={{ margin: '0 0 5px 0', fontSize: '18px', fontWeight: '800' }}>{c.name}</h3>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#94a3b8', fontSize: '13px', marginBottom: '15px' }}>
-                            <Phone size={14} /> {c.phone}
+                    <PortfolioButton onClick={() => window.location.href = '/customers/create'} style={{ marginBottom: '60px' }}>
+                        <Plus size={18} style={{ display: 'inline', marginRight: '10px', marginBottom: '-3px' }} />
+                        New Customer
+                    </PortfolioButton>
+
+                    <PortfolioGrid>
+                        {customers.map(customer => (
+                            <PortfolioCard key={customer.id} onClick={() => setSelectedCustomer(customer)}>
+                                <div style={{ marginBottom: '20px' }}>
+                                    <div style={{ fontSize: '20px', fontFamily: 'var(--font-serif)', marginBottom: '8px' }}>
+                                        {customer.name}
+                                    </div>
+                                    <div style={{ fontSize: '13px', opacity: 0.6, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Phone size={14} /> {customer.phone}
+                                    </div>
+                                </div>
+
+                                {customer.email && (
+                                    <div style={{ fontSize: '12px', opacity: 0.5, marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Mail size={13} /> {customer.email}
+                                    </div>
+                                )}
+
+                                {customer.address && (
+                                    <div style={{ fontSize: '12px', opacity: 0.5, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <MapPin size={13} /> {customer.address.substring(0, 40)}...
+                                    </div>
+                                )}
+
+                                <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid rgba(232, 230, 227, 0.1)', fontSize: '11px', opacity: 0.5 }}>
+                                    Since {new Date(customer.created_at).toLocaleDateString()}
+                                </div>
+                            </PortfolioCard>
+                        ))}
+                    </PortfolioGrid>
+                </>
+            ) : (
+                <>
+                    <PortfolioButton
+                        variant="secondary"
+                        onClick={() => setSelectedCustomer(null)}
+                        style={{ marginBottom: '60px' }}
+                    >
+                        ← Back to customers
+                    </PortfolioButton>
+
+                    <h2 style={{
+                        fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+                        fontFamily: 'var(--font-serif)',
+                        fontWeight: '500',
+                        color: 'var(--cream)',
+                        marginBottom: '60px',
+                        letterSpacing: '-0.01em'
+                    }}>
+                        {selectedCustomer.name}
+                    </h2>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', maxWidth: '900px' }}>
+                        <div style={{ padding: '25px 30px', background: 'rgba(232, 230, 227, 0.03)', border: '1px solid rgba(232, 230, 227, 0.1)', borderRadius: '15px' }}>
+                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                <Phone size={14} style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                                PHONE
+                            </div>
+                            <div style={{ fontSize: '16px', color: 'var(--cream)' }}>{selectedCustomer.phone}</div>
                         </div>
 
-                        <div style={{ display: 'grid', gap: '10px', fontSize: '12px', color: '#cbd5e1' }}>
-                            {c.email && <div style={{ display: 'flex', gap: '8px' }}><Mail size={14} /> {c.email}</div>}
-                            {c.address && <div style={{ display: 'flex', gap: '8px' }}><MapPin size={14} /> {c.address}</div>}
-                        </div>
+                        {selectedCustomer.email && (
+                            <div style={{ padding: '25px 30px', background: 'rgba(232, 230, 227, 0.03)', border: '1px solid rgba(232, 230, 227, 0.1)', borderRadius: '15px' }}>
+                                <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                    <Mail size={14} style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                                    EMAIL
+                                </div>
+                                <div style={{ fontSize: '16px', color: 'var(--cream)' }}>{selectedCustomer.email}</div>
+                            </div>
+                        )}
 
-                        <div style={{ marginTop: '20px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
-                            <span style={{ color: '#64748b' }}>Since {new Date(c.created_at).toLocaleDateString()}</span>
-                            <span style={{ color: '#ec4899', fontWeight: '700' }}>View Profile →</span>
-                        </div>
-                    </GlassCard>
-                ))}
-            </div>
-        </div>
+                        {selectedCustomer.address && (
+                            <div style={{ padding: '25px 30px', background: 'rgba(232, 230, 227, 0.03)', border: '1px solid rgba(232, 230, 227, 0.1)', borderRadius: '15px', gridColumn: '1 / -1' }}>
+                                <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px', letterSpacing: '1px' }}>
+                                    <MapPin size={14} style={{ display: 'inline', marginRight: '6px', marginBottom: '-2px' }} />
+                                    ADDRESS
+                                </div>
+                                <div style={{ fontSize: '16px', color: 'var(--cream)', lineHeight: '1.6' }}>{selectedCustomer.address}</div>
+                            </div>
+                        )}
+                    </div>
+                </>
+            )}
+        </PortfolioPage>
     );
 };
 

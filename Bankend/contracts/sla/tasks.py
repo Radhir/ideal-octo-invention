@@ -14,7 +14,7 @@ def detect_sla_violations():
     violations_created = 0
     for sla in active_slas:
         # Jobs for this customer that are active and have started SLA clock
-        # Statuses where SLA applies (usually before Closed/Delivery)
+        # Statuses where SLA applies
         jobs = JobCard.objects.filter(
             customer_profile=sla.customer,
             status__in=['ESTIMATION_ASSIGNMENT', 'WIP_QC', 'INVOICING_DELIVERY'],
@@ -23,12 +23,13 @@ def detect_sla_violations():
         for job in jobs:
             elapsed = (timezone.now() - job.sla_clock_start).total_seconds() / 3600  # hours
             if elapsed > sla.resolution_time:
-                # Check if already reported for this specific violation type
+                # Check if already reported
                 if not SLAViolation.objects.filter(
                     job_card=job,
                     sla=sla,
                     violation_type='RESOLUTION_TIME'
                 ).exists():
+                    # Calculate service credit
                     service_credit = job.net_amount * (sla.service_credit_percentage / 100)
                     if service_credit < sla.min_service_credit:
                         service_credit = sla.min_service_credit
@@ -48,6 +49,63 @@ def detect_sla_violations():
     return f"Created {violations_created} new SLA violations"
 
 @shared_task
-def calculate_sla_metrics(customer_id=None):
-    """Stub for SLA metrics calculation."""
-    return "Calculated SLA metrics"
+def calculate_sla_metrics(agreement_id=None):
+    """Calculate and aggregate SLA compliance metrics for a month."""
+    from django.db.models import Avg, Count
+    from contracts.sla.models import SLAMetric
+    from datetime import date
+    
+    first_day = date.today().replace(day=1)
+    
+    query = ServiceLevelAgreement.objects.filter(is_active=True)
+    if agreement_id:
+        query = query.filter(id=agreement_id)
+        
+    metrics_processed = 0
+    for sla in query:
+        # Get jobs for this SLA completed this month
+        month_jobs = JobCard.objects.filter(
+            customer_profile=sla.customer,
+            status='CLOSED',
+            updated_at__year=first_day.year,
+            updated_at__month=first_day.month,
+            sla_clock_start__isnull=False
+        )
+        
+        total_jobs = month_jobs.count()
+        if total_jobs == 0:
+            continue
+            
+        # On-time completions
+        on_time_completions = 0
+        total_resolution_time = 0
+        
+        for job in month_jobs:
+            elapsed = (job.updated_at - job.sla_clock_start).total_seconds() / 3600
+            total_resolution_time += elapsed
+            if elapsed <= sla.resolution_time:
+                on_time_completions += 1
+                
+        avg_resolution = total_resolution_time / total_jobs if total_jobs > 0 else 0
+        
+        # Calculate Service Credits Issued this month
+        credits = SLAViolation.objects.filter(
+            sla=sla,
+            violation_date__year=first_day.year,
+            violation_date__month=first_day.month
+        ).aggregate(models.Sum('service_credit_amount'))['service_credit_amount__sum'] or 0
+        
+        SLAMetric.objects.update_or_create(
+            sla=sla,
+            month=first_day,
+            defaults={
+                'total_jobs': total_jobs,
+                'on_time_completions': on_time_completions,
+                'average_completion_time': avg_resolution,
+                'service_credits_issued': credits,
+                'calculated_at': timezone.now()
+            }
+        )
+        metrics_processed += 1
+        
+    return f"Processed {metrics_processed} SLA metric records for {first_day.strftime('%B %Y')}"

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 import { Plus, Minus, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +8,9 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
 
     return (
         <div style={{ marginBottom: '16px' }}>
-            <motion.button
-                initial={false}
+            <button
                 onClick={onClick}
+                className="scale-hover"
                 style={{
                     width: '100%',
                     display: 'flex',
@@ -30,8 +29,6 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
                     outline: 'none',
                     boxShadow: isOpen ? '0 10px 25px rgba(0,0,0,0.1)' : 'none'
                 }}
-                whileHover={{ scale: 1.02, backgroundColor: 'var(--input-bg)' }}
-                whileTap={{ scale: 0.98 }}
             >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
@@ -57,71 +54,60 @@ const AccordionItem = ({ item, isOpen, onClick }) => {
                 }}>
                     {isOpen ? <Minus size={14} /> : <Plus size={14} />}
                 </div>
-            </motion.button>
+            </button>
 
-            <AnimatePresence initial={false}>
-                {isOpen && (
-                    <motion.div
-                        initial="collapsed"
-                        animate="open"
-                        exit="collapsed"
-                        variants={{
-                            open: { opacity: 1, height: "auto", marginTop: 12 },
-                            collapsed: { opacity: 0, height: 0, marginTop: 0 }
-                        }}
-                        transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
-                        style={{ overflow: 'hidden' }}
-                    >
-                        <div style={{
-                            background: 'var(--bg-secondary)',
-                            borderRadius: '16px',
-                            border: '1.5px solid var(--border-color)',
-                            padding: '10px',
-                            boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)'
-                        }}>
-                            {item.subItems && item.subItems.map((sub, idx) => (
-                                <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: idx * 0.05 }}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigate(sub.path);
-                                    }}
-                                    style={{
-                                        padding: '12px 18px',
-                                        borderRadius: '10px',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        color: 'var(--text-primary)',
-                                        fontSize: '14px',
-                                        fontWeight: '900',
-                                        marginBottom: idx === item.subItems.length - 1 ? 0 : '6px',
-                                        transition: 'all 0.2s',
-                                        borderBottom: '1px solid var(--gold-border)'
-                                    }}
-                                    onMouseOver={(e) => {
-                                        e.currentTarget.style.background = 'var(--gold-glow)';
-                                        e.currentTarget.style.color = 'var(--text-primary)';
-                                        e.currentTarget.style.paddingLeft = '22px';
-                                    }}
-                                    onMouseOut={(e) => {
-                                        e.currentTarget.style.background = 'transparent';
-                                        e.currentTarget.style.color = 'var(--text-secondary)';
-                                        e.currentTarget.style.paddingLeft = '18px';
-                                    }}
-                                >
-                                    <span>{sub.label}</span>
-                                    <ChevronRight size={14} color="var(--gold)" />
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+
+            {isOpen && (
+                <div
+                    className="animate-fade-in"
+                    style={{ overflow: 'hidden', marginTop: '12px' }}
+                >
+                    <div style={{
+                        background: 'var(--bg-secondary)',
+                        borderRadius: '16px',
+                        border: '1.5px solid var(--border-color)',
+                        padding: '10px',
+                        boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.05)'
+                    }}>
+                        {item.subItems && item.subItems.map((sub, idx) => (
+                            <div
+                                key={idx}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(sub.path);
+                                }}
+                                style={{
+                                    padding: '12px 18px',
+                                    borderRadius: '10px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    color: 'var(--text-primary)',
+                                    fontSize: '14px',
+                                    fontWeight: '900',
+                                    marginBottom: idx === item.subItems.length - 1 ? 0 : '6px',
+                                    transition: 'all 0.2s',
+                                    borderBottom: '1px solid var(--gold-border)'
+                                }}
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.background = 'var(--gold-glow)';
+                                    e.currentTarget.style.color = 'var(--text-primary)';
+                                    e.currentTarget.style.paddingLeft = '22px';
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.background = 'transparent';
+                                    e.currentTarget.style.color = 'var(--text-secondary)';
+                                    e.currentTarget.style.paddingLeft = '18px';
+                                }}
+                            >
+                                <span>{sub.label}</span>
+                                <ChevronRight size={14} color="var(--gold)" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

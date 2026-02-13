@@ -154,9 +154,10 @@ class WorkshopDiaryReportView(APIView):
                 'number': j.job_card_number,
                 'date': j.date,
                 'customer': j.customer_name,
+                'asset': f"{j.brand} {j.model} ({j.registration_number})",
                 'status': j.status,
                 'net_amount': j.net_amount,
-                'advisor': j.service_advisor.full_name if j.service_advisor else j.service_advisor_legacy
+                'advisor': (j.service_advisor.first_name + ' ' + j.service_advisor.last_name) if j.service_advisor else j.service_advisor_legacy
             })
 
         return Response({

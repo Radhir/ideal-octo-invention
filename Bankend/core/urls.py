@@ -24,7 +24,7 @@ from .views import MaintenanceView
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
-    path('', lambda request: redirect('home', permanent=False)),
+    path('', lambda request: redirect('admin:index', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/health/', lambda request: JsonResponse({"status": "ok"}), name='health-check'),
     path('api/auth/', include('authentication.urls')),

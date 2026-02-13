@@ -1,5 +1,4 @@
 import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 
 const MagneticButton = ({ children, className = "", onClick, strength = 0.3 }) => {
     const buttonRef = useRef(null);
@@ -18,19 +17,22 @@ const MagneticButton = ({ children, className = "", onClick, strength = 0.3 }) =
     };
 
     return (
-        <motion.div
+        <div
             ref={buttonRef}
             className={className}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            animate={{ x: position.x, y: position.y }}
-            transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
             onClick={onClick}
-            style={{ display: 'inline-block' }}
+            style={{
+                display: 'inline-block',
+                transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+                transition: position.x === 0 ? 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)' : 'none'
+            }}
         >
             {children}
-        </motion.div>
+        </div>
     );
 };
 
 export default MagneticButton;
+

@@ -42,6 +42,7 @@ const RiskAuditPage = lazy(() => import('./pages/RiskAuditPage'));
 
 const JobList = lazy(() => import('./pages/jobs/JobList'));
 const JobCreate = lazy(() => import('./pages/jobs/JobCreate'));
+const JobCardBuilder = lazy(() => import('./pages/jobs/JobCardBuilder'));
 const JobDetail = lazy(() => import('./pages/jobs/JobDetail'));
 const JobBoard = lazy(() => import('./pages/jobs/JobBoard'));
 const EstimateDetail = lazy(() => import('./pages/estimates/EstimateDetail'));
@@ -132,6 +133,9 @@ const CustomerList = lazy(() => import('./pages/customers/CustomerList'));
 const SchedulePage = lazy(() => import('./pages/scheduling/SchedulePage'));
 const UnderConstruction = lazy(() => import('./pages/UnderConstruction'));
 const BranchManagementPage = lazy(() => import('./pages/admin/BranchManagementPage'));
+const SLAOverview = lazy(() => import('./pages/sla/SLAOverview'));
+const SLAList = lazy(() => import('./pages/sla/SLAList'));
+const SLADetail = lazy(() => import('./pages/sla/SLADetail'));
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -174,6 +178,7 @@ function App() {
                       <Route path="/job-cards" element={<JobList />} />
                       <Route path="/job-board" element={<JobBoard />} />
                       <Route path="/job-cards/create" element={<JobCreate />} />
+                      <Route path="/jobs/builder" element={<JobCardBuilder />} />
                       <Route path="/job-cards/:id" element={<JobDetail />} />
                       <Route path="/estimates/:id" element={<EstimateDetail />} />
                       <Route path="/bookings" element={<BookingList />} />
@@ -262,6 +267,9 @@ function App() {
                       <Route path="/advisor-dashboard" element={<AdvisorDashboard />} />
                       <Route path="/advisor-daily-report" element={<AdvisorDailyReport />} />
                       <Route path="/payment/:invoiceId" element={<PaymentPage />} />
+                      <Route path="/sla" element={<SLAOverview />} />
+                      <Route path="/sla/list" element={<SLAList />} />
+                      <Route path="/sla/:id" element={<SLADetail />} />
                       <Route path="/construction" element={<UnderConstruction />} />
 
                       <Route path="/admin/branches" element={<BranchManagementPage />} />

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Camera, Lock, Users, Activity, Eye } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/axios';

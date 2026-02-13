@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
     MessageSquare, Rocket, Shield, Settings, Briefcase, Building,
     ClipboardList, FileText, Calendar, X, MapPin, Clock, Menu, Users, Zap, ShoppingCart
@@ -100,41 +99,38 @@ const QuickAccessHub = () => {
                     bottom: 100px;
                     right: 30px;
                     z-index: 9998;
-                    width: 320px;
-                    background: rgba(15, 23, 42, 0.95);
-                    backdrop-filter: blur(20px);
-                    border: 1px solid rgba(176, 141, 87, 0.3);
-                    border-radius: 20px;
-                    padding: 20px;
-                    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+                    width: 340px;
+                    background: rgba(5, 5, 5, 0.98);
+                    backdrop-filter: blur(40px);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: var(--radius-xl);
+                    padding: 24px;
+                    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9);
                     pointer-events: auto;
                 }
                 .quick-hub-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 20px;
-                    padding-bottom: 15px;
-                    border-bottom: 1px solid rgba(176, 141, 87, 0.2);
+                    margin-bottom: 24px;
+                    padding-bottom: 18px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
                 }
                 .quick-hub-title {
-                    font-weight: 900;
+                    font-weight: 800;
                     letter-spacing: 2px;
-                    font-size: 12px;
-                    color: #b08d57;
+                    font-size: 11px;
+                    color: var(--gold);
                     text-transform: uppercase;
                 }
                 .quick-hub-close {
-                    background: none;
+                    background: rgba(255,255,255,0.05);
                     border: none;
-                    color: rgba(255, 255, 255, 0.5);
+                    color: #fff;
                     cursor: pointer;
-                    padding: 4px;
+                    padding: 8px;
+                    border-radius: 50%;
                     display: flex;
-                    transition: color 0.2s;
-                }
-                .quick-hub-close:hover {
-                    color: white;
                 }
                 .quick-hub-grid {
                     display: grid;
@@ -142,28 +138,29 @@ const QuickAccessHub = () => {
                     gap: 12px;
                 }
                 .quick-hub-item {
-                    padding: 16px;
-                    background: rgba(255, 255, 255, 0.05);
+                    padding: 20px;
+                    background: rgba(255, 255, 255, 0.02);
                     border: 1px solid rgba(255, 255, 255, 0.05);
-                    border-radius: 16px;
+                    border-radius: var(--radius-md);
                     cursor: pointer;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    gap: 10px;
-                    transition: all 0.2s ease;
+                    gap: 12px;
+                    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
                 }
                 .quick-hub-item:hover {
-                    background: rgba(255, 255, 255, 0.1);
-                    transform: translateY(-2px);
-                    border-color: rgba(176, 141, 87, 0.3);
+                    background: rgba(255, 255, 255, 0.05);
+                    transform: translateY(-4px);
+                    border-color: rgba(255, 255, 255, 0.2);
                 }
                 .quick-hub-item span {
                     font-size: 11px;
                     font-weight: 700;
                     letter-spacing: 0.5px;
-                    color: white;
+                    color: #fff;
                     text-align: center;
+                    text-transform: uppercase;
                 }
                 @media (max-width: 768px) {
                     .quick-hub-toggle {
@@ -186,54 +183,39 @@ const QuickAccessHub = () => {
             {/* Drag constraints container */}
             <div className="quick-hub-constraints" ref={constraintsRef} />
 
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        className="quick-hub-panel"
-                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <div className="quick-hub-header">
-                            <span className="quick-hub-title">Quick Access</span>
-                            <button className="quick-hub-close" onClick={() => setIsOpen(false)}>
-                                <X size={18} />
-                            </button>
-                        </div>
-                        <div className="quick-hub-grid">
-                            {filteredModules.map(mod => (
-                                <div
-                                    key={mod.name}
-                                    className="quick-hub-item"
-                                    onClick={() => {
-                                        navigate(mod.path);
-                                        setIsOpen(false);
-                                    }}
-                                >
-                                    <mod.icon size={24} color={mod.color} />
-                                    <span>{mod.name}</span>
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {isOpen && (
+                <div className="quick-hub-panel animate-slide-up" style={{ animationDuration: '0.2s' }}>
+                    <div className="quick-hub-header">
+                        <span className="quick-hub-title">Quick Access</span>
+                        <button className="quick-hub-close" onClick={() => setIsOpen(false)}>
+                            <X size={18} />
+                        </button>
+                    </div>
+                    <div className="quick-hub-grid">
+                        {filteredModules.map(mod => (
+                            <div
+                                key={mod.name}
+                                className="quick-hub-item"
+                                onClick={() => {
+                                    navigate(mod.path);
+                                    setIsOpen(false);
+                                }}
+                            >
+                                <mod.icon size={24} color={mod.color} />
+                                <span>{mod.name}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
-            {/* Draggable Toggle Button */}
-            <motion.button
+            <button
                 className="quick-hub-toggle"
-                drag
-                dragConstraints={constraintsRef}
-                dragElastic={0.1}
-                dragMomentum={false}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onTap={handleHubClick}
+                onClick={handleHubClick}
                 style={{ x: buttonPos.x, y: buttonPos.y }}
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </motion.button>
+            </button>
         </>
     );
 };

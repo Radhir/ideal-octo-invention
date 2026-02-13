@@ -85,7 +85,10 @@ const WorkshopDiary = () => {
                                     <tr key={entry.id} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)', transition: 'all 0.2s' }} className="hover-row">
                                         <td style={{ padding: '18px 15px', fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900' }}>{new Date(entry.date).toLocaleDateString()}</td>
                                         <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--gold)', fontSize: '14px' }}>#{entry.number}</td>
-                                        <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{entry.customer}</td>
+                                        <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                            <div style={{ color: '#fff' }}>{entry.customer}</div>
+                                            <div style={{ fontSize: '10px', color: 'var(--gold)', marginTop: '4px' }}>{entry.asset || '--'}</div>
+                                        </td>
                                         <td style={{ padding: '18px 15px' }}>
                                             <StatusBadge status={entry.status} />
                                         </td>
