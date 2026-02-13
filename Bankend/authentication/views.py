@@ -13,59 +13,26 @@ from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import UserSerializer
 from .models import UserProfile
+from .services import AuthService
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            user.is_active = False  # Deactivate until verified
-            user.save()
-            
-            profile = user.profile
-            verify_url = f"{settings.FRONTEND_URL}/verify-email/{profile.verification_token}/"
-            
-            try:
-                send_mail(
-                    subject='Elite Shine ERP – Verify your email',
-                    message=f'Welcome to Elite Shine! Click the link below to activate your account:\n\n{verify_url}\n\nThis link will expire in 24 hours.',
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    fail_silently=False,
-                )
-                return Response({
-                    'detail': 'Registration successful. Please check your email for verification link.',
-                    'user': serializer.data
-                }, status=status.HTTP_201_CREATED)
-            except Exception as e:
-                # Log error but user is created (though inactive)
-                return Response({
-                    'detail': 'User created but failed to send verification email. Please contact support.',
-                    'error': str(e)
-                }, status=status.HTTP_201_CREATED)
-                
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        success, data, error = AuthService.register_user(request.data)
+        if success:
+            detail = 'Registration successful. Please check your email.' if not error else f'User created but: {error}'
+            return Response({'detail': detail, 'user': data}, status=status.HTTP_201_CREATED)
+        return Response(data or error, status=status.HTTP_400_BAD_REQUEST)
 
 class VerifyEmailView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, token):
-        try:
-            profile = UserProfile.objects.get(verification_token=token, email_verified=False)
-            if not profile.is_token_valid():
-                return Response({'error': 'Verification link expired.'}, status=status.HTTP_400_BAD_REQUEST)
-            
-            profile.email_verified = True
-            profile.save()
-            
-            profile.user.is_active = True
-            profile.user.save()
-            
-            return Response({'detail': 'Email verified successfully. You may now log in.'})
-        except UserProfile.DoesNotExist:
-            return Response({'error': 'Invalid verification token.'}, status=status.HTTP_404_NOT_FOUND)
+        success, message = AuthService.verify_email(token)
+        if success:
+            return Response({'detail': message})
+        return Response({'error': message}, status=status.HTTP_400_BAD_REQUEST)
 
 class PasswordResetRequestView(APIView):
     permission_classes = [AllowAny]

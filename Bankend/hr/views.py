@@ -14,6 +14,7 @@ from .serializers import (
     CompanySerializer, BranchSerializer, ModulePermissionSerializer,
     SalarySlipSerializer, EmployeeDocumentSerializer, WarningLetterSerializer, NotificationSerializer
 )
+from .services import HRService
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
@@ -134,73 +135,14 @@ class PayrollViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def generate_payroll_cycle(self, request):
-        today = timezone.now().date()
-        month_start = today.replace(day=1)
-        employees = Employee.objects.all()
-        processed_count = 0
-        from decimal import Decimal
-
         try:
-            for emp in employees:
-                # 1. Fetch all attendance for this month
-                attendances = HRAttendance.objects.filter(
-                    employee=emp, 
-                    date__month=today.month, 
-                    date__year=today.year
-                )
-                
-                # 2. Calculate Total Hours & Overtime
-                # Standard Shift = 10 Hours
-                total_logged = Decimal('0.00')
-                total_ot = Decimal('0.00')
-                
-                for att in attendances:
-                    if att.total_hours:
-                        hours = Decimal(str(att.total_hours))
-                        total_logged += hours
-                        if hours > 10:
-                            total_ot += (hours - 10)
-                
-                # 3. Calculate Rates
-                # Assuming 24 work days * 10 hours = 240 hours standard/month
-                standard_hours_month = Decimal('240.00')
-                hourly_rate = emp.basic_salary / standard_hours_month if emp.basic_salary > 0 else Decimal(0)
-                ot_rate = hourly_rate * Decimal('1.25') # 25% premium for OT
-                
-                # 4. Financial Components
-                basic_earned = (total_logged - total_ot) * hourly_rate
-                ot_earned = total_ot * ot_rate
-                
-                # Fixed allowances are paid if at least some attendance is logged
-                attendance_factor = Decimal('1.0') if total_logged > 0 else Decimal('0.0')
-                housing = emp.housing_allowance * attendance_factor
-                transport = emp.transport_allowance * attendance_factor
-                
-                net_pay = basic_earned + ot_earned + housing + transport
-                
-                # 5. Create/Update Payroll Record
-                Payroll.objects.update_or_create(
-                    employee=emp,
-                    month=month_start,
-                    defaults={
-                        'basic_paid': basic_earned,
-                        'overtime_paid': ot_earned,
-                        'incentives': Decimal('0.00'),
-                        'deductions': Decimal('0.00'),
-                        'net_salary': net_pay,
-                        'status': 'PROCESSED'
-                    }
-                )
-                processed_count += 1
+            processed_count = HRService.generate_payroll_cycle()
+            return Response({
+                "message": f"Successfully processed payroll for {processed_count} employees.",
+                "processed": processed_count
+            })
         except Exception as e:
-            import traceback
-            traceback.print_exc()
             return Response({"error": str(e)}, status=500)
-
-        return Response({
-            "message": f"Successfully processed payroll for {processed_count} employees.",
-            "processed": processed_count
-        })
 
 class RosterViewSet(viewsets.ModelViewSet):
     queryset = Roster.objects.all()

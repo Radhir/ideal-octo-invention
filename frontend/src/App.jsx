@@ -168,7 +168,7 @@ function App() {
                     <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
                       <Route path="/portfolio" element={<Portfolio />} />
                       <Route path="/mission-control" element={<MissionControl />} />
-                      <Route path="/" element={<HomePage />} />
+                      <Route path="/" element={<Navigate to="/portfolio" replace />} />
                       <Route path="/ppf" element={<PPFList />} />
                       <Route path="/ppf/create" element={<PPFForm />} />
                       <Route path="/ppf/:id" element={<PPFDetail />} />

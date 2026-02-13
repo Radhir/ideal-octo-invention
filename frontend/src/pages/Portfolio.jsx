@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Clock, Users, FileText, Menu, X, ArrowRight, LayoutDashboard, Settings, ShieldCheck, UserCircle, Briefcase, Mail
+    Clock, Users, FileText, Menu, X, ArrowRight, LayoutDashboard,
+    Settings, ShieldCheck, UserCircle, Briefcase, Mail, Activity, Zap
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -262,12 +263,15 @@ const Portfolio = () => {
     };
 
     const navItems = [
-        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-        { name: 'ERP Control', path: '/finance/invoices', icon: FileText },
-        { name: 'Team Hub', path: '/hr/team', icon: Users },
-        { name: 'Attendance', path: '/hr/attendance', icon: Clock },
-        { name: 'Profile', path: '/hr/profile', icon: UserCircle },
-        { name: 'Elite Rules', path: '/hr/rules', icon: ShieldCheck }
+        { name: 'Portfolio Hub', path: '/portfolio', icon: LayoutDashboard },
+        { name: 'Intelligence', path: '/analytics', icon: Activity },
+        { name: 'Operations', path: '/workshop', icon: Briefcase },
+        { name: 'Logistics', path: '/stock', icon: Settings },
+        { name: 'Pipeline', path: '/leads', icon: Users },
+        { name: 'Treasury', path: '/finance', icon: FileText },
+        { name: 'Team Network', path: '/hr', icon: UserCircle },
+        { name: 'Compliance', path: '/risk-management', icon: ShieldCheck },
+        { name: 'Elite Pro', path: '/elitepro', icon: Zap }
     ];
 
     return (
@@ -324,29 +328,29 @@ const Portfolio = () => {
                         </p>
                     </div>
                     <div style={styles.tocRight}>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/dashboard')}>
-                            Introduction
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/analytics')}>
+                            Intelligence
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/finance/invoices')}>
-                            ERP Control
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/workshop')}>
+                            Operations
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/hr/team')}>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/stock')}>
+                            Logistics
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/leads')}>
+                            Pipeline
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/finance')}>
+                            Treasury
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/hr')}>
                             Team Network
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/hr/attendance')}>
-                            Time Clock
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/risk-management')}>
+                            Compliance
                         </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/hr/profile')}>
-                            User Profile
-                        </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/hr/rules')}>
-                            Elite Rules
-                        </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnOutline }} onClick={() => navigate('/crm/leads')}>
-                            CRM Hub
-                        </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/operations/workshop')}>
-                            Operations
+                        <motion.div whileHover={{ scale: 1.05 }} style={{ ...styles.btnPill, ...styles.btnSolid }} onClick={() => navigate('/elitepro')}>
+                            Elite Pro
                         </motion.div>
                     </div>
                 </div>

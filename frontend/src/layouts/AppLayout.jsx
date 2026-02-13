@@ -3,8 +3,9 @@ import { useAuth } from '../context/AuthContext';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
     ChevronRight, Terminal, User, Menu,
-    ClipboardList, MessageSquare, Zap, Plus,
-    Home, Briefcase, Settings, Search
+    MessageSquare, Zap, Plus, Home, Briefcase,
+    Settings, Search, Activity, Users, FileText,
+    UserCircle, ShieldCheck
 } from 'lucide-react';
 import UserDropdown from '../components/UserDropdown';
 import BottomNav from '../components/BottomNav';
@@ -21,13 +22,15 @@ const AppLayout = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const sidebarItems = [
-        { icon: <Home size={20} />, path: '/', label: 'Home' },
-        { icon: <ClipboardList size={20} />, path: '/job-cards', label: 'Jobs' },
-        { icon: <Plus size={20} />, path: '/jobs/builder', label: 'New Job' },
-        { icon: <Briefcase size={20} />, path: '/finance', label: 'Treasury' },
-        { icon: <Zap size={20} />, path: '/leads', label: 'Leads' },
-        { icon: <MessageSquare size={20} />, path: '/chat', label: 'Comms' },
-        { icon: <Settings size={20} />, path: '/hr/access', label: 'Admin' },
+        { icon: <Home size={20} />, path: '/portfolio', label: 'Hub' },
+        { icon: <Activity size={20} />, path: '/analytics', label: 'Intelligence' },
+        { icon: <Briefcase size={20} />, path: '/workshop', label: 'Operations' },
+        { icon: <Settings size={20} />, path: '/stock', label: 'Logistics' },
+        { icon: <Users size={20} />, path: '/leads', label: 'Pipeline' },
+        { icon: <FileText size={20} />, path: '/finance', label: 'Treasury' },
+        { icon: <UserCircle size={20} />, path: '/hr', label: 'Team' },
+        { icon: <ShieldCheck size={20} />, path: '/risk-management', label: 'Compliance' },
+        { icon: <Zap size={20} />, path: '/elitepro', label: 'Elite Pro' },
     ];
 
     const isActive = (path) => {
