@@ -302,6 +302,31 @@ const Portfolio = () => {
                     />
                 </div>
 
+                {/* Added Prominent Action Bar for immediate navigation */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1 }}
+                    style={{ display: 'flex', gap: '10px', justifyContent: 'center', margin: '40px 0' }}
+                >
+                    <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        style={{ ...styles.btnPill, ...styles.btnSolid, padding: '15px 30px' }}
+                        onClick={() => navigate('/hr')}
+                    >
+                        TEAM HUB
+                    </motion.div>
+                    <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        style={{ ...styles.btnPill, ...styles.btnOutline, padding: '15px 30px' }}
+                        onClick={() => navigate('/workshop')}
+                    >
+                        WORKSHOP
+                    </motion.div>
+                </motion.div>
+
                 <div style={styles.footerBar}>
                     <span>{user?.full_name || 'Ravoit Digital'}</span>
                     <span>{user?.email || 'www.eliteshine.ae'}</span>
