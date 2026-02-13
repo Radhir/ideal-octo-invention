@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +10,45 @@ const LoginPage = () => {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const [error, setError] = useState('');
     const [videoEnded, setVideoEnded] = useState(false);
+    const [countdown, setCountdown] = useState(null);
     const videoRef = useRef(null);
+    const loginTimeoutRef = useRef(null);
+
+    // Auto-login after 3 seconds when both fields are filled
+    useEffect(() => {
+        // Clear any existing timeout
+        if (loginTimeoutRef.current) {
+            clearTimeout(loginTimeoutRef.current);
+        }
+
+        // If both fields are filled and not already authenticating
+        if (username && password && !isAuthenticating) {
+            setCountdown(3);
+
+            // Countdown timer
+            const countdownInterval = setInterval(() => {
+                setCountdown(prev => {
+                    if (prev <= 1) {
+                        clearInterval(countdownInterval);
+                        return null;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+
+            // Auto submit after 3 seconds
+            loginTimeoutRef.current = setTimeout(() => {
+                handleLogin();
+            }, 3000);
+
+            return () => {
+                clearInterval(countdownInterval);
+                clearTimeout(loginTimeoutRef.current);
+            };
+        } else {
+            setCountdown(null);
+        }
+    }, [username, password, isAuthenticating]);
 
     const handleLogin = async (e) => {
         if (e) e.preventDefault();
@@ -18,6 +56,7 @@ const LoginPage = () => {
 
         setIsAuthenticating(true);
         setError('');
+        setCountdown(null);
 
         try {
             const success = await login(username, password);
