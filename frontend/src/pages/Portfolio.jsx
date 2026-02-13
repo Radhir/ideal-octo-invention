@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Clock, Users, FileText, Menu, X, ArrowRight
+    Clock, Users, FileText, Menu, X, ArrowRight, LayoutDashboard, Settings, ShieldCheck, UserCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -74,6 +74,7 @@ const Portfolio = () => {
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             color: '#1c1c1c',
             overflowX: 'hidden',
+            paddingBottom: '100px', // Extra space for floating nav
         },
         header: {
             background: '#ffffff',
@@ -233,6 +234,55 @@ const Portfolio = () => {
             fontWeight: '900',
             letterSpacing: '1px',
         },
+        // Floating Nav Styles
+        floatingNav: {
+            position: 'fixed',
+            bottom: '30px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            borderRadius: '100px',
+            padding: '10px 15px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            zIndex: 3000,
+            boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+        },
+        navBtn: {
+            width: '45px',
+            height: '45px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            color: '#1c1c1c',
+            backgroundColor: 'transparent',
+            position: 'relative',
+        },
+        navLabel: {
+            position: 'absolute',
+            bottom: '100%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            padding: '6px 12px',
+            background: '#1c1c1c',
+            color: '#ffffff',
+            fontSize: '0.65rem',
+            borderRadius: '4px',
+            fontWeight: 'bold',
+            letterSpacing: '1px',
+            whiteSpace: 'nowrap',
+            marginBottom: '10px',
+            opacity: 0,
+            pointerEvents: 'none',
+            transition: 'all 0.2s ease',
+        },
         dropdown: {
             position: 'fixed',
             top: '60px',
@@ -263,12 +313,12 @@ const Portfolio = () => {
     };
 
     const navItems = [
-        { name: 'Dashboard', path: '/dashboard' },
-        { name: 'ERP Control', path: '/finance/invoices' },
-        { name: 'Team Network', path: '/hr/team' },
-        { name: 'Clock System', path: '/hr/attendance' },
-        { name: 'Profile Settings', path: '/hr/profile' },
-        { name: 'Elite Rules', path: '/hr/rules' }
+        { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+        { name: 'ERP Control', path: '/finance/invoices', icon: FileText },
+        { name: 'Team Network', path: '/hr/team', icon: Users },
+        { name: 'Clock System', path: '/hr/attendance', icon: Clock },
+        { name: 'Profile Settings', path: '/hr/profile', icon: UserCircle },
+        { name: 'Elite Rules', path: '/hr/rules', icon: ShieldCheck }
     ];
 
     return (
@@ -289,7 +339,53 @@ const Portfolio = () => {
                 </div>
             </header>
 
-            {/* Slide-out Sidebar Menu */}
+            {/* Floating Navigation Pill */}
+            <motion.div
+                initial={{ y: 100, x: '-50%' }}
+                animate={{ y: 0, x: '-50%' }}
+                transition={{ type: 'spring', damping: 20, stiffness: 100, delay: 1 }}
+                style={styles.floatingNav}
+            >
+                {navItems.map((item) => (
+                    <div key={item.name} style={{ position: 'relative' }} className="nav-item-container">
+                        <motion.div
+                            whileHover={{ scale: 1.1, backgroundColor: 'rgba(0,0,0,0.05)' }}
+                            whileTap={{ scale: 0.95 }}
+                            style={styles.navBtn}
+                            onClick={() => navigate(item.path)}
+                            onMouseEnter={(e) => {
+                                const label = e.currentTarget.parentElement.querySelector('.nav-label');
+                                if (label) {
+                                    label.style.opacity = '1';
+                                    label.style.transform = 'translate(-50%, -5px)';
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                const label = e.currentTarget.parentElement.querySelector('.nav-label');
+                                if (label) {
+                                    label.style.opacity = '0';
+                                    label.style.transform = 'translate(-50%, 0)';
+                                }
+                            }}
+                        >
+                            <item.icon size={20} strokeWidth={1.5} />
+                            <div className="nav-label" style={styles.navLabel}>
+                                {item.name.toUpperCase()}
+                            </div>
+                        </motion.div>
+                    </div>
+                ))}
+                <div style={{ width: '1px', height: '24px', background: 'rgba(0,0,0,0.1)', margin: '0 5px' }} />
+                <motion.div
+                    whileHover={{ scale: 1.1, backgroundColor: '#1c1c1c', color: '#fff' }}
+                    style={{ ...styles.navBtn, backgroundColor: 'rgba(28,28,28,0.05)' }}
+                    onClick={() => setIsMenuOpen(true)}
+                >
+                    <Menu size={20} />
+                </motion.div>
+            </motion.div>
+
+            {/* Slide-out Sidebar Menu (Fallback/Extended) */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <>
@@ -298,7 +394,7 @@ const Portfolio = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsMenuOpen(false)}
-                            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.1)', zIndex: 1400, backdropFilter: 'blur(2px)' }}
+                            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.2)', zIndex: 1400, backdropFilter: 'blur(5px)' }}
                         />
                         <motion.div
                             initial={{ x: -350 }}
@@ -307,9 +403,12 @@ const Portfolio = () => {
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                             style={styles.dropdown}
                         >
-                            <div style={{ marginBottom: '40px' }}>
-                                <div style={{ fontSize: '0.7rem', letterSpacing: '3px', opacity: 0.4, marginBottom: '10px' }}>AUTHENTICATED SESSION</div>
-                                <div style={{ fontWeight: 'bold' }}>{profileData.name.toUpperCase()}</div>
+                            <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.7rem', letterSpacing: '3px', opacity: 0.4, marginBottom: '10px' }}>AUTHENTICATED SESSION</div>
+                                    <div style={{ fontWeight: 'bold' }}>{profileData.name.toUpperCase()}</div>
+                                </div>
+                                <X size={24} style={{ cursor: 'pointer', opacity: 0.5 }} onClick={() => setIsMenuOpen(false)} />
                             </div>
 
                             {navItems.map((item) => (
