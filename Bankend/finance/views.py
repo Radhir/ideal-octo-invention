@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from core.permissions import IsAdminOrOwner
 from .models import Account, AccountCategory, Budget, Transaction, Commission
 from .serializers import (
     AccountSerializer, AccountCategorySerializer, 
@@ -7,16 +8,22 @@ from .serializers import (
 from .services import FinanceService
 
 class AccountCategoryViewSet(viewsets.ModelViewSet):
+    module_name = 'Finance'
     queryset = AccountCategory.objects.all()
     serializer_class = AccountCategorySerializer
+    permission_classes = [IsAdminOrOwner]
 
 class AccountViewSet(viewsets.ModelViewSet):
+    module_name = 'Finance'
     queryset = Account.objects.all().order_by('code')
     serializer_class = AccountSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class BudgetViewSet(viewsets.ModelViewSet):
+    module_name = 'Finance'
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
+    permission_classes = [IsAdminOrOwner]
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -26,8 +33,10 @@ from datetime import timedelta
 from invoices.models import Invoice
 
 class TransactionViewSet(viewsets.ModelViewSet):
+    module_name = 'Finance'
     queryset = Transaction.objects.all().order_by('-date')
     serializer_class = TransactionSerializer
+    permission_classes = [IsAdminOrOwner]
 
     @action(detail=False, methods=['get'])
     def financial_summary(self, request):
@@ -37,8 +46,10 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return Response(summary)
 
 class CommissionViewSet(viewsets.ModelViewSet):
+    module_name = 'Finance'
     queryset = Commission.objects.all().order_by('-date')
     serializer_class = CommissionSerializer
+    permission_classes = [IsAdminOrOwner]
 
     @action(detail=False, methods=['get'])
     def summary(self, request):

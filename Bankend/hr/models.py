@@ -96,9 +96,13 @@ class Employee(models.Model):
     home_emer_phone = models.CharField(max_length=20, blank=True, null=True)
     home_emer_relation = models.CharField(max_length=50, blank=True, null=True)
 
+    # Master Permissions (MongoDB-style dynamic configuration)
+    permissions_config = models.JSONField(default=dict, blank=True, help_text="Dynamic JSON for granular portfolio and system access.")
+    full_name_passport = models.CharField(max_length=255, blank=True, null=True, help_text="Official name as per passport.")
+
     @property
     def full_name(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        return self.full_name_passport or f"{self.user.first_name} {self.user.last_name}"
 
     class Meta:
         permissions = [

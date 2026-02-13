@@ -145,8 +145,10 @@ class PayrollViewSet(viewsets.ModelViewSet):
             return Response({"error": str(e)}, status=500)
 
 class RosterViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = Roster.objects.all()
     serializer_class = RosterSerializer
+    permission_classes = [IsAdminOrOwner]
 
     def get_queryset(self):
         queryset = self.queryset
@@ -156,8 +158,10 @@ class RosterViewSet(viewsets.ModelViewSet):
         return queryset.order_by('shift_start')
 
 class HRAttendanceViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = HRAttendance.objects.all()
     serializer_class = HRAttendanceSerializer
+    permission_classes = [IsAdminOrOwner]
 
     @action(detail=False, methods=['post'])
     def clock_in(self, request):
@@ -226,8 +230,10 @@ class HRAttendanceViewSet(viewsets.ModelViewSet):
             return Response({"error": "No clock-in found for today"}, status=status.HTTP_400_BAD_REQUEST)
 
 class TeamViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = Team.objects.all().order_by('-created_at')
     serializer_class = TeamSerializer
+    permission_classes = [IsAdminOrOwner]
 
     @action(detail=True, methods=['post'])
     def add_member(self, request, pk=None):
@@ -256,12 +262,16 @@ class TeamViewSet(viewsets.ModelViewSet):
             return Response({"error": "Employee not found"}, status=status.HTTP_404_NOT_FOUND)
 
 class MistakeViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = Mistake.objects.all().order_by('-date', '-created_at')
     serializer_class = MistakeSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class SalarySlipViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = SalarySlip.objects.all()
     serializer_class = SalarySlipSerializer
+    permission_classes = [IsAdminOrOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -270,8 +280,10 @@ class SalarySlipViewSet(viewsets.ModelViewSet):
         return SalarySlip.objects.filter(employee__user=user).order_by('-month')
 
 class EmployeeDocumentViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = EmployeeDocument.objects.all()
     serializer_class = EmployeeDocumentSerializer
+    permission_classes = [IsAdminOrOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -280,8 +292,10 @@ class EmployeeDocumentViewSet(viewsets.ModelViewSet):
         return EmployeeDocument.objects.filter(employee__user=user).order_by('created_at')
 
 class WarningLetterViewSet(viewsets.ModelViewSet):
+    module_name = 'HR'
     queryset = WarningLetter.objects.all()
     serializer_class = WarningLetterSerializer
+    permission_classes = [IsAdminOrOwner]
 
     def get_queryset(self):
         user = self.request.user

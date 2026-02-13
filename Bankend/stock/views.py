@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import viewsets
+from core.permissions import IsAdminOrOwner
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import Sum, F
@@ -29,12 +30,16 @@ def stock_list(request):
     return render(request, 'forms/stock_list.html', {'stocks': stocks})
 
 class StockFormViewSet(viewsets.ModelViewSet):
+    module_name = 'Inventory'
     queryset = StockForm.objects.all().order_by('-created_at')
     serializer_class = StockFormSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class StockItemViewSet(viewsets.ModelViewSet):
+    module_name = 'Inventory'
     serializer_class = StockItemSerializer
     queryset = StockItem.objects.all()
+    permission_classes = [IsAdminOrOwner]
 
     def get_queryset(self):
         queryset = StockItem.objects.all().order_by('category', 'name')
@@ -73,16 +78,22 @@ class StockItemViewSet(viewsets.ModelViewSet):
         })
 
 class StockMovementViewSet(viewsets.ModelViewSet):
+    module_name = 'Inventory'
     queryset = StockMovement.objects.all().order_by('-date')
     serializer_class = StockMovementSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class SupplierViewSet(viewsets.ModelViewSet):
+    module_name = 'Inventory'
     queryset = Supplier.objects.all().order_by('name')
     serializer_class = SupplierSerializer
+    permission_classes = [IsAdminOrOwner]
 
 class PurchaseOrderViewSet(viewsets.ModelViewSet):
+    module_name = 'Inventory'
     queryset = PurchaseOrder.objects.all().order_by('-created_at')
     serializer_class = PurchaseOrderSerializer
+    permission_classes = [IsAdminOrOwner]
 
     @action(detail=True, methods=['post'])
     def receive_item(self, request, pk=None):

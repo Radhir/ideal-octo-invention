@@ -10,12 +10,35 @@ def is_elite_user(user):
 class IsAdminOrOwner(permissions.BasePermission):
     """
     Custom permission to only allow Owners, Admins, Service Advisors, and Managers to edit.
+    Now supports dynamic module-level overrides via Employee.permissions_config.
     """
     def has_permission(self, request, view):
-        if is_elite_user(request.user):
+        user = request.user
+        if is_elite_user(user):
             return True
+
         try:
-            role = request.user.hr_profile.role.lower()
+            profile = user.hr_profile
+            
+            # 1. Dynamic Override Check (MongoDB-style)
+            # Example: permissions_config = {"Inventory": {"can_view": True, "can_edit": False}}
+            module_name = getattr(view, 'module_name', None)
+            if module_name and profile.permissions_config:
+                module_cfg = profile.permissions_config.get(module_name)
+                if module_cfg:
+                    # If explicitly denied, return False
+                    if module_cfg.get('denied'): return False
+                    
+                    # Logic for specific methods
+                    if request.method in permissions.SAFE_METHODS and module_cfg.get('can_view'):
+                        return True
+                    if request.method in ['POST', 'PUT', 'PATCH'] and module_cfg.get('can_edit'):
+                        return True
+                    if request.method == 'DELETE' and module_cfg.get('can_delete'):
+                        return True
+
+            # 2. Legacy Role-based Fallback
+            role = profile.role.lower()
             allowed = ['owner', 'admin', 'managing director', 'manager', 'advisor', 'reception', 'supervisor']
             return any(r in role for r in allowed)
         except:
