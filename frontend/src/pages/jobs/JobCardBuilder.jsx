@@ -608,7 +608,8 @@ const JobCardBuilder = () => {
                                 label="SPECIFIC PACKAGE"
                                 value=""
                                 onChange={(e) => {
-                                    const service = availableServices.find(s => s.id === parseInt(e.target.value));
+                                    const val = e.target.value;
+                                    const service = availableServices.find(s => String(s.id) === String(val));
                                     if (service) addService(service);
                                 }}
                                 disabled={!selectedCategory}
