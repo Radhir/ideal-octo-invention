@@ -1,6 +1,16 @@
 from rest_framework import serializers
-from customers.models import Customer
-from .models import Vehicle
+from .models import Vehicle, VehicleBrand, VehicleModel
+
+class VehicleBrandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehicleBrand
+        fields = '__all__'
+
+class VehicleModelSerializer(serializers.ModelSerializer):
+    brand_name = serializers.CharField(source='brand.name', read_only=True)
+    class Meta:
+        model = VehicleModel
+        fields = '__all__'
 
 class VehicleSerializer(serializers.ModelSerializer):
     customer_name = serializers.CharField(write_only=True, required=False)
