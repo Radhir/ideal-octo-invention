@@ -70,15 +70,40 @@ const JobCardBuilder = () => {
     const [branches, setBranches] = useState([]);
 
     // Load Initial Data
+    const [vehicleMap, setVehicleMap] = useState(VEHICLE_DATA);
+
     useEffect(() => {
         const loadData = async () => {
             setLoading(true);
             try {
-                const [servicesRes, usersRes, branchesRes] = await Promise.all([
+                // Fetch Core Data in Parallel
+                const [servicesRes, usersRes, branchesRes, brandsRes, modelsRes] = await Promise.all([
                     api.get('/forms/job-cards/api/services/'),
                     api.get('/api/auth/users/'),
-                    api.get('/api/locations/branches/')
+                    api.get('/api/locations/branches/'),
+                    api.get('/forms/masters/api/brands/').catch(() => ({ data: [] })),
+                    api.get('/forms/masters/api/models/').catch(() => ({ data: [] }))
                 ]);
+
+                // Process Dynamic Registry
+                if (brandsRes.data.length > 0) {
+                    const dynamicMap = {};
+                    const brands = brandsRes.data;
+                    const models = modelsRes.data;
+
+                    brands.forEach(brand => {
+                        const brandModels = models
+                            .filter(m => m.brand === brand.id || m.brand_name === brand.name)
+                            .map(m => m.name);
+                        dynamicMap[brand.name] = brandModels;
+                    });
+
+                    // Merge with static data to ensure no loss if API is partial, 
+                    // or just use dynamic if comprehensive. For now, prefer dynamic but keep 'Other'.
+                    if (!dynamicMap['Other']) dynamicMap['Other'] = ['Other'];
+                    setVehicleMap(dynamicMap);
+                }
+
                 if (servicesRes.data.length > 0) {
                     setAvailableServices(servicesRes.data);
                     const categories = [...new Set(servicesRes.data.map(s => s.category_name))].filter(Boolean);
@@ -567,8 +592,8 @@ const JobCardBuilder = () => {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
                             <PortfolioSelect label="Brand" name="brand" value={formData.brand} onChange={handleInputChange}>
                                 <option value="">Select Make</option>
-                                {Object.keys(VEHICLE_DATA).sort().map(b => (
-                                    <option key={b} value={b}>{b}</option>
+                                {Object.keys(vehicleMap).map(brand => (
+                                    <option key={brand} value={brand}>{brand}</option>
                                 ))}
                             </PortfolioSelect>
                             <PortfolioSelect
@@ -579,8 +604,8 @@ const JobCardBuilder = () => {
                                 disabled={!formData.brand}
                             >
                                 <option value="">Select Model</option>
-                                {(VEHICLE_DATA[formData.brand] || []).sort().map(m => (
-                                    <option key={m} value={m}>{m}</option>
+                                {formData.brand && vehicleMap[formData.brand]?.map(model => (
+                                    <option key={model} value={model}>{model}</option>
                                 ))}
                             </PortfolioSelect>
                             <PortfolioInput label="Year" name="year" placeholder="2025" value={formData.year} onChange={handleInputChange} />
