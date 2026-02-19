@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import GlassCard from '../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioStats
+} from '../components/PortfolioComponents';
 import {
     FolderKanban, CheckCircle, Clock, AlertCircle,
     Plus, Search, Calendar, Users,
-    Target, BarChart3, ArrowRight
+    Target, BarChart3, ArrowRight, Layout
 } from 'lucide-react';
 
 const ProjectsPage = () => {
@@ -50,85 +56,94 @@ const ProjectsPage = () => {
     const activeJobs = filtered.filter(j => j.status !== 'CLOSED');
     const totalValue = activeJobs.reduce((s, j) => s + (parseFloat(j.net_amount) || 0), 0);
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Loading Project Board...</div>;
-
     return (
-        <div style={{ padding: '30px' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#8b5cf6', fontWeight: '800', letterSpacing: '2px' }}>PROJECT MANAGEMENT</div>
-                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Project Board</h1>
-                </div>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '30px' }}>
+                <PortfolioTitle
+                    title="Project Board"
+                    subtitle="Visual Workflow Management"
+                />
+
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <div style={{ position: 'relative', width: '250px' }}>
+                        <Search size={16} style={{ position: 'absolute', left: '12px', top: '12px', color: 'rgba(255,255,255,0.4)' }} />
+                        <input
+                            type="text" placeholder="Search projects..."
+                            value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                            style={{
+                                width: '100%', padding: '10px 10px 10px 35px', background: 'rgba(255,255,255,0.05)',
+                                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px',
+                                color: '#fff', fontSize: '13px', outline: 'none'
+                            }}
+                        />
+                    </div>
+                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', overflow: 'hidden', height: '38px' }}>
                         {['BOARD', 'LIST'].map(v => (
                             <button key={v} onClick={() => setView(v)} style={{
-                                padding: '10px 18px', border: 'none', cursor: 'pointer', fontWeight: '700', fontSize: '12px',
-                                background: view === v ? '#8b5cf6' : 'transparent', color: view === v ? '#fff' : '#94a3b8'
+                                padding: '0 15px', border: 'none', cursor: 'pointer', fontWeight: '600', fontSize: '12px',
+                                background: view === v ? 'var(--gold)' : 'transparent', color: view === v ? '#000' : 'rgba(255,255,255,0.5)',
+                                transition: 'all 0.2s'
                             }}>{v}</button>
                         ))}
                     </div>
                 </div>
-            </header>
+            </div>
 
-            {/* Quick Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px', marginBottom: '25px' }}>
-                <MiniStat label="Active Projects" value={activeJobs.length} color="#3b82f6" />
-                <MiniStat label="Completed" value={closedJobs.length} color="#10b981" />
-                <MiniStat label="Pipeline Value" value={`AED ${totalValue.toLocaleString()}`} color="#b08d57" />
-                <div style={{ position: 'relative' }}>
-                    <Search size={16} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#64748b', zIndex: 1 }} />
-                    <input
-                        type="text" placeholder="Search projects..."
-                        value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{
-                            width: '100%', height: '100%', padding: '10px 10px 10px 40px', background: 'rgba(255,255,255,0.03)',
-                            border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px', color: '#fff', fontSize: '14px', outline: 'none', boxSizing: 'border-box'
-                        }}
-                    />
-                </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px', marginBottom: '30px' }}>
+                <PortfolioStats label="Active Projects" value={activeJobs.length} icon={FolderKanban} color="#3b82f6" />
+                <PortfolioStats label="Completed" value={closedJobs.length} icon={CheckCircle} color="#10b981" />
+                <PortfolioStats label="Pipeline Value" value={`AED ${totalValue.toLocaleString()}`} icon={BarChart3} color="#b08d57" />
+                <PortfolioStats label="Utilization" value="84%" icon={Target} color="#8b5cf6" />
             </div>
 
             {view === 'BOARD' ? (
-                /* Kanban Board */
-                <div style={{ display: 'flex', gap: '15px', overflowX: 'auto', paddingBottom: '20px' }}>
+                <div style={{
+                    display: 'flex', gap: '15px', overflowX: 'auto', paddingBottom: '20px',
+                    margin: '0 -20px', padding: '0 20px 20px 20px' // Negative margin to allow scroll to edge
+                }}>
                     {columns.map(col => {
                         const colJobs = filtered.filter(j => j.status === col.id);
                         return (
-                            <div key={col.id} style={{ minWidth: '260px', flex: 1 }}>
+                            <div key={col.id} style={{ minWidth: '280px', flexShrink: 0 }}>
                                 <div style={{
-                                    display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px', padding: '0 5px'
+                                    display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '15px',
+                                    borderBottom: `2px solid ${col.color}`, paddingBottom: '10px'
                                 }}>
-                                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: col.color }} />
-                                    <span style={{ fontSize: '13px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>{col.label}</span>
-                                    <span style={{ fontSize: '11px', fontWeight: '700', color: '#475569', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px' }}>{colJobs.length}</span>
+                                    <span style={{ fontSize: '12px', fontWeight: '800', color: '#fff', textTransform: 'uppercase', letterSpacing: '1px' }}>{col.label}</span>
+                                    <span style={{ fontSize: '10px', fontWeight: '700', color: '#000', background: col.color, padding: '2px 6px', borderRadius: '4px' }}>{colJobs.length}</span>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                     {colJobs.map(job => (
-                                        <GlassCard key={job.id} style={{
-                                            padding: '16px', cursor: 'pointer', borderLeft: `3px solid ${col.color}`,
-                                            transition: 'transform 0.2s'
-                                        }}>
-                                            <div style={{ fontWeight: '700', fontSize: '13px', marginBottom: '6px', color: '#fff' }}>
+                                        <div key={job.id} style={{
+                                            padding: '15px', background: 'rgba(255,255,255,0.03)',
+                                            border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px',
+                                            cursor: 'pointer', transition: 'transform 0.2s', position: 'relative', overflow: 'hidden'
+                                        }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                                        >
+                                            <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '3px', background: col.color }} />
+                                            <div style={{ fontWeight: '700', fontSize: '13px', marginBottom: '5px', color: '#fff' }}>
                                                 {job.job_card_number || `JC-${job.id}`}
                                             </div>
-                                            <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px' }}>
-                                                {job.customer_name || 'Unknown'} - {job.brand || ''} {job.model || ''}
+                                            <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '10px' }}>
+                                                {job.customer_name || 'Unknown'} <br />
+                                                <span style={{ color: 'var(--gold)' }}>{job.brand || ''} {job.model || ''}</span>
                                             </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <span style={{ fontSize: '11px', color: '#b08d57', fontWeight: '700' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+                                                <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.8)', fontWeight: '600' }}>
                                                     {job.net_amount ? `AED ${parseFloat(job.net_amount).toLocaleString()}` : '-'}
                                                 </span>
                                                 {job.assigned_technician && (
-                                                    <span style={{ fontSize: '10px', color: '#64748b', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '8px' }}>
-                                                        {job.assigned_technician}
-                                                    </span>
+                                                    <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#fff' }}>
+                                                        {job.assigned_technician.charAt(0)}
+                                                    </div>
                                                 )}
                                             </div>
-                                        </GlassCard>
+                                        </div>
                                     ))}
                                     {colJobs.length === 0 && (
-                                        <div style={{ padding: '30px 10px', textAlign: 'center', color: '#333', fontSize: '12px' }}>
+                                        <div style={{ padding: '20px', textAlign: 'center', color: 'rgba(255,255,255,0.1)', fontSize: '12px', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '10px' }}>
                                             No items
                                         </div>
                                     )}
@@ -138,35 +153,35 @@ const ProjectsPage = () => {
                     })}
                 </div>
             ) : (
-                /* List View */
-                <GlassCard style={{ padding: 0, overflow: 'hidden' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
+                <PortfolioCard style={{ padding: 0, overflow: 'hidden' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '13px' }}>
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
-                                <th style={{ padding: '16px' }}>Job Card</th>
-                                <th style={{ padding: '16px' }}>Customer</th>
-                                <th style={{ padding: '16px' }}>Vehicle</th>
-                                <th style={{ padding: '16px' }}>Status</th>
-                                <th style={{ padding: '16px' }}>Technician</th>
-                                <th style={{ padding: '16px', textAlign: 'right' }}>Value</th>
+                                <th style={{ padding: '15px' }}>Job Card</th>
+                                <th style={{ padding: '15px' }}>Customer</th>
+                                <th style={{ padding: '15px' }}>Vehicle</th>
+                                <th style={{ padding: '15px' }}>Status</th>
+                                <th style={{ padding: '15px' }}>Technician</th>
+                                <th style={{ padding: '15px', textAlign: 'right' }}>Value</th>
                             </tr>
                         </thead>
                         <tbody>
                             {activeJobs.map(job => {
                                 const col = columns.find(c => c.id === job.status) || { color: '#64748b', label: job.status };
                                 return (
-                                    <tr key={job.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                                        <td style={{ padding: '14px', fontWeight: '700', color: '#b08d57' }}>{job.job_card_number || `JC-${job.id}`}</td>
-                                        <td style={{ padding: '14px' }}>{job.customer_name || '-'}</td>
-                                        <td style={{ padding: '14px', color: '#94a3b8' }}>{job.brand || ''} {job.model || ''}</td>
-                                        <td style={{ padding: '14px' }}>
+                                    <tr key={job.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <td style={{ padding: '15px', fontWeight: '600', color: 'var(--gold)' }}>{job.job_card_number || `JC-${job.id}`}</td>
+                                        <td style={{ padding: '15px' }}>{job.customer_name || '-'}</td>
+                                        <td style={{ padding: '15px', color: 'rgba(255,255,255,0.6)' }}>{job.brand || ''} {job.model || ''}</td>
+                                        <td style={{ padding: '15px' }}>
                                             <span style={{
-                                                padding: '4px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '700',
-                                                background: `${col.color}15`, color: col.color, border: `1px solid ${col.color}30`
+                                                padding: '4px 10px', borderRadius: '4px', fontSize: '10px', fontWeight: '700',
+                                                background: `${col.color}20`, color: col.color, border: `1px solid ${col.color}40`,
+                                                textTransform: 'uppercase'
                                             }}>{col.label}</span>
                                         </td>
-                                        <td style={{ padding: '14px', color: '#94a3b8' }}>{job.assigned_technician || 'Unassigned'}</td>
-                                        <td style={{ padding: '14px', textAlign: 'right', fontWeight: '800' }}>
+                                        <td style={{ padding: '15px', color: 'rgba(255,255,255,0.6)' }}>{job.assigned_technician || 'Unassigned'}</td>
+                                        <td style={{ padding: '15px', textAlign: 'right', fontWeight: '600' }}>
                                             {job.net_amount ? `AED ${parseFloat(job.net_amount).toLocaleString()}` : '-'}
                                         </td>
                                     </tr>
@@ -174,17 +189,10 @@ const ProjectsPage = () => {
                             })}
                         </tbody>
                     </table>
-                </GlassCard>
+                </PortfolioCard>
             )}
-        </div>
+        </PortfolioPage>
     );
 };
-
-const MiniStat = ({ label, value, color }) => (
-    <GlassCard style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-        <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-        <div style={{ fontSize: '20px', fontWeight: '900', color }}>{value}</div>
-    </GlassCard>
-);
 
 export default ProjectsPage;

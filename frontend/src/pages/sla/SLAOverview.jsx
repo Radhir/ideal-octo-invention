@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
-import BentoCard from '../../components/BentoCard';
 import {
-    Shield, CheckCircle, AlertTriangle, Clock,
-    ArrowUpRight, BarChart3, Users, FileText
+    Shield, ArrowUpRight, BarChart3, Users, FileText,
+    AlertTriangle, Clock, TrendingUp
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioStats,
+    PortfolioGrid,
+    PortfolioCard,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
+import {
+    ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell
+} from 'recharts';
 
 const SLAOverview = () => {
     const navigate = useNavigate();
@@ -51,182 +60,162 @@ const SLAOverview = () => {
         }
     };
 
-    if (loading) return <div style={{ padding: '40px', color: '#fff' }}>Synthesizing Compliance Data...</div>;
+    if (loading) return (
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+                <div style={{ color: 'var(--gold)', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '12px' }}>Loading Compliance Data...</div>
+            </div>
+        </PortfolioPage>
+    );
+
+    const portfolioStatsData = [
+        { label: "COMPLIANCE SCORE", value: `${stats.overall_compliance}%`, color: "#10b981" },
+        { label: "ACTIVE AGREEMENTS", value: stats.active_agreements, color: "var(--gold)" },
+        { label: "PENDING VIOLATIONS", value: stats.pending_violations, color: stats.pending_violations > 0 ? "#ef4444" : "#10b981" },
+        { label: "SERVICE CREDITS", value: `AED ${stats.total_credits.toLocaleString()}`, color: "#3b82f6" },
+    ];
 
     return (
-        <div style={{ padding: '40px', minHeight: '100vh', background: 'var(--bg-primary)', maxWidth: '1400px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '60px' }}>
-                <div className="editorial-label">CORE STRATEGY</div>
-                <h1 className="serif-display" style={{ margin: '10px 0' }}>SLA Command Center</h1>
-                <p className="editorial-text" style={{ color: 'var(--text-secondary)', marginTop: '10px' }}>
-                    Commercial compliance and real-time service level orchestration.
-                </p>
-            </header>
+        <PortfolioPage>
+            <PortfolioTitle subtitle="Commercial compliance and real-time service level orchestration">
+                SLA Command Center
+            </PortfolioTitle>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                <StatCard
-                    label="Compliance Score"
-                    value={`${stats.overall_compliance}%`}
-                    icon={Shield}
-                    color="#10b981"
-                    trend="+1.2%"
-                />
-                <StatCard
-                    label="Active Contracts"
-                    value={stats.active_agreements}
-                    icon={FileText}
-                    color="var(--gold)"
-                />
-                <StatCard
-                    label="Pending Violations"
-                    value={stats.pending_violations}
-                    icon={AlertTriangle}
-                    color="#f43f5e"
-                    pulse={stats.pending_violations > 0}
-                />
-                <StatCard
-                    label="Service Credits"
-                    value={`AED ${stats.total_credits.toLocaleString()}`}
-                    icon={Clock}
-                    color="#3b82f6"
-                />
-            </div>
+            <PortfolioStats stats={portfolioStatsData} />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '20px' }}>
+            <PortfolioGrid columns="2fr 1fr">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
-                        <BentoCard
-                            title="Compliance Trends"
-                            label="METRICS"
-                            icon={BarChart3}
-                        >
-                            <div style={{ marginTop: '20px', height: '150px', display: 'flex', alignItems: 'flex-end', gap: '15px' }}>
-                                {trends.length > 0 ? trends.map((t, i) => (
-                                    <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
-                                        <div style={{
-                                            width: '100%',
-                                            background: 'var(--gold)',
-                                            height: `${t.compliance}%`,
-                                            borderRadius: '4px',
-                                            opacity: 0.3 + (t.compliance / 150),
-                                            minHeight: '4px'
-                                        }} />
-                                        <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{t.month}</span>
-                                    </div>
-                                )) : (
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '12px', width: '100%', textAlign: 'center' }}>No trend data available</div>
-                                )}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        {/* Compliance Trends */}
+                        <PortfolioCard>
+                            <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <BarChart3 size={18} color="var(--gold)" />
+                                    <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Compliance Trend</h3>
+                                </div>
                             </div>
-                        </BentoCard>
-                        <BentoCard
-                            title="Corporate Partners"
-                            label="FLEET"
-                            icon={Users}
-                        >
-                            <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                <div style={partnerRow}><span>Al Futtaim Motors</span><span style={{ color: '#10b981' }}>PLATINUM</span></div>
-                                <div style={partnerRow}><span>Emirates Transport</span><span style={{ color: '#b08d57' }}>GOLD</span></div>
-                                <div style={partnerRow}><span>Dubai Police</span><span style={{ color: '#10b981' }}>PLATINUM</span></div>
+                            <div style={{ height: '200px' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={trends}>
+                                        <XAxis dataKey="month" stroke="rgba(232,230,227,0.3)" fontSize={10} tickLine={false} axisLine={false} />
+                                        <Tooltip
+                                            contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
+                                            cursor={{ fill: 'rgba(176,141,87,0.1)' }}
+                                        />
+                                        <Bar dataKey="compliance" radius={[4, 4, 0, 0]}>
+                                            {trends.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.compliance >= 95 ? '#10b981' : entry.compliance >= 90 ? '#f59e0b' : '#ef4444'} />
+                                            ))}
+                                        </Bar>
+                                    </BarChart>
+                                </ResponsiveContainer>
                             </div>
-                        </BentoCard>
+                        </PortfolioCard>
+
+                        {/* Top Partners */}
+                        <PortfolioCard>
+                            <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Users size={18} color="var(--gold)" />
+                                <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Strategic Partners</h3>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                <div style={partnerRow}>
+                                    <span>Al Futtaim Motors</span>
+                                    <span style={{ color: '#10b981', fontSize: '10px', background: 'rgba(16,185,129,0.1)', padding: '4px 8px', borderRadius: '4px' }}>PLATINUM</span>
+                                </div>
+                                <div style={partnerRow}>
+                                    <span>Emirates Transport</span>
+                                    <span style={{ color: '#f59e0b', fontSize: '10px', background: 'rgba(245,158,11,0.1)', padding: '4px 8px', borderRadius: '4px' }}>GOLD</span>
+                                </div>
+                                <div style={partnerRow}>
+                                    <span>Dubai Police</span>
+                                    <span style={{ color: '#10b981', fontSize: '10px', background: 'rgba(16,185,129,0.1)', padding: '4px 8px', borderRadius: '4px' }}>PLATINUM</span>
+                                </div>
+                            </div>
+                        </PortfolioCard>
                     </div>
 
-                    <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
-                        <div style={{ padding: '20px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h3 style={{ margin: 0, color: '#fff', fontSize: '18px' }}>Active Agreements</h3>
-                            <button onClick={() => navigate('/sla/list')} style={actionBtn}>View All Agreements <ArrowUpRight size={14} /></button>
-                        </div>
-                        <div style={{ padding: '20px' }}>
-                            {/* Table Placeholder / Summary */}
-                            <div style={{ color: 'var(--text-secondary)', fontSize: '14px', textAlign: 'center', padding: '40px' }}>
-                                Access the full registry for detailed contract analysis.
+                    {/* Active Agreements Link */}
+                    <PortfolioCard onClick={() => navigate('/sla/list')}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <FileText size={20} color="var(--gold)" />
+                                </div>
+                                <div>
+                                    <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Active Agreements Registry</h3>
+                                    <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)' }}>View full contract details and service thresholds</p>
+                                </div>
                             </div>
+                            <ArrowUpRight size={20} color="var(--gold)" />
                         </div>
-                    </GlassCard>
+                    </PortfolioCard>
                 </div>
 
-                <GlassCard style={{ padding: '25px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <AlertTriangle size={20} color="#f43f5e" />
-                        <h3 style={{ margin: 0, color: '#fff', fontSize: '18px' }}>Recent Violations</h3>
-                    </div>
+                {/* Violations & Actions */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <PortfolioCard>
+                        <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <AlertTriangle size={18} color="#ef4444" />
+                            <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Recent Violations</h3>
+                        </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        {violations.length > 0 ? violations.map(v => (
-                            <div key={v.id} style={violationItem}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                                    <span style={{ color: '#fff', fontWeight: '700', fontSize: '13px' }}>{v.violation_type_display || v.violation_type}</span>
-                                    <span style={{ color: '#f43f5e', fontWeight: '800', fontSize: '11px' }}>-{v.service_credit_amount} AED</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' }}>
+                            {violations.length > 0 ? violations.map(v => (
+                                <div key={v.id} style={violationItem}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                        <span style={{ color: 'var(--cream)', fontWeight: '500', fontSize: '13px' }}>{v.violation_type_display || v.violation_type}</span>
+                                        <span style={{ color: '#ef4444', fontWeight: '600', fontSize: '12px' }}>-{v.service_credit_amount} AED</span>
+                                    </div>
+                                    <div style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '11px' }}>{new Date(v.violation_date).toLocaleDateString()}</div>
                                 </div>
-                                <div style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>{new Date(v.violation_date).toLocaleDateString()}</div>
-                            </div>
-                        )) : (
-                            <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>
-                                No recent violations detected.
-                            </div>
-                        )}
-                    </div>
+                            )) : (
+                                <div style={{ padding: '30px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.4)', fontSize: '13px', border: '1px dashed rgba(232, 230, 227, 0.1)', borderRadius: '10px' }}>
+                                    No recent violations detected.
+                                </div>
+                            )}
+                        </div>
 
-                    <button style={reportBtn} onClick={() => navigate('/construction')}>
-                        Generate Compliance Report
-                    </button>
-                </GlassCard>
-            </div>
-        </div>
+                        <button
+                            onClick={() => navigate('/construction')}
+                            style={{
+                                width: '100%',
+                                padding: '12px',
+                                background: 'transparent',
+                                border: '1px solid var(--gold)',
+                                borderRadius: '8px',
+                                color: 'var(--gold)',
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            GENERATE REPORT
+                        </button>
+                    </PortfolioCard>
+                </div>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
 };
-
-const StatCard = ({ label, value, icon: Icon, color, trend, pulse }) => (
-    <div className="editorial-card" style={{ padding: '30px', border: pulse ? `1px solid ${color}` : '1px solid var(--border-color)', animation: pulse ? 'pulseGlow 2s infinite' : 'none' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <div className="editorial-label" style={{ color: 'var(--text-muted)' }}>{label}</div>
-            <Icon size={18} color={color} />
-        </div>
-        <div className="value-serif" style={{ fontSize: '3rem', color: pulse ? color : 'inherit' }}>{value}</div>
-        {trend && <div className="editorial-label" style={{ color: '#10b981', marginTop: '10px' }}>{trend}</div>}
-    </div>
-);
 
 const partnerRow = {
     display: 'flex',
     justifyContent: 'space-between',
-    padding: '8px 0',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
-    fontSize: '13px',
-    color: '#fff',
-    fontWeight: '600'
+    alignItems: 'center',
+    padding: '12px 0',
+    borderBottom: '1px solid rgba(232,230,227,0.05)',
+    fontSize: '14px',
+    color: 'var(--cream)',
+    fontWeight: '400'
 };
 
 const violationItem = {
     padding: '12px',
-    background: 'rgba(244, 63, 94, 0.05)',
-    border: '1px solid rgba(244, 63, 94, 0.2)',
-    borderRadius: '12px',
-};
-
-const actionBtn = {
-    background: 'transparent',
-    border: 'none',
-    color: 'var(--gold)',
-    fontSize: '13px',
-    fontWeight: '700',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px'
-};
-
-const reportBtn = {
-    marginTop: 'auto',
-    background: 'var(--gold)',
-    color: '#000',
-    border: 'none',
-    padding: '12px',
-    borderRadius: '12px',
-    fontWeight: '800',
-    fontSize: '14px',
-    cursor: 'pointer',
-    transition: 'all 0.3s'
+    background: 'rgba(239, 68, 68, 0.05)',
+    border: '1px solid rgba(239, 68, 68, 0.1)',
+    borderRadius: '8px',
 };
 
 export default SLAOverview;

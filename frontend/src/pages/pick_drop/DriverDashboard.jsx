@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import GlassCard from '../../components/GlassCard';
 import {
     MapPin, Truck, Phone, Clock, AlertCircle,
-    Activity, ShieldCheck, ChevronRight, Search
+    Activity, ShieldCheck, ChevronRight, Search, Zap, Compass, Navigation
 } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioStats
+} from '../../components/PortfolioComponents';
+import React from 'react';
 
 const DriverDashboard = () => {
     const [trips, setTrips] = useState([]);
+    const [stats, setStats] = useState([
+        { label: 'UTILIZATION', value: '38.9%', icon: Zap, subvalue: 'Air conditioner & Display' },
+        { label: 'MONTHLY LOAD', value: '1,000', icon: Compass, subvalue: 'Cumulative KM' },
+        { label: 'FLEET STATUS', value: 'NORMAL', icon: ShieldCheck, subvalue: 'Environmental Safety' },
+        { label: 'COMFORT LVL', value: 'OPTIMAL', icon: Activity, subvalue: 'Driver Satisfaction' },
+    ]);
 
     useEffect(() => {
         // Mocking some data for the map-centric view
@@ -28,54 +40,61 @@ const DriverDashboard = () => {
         return () => clearInterval(interval);
     }, []);
 
-    return (
-        <div style={{ display: 'flex', height: 'calc(100vh - 100px)', background: '#0a0a0a', overflow: 'hidden' }}>
 
+    return (
+        <div style={{ display: 'flex', height: 'calc(100vh - 100px)', background: 'var(--bg-black)', overflow: 'hidden' }}>
             {/* Left: Map Preview Area */}
-            <div style={{ flex: 1, position: 'relative', background: '#111', overflow: 'hidden' }}>
+            <div style={{ flex: 1, position: 'relative', background: '#080808', overflow: 'hidden' }}>
                 <div style={{
                     position: 'absolute',
                     inset: 0,
                     backgroundImage: 'url(https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop)',
                     backgroundSize: 'cover',
-                    opacity: 0.3,
-                    filter: 'grayscale(100%) contrast(150%) invert(100%)'
+                    opacity: 0.2,
+                    filter: 'grayscale(100%) contrast(150%) brightness(0.5)'
                 }}></div>
+
+                <div className="telemetry-grid" />
 
                 {/* Dynamic Map Markers */}
                 {trips.map(trip => (
                     <Marker
                         key={trip.id}
                         label={trip.name}
-                        color={trip.status === 'ERROR' ? '#f43f5e' : trip.status === 'WARNING' ? '#f59e0b' : '#3b82f6'}
-                        top={`${((trip.lat - 36.16) * 500) % 100}%`} // Simple mapping for demonstration
+                        color={trip.status === 'ERROR' ? '#f43f5e' : trip.status === 'WARNING' ? '#f59e0b' : 'var(--gold)'}
+                        top={`${((trip.lat - 36.16) * 500) % 100}%`}
                         left={`${((trip.lng + 115.2) * 500) % 100}%`}
                     />
                 ))}
             </div>
 
             {/* Right: Operational Dashboard */}
-            <div style={{ width: '600px', background: '#000', borderLeft: '1px solid rgba(255,255,255,0.05)', padding: '40px', overflowY: 'auto' }}>
-                <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ width: '640px', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(40px)', borderLeft: '1px solid rgba(255,255,255,0.05)', padding: '60px 50px', overflowY: 'auto' }}>
+                <header style={{ marginBottom: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                        <div style={{ color: '#b08d57', fontSize: '10px', fontWeight: '900', letterSpacing: '2px', marginBottom: '5px' }}>LOGISTICS COMMAND</div>
-                        <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#fff', margin: 0 }}>TOTAL</h2>
+                        <div style={{ color: 'var(--gold)', fontSize: '9px', fontWeight: '900', letterSpacing: '2px', marginBottom: '10px' }}>LOGISTICS COMMAND</div>
+                        <h2 style={{ fontSize: '3.5rem', fontWeight: '100', color: 'var(--cream)', margin: 0, fontFamily: 'var(--font-serif)', lineHeight: 1 }}>Logistics<br />Terminal</h2>
                     </div>
-                    <div style={{ textAlign: 'right', display: 'flex', gap: '20px' }}>
-                        <StatusDot color="#f43f5e" label="Error" count="14" />
-                        <StatusDot color="#f59e0b" label="Warning" count="23" />
-                        <StatusDot color="#3b82f6" label="Transit" count="7" />
+                    <div style={{ textAlign: 'right', display: 'flex', gap: '25px', marginTop: '15px' }}>
+                        <StatusDot color="#f43f5e" label="ERROR.trace" count="14" />
+                        <StatusDot color="#f59e0b" label="WARN.pulse" count="23" />
+                        <StatusDot color="var(--gold)" label="TRANSIT.node" count="7" />
                     </div>
                 </header>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '50px' }}>
-                    <SummaryItem label="Utilization Rate" value="38.9%" sub="Air conditioner & Display" />
-                    <SummaryItem label="Monthly Load" value="1,000 km" sub="Cumulative distance" />
-                    <SummaryItem label="Fleet Status" value="Normal" sub="Indoor Air Quality" />
-                    <SummaryItem label="Driver Comfort" value="Optimal" sub="Indoor Comfort Level" />
+                <div style={{ marginBottom: '80px' }}>
+                    <PortfolioGrid columns="1fr 1fr" gap="40px">
+                        {stats.map((stat, i) => (
+                            <div key={i}>
+                                <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '12px', opacity: 0.6 }}>{stat.label}</div>
+                                <div style={{ fontSize: '36px', fontWeight: '100', color: 'var(--cream)', fontFamily: 'var(--font-serif)', marginBottom: '8px' }}>{stat.value}</div>
+                                <div style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.4)', fontWeight: '300' }}>{stat.subvalue}</div>
+                            </div>
+                        ))}
+                    </PortfolioGrid>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
                     {trips.map(trip => (
                         <LogCard key={trip.id} trip={trip} />
                     ))}
@@ -108,41 +127,46 @@ const StatusDot = ({ color, label, count }) => (
     </div>
 );
 
-const SummaryItem = ({ label, value, sub }) => (
-    <div>
-        <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>{label}</div>
-        <div style={{ fontSize: '24px', fontWeight: '800', color: '#fff', marginBottom: '5px' }}>{value}</div>
-        <div style={{ fontSize: '13px', color: '#64748b' }}>{sub}</div>
-    </div>
-);
 
 const LogCard = ({ trip }) => (
-    <GlassCard style={{ padding: '20px', position: 'relative' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <span style={{ fontWeight: '800', fontSize: '14px' }}>{trip.name}</span>
-            <ChevronRight size={14} color="#64748b" />
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
-            <div>
-                <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px' }}>Operation Rate</div>
-                <div style={{ fontSize: '16px', fontWeight: '900' }}>{trip.util}</div>
-                <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', marginTop: '5px' }}>
-                    <div style={{ width: trip.util, height: '100%', background: '#3b82f6', borderRadius: '2px' }}></div>
+    <PortfolioCard
+        style={{
+            padding: '30px',
+            position: 'relative',
+            background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.05)',
+            textAlign: 'left',
+            overflow: 'hidden'
+        }}
+    >
+        <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.05 }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px' }}>
+                <span style={{ fontWeight: '400', fontSize: '18px', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>{trip.name}</span>
+                <div className="status-pulse" />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '25px' }}>
+                <div>
+                    <div style={{ fontSize: '8px', color: 'var(--gold)', marginBottom: '8px', fontWeight: '900', letterSpacing: '1px' }}>UTILIZATION.node</div>
+                    <div style={{ fontSize: '16px', fontWeight: '300', color: 'var(--cream)' }}>{trip.util}</div>
+                    <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.05)', marginTop: '8px' }}>
+                        <div style={{ width: trip.util, height: '100%', background: 'var(--gold)' }}></div>
+                    </div>
+                </div>
+                <div>
+                    <div style={{ fontSize: '8px', color: 'var(--gold)', marginBottom: '8px', fontWeight: '900', letterSpacing: '1px' }}>TELEMETRY.pulse</div>
+                    <div style={{ fontSize: '16px', fontWeight: '300', color: 'var(--cream)' }}>{trip.energy}%</div>
+                    <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.05)', marginTop: '8px' }}>
+                        <div style={{ width: `${trip.energy}%`, height: '100%', background: 'var(--gold)' }}></div>
+                    </div>
                 </div>
             </div>
-            <div>
-                <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '4px' }}>Display</div>
-                <div style={{ fontSize: '16px', fontWeight: '900' }}>{trip.energy}%</div>
-                <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', marginTop: '5px' }}>
-                    <div style={{ width: `${trip.energy}%`, height: '100%', background: '#3b82f6', borderRadius: '2px' }}></div>
-                </div>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <StatusDot color="#f43f5e" label="ERR" count="2" />
+                <StatusDot color="#f59e0b" label="WRN" count="1" />
             </div>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-            <StatusDot color="#f43f5e" label="Error" count="2" />
-            <StatusDot color="#f59e0b" label="Warn" count="1" />
-        </div>
-    </GlassCard>
+    </PortfolioCard>
 );
 
 export default DriverDashboard;

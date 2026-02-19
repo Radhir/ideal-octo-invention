@@ -74,105 +74,111 @@ const AttendanceBoard = () => {
     if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>Loading...</div></PortfolioPage>;
 
     return (
-        <PortfolioPage breadcrumb="Human Resources">
-            <PortfolioTitle subtitle="Real-time workforce tracking and time management">
-                ATTENDANCE
+        <PortfolioPage breadcrumb="HUMAN RESOURCES // PERSONNEL TELEMETRY">
+            <PortfolioTitle subtitle="Real-time workforce orchestration, tactical movement tracking, and shift management.">
+                Tactical<br />Matrix
             </PortfolioTitle>
 
-            <div style={{ marginBottom: '60px', display: 'flex', gap: '20px', alignItems: 'center' }}>
-                <input
-                    type="date"
-                    value={selectedDate}
-                    onChange={(e) => setSelectedDate(e.target.value)}
-                    style={{
-                        padding: '15px 20px',
-                        background: 'transparent',
-                        border: '1px solid rgba(232, 230, 227, 0.3)',
-                        borderRadius: '10px',
-                        color: 'var(--cream)',
-                        fontSize: '15px',
-                        fontFamily: 'inherit'
-                    }}
-                />
+            <div style={{ marginBottom: '60px', display: 'flex', gap: '30px', alignItems: 'center' }}>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                    <Clock size={16} color="var(--gold)" style={{ position: 'absolute', left: '20px', zIndex: 1, opacity: 0.5 }} />
+                    <input
+                        type="date"
+                        value={selectedDate}
+                        onChange={(e) => setSelectedDate(e.target.value)}
+                        style={{
+                            padding: '15px 25px 15px 50px',
+                            background: 'rgba(255, 255, 255, 0.02)',
+                            border: '1px solid rgba(255, 255, 255, 0.05)',
+                            borderRadius: '15px',
+                            color: 'var(--cream)',
+                            fontSize: '14px',
+                            fontFamily: 'var(--font-serif)',
+                            letterSpacing: '1px',
+                            outline: 'none',
+                            colorScheme: 'dark',
+                            width: '240px'
+                        }}
+                    />
+                </div>
+
                 {status === 'NOT_CHECKED_IN' && selectedDate === new Date().toISOString().split('T')[0] && (
-                    <PortfolioButton onClick={handleCheckIn}>
-                        <UserCheck size={18} style={{ display: 'inline', marginRight: '8px', marginBottom: '-3px' }} />
-                        Clock In
+                    <PortfolioButton variant="gold" onClick={handleCheckIn}>
+                        <UserCheck size={16} /> INITIATE_SESSION.log
                     </PortfolioButton>
                 )}
                 {status === 'CHECKED_IN' && (
-                    <PortfolioButton variant="secondary" onClick={handleCheckOut}>
-                        <Zap size={18} style={{ display: 'inline', marginRight: '8px', marginBottom: '-3px' }} />
-                        Clock Out
+                    <PortfolioButton variant="glass" onClick={handleCheckOut}>
+                        <Zap size={16} className="pulse" /> TERMINATE_SESSION.end
                     </PortfolioButton>
                 )}
             </div>
 
             <PortfolioStats stats={[
-                { value: employees.length, label: 'TOTAL STAFF' },
-                { value: activeCount, label: 'CURRENTLY IN', color: '#10b981' },
-                { value: completedCount, label: 'COMPLETED', color: 'var(--cream)' },
-                { value: missingCount, label: 'NOT LOGGED', color: missingCount > 0 ? '#ef4444' : 'var(--cream)' }
+                { value: employees.length, label: 'TOTAL FORCE', color: 'var(--gold)' },
+                { value: activeCount, label: 'ACTIVE OPERATIVES', color: '#10b981' },
+                { value: completedCount, label: 'COMPLETED SHIFTS', color: 'var(--gold)' },
+                { value: missingCount, label: 'UNACCOUNTED', color: missingCount > 0 ? '#f43f5e' : 'rgba(255,255,255,0.1)' }
             ]} />
 
-            <PortfolioGrid>
-                {employees.map(emp => {
-                    const log = logs.find(l => l.employee === emp.id);
-                    const empStatus = log ? (log.check_out_time ? 'OUT' : 'IN') : 'MISSING';
+            <div style={{ marginTop: '50px' }}>
+                <PortfolioGrid>
+                    {employees.map(emp => {
+                        const log = logs.find(l => l.employee === emp.id);
+                        const empStatus = log ? (log.check_out_time ? 'OUT' : 'IN') : 'MISSING';
 
-                    return (
-                        <div
-                            key={emp.id}
-                            style={{
-                                padding: '30px',
-                                background: 'rgba(232, 230, 227, 0.03)',
-                                border: `1.5px solid ${empStatus === 'IN' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(232, 230, 227, 0.1)'}`,
-                                borderRadius: '20px'
-                            }}
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                <div>
-                                    <div style={{ fontSize: '18px', fontFamily: 'var(--font-serif)', color: 'var(--cream)', marginBottom: '5px' }}>
-                                        {emp.full_name}
+                        return (
+                            <PortfolioCard
+                                key={emp.id}
+                                style={{
+                                    padding: '40px',
+                                    background: empStatus === 'IN' ? 'rgba(16, 185, 129, 0.03)' : 'rgba(0,0,0,0.3)',
+                                    position: 'relative'
+                                }}
+                            >
+                                <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.05 }} />
+                                <div style={{ position: 'relative', zIndex: 1 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '35px' }}>
+                                        <div>
+                                            <h3 style={{ fontSize: '24px', fontFamily: 'var(--font-serif)', color: 'var(--cream)', margin: '0 0 8px 0', fontWeight: '300' }}>
+                                                {emp.full_name}
+                                            </h3>
+                                            <div style={{ fontSize: '9px', color: 'var(--gold)', letterSpacing: '2px', fontWeight: '900', textTransform: 'uppercase' }}>
+                                                {emp.role?.toUpperCase()} // {emp.employee_id}
+                                            </div>
+                                        </div>
+                                        {empStatus === 'IN' && (
+                                            <div className="status-pulse" />
+                                        )}
+                                        {empStatus === 'MISSING' && (
+                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }} />
+                                        )}
                                     </div>
-                                    <div style={{ fontSize: '12px', opacity: 0.5 }}>
-                                        {emp.employee_id} • {emp.role}
-                                    </div>
-                                </div>
-                                <div style={{
-                                    padding: '6px 15px',
-                                    background: empStatus === 'IN' ? 'rgba(16, 185, 129, 0.1)' : empStatus === 'OUT' ? 'rgba(232, 230, 227, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                    color: empStatus === 'IN' ? '#10b981' : empStatus === 'OUT' ? 'var(--cream)' : '#ef4444',
-                                    borderRadius: '50px',
-                                    fontSize: '11px',
-                                    fontWeight: '500'
-                                }}>
-                                    {empStatus}
-                                </div>
-                            </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                                <div>
-                                    <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.5)', marginBottom: '5px', letterSpacing: '1px' }}>
-                                        CLOCK IN
-                                    </div>
-                                    <div style={{ fontSize: '16px', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
-                                        {log?.check_in_time || '--:--'}
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '30px' }}>
+                                        <div>
+                                            <div style={{ fontSize: '8px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '10px', opacity: 0.5 }}>
+                                                ENTRY.log
+                                            </div>
+                                            <div style={{ fontSize: '18px', color: log?.check_in_time ? 'var(--cream)' : 'rgba(255,255,255,0.1)', fontFamily: 'var(--font-serif)', fontWeight: '300' }}>
+                                                {log?.check_in_time || 'DEACTIVATED'}
+                                            </div>
+                                        </div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <div style={{ fontSize: '8px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '10px', opacity: 0.5 }}>
+                                                EXIT.log
+                                            </div>
+                                            <div style={{ fontSize: '18px', color: log?.check_out_time ? 'var(--cream)' : 'rgba(255,255,255,0.1)', fontFamily: 'var(--font-serif)', fontWeight: '300' }}>
+                                                {log?.check_out_time || 'DEACTIVATED'}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.5)', marginBottom: '5px', letterSpacing: '1px' }}>
-                                        CLOCK OUT
-                                    </div>
-                                    <div style={{ fontSize: '16px', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
-                                        {log?.check_out_time || '--:--'}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </PortfolioGrid>
+                            </PortfolioCard>
+                        );
+                    })}
+                </PortfolioGrid>
+            </div>
         </PortfolioPage>
     );
 };

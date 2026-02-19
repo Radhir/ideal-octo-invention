@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioCard,
+    PortfolioTitle,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioButton,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const LeaveForm = () => {
     const navigate = useNavigate();
@@ -31,62 +39,80 @@ const LeaveForm = () => {
     };
 
     return (
-        <div style={{ padding: '30px 20px' }}>
-            <button
-                onClick={() => navigate('/leaves')}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '20px' }}
-            >
-                <ArrowLeft size={20} /> Back to List
-            </button>
+        <PortfolioPage breadcrumb="Workforce Logistics / Leave Application">
+            <PortfolioBackButton onClick={() => navigate('/leaves')} />
 
-            <GlassCard style={{ padding: '40px', maxWidth: '600px', margin: '0 auto' }}>
-                <h2 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', marginBottom: '30px', fontSize: '1.8rem' }}>Leave Application</h2>
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <PortfolioTitle
+                    subtitle="Submit a formal request for time off"
+                    align="center"
+                >
+                    New Application
+                </PortfolioTitle>
 
-                <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: '20px' }}>
-                        <label style={labelStyle}>Employee Name</label>
-                        <input name="employee_name" className="form-control" onChange={handleChange} required />
-                    </div>
-                    <div style={{ marginBottom: '20px' }}>
-                        <label style={labelStyle}>Position</label>
-                        <input name="position" className="form-control" onChange={handleChange} required />
-                    </div>
-                    <div style={{ marginBottom: '20px' }}>
-                        <label style={labelStyle}>Leave Type</label>
-                        <select name="leave_type" className="form-control" onChange={handleChange}>
-                            <option value="ANNUAL">Annual Leave</option>
-                            <option value="SICK">Sick Leave</option>
-                            <option value="EMERGENCY">Emergency Leave</option>
-                            <option value="UNPAID">Unpaid Leave</option>
-                        </select>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
-                        <div>
-                            <label style={labelStyle}>From Date</label>
-                            <input name="leave_period_from" type="date" className="form-control" value={formData.leave_period_from} onChange={handleChange} required />
+                <PortfolioCard style={{ marginTop: '40px' }}>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                        <PortfolioInput
+                            name="employee_name"
+                            label="Employee Name"
+                            value={formData.employee_name}
+                            onChange={handleChange}
+                            required
+                        />
+                        <PortfolioInput
+                            name="position"
+                            label="Position / Role"
+                            value={formData.position}
+                            onChange={handleChange}
+                            required
+                        />
+
+                        <PortfolioSelect
+                            name="leave_type"
+                            label="Reason for Leave"
+                            value={formData.leave_type}
+                            onChange={handleChange}
+                            options={[
+                                { value: 'ANNUAL', label: 'Annual Leave' },
+                                { value: 'SICK', label: 'Sick Leave' },
+                                { value: 'EMERGENCY', label: 'Emergency Leave' },
+                                { value: 'UNPAID', label: 'Unpaid Leave' }
+                            ]}
+                        />
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <PortfolioInput
+                                name="leave_period_from"
+                                type="date"
+                                label="Start Date"
+                                value={formData.leave_period_from}
+                                onChange={handleChange}
+                                required
+                            />
+                            <PortfolioInput
+                                name="leave_period_to"
+                                type="date"
+                                label="End Date"
+                                value={formData.leave_period_to}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
-                        <div>
-                            <label style={labelStyle}>To Date</label>
-                            <input name="leave_period_to" type="date" className="form-control" value={formData.leave_period_to} onChange={handleChange} required />
-                        </div>
-                    </div>
 
-                    <button type="submit" className="btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                        <Save size={20} /> Submit Application
-                    </button>
-                </form>
-            </GlassCard>
-        </div>
+                        <div style={{ marginTop: '20px', padding: '20px', background: 'rgba(232, 230, 227, 0.05)', borderRadius: '12px', border: '1px dashed rgba(232, 230, 227, 0.2)' }}>
+                            <p style={{ margin: 0, fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', textAlign: 'center', lineHeight: '1.5' }}>
+                                By submitting this request, you acknowledge that approval is subject to operational requirements and manager discretion.
+                            </p>
+                        </div>
+
+                        <PortfolioButton type="submit" variant="gold" style={{ width: '100%', justifyContent: 'center', height: '50px', marginTop: '10px' }}>
+                            <Save size={18} style={{ marginRight: '10px' }} /> Submit Application
+                        </PortfolioButton>
+                    </form>
+                </PortfolioCard>
+            </div>
+        </PortfolioPage>
     );
-};
-
-const labelStyle = {
-    display: 'block',
-    fontSize: '11px',
-    color: '#94a3b8',
-    marginBottom: '5px',
-    textTransform: 'uppercase',
-    fontWeight: '600'
 };
 
 export default LeaveForm;

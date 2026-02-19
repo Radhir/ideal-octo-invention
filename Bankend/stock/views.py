@@ -83,6 +83,29 @@ class StockMovementViewSet(viewsets.ModelViewSet):
     serializer_class = StockMovementSerializer
     permission_classes = [IsAdminOrOwner]
 
+    def get_queryset(self):
+        queryset = StockMovement.objects.all().order_by('-date')
+        status = self.request.query_params.get('status')
+        if status:
+            queryset = queryset.filter(status=status)
+        return queryset
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        # Auto-approve for Admins/Managers, PENDING for others
+        status = 'APPROVED' if (user.is_superuser or user.role_name in ['Manager', 'Admin']) else 'PENDING'
+        serializer.save(recorded_by=user.username, status=status)
+
+    @action(detail=True, methods=['post'])
+    def approve(self, request, pk=None):
+        movement = self.get_object()
+        if movement.status == 'APPROVED':
+            return Response({'status': 'Already approved'}, status=400)
+        
+        movement.status = 'APPROVED'
+        movement.save() # This triggers stock adjustment logic in model.save()
+        return Response({'status': 'approved'})
+
 class SupplierViewSet(viewsets.ModelViewSet):
     module_name = 'Inventory'
     queryset = Supplier.objects.all().order_by('name')

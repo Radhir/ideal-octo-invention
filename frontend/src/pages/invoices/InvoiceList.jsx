@@ -1,9 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Link, useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Plus, Search, FileText, ChevronRight, CheckCircle2, AlertCircle, Printer } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import {
+    Plus, Search, FileText, ChevronRight,
+    CheckCircle2, AlertCircle, Printer, Download
+} from 'lucide-react';
 import PrintHeader from '../../components/PrintHeader';
+import {
+    PortfolioPage,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioInput,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const InvoiceList = () => {
     const [invoices, setInvoices] = useState([]);
@@ -13,7 +24,6 @@ const InvoiceList = () => {
 
     useEffect(() => {
         fetchInvoices();
-
         // Handle direct print request from Reports Dashboard
         const params = new URLSearchParams(window.location.search);
         if (params.get('print_confirm') === 'true') {
@@ -21,7 +31,7 @@ const InvoiceList = () => {
                 if (window.confirm("Perform bulk print of active Invoice Registry?")) {
                     window.print();
                 }
-            }, 1500); // Wait for data to render
+            }, 1500);
         }
     }, []);
 
@@ -42,107 +52,140 @@ const InvoiceList = () => {
     );
 
     return (
-        <div style={{ padding: '30px 20px' }}>
+        <PortfolioPage breadcrumb="Finance Division / Revenue Tracking">
             <PrintHeader title="Invoices Registry" />
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '1.8rem' }}>Billing & Invoices</h1>
-                    <p style={{ color: '#94a3b8' }}>Revenue and payment tracking</p>
-                </div>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <button
-                        onClick={() => window.print()}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
-                    >
-                        <Printer size={20} /> Print Registry
-                    </button>
-                    <button
-                        onClick={() => window.open(`/forms/utils/generate-pdf/Invoice/0/`, '_blank')}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
-                    >
-                        <Printer size={20} /> Export PDF
-                    </button>
-                    <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', opacity: 0.6, cursor: 'not-allowed' }}>
-                        <Plus size={20} /> (Created via Job Cards)
-                    </button>
-                </div>
-            </header>
 
-            <div style={{ marginBottom: '20px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={18} />
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by name or invoice#..."
-                    style={{ paddingLeft: '45px' }}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
+            <div className="no-print">
+                <PortfolioBackButton onClick={() => navigate('/finance/overview')} />
 
-            <div style={{ display: 'grid', gap: '15px' }}>
-                {loading ? (
-                    <p style={{ textAlign: 'center', padding: '40px' }}>Loading Invoices...</p>
-                ) : filteredInvoices.length === 0 ? (
-                    <p style={{ textAlign: 'center', padding: '40px' }}>No invoices found.</p>
-                ) : (
-                    filteredInvoices.map((inv) => (
-                        <GlassCard
-                            key={inv.id}
-                            onClick={() => navigate(`/invoices/${inv.id}`)}
-                            style={{ padding: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+                    <PortfolioTitle
+                        subtitle="Revenue collection & payment tracking"
+                    >
+                        Invoice Registry
+                    </PortfolioTitle>
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <PortfolioButton
+                            variant="glass"
+                            onClick={() => window.print()}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
                         >
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flex: 1 }}>
-                                <div style={{
-                                    width: '50px',
-                                    height: '50px',
-                                    borderRadius: '12px',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                    <FileText size={24} color="#b08d57" />
-                                </div>
+                            <Printer size={18} /> Print Registry
+                        </PortfolioButton>
+                        <PortfolioButton
+                            variant="glass"
+                            onClick={() => window.open(`/forms/utils/generate-pdf/Invoice/0/`, '_blank')}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                            <Download size={18} /> Export PDF
+                        </PortfolioButton>
+                    </div>
+                </div>
 
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
-                                        <span style={{ color: '#b08d57', fontSize: '14px', fontWeight: '700' }}>#{inv.invoice_number}</span>
-                                        <span style={{
-                                            fontSize: '11px',
-                                            textTransform: 'uppercase',
-                                            color: inv.payment_status === 'PAID' ? '#10b981' : '#f59e0b',
-                                            background: inv.payment_status === 'PAID' ? '#10b98111' : '#f59e0b11',
-                                            padding: '2px 8px',
-                                            borderRadius: '4px',
-                                            fontWeight: '800',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '4px'
-                                        }}>
-                                            {inv.payment_status === 'PAID' ? <CheckCircle2 size={10} /> : <AlertCircle size={10} />}
-                                            {inv.payment_status}
-                                        </span>
+                <div style={{ marginBottom: '30px', maxWidth: '400px', position: 'relative' }}>
+                    <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gold)', opacity: 0.7 }} size={18} />
+                    <PortfolioInput
+                        placeholder="Search by client or invoice #..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ paddingLeft: '45px' }}
+                    />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                    {loading ? (
+                        <div style={{ padding: '50px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.4)' }}>Loading financial records...</div>
+                    ) : filteredInvoices.length === 0 ? (
+                        <div style={{ padding: '50px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.4)' }}>No invoices found matching criteria.</div>
+                    ) : (
+                        filteredInvoices.map((inv) => (
+                            <PortfolioCard
+                                key={inv.id}
+                                onClick={() => navigate(`/invoices/${inv.id}`)}
+                                style={{ padding: '25px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'transform 0.2s' }}
+                                className="invoice-row"
+                            >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '25px', flex: 1 }}>
+                                    <div style={{
+                                        width: '50px',
+                                        height: '50px',
+                                        borderRadius: '12px',
+                                        background: 'rgba(176,141,87,0.1)',
+                                        border: '1px solid rgba(176,141,87,0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}>
+                                        <FileText size={24} color="var(--gold)" />
                                     </div>
-                                    <div style={{ fontWeight: '600', fontSize: '16px' }}>{inv.customer_name}</div>
-                                    <div style={{ color: '#94a3b8', fontSize: '13px' }}>{new Date(inv.date).toLocaleDateString()}</div>
-                                </div>
 
-                                <div style={{ textAlign: 'right', marginRight: '20px' }}>
-                                    <div style={{ fontSize: '18px', fontWeight: '800', color: '#fff' }}>AED {inv.grand_total}</div>
-                                    <div style={{ fontSize: '11px', color: '#94a3b8' }}>Incl. VAT</div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
+                                            <span style={{ color: 'var(--gold)', fontSize: '14px', fontWeight: '800', fontFamily: 'var(--font-serif)' }}>#{inv.invoice_number}</span>
+                                            <span style={{
+                                                fontSize: '10px',
+                                                textTransform: 'uppercase',
+                                                color: inv.payment_status === 'PAID' ? '#10b981' : '#f59e0b',
+                                                background: inv.payment_status === 'PAID' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                                                border: `1px solid ${inv.payment_status === 'PAID' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`,
+                                                padding: '3px 10px',
+                                                borderRadius: '20px',
+                                                fontWeight: '800',
+                                                letterSpacing: '1px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '5px'
+                                            }}>
+                                                {inv.payment_status === 'PAID' ? <CheckCircle2 size={10} /> : <AlertCircle size={10} />}
+                                                {inv.payment_status}
+                                            </span>
+                                        </div>
+                                        <div style={{ fontWeight: '700', fontSize: '16px', color: 'var(--cream)', marginBottom: '4px' }}>{inv.customer_name}</div>
+                                        <div style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '12px' }}>Issued: {new Date(inv.date).toLocaleDateString()}</div>
+                                    </div>
+
+                                    <div style={{ textAlign: 'right', marginRight: '30px' }}>
+                                        <div style={{ fontSize: '18px', fontWeight: '900', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>AED {inv.grand_total}</div>
+                                        <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>Incl. VAT</div>
+                                    </div>
                                 </div>
-                            </div>
-                            <ChevronRight size={24} style={{ color: '#94a3b8' }} />
-                        </GlassCard>
-                    ))
-                )}
+                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '10px', borderRadius: '50%' }}>
+                                    <ChevronRight size={20} color="var(--gold)" />
+                                </div>
+                            </PortfolioCard>
+                        ))
+                    )}
+                </div>
             </div>
-            <style>{`
-            `}</style>
-        </div>
+
+            {/* Print View Table */}
+            <div className="only-print" style={{ display: 'none' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                    <thead>
+                        <tr style={{ borderBottom: '2px solid #000' }}>
+                            <th style={{ textAlign: 'left', padding: '10px' }}>Invoice #</th>
+                            <th style={{ textAlign: 'left', padding: '10px' }}>Date</th>
+                            <th style={{ textAlign: 'left', padding: '10px' }}>Customer</th>
+                            <th style={{ textAlign: 'left', padding: '10px' }}>Status</th>
+                            <th style={{ textAlign: 'right', padding: '10px' }}>Amount (AED)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredInvoices.map(inv => (
+                            <tr key={inv.id} style={{ borderBottom: '1px solid #ddd' }}>
+                                <td style={{ padding: '10px' }}>{inv.invoice_number}</td>
+                                <td style={{ padding: '10px' }}>{new Date(inv.date).toLocaleDateString()}</td>
+                                <td style={{ padding: '10px' }}>{inv.customer_name}</td>
+                                <td style={{ padding: '10px' }}>{inv.payment_status}</td>
+                                <td style={{ padding: '10px', textAlign: 'right' }}>{inv.grand_total}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+
+        </PortfolioPage>
     );
 };
 

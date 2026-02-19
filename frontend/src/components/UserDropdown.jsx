@@ -15,33 +15,15 @@ import {
 const UserDropdown = () => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
+    const [imgError, setImgError] = useState(false);
 
-    // Close on click outside
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
-    const menuVariants = {
-        hidden: { opacity: 0, y: 10, scale: 0.95 },
-        visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } },
-        exit: { opacity: 0, y: 10, scale: 0.95, transition: { duration: 0.15 } }
-    };
+    const profileImage = !imgError && (user?.profile_image || (
+        user?.username === 'ravit' ? '/radhir.jpg' :
+            user?.username === 'afsar' ? '/afsar.jpg' :
+                user?.username === 'ankit' ? '/ankit.jpg' :
+                    user?.username === 'ruchika' ? '/ruchika.jpg' :
+                        null
+    ));
 
     return (
         <div style={{ position: 'relative', pointerEvents: 'auto' }} ref={dropdownRef}>
@@ -66,7 +48,8 @@ const UserDropdown = () => {
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #b08d57 0%, #8a6d43 100%)',
+                    background: profileImage ? '#fff' : 'linear-gradient(135deg, #b08d57 0%, #8a6d43 100%)',
+                    overflow: 'hidden',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -74,7 +57,16 @@ const UserDropdown = () => {
                     fontWeight: 'bold',
                     color: '#fff'
                 }}>
-                    {user?.username?.[0]?.toUpperCase() || 'U'}
+                    {profileImage ? (
+                        <img
+                            src={profileImage}
+                            alt="User"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={() => setImgError(true)}
+                        />
+                    ) : (
+                        user?.username?.[0]?.toUpperCase() || 'U'
+                    )}
                 </div>
                 <MoreHorizontal size={20} color="#94a3b8" />
             </button>
@@ -107,6 +99,7 @@ const UserDropdown = () => {
                                 width: '40px',
                                 height: '40px',
                                 borderRadius: '50%',
+                                overflow: 'hidden',
                                 background: '#fff',
                                 display: 'flex',
                                 alignItems: 'center',
@@ -115,7 +108,11 @@ const UserDropdown = () => {
                                 fontWeight: 'bold',
                                 color: '#000'
                             }}>
-                                {user?.username?.[0]?.toUpperCase() || 'U'}
+                                {profileImage ? (
+                                    <img src={profileImage} alt="User" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                    user?.username?.[0]?.toUpperCase() || 'U'
+                                )}
                             </div>
                             <div>
                                 <div style={{ fontSize: '14px', fontWeight: '800', color: '#fff' }}>{user?.username || 'User'}</div>

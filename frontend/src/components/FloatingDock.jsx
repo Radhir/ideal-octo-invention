@@ -81,11 +81,7 @@ const FloatingDockMobile = ({ items, style }) => {
             >
                 <ChevronUp size={28} style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s' }} />
             </button>
-            <style>{`
-                @media (min-width: 768px) {
-                    .mobile-dock { display: none !important; }
-                }
-            `}</style>
+
         </div>
     );
 };
@@ -113,11 +109,7 @@ const FloatingDockDesktop = ({ items, style }) => {
             {items.map((item) => (
                 <IconContainer key={item.title} {...item} />
             ))}
-            <style>{`
-                @media (max-width: 767px) {
-                    .desktop-dock { display: none !important; }
-                }
-            `}</style>
+
         </div>
     );
 };

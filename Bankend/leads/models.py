@@ -42,6 +42,7 @@ class Lead(models.Model):
     
     assigned_to = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_leads')
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='leads')
+    vehicle_node = models.ForeignKey('masters.Vehicle', on_delete=models.SET_NULL, null=True, blank=True, related_name='leads')
     follow_up_date = models.DateField(null=True, blank=True)
     
     notes = models.TextField(blank=True)

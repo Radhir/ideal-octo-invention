@@ -1,0 +1,279 @@
+.portfolio-dashboard {
+  min-height: 100vh;
+  background: var(--bg-deep);
+  padding: 4rem 2rem 2rem 2rem;
+  overflow-y: auto;
+}
+
+.welcome-section {
+  margin-bottom: 3rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.welcome-title {
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+
+.welcome-title span {
+  color: var(--gold);
+  margin-left: 1rem;
+}
+
+.user-role {
+  display: block;
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: var(--gold-mute);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.attendance-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.6;
+}
+
+.attend-btn {
+    flex: 1;
+    height: 40px;
+    background: transparent;
+    border: 1px solid var(--gold-border);
+    border-radius: 8px;
+    color: var(--cream);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.attend-btn.punch-in {
+    background: var(--gold-glow);
+    border: 1px solid var(--gold);
+}
+
+.attend-btn:hover {
+    background: var(--gold-glow);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(176, 141, 87, 0.15);
+}
+
+.attend-btn:active {
+    transform: translateY(0);
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(141, 130, 115, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.nav-card:hover {
+  transform: translateY(-8px);
+  background: rgba(176, 141, 87, 0.05);
+  border-color: rgba(176, 141, 87, 0.4);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.card-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  border-radius: 12px;
+  background: rgba(176, 141, 87, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.nav-card:hover .card-icon-wrapper {
+  background: var(--gold);
+  transform: scale(1.1);
+}
+
+.card-icon-wrapper svg {
+  color: var(--gold);
+  transition: all 0.3s ease;
+}
+
+.nav-card:hover .card-icon-wrapper svg {
+  color: #000;
+}
+
+.card-id {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-family: var(--font-sans);
+  font-weight: 900;
+  font-size: 4rem;
+  color: rgba(255, 255, 255, 0.03);
+  line-height: 1;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+.nav-card:hover .card-id {
+  color: rgba(176, 141, 87, 0.1);
+  transform: scale(1.1);
+}
+
+.card-label {
+  font-family: var(--font-sans);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+  z-index: 2;
+}
+
+.card-description {
+  font-size: 13px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2.5rem;
+  }
+  .portfolio-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.attend-btn.punch-in.active-status {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    color: #10b981;
+}
+
+/* Telemetry Radar Effects */
+.telemetry-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(176, 141, 87, 0.05) 1px, transparent 1px),
+        linear-gradient(90(rgba(176, 141, 87, 0.05) 1px, transparent 1px));
+    background-size: 40px 40px;
+    background-position: center;
+    pointer-events: none;
+}
+
+.radar-pulse {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border: 1px solid rgba(176, 141, 87, 0.3);
+    border-radius: 50%;
+    animation: radar-pulse 4s infinite linear;
+}
+
+.radar-scanner {
+    position: absolute;
+    width: 250px;
+    height: 250px;
+    background: conic-gradient(from 0deg, rgba(176, 141, 87, 0.1) 0deg, transparent 90deg);
+    border-radius: 50%;
+    animation: radar-rotate 4s infinite linear;
+}
+
+@keyframes radar-pulse {
+    0% { transform: scale(0.5); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: scale(3); opacity: 0; }
+}
+
+@keyframes radar-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.portfolio-spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(176, 141, 87, 0.1);
+    border-top: 2px solid var(--gold);
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.status-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.status-pulse.active::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    animation: status-pulse-ring 2s cubic-bezier(0.25, 0, 0, 1) infinite;
+}
+
+@keyframes status-pulse-ring {
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+.workflow-card {
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+
+.workflow-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(176,141,87,0.1) !important;
+    border-color: var(--gold) !important;
+}

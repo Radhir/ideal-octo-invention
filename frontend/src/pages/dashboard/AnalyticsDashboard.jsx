@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
     TrendingUp, Package, Users, Activity,
-    ArrowUpRight, ArrowDownRight, Calendar,
-    Clock, CheckCircle, AlertCircle
+    Calendar, ArrowUpRight
 } from 'lucide-react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid,
-    Tooltip, ResponsiveContainer, AreaChart, Area,
-    BarChart, Bar, PieChart, Pie, Cell, Legend
+    AreaChart, Area, XAxis, YAxis, CartesianGrid,
+    Tooltip, ResponsiveContainer, BarChart, Bar,
+    PieChart, Pie, Cell, Legend
 } from 'recharts';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioStats,
+    PortfolioGrid,
+    PortfolioCard
+} from '../../components/PortfolioComponents';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
@@ -38,7 +43,13 @@ const AnalyticsDashboard = () => {
         }
     };
 
-    if (loading) return <div style={{ padding: '100px', textAlign: 'center', color: '#fff' }}>Loading Intelligence...</div>;
+    if (loading) return (
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+                <div style={{ color: 'var(--gold)', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '12px' }}>Loading Intelligence...</div>
+            </div>
+        </PortfolioPage>
+    );
 
     const statusData = [
         { name: 'Reception', value: stats?.reception_count || 0 },
@@ -46,49 +57,28 @@ const AnalyticsDashboard = () => {
         { name: 'Active', value: stats?.active_jobs || 0 },
     ];
 
+    const portfolioStats = [
+        { label: "MONTHLY REVENUE", value: `AED ${(stats?.monthly_revenue || 0).toLocaleString()}`, color: "#10b981" },
+        { label: "ACTIVE JOBS", value: stats?.active_jobs || 0, color: "#3b82f6" },
+        { label: "TODAY'S BOOKINGS", value: stats?.todays_bookings || 0, color: "#f59e0b" },
+        { label: "NEW LEADS", value: stats?.new_leads || 0, color: "#8b5cf6" },
+    ];
+
     return (
-        <div style={{ padding: '30px' }}>
-            <header style={{ marginBottom: '40px' }}>
-                <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE INSIGHTS</div>
-                <h1 style={{ margin: '5px 0 0 0', fontSize: '2.2rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Business Intelligence</h1>
-            </header>
+        <PortfolioPage>
+            <PortfolioTitle subtitle="Executive insights and business intelligence">
+                Business Intelligence
+            </PortfolioTitle>
 
-            {/* KPI Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '25px', marginBottom: '30px' }}>
-                <KPICard
-                    label="Monthly Revenue"
-                    value={`AED ${(stats?.monthly_revenue || 0).toLocaleString()}`}
-                    trend="+12.5%"
-                    icon={TrendingUp}
-                    color="#10b981"
-                />
-                <KPICard
-                    label="Active Jobs"
-                    value={stats?.active_jobs || 0}
-                    trend="+3"
-                    icon={Package}
-                    color="#3b82f6"
-                />
-                <KPICard
-                    label="Today's Bookings"
-                    value={stats?.todays_bookings || 0}
-                    trend="New"
-                    icon={Calendar}
-                    color="#f59e0b"
-                />
-                <KPICard
-                    label="New Leads"
-                    value={stats?.new_leads || 0}
-                    trend="+5"
-                    icon={Users}
-                    color="#8b5cf6"
-                />
-            </div>
+            <PortfolioStats stats={portfolioStats} />
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px', marginBottom: '30px' }}>
+            <PortfolioGrid columns="2fr 1fr">
                 {/* Revenue Trend */}
-                <GlassCard style={{ padding: '30px' }}>
-                    <h3 style={cardTitleStyle}>Revenue Performance (Last 30 Days)</h3>
+                <PortfolioCard>
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Revenue Performance</h3>
+                        <div style={{ fontSize: '12px', color: 'rgba(232,230,227,0.5)' }}>Last 30 Days</div>
+                    </div>
                     <div style={{ height: '350px', width: '100%' }}>
                         <ResponsiveContainer>
                             <AreaChart data={chartData}>
@@ -98,22 +88,24 @@ const AnalyticsDashboard = () => {
                                         <stop offset="95%" stopColor="#b08d57" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                <XAxis dataKey="date" stroke="#64748b" fontSize={10} tickFormatter={(str) => str.split('-').slice(1).join('/')} />
-                                <YAxis stroke="#64748b" fontSize={10} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                <XAxis dataKey="date" stroke="rgba(232,230,227,0.3)" fontSize={10} tickFormatter={(str) => str.split('-').slice(1).join('/')} tickLine={false} axisLine={false} />
+                                <YAxis stroke="rgba(232,230,227,0.3)" fontSize={10} tickLine={false} axisLine={false} />
                                 <Tooltip
-                                    contentStyle={{ background: '#000', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
+                                    contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
                                     itemStyle={{ color: '#b08d57' }}
                                 />
                                 <Area type="monotone" dataKey="revenue" stroke="#b08d57" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
-                </GlassCard>
+                </PortfolioCard>
 
                 {/* Status Distribution */}
-                <GlassCard style={{ padding: '30px' }}>
-                    <h3 style={cardTitleStyle}>Workshop Throughput</h3>
+                <PortfolioCard>
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Workshop Throughput</h3>
+                    </div>
                     <div style={{ height: '350px', width: '100%' }}>
                         <ResponsiveContainer>
                             <PieChart>
@@ -127,55 +119,59 @@ const AnalyticsDashboard = () => {
                                     dataKey="value"
                                 >
                                     {statusData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
                                     ))}
                                 </Pie>
                                 <Tooltip
-                                    contentStyle={{ background: '#000', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
+                                    contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
                                 />
-                                <Legend verticalAlign="bottom" height={36} />
+                                <Legend verticalAlign="bottom" height={36} iconType="circle" />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
-                </GlassCard>
-            </div>
+                </PortfolioCard>
+            </PortfolioGrid>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+            <PortfolioGrid columns="1fr 1fr" style={{ marginTop: '20px' }}>
                 {/* Volume Stats */}
-                <GlassCard style={{ padding: '30px' }}>
-                    <h3 style={cardTitleStyle}>Job Volume Analysis</h3>
+                <PortfolioCard>
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Job Volume Analysis</h3>
+                    </div>
                     <div style={{ height: '300px', width: '100%' }}>
                         <ResponsiveContainer>
                             <BarChart data={chartData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                                <XAxis dataKey="date" stroke="#64748b" fontSize={10} tickFormatter={(str) => str.split('-').slice(1).join('/')} />
-                                <YAxis stroke="#64748b" fontSize={10} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                                <XAxis dataKey="date" stroke="rgba(232,230,227,0.3)" fontSize={10} tickFormatter={(str) => str.split('-').slice(1).join('/')} tickLine={false} axisLine={false} />
+                                <YAxis stroke="rgba(232,230,227,0.3)" fontSize={10} tickLine={false} axisLine={false} />
                                 <Tooltip
-                                    contentStyle={{ background: '#000', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
+                                    contentStyle={{ background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
                                 />
                                 <Bar dataKey="new_jobs_count" name="New Jobs" fill="#3b82f6" radius={[4, 4, 0, 0]} />
                                 <Bar dataKey="closed_jobs_count" name="Closed Jobs" fill="#10b981" radius={[4, 4, 0, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
-                </GlassCard>
+                </PortfolioCard>
 
                 {/* Recent Activity Mini-Feed */}
-                <GlassCard style={{ padding: '30px' }}>
-                    <h3 style={cardTitleStyle}>Recent Activity</h3>
+                <PortfolioCard>
+                    <div style={{ marginBottom: '20px' }}>
+                        <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '16px', fontWeight: '500' }}>Recent Activity</h3>
+                    </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         {stats?.recent_activity?.map((activity, idx) => (
                             <div key={idx} style={{
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '15px',
-                                padding: '12px',
-                                background: 'rgba(255,255,255,0.02)',
+                                padding: '15px',
+                                background: 'rgba(232, 230, 227, 0.03)',
                                 borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.05)'
+                                border: '1px solid rgba(232, 230, 227, 0.05)'
                             }}>
                                 <div style={{
-                                    padding: '8px',
+                                    padding: '10px',
                                     borderRadius: '50%',
                                     background: 'rgba(176,141,87,0.1)',
                                     color: '#b08d57'
@@ -183,72 +179,23 @@ const AnalyticsDashboard = () => {
                                     <Activity size={16} />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#fff' }}>
-                                        {activity.customer_name} - {activity.job_card_number}
+                                    <div style={{ fontSize: '14px', fontWeight: '500', color: 'var(--cream)' }}>
+                                        {activity.customer_name} <span style={{ opacity: 0.5 }}>- {activity.job_card_number}</span>
                                     </div>
-                                    <div style={{ fontSize: '11px', color: '#64748b' }}>
-                                        Status updated to {activity.status}
+                                    <div style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)', marginTop: '2px' }}>
+                                        Status updated to <span style={{ color: 'var(--gold)' }}>{activity.status}</span>
                                     </div>
                                 </div>
-                                <div style={{ fontSize: '10px', color: '#64748b' }}>
+                                <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.4)' }}>
                                     {new Date(activity.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </div>
                             </div>
                         ))}
                     </div>
-                </GlassCard>
-            </div>
-        </div>
+                </PortfolioCard>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
-};
-
-const KPICard = ({ label, value, trend, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
-            <div style={{ padding: '10px', borderRadius: '12px', background: `${color}15`, color: color }}>
-                <Icon size={20} />
-            </div>
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '11px',
-                fontWeight: '800',
-                color: trend.startsWith('+') ? '#10b981' : '#f59e0b',
-                background: trend.startsWith('+') ? '#10b98115' : '#f59e0b15',
-                padding: '2px 8px',
-                borderRadius: '20px'
-            }}>
-                {trend.startsWith('+') ? <ArrowUpRight size={12} /> : null} {trend}
-            </div>
-        </div>
-        <div>
-            <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '1.8rem', fontWeight: '900', color: '#fff', marginTop: '5px' }}>{value}</div>
-        </div>
-        {/* Subtle background glow */}
-        <div style={{
-            position: 'absolute',
-            bottom: '-20px',
-            right: '-20px',
-            width: '80px',
-            height: '80px',
-            borderRadius: '50%',
-            background: color,
-            filter: 'blur(50px)',
-            opacity: 0.1,
-            zIndex: 0
-        }} />
-    </GlassCard>
-);
-
-const cardTitleStyle = {
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    color: '#b08d57',
-    marginBottom: '25px',
-    fontWeight: '800',
-    letterSpacing: '1px'
 };
 
 export default AnalyticsDashboard;

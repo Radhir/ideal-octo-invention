@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioButton,
+    PortfolioGrid,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
 import {
     Mail, MessageSquare, Instagram, Facebook,
     Trash2, UserPlus, Search,
@@ -22,7 +29,7 @@ const MockInbox = () => {
         { id: 'INSTAGRAM', label: 'Instagram', icon: Instagram, color: '#E1306C' },
         { id: 'FACEBOOK', label: 'Facebook', icon: Facebook, color: '#1877F2' },
         { id: 'GMAIL', label: 'Gmail', icon: Mail, color: '#EA4335' },
-        { id: 'SENT', label: 'Automated Alerts', icon: Bell, color: '#F59E0B' }
+        { id: 'SENT', label: 'Automated Alerts', icon: Bell, color: 'var(--gold)' }
     ];
 
     const mockContent = {
@@ -118,12 +125,10 @@ const MockInbox = () => {
         }
     }, []);
 
-    // Initial Fetch
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    // Polling Fetch
     useEffect(() => {
         if (filter === 'SENT' || filter === 'ALL') {
             fetchData();
@@ -137,24 +142,21 @@ const MockInbox = () => {
     const convertToLead = async (msg) => {
         try {
             if (msg.isLead) {
-                // It's a real lead in INBOX, just update status to NEW
                 await api.patch(`/forms/leads/api/list/${msg.id}/`, { status: 'NEW' });
                 alert(`Lead "${msg.sender}" moved to Sales Pipeline!`);
             } else {
-                // It's a mock lead, create it
                 const leadData = {
                     customer_name: msg.sender,
                     phone: msg.phone,
                     source: msg.channel === 'GMAIL' ? 'WEBSITE' : msg.channel,
                     interested_service: msg.text.substring(0, 50),
-                    notes: `Converted from Mock Inbox. ${msg.text}`,
+                    notes: `Converted from Ghost Inbox. ${msg.text}`,
                     status: 'NEW',
                     priority: 'MEDIUM'
                 };
                 await api.post('/forms/leads/api/list/', leadData);
                 alert(`Succesfully captured ${msg.sender} as a CRM Lead!`);
             }
-            // Remove from inbox view locally
             setMessages(prev => prev.filter(m => m.id !== msg.id));
         } catch (err) {
             console.error(err);
@@ -170,70 +172,45 @@ const MockInbox = () => {
     });
 
     return (
-        <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto', animation: 'fadeIn 0.5s ease-out' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Lead Generation Testing</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>Ghost Inbox</h1>
-                    <p style={{ color: '#94a3b8', fontSize: '14px', marginTop: '5px' }}>Simulate incoming customer traffic from social channels.</p>
+        <PortfolioPage breadcrumb="CRM / Simulation / Ghost Inbox">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
+                <PortfolioTitle subtitle="Synthetic traffic stream for testing lead capture and automation routings.">
+                    Ghost Inbox
+                </PortfolioTitle>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <PortfolioButton onClick={() => setMessages([])} variant="secondary">
+                        <Trash2 size={18} style={{ marginRight: '10px' }} /> PURGE INBOX
+                    </PortfolioButton>
+                    <PortfolioButton onClick={generateMockLead} variant="primary" disabled={isGenerating}>
+                        {isGenerating ? <RefreshCw className="spin" size={18} /> : <Zap size={18} style={{ marginRight: '10px' }} />}
+                        {isGenerating ? 'INTERCEPTING...' : 'SIMULATE LEAD'}
+                    </PortfolioButton>
                 </div>
-                <div style={{ display: 'flex', gap: '15px', alignItems: 'flex-end' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        <div style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '800' }}>TEST NUMBER OVERRIDE</div>
+            </div>
+
+            <PortfolioGrid columns="280px 1fr" gap="40px">
+                {/* Sidebar */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ position: 'relative', marginBottom: '10px' }}>
+                        <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(232, 230, 227, 0.2)' }} size={16} />
                         <input
                             type="text"
-                            placeholder="e.g. +971 50..."
-                            value={customNumber}
-                            onChange={(e) => setCustomNumber(e.target.value)}
+                            placeholder="Filter stream..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             style={{
-                                background: 'rgba(255,255,255,0.05)',
-                                border: '1px solid rgba(176, 141, 87, 0.3)',
-                                borderRadius: '8px',
-                                padding: '8px 12px',
-                                color: '#fff',
-                                fontSize: '12px',
-                                width: '180px'
+                                width: '100%',
+                                background: 'rgba(232, 230, 227, 0.02)',
+                                border: '1px solid rgba(232, 230, 227, 0.05)',
+                                borderRadius: '12px',
+                                padding: '12px 15px 12px 45px',
+                                color: 'var(--cream)',
+                                fontSize: '13px'
                             }}
                         />
                     </div>
-                    <button
-                        onClick={generateMockLead}
-                        style={{ ...actionButtonStyle, background: '#b08d57', color: '#000', border: 'none' }}
-                        disabled={isGenerating}
-                    >
-                        {isGenerating ? <RefreshCw className="spin" size={18} /> : <Zap size={18} />}
-                        {isGenerating ? 'Intercepting...' : 'Simulate Incoming Lead'}
-                    </button>
-                    <button
-                        onClick={fetchData}
-                        style={{ ...actionButtonStyle, background: '#F59E0B', color: '#000', border: 'none' }}
-                        title="Refresh Sent Logs"
-                    >
-                        <RefreshCw size={18} /> Sync Alerts
-                    </button>
-                    <button
-                        onClick={() => setMessages([])}
-                        style={actionButtonStyle}
-                    >
-                        <Trash2 size={18} /> Clear Inbox
-                    </button>
-                </div>
-            </header >
 
-            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '30px', alignItems: 'start' }}>
-
-                {/* SIDEBAR FILTERS */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ marginBottom: '15px', position: 'relative' }}>
-                        <Search style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#64748b' }} size={16} />
-                        <input
-                            type="text"
-                            placeholder="Search messages..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ width: '100%', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', padding: '10px 10px 10px 35px', color: '#fff', fontSize: '13px' }}
-                        />
-                    </div>
+                    <PortfolioSectionTitle style={{ fontSize: '10px', marginTop: '20px' }}>CHANNELS</PortfolioSectionTitle>
                     {channels.map(ch => {
                         const Icon = ch.icon;
                         const active = filter === ch.id;
@@ -242,154 +219,136 @@ const MockInbox = () => {
                                 key={ch.id}
                                 onClick={() => setFilter(ch.id)}
                                 style={{
-                                    display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 15px',
-                                    borderRadius: '12px', border: active ? `1px solid ${ch.color}` : '1px solid transparent',
-                                    background: active ? `${ch.color}15` : 'transparent',
-                                    color: active ? ch.color : '#94a3b8',
-                                    cursor: 'pointer', transition: 'all 0.2s ease', textAlign: 'left', fontWeight: '700', fontSize: '14px'
+                                    display: 'flex', alignItems: 'center', gap: '15px', padding: '15px 20px',
+                                    borderRadius: '14px', border: active ? `1px solid ${ch.color}40` : '1px solid transparent',
+                                    background: active ? `${ch.color}05` : 'transparent',
+                                    color: active ? ch.color : 'rgba(232, 230, 227, 0.4)',
+                                    cursor: 'pointer', transition: 'all 0.3s ease', textAlign: 'left', fontWeight: '800', fontSize: '12px',
+                                    letterSpacing: '0.5px'
                                 }}
                             >
-                                <Icon size={18} /> {ch.label}
+                                <Icon size={18} /> {ch.label.toUpperCase()}
                                 {ch.id === 'SENT' && alertCount > 0 && (
                                     <span style={{
-                                        marginLeft: 'auto', background: '#F59E0B', color: '#000',
-                                        fontSize: '11px', fontWeight: '900', borderRadius: '12px',
-                                        padding: '2px 8px', minWidth: '20px', textAlign: 'center'
+                                        marginLeft: 'auto', background: 'var(--gold)', color: '#000',
+                                        fontSize: '10px', fontWeight: '900', borderRadius: '12px',
+                                        padding: '2px 8px'
                                     }}>{alertCount}</span>
                                 )}
-                                {ch.id !== 'SENT' && active && <Sparkles size={12} style={{ marginLeft: 'auto' }} />}
+                                {active && <Sparkles size={12} style={{ marginLeft: 'auto', opacity: 0.5 }} />}
                             </button>
                         );
                     })}
                 </div>
 
-                {/* MESSAGES LIST */}
-                <GlassCard style={{ minHeight: '600px', padding: '0', overflow: 'hidden' }}>
-                    <div style={{ padding: '20px', borderBottom: '1px solid rgba(255,255,255,0.05)', background: 'rgba(255,255,255,0.02)' }}>
-                        <h3 style={{ margin: 0, fontSize: '15px', fontWeight: '800' }}>Live Stream - {filter}</h3>
+                {/* Main Content */}
+                <PortfolioCard style={{ minHeight: '650px', padding: 0 }}>
+                    <div style={{ padding: '30px', borderBottom: '1px solid rgba(232, 230, 227, 0.03)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>
+                            LIVE TELEMETRY // {filter}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                            <div style={{ fontSize: '10px', color: 'rgba(232, 230, 227, 0.3)', fontWeight: '800' }}>OVERRIDE NUMBER:</div>
+                            <input
+                                type="text"
+                                value={customNumber}
+                                onChange={(e) => setCustomNumber(e.target.value)}
+                                placeholder="+971..."
+                                style={{ background: 'transparent', border: 'none', borderBottom: '1px solid rgba(176,141,87,0.2)', color: 'var(--gold)', fontSize: '11px', width: '120px', fontWeight: '700', outline: 'none' }}
+                            />
+                        </div>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         {filteredMessages.length === 0 ? (
-                            <div style={{ padding: '100px', textAlign: 'center', color: '#64748b' }}>
-                                <MessageSquare size={48} style={{ marginBottom: '20px', opacity: 0.2 }} />
-                                <div style={{ fontSize: '18px', fontWeight: '700' }}>No incoming traffic</div>
-                                <p style={{ fontSize: '13px' }}>Click "Simulate Incoming Lead" to test the system.</p>
+                            <div style={{ padding: '150px 0', textAlign: 'center', color: 'rgba(232, 230, 227, 0.1)' }}>
+                                <MessageSquare size={80} strokeWidth={1} style={{ marginBottom: '30px', opacity: 0.3 }} />
+                                <div style={{ fontSize: '24px', fontFamily: 'var(--font-serif)', marginBottom: '10px' }}>Zero-Traffic State</div>
+                                <p style={{ fontSize: '14px', letterSpacing: '1px' }}>USE SIMULATION TRIGGER TO INJECT ARTIFICIAL LEADS</p>
                             </div>
                         ) : filteredMessages.map(msg => {
                             const chan = channels.find(c => c.id === msg.channel);
                             const Icon = chan.icon;
                             const isSent = msg.channel === 'SENT';
                             return (
-                                <div key={msg.id} style={messageRowStyle}>
-                                    <div style={{ ...iconWrapperStyle, background: `${chan.color}15`, color: chan.color }}>
-                                        <Icon size={20} />
+                                <div key={msg.id} style={{
+                                    display: 'flex', gap: '25px', padding: '35px',
+                                    borderBottom: '1px solid rgba(232, 230, 227, 0.03)',
+                                    alignItems: 'start', transition: 'background 0.3s ease'
+                                }} className="message-row">
+                                    <div style={{
+                                        width: '48px', height: '48px', borderRadius: '50%',
+                                        background: `${chan.color}08`, color: chan.color,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        flexShrink: 0, border: `1px solid ${chan.color}15`
+                                    }}>
+                                        <Icon size={22} />
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <span style={{ fontWeight: '900', color: '#fff' }}>{msg.sender}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                <span style={{ fontWeight: '800', color: 'var(--cream)', fontSize: '15px' }}>{msg.sender}</span>
                                                 {isSent && msg.notificationType && (
                                                     <span style={{
-                                                        fontSize: '9px', fontWeight: '800', padding: '2px 8px',
-                                                        borderRadius: '6px', textTransform: 'uppercase',
-                                                        background: msg.notificationType === 'WHATSAPP' ? 'rgba(37, 211, 102, 0.15)' : 'rgba(59, 130, 246, 0.15)',
-                                                        color: msg.notificationType === 'WHATSAPP' ? '#25D366' : '#3b82f6'
+                                                        fontSize: '9px', fontWeight: '900', padding: '3px 10px',
+                                                        borderRadius: '30px', textTransform: 'uppercase',
+                                                        background: 'rgba(232, 230, 227, 0.05)',
+                                                        color: 'var(--gold)', border: '1px solid rgba(176, 141, 87, 0.2)'
                                                     }}>
                                                         {msg.notificationType}
                                                     </span>
                                                 )}
                                             </div>
-                                            <span style={{ fontSize: '10px', color: '#64748b' }}>{msg.time}</span>
+                                            <span style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.3)', fontWeight: '700' }}>{msg.time}</span>
                                         </div>
                                         {isSent && msg.subject && (
-                                            <div style={{ fontSize: '12px', color: '#b08d57', fontWeight: '700', marginBottom: '4px' }}>{msg.subject}</div>
+                                            <div style={{ fontSize: '13px', color: 'var(--gold)', fontWeight: '700', marginBottom: '5px' }}>{msg.subject}</div>
                                         )}
-                                        <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8', lineHeight: '1.4' }}>{msg.text}</p>
-                                        <div style={{ fontSize: '11px', color: '#b08d57', marginTop: '5px', fontWeight: '700' }}>{msg.phone}</div>
+                                        <p style={{ margin: 0, fontSize: '14px', color: 'rgba(232, 230, 227, 0.6)', lineHeight: '1.6', fontFamily: 'var(--font-serif)' }}>{msg.text}</p>
+                                        <div style={{ fontSize: '11px', color: 'var(--gold)', marginTop: '12px', fontWeight: '800', letterSpacing: '0.5px' }}>{msg.phone}</div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div style={{ display: 'flex', gap: '12px' }}>
                                         {!isSent && (
                                             <button
                                                 onClick={() => convertToLead(msg)}
-                                                style={{ ...toolBtnStyle, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}
-                                                title="Convert to CRM Lead"
+                                                style={toolBtnStyle}
+                                                className="btn-convert"
+                                                title="Ingest as Lead"
                                             >
-                                                <UserPlus size={16} />
+                                                <UserPlus size={18} />
                                             </button>
                                         )}
                                         <button
                                             onClick={() => setMessages(prev => prev.filter(m => m.id !== msg.id))}
-                                            style={{ ...toolBtnStyle, background: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e' }}
-                                            title="Dismiss"
+                                            style={toolBtnStyle}
+                                            className="btn-dismiss"
+                                            title="Purge Entry"
                                         >
-                                            <X size={16} />
+                                            <X size={18} />
                                         </button>
                                     </div>
                                 </div>
                             );
                         })}
                     </div>
-                </GlassCard>
-            </div>
+                </PortfolioCard>
+            </PortfolioGrid>
 
-            <style>{`
-                .spin { animation: spin 1s linear infinite; }
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            `}</style>
-        </div >
+
+        </PortfolioPage>
     );
 };
 
-const actionButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '12px 25px',
-    borderRadius: '12px',
-    fontSize: '14px',
-    fontWeight: '900',
-    cursor: 'pointer',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    color: '#fff',
-    transition: 'all 0.2s ease'
-};
-
-const messageRowStyle = {
-    display: 'flex',
-    gap: '20px',
-    padding: '25px',
-    borderBottom: '1px solid rgba(255,255,255,0.03)',
-    alignItems: 'start',
-    transition: 'background 0.2s ease',
-    cursor: 'default',
-    '&:hover': {
-        background: 'rgba(255,255,255,0.02)'
-    }
-};
-
-const iconWrapperStyle = {
-    width: '44px',
-    height: '44px',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0
-};
-
 const toolBtnStyle = {
-    width: '36px',
-    height: '36px',
-    borderRadius: '10px',
-    border: 'none',
+    width: '40px',
+    height: '40px',
+    borderRadius: '12px',
+    background: 'transparent',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    transition: 'transform 0.1s ease',
-    '&:active': { transform: 'scale(0.95)' }
+    transition: 'all 0.3s ease'
 };
 
 export default MockInbox;

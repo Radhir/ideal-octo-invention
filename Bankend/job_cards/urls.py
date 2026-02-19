@@ -3,11 +3,12 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register(r'jobs', views.JobCardViewSet)
+router.register(r'jobs', views.JobCardViewSet, basename='jobcard')
 router.register(r'tasks', views.JobCardTaskViewSet)
 router.register(r'photos', views.JobCardPhotoViewSet)
 router.register(r'service-categories', views.ServiceCategoryViewSet)
 router.register(r'services', views.ServiceViewSet)
+router.register(r'warranty-claims', views.WarrantyClaimViewSet)
 
 urlpatterns = [
     path('', views.job_card_list, name='job_card_list'),

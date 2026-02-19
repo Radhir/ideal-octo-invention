@@ -10,32 +10,32 @@ import {
     ShieldCheck,
     CreditCard,
     Truck,
-    ArrowRightCircle
+    ArrowRightCircle,
+    ChevronRight
 } from 'lucide-react';
-import GlassCard from '../../components/GlassCard';
 
 const steps = [
-    { id: 'RECEPTION', label: 'Step 1: Reception', icon: Camera, color: '#3b82f6' },
-    { id: 'ESTIMATION_ASSIGNMENT', label: 'Step 2: Estimation & Assignment', icon: FileText, color: '#f59e0b' },
-    { id: 'WIP_QC', label: 'Step 3: WIP & QC', icon: Clock, color: '#10b981' },
-    { id: 'INVOICING_DELIVERY', label: 'Step 4: Invoicing & Delivery', icon: CreditCard, color: '#b08d57' },
-    { id: 'CLOSED', label: 'Step 5: Closed', icon: CheckCircle2, color: '#2dd4bf' },
+    { id: 'RECEPTION', label: '01 | Reception', icon: Camera, color: '#b08d57' },
+    { id: 'ESTIMATION_ASSIGNMENT', label: '02 | Estimation', icon: FileText, color: '#b08d57' },
+    { id: 'WIP_QC', label: '03 | Production', icon: Clock, color: '#b08d57' },
+    { id: 'INVOICING_DELIVERY', label: '04 | Invoicing', icon: CreditCard, color: '#b08d57' },
+    { id: 'CLOSED', label: '05 | Archive', icon: CheckCircle2, color: '#10b981' },
 ];
 
 const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
     const currentIndex = steps.findIndex(s => s.id === currentStatus);
 
     return (
-        <GlassCard style={{ padding: '30px', marginBottom: '20px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px', position: 'relative' }}>
-                {/* Progress Line */}
+        <div style={{ marginBottom: '40px' }}>
+            {/* Minimalist Progress Line */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px', position: 'relative', padding: '0 20px' }}>
                 <div style={{
                     position: 'absolute',
-                    top: '24px',
-                    left: '40px',
-                    right: '40px',
-                    height: '2px',
-                    background: 'var(--border-color)',
+                    top: '20px',
+                    left: '60px',
+                    right: '60px',
+                    height: '1px',
+                    background: 'rgba(232, 230, 227, 0.05)',
                     zIndex: 0
                 }} />
 
@@ -45,27 +45,29 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
                     const isCompleted = idx < currentIndex;
 
                     return (
-                        <div key={step.id} style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', flex: 1 }}>
+                        <div key={step.id} style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', flex: 1 }}>
                             <div style={{
-                                width: '48px',
-                                height: '48px',
+                                width: '40px',
+                                height: '40px',
                                 borderRadius: '50%',
-                                background: isCompleted ? step.color : isActive ? 'var(--bg-primary)' : 'var(--input-bg)',
-                                border: `2px solid ${isActive || isCompleted ? step.color : 'var(--border-color)'}`,
+                                background: isCompleted ? 'var(--gold)' : isActive ? 'transparent' : 'rgba(232, 230, 227, 0.02)',
+                                border: `1px solid ${isActive || isCompleted ? 'var(--gold)' : 'rgba(232, 230, 227, 0.1)'}`,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                transition: 'all 0.3s ease',
-                                boxShadow: isActive ? `0 0 20px ${step.color}44` : 'none'
+                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                boxShadow: isActive ? `0 0 25px rgba(176, 141, 87, 0.15)` : 'none'
                             }}>
-                                {isCompleted ? <CheckCircle2 size={24} color="#fff" /> : <Icon size={24} color={isActive ? step.color : 'var(--text-muted)'} />}
+                                {isCompleted ? <CheckCircle2 size={18} color="#000" /> : <Icon size={18} color={isActive ? 'var(--gold)' : 'rgba(232, 230, 227, 0.3)'} />}
                             </div>
                             <div style={{
                                 fontSize: '10px',
-                                fontWeight: '700',
+                                fontWeight: '800',
                                 textTransform: 'uppercase',
-                                color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
-                                textAlign: 'center'
+                                letterSpacing: '1.5px',
+                                color: isActive ? 'var(--cream)' : 'rgba(232, 230, 227, 0.3)',
+                                textAlign: 'center',
+                                fontFamily: 'var(--font-sans)'
                             }}>
                                 {step.label}
                             </div>
@@ -74,65 +76,79 @@ const JobWorkflow = ({ currentStatus, onStatusChange, jobData }) => {
                 })}
             </div>
 
-            {/* Step Content / Actions */}
-            <div style={{ background: 'var(--input-bg)', borderRadius: '15px', padding: '25px', border: '1px solid var(--border-color)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div>
-                        <h4 style={{ margin: '0 0 10px 0', fontSize: '18px', fontWeight: '800', color: steps[currentIndex]?.color }}>
-                            {steps[currentIndex]?.label} - Active
-                        </h4>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '13px', margin: 0, maxWidth: '500px' }}>
+            {/* Tactical Control Panel */}
+            <div style={{
+                background: 'rgba(232, 230, 227, 0.02)',
+                borderRadius: '24px',
+                padding: '35px',
+                border: '1px solid rgba(232, 230, 227, 0.05)',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
+                            <h4 style={{ margin: 0, fontSize: '24px', fontWeight: '400', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
+                                {steps[currentIndex]?.label.split(' | ')[1]} Phase
+                            </h4>
+                            <span style={{
+                                padding: '4px 12px',
+                                background: 'rgba(176, 141, 87, 0.1)',
+                                color: 'var(--gold)',
+                                border: '1px solid rgba(176, 141, 87, 0.2)',
+                                borderRadius: '30px',
+                                fontSize: '9px',
+                                fontWeight: '900',
+                                letterSpacing: '1px'
+                            }}>IN COMMAND</span>
+                        </div>
+                        <p style={{ color: 'rgba(232, 230, 227, 0.4)', fontSize: '14px', margin: 0, maxWidth: '600px', lineHeight: '1.6' }}>
                             {getStepDescription(currentStatus)}
                         </p>
                     </div>
                     {currentIndex < steps.length - 1 && (
                         <button
-                            onClick={() => {
-                                // Blocking check removed as per "Software Remarks"
-                                // if (currentStatus === 'RECEPTION' && (!jobData.checklists || jobData.checklists.length === 0)) {
-                                //     alert('Error: Vehicle Intake Checklist is missing. You must complete the checklist before proceeding to Estimation.');
-                                //     return;
-                                // }
-                                onStatusChange(steps[currentIndex + 1].id);
-                            }}
+                            onClick={() => onStatusChange(steps[currentIndex + 1].id)}
                             style={{
-                                background: steps[currentIndex + 1].color,
-                                color: '#fff',
+                                background: 'var(--gold)',
+                                color: '#000',
                                 border: 'none',
-                                padding: '12px 24px',
+                                padding: '16px 32px',
                                 borderRadius: '12px',
-                                fontWeight: '700',
+                                fontSize: '12px',
+                                fontWeight: '900',
+                                textTransform: 'uppercase',
+                                letterSpacing: '1.5px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '10px',
+                                gap: '12px',
                                 cursor: 'pointer',
-                                transition: 'all 0.2s',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             }}
-                            onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.boxShadow = `0 0 20px ${steps[currentIndex + 1].color}44`; }}
-                            onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = 'none'; }}
+                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.filter = 'brightness(1.1)'; }}
+                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.filter = 'brightness(1)'; }}
                         >
-                            Advance to {steps[currentIndex + 1].label.split(': ')[1]} <ArrowRightCircle size={18} />
+                            Transition to {steps[currentIndex + 1].label.split('| ')[1]} <ChevronRight size={18} />
                         </button>
                     )}
                 </div>
 
-                {/* Step Secondary Info */}
-                <div style={{ marginTop: '20px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+                {/* Tactical Metrics Grid */}
+                <div style={{ marginTop: '35px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
                     {getStepBadges(currentStatus, jobData)}
                 </div>
             </div>
-        </GlassCard>
+        </div>
     );
 };
 
 const getStepDescription = (status) => {
     switch (status) {
-        case 'RECEPTION': return 'Initial vehicle walkthrough, photography of existing damages, and collection of customer keys.';
-        case 'ESTIMATION_ASSIGNMENT': return 'Assessing vehicle components for quote and assigning to a technician/bay.';
-        case 'WIP_QC': return 'Work is in progress and final quality checks being performed to ensure "Elite Shine" standards.';
-        case 'INVOICING_DELIVERY': return 'Final bill preparation and handing over vehicle to the customer.';
-        case 'CLOSED': return 'Job Card is officially closed and archived.';
-        default: return 'Job processing complete.';
+        case 'RECEPTION': return 'Formal asset reception, high-precision technical walkthrough, and dossier initialization.';
+        case 'ESTIMATION_ASSIGNMENT': return 'Financial architecture design, labor estimation, and technical resource allocation.';
+        case 'WIP_QC': return 'Technical execution phase accompanied by continuous quality surveillance and multi-point inspections.';
+        case 'INVOICING_DELIVERY': return 'Dossier finalization, commercial settlement, and premium asset redelivery.';
+        case 'CLOSED': return 'Operational ledger closed and asset journey archived in the secure history vault.';
+        default: return 'Operation in progress.';
     }
 };
 
@@ -144,51 +160,57 @@ const getStepBadges = (status, jobData) => {
     switch (status) {
         case 'RECEPTION':
             badges = [
-                { label: 'Vehicle', value: jobData.brand && jobData.model ? `${jobData.brand} ${jobData.model}` : 'Not Set', ok: !!(jobData.brand) },
-                { label: 'Reg. No.', value: jobData.registration_number || 'Not Set', ok: !!(jobData.registration_number) },
-                { label: 'Inspection', value: jobData.initial_inspection_notes ? 'Noted' : 'Pending', ok: !!(jobData.initial_inspection_notes) },
-                { label: 'Advisor', value: jobData.service_advisor || 'Unassigned', ok: !!(jobData.service_advisor) },
+                { label: 'Vehicle Asset', value: jobData.brand && jobData.model ? `${jobData.brand} ${jobData.model}` : 'Not Specified', ok: !!(jobData.brand) },
+                { label: 'Registry ID', value: jobData.registration_number || 'Pending', ok: !!(jobData.registration_number) },
+                { label: 'Intelligence', value: jobData.initial_inspection_notes ? 'Authenticated' : 'Pending Notes', ok: !!(jobData.initial_inspection_notes) },
+                { label: 'Commanding Advisor', value: jobData.service_advisor || 'Unassigned', ok: !!(jobData.service_advisor) },
             ];
             break;
         case 'ESTIMATION_ASSIGNMENT':
             badges = [
-                { label: 'Subtotal (Net)', value: jobData.total_amount ? `AED ${jobData.total_amount}` : 'Pending', ok: parseFloat(jobData.total_amount) > 0 },
-                { label: 'Grand Total', value: jobData.net_amount ? `AED ${jobData.net_amount}` : 'Pending', ok: parseFloat(jobData.net_amount) > 0 },
-                { label: 'Technician', value: jobData.assigned_technician || 'Unassigned', ok: !!(jobData.assigned_technician) },
-                { label: 'Timeline', value: jobData.estimated_timeline ? new Date(jobData.estimated_timeline).toLocaleDateString() : 'Not Set', ok: !!(jobData.estimated_timeline) },
+                { label: 'Project Valuation', value: jobData.net_amount ? `AED ${jobData.net_amount}` : 'In Calculation', ok: parseFloat(jobData.net_amount) > 0 },
+                { label: 'Operational Lead', value: jobData.assigned_technician || 'Allocation Pending', ok: !!(jobData.assigned_technician) },
+                { label: 'Milestone Date', value: jobData.estimated_timeline ? new Date(jobData.estimated_timeline).toLocaleDateString() : 'Not Scheduled', ok: !!(jobData.estimated_timeline) },
+                { label: 'Service Bay', value: jobData.assigned_bay || 'Awaiting Slot', ok: !!(jobData.assigned_bay) },
             ];
             break;
         case 'WIP_QC':
             badges = [
-                { label: 'Main Status', value: 'WIP/QC', ok: true },
-                { label: 'QC Cleared', value: jobData.qc_sign_off ? 'Yes' : 'Pending', ok: jobData.qc_sign_off },
-                { label: 'Pre-Work OK', value: jobData.pre_work_head_sign_off ? 'Approved' : 'Pending', ok: jobData.pre_work_head_sign_off },
-                { label: 'Bay', value: jobData.assigned_bay || 'Unassigned', ok: !!(jobData.assigned_bay) },
+                { label: 'Execution Mode', value: 'Live Production', ok: true },
+                { label: 'Surveillance OK', value: jobData.qc_sign_off ? 'Gold Standard' : 'In Surveillance', ok: jobData.qc_sign_off },
+                { label: 'Clearance Status', value: jobData.is_released ? 'Released' : 'Held for Review', ok: jobData.is_released },
+                { label: 'QC Authorization', value: jobData.floor_incharge_sign_off ? 'Valid' : 'Awaiting Sign-off', ok: jobData.floor_incharge_sign_off },
             ];
             break;
         case 'INVOICING_DELIVERY':
             badges = [
-                { label: 'Grand Total', value: `AED ${jobData.net_amount}`, ok: true },
-                { label: 'Payment', value: jobData.invoice?.is_paid ? 'Paid' : 'Unpaid', ok: jobData.invoice?.is_paid },
-                { label: 'Deliverable', value: 'Ready', ok: true },
-                { label: 'Signature', value: jobData.signature_data ? 'Signed' : 'Pending', ok: !!(jobData.signature_data) },
+                { label: 'Commercial Total', value: `AED ${jobData.net_amount}`, ok: true },
+                { label: 'Settlement', value: jobData.invoice?.is_paid ? 'Settled' : 'Outstanding', ok: jobData.invoice?.is_paid },
+                { label: 'Release Status', value: 'Ready for Handover', ok: true },
+                { label: 'Authentication', value: jobData.signature_data ? 'Digital ID Verified' : 'Awaiting Sign-off', ok: !!(jobData.signature_data) },
             ];
             break;
         default:
             badges = [
-                { label: 'Status', value: jobData.status_display || jobData.status || 'Unknown', ok: true },
-                { label: 'Job #', value: jobData.job_card_number || 'N/A', ok: true },
-                { label: 'Customer', value: jobData.customer_name || 'N/A', ok: true },
+                { label: 'Operational Status', value: jobData.status_display || 'Processed', ok: true },
+                { label: 'Job ID', value: jobData.job_card_number || 'N/A', ok: true },
+                { label: 'Client Name', value: jobData.customer_name || 'N/A', ok: true },
                 { label: 'Vehicle', value: `${jobData.brand || ''} ${jobData.model || ''}`.trim() || 'N/A', ok: true },
             ];
     }
 
     return badges.map((b, i) => (
-        <div key={i} style={{ background: 'var(--bg-primary)', padding: '10px', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
-            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '3px' }}>{b.label}</div>
-            <div style={{ fontSize: '12px', fontWeight: '700', color: b.ok ? '#10b981' : '#ef4444' }}>{b.value}</div>
+        <div key={i} style={{
+            background: 'rgba(232, 230, 227, 0.01)',
+            padding: '15px 20px',
+            borderRadius: '16px',
+            border: '1px solid rgba(232, 230, 227, 0.05)'
+        }}>
+            <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '1px', fontWeight: '800' }}>{b.label}</div>
+            <div style={{ fontSize: '13px', fontWeight: '700', color: b.ok ? '#10b981' : 'rgba(232, 230, 227, 0.3)', fontFamily: 'var(--font-sans)' }}>{b.value}</div>
         </div>
     ));
 };
 
 export default JobWorkflow;
+

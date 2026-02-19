@@ -1,24 +1,33 @@
+import { useNavigate, useParams } from 'react-router-dom';
+import api from '../../api/axios';
 import {
-    PortfolioPage, PortfolioTitle, PortfolioButton,
-    PortfolioStats, PortfolioGrid, PortfolioCard,
-    PortfolioDetailBox
-} from '../../components/PortfolioComponents';
+    Printer, FileText, ShieldCheck,
+    CheckCircle2, PenTool, Clock, Package,
+    User, Smartphone, MapPin, Hash, History, X,
+    ChevronRight, Shield, Car, Briefcase, Activity
+} from 'lucide-react';
 import JobWorkflow from './JobWorkflow';
 import PrintHeader from '../../components/PrintHeader';
 import SignaturePad from '../../components/SignaturePad';
+import { useState, useEffect } from 'react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioButton,
+    PortfolioBackButton,
+    PortfolioDetailBox,
+    PortfolioStats
+} from '../../components/PortfolioComponents';
 
 const JobDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const steps = [
-        { key: 'RECEPTION', label: 'Reception', icon: <PenTool size={18} /> },
-        { key: 'ESTIMATION_ASSIGNMENT', label: 'Estimation & Assignment', icon: <FileText size={18} /> },
-        { key: 'WIP_QC', label: 'Work In Progress & QC', icon: <Clock size={18} /> },
-        { key: 'INVOICING_DELIVERY', label: 'Invoicing & Delivery', icon: <Package size={18} /> },
-    ];
+    const [history, setHistory] = useState([]);
+    const [showHistory, setShowHistory] = useState(false);
 
     useEffect(() => {
         fetchJob();
@@ -35,10 +44,19 @@ const JobDetail = () => {
         }
     };
 
+    const fetchHistory = async () => {
+        try {
+            const res = await api.get(`/forms/job-cards/api/jobs/?vin=${job.vin}`);
+            setHistory(res.data.filter(h => h.id !== job.id));
+            setShowHistory(true);
+        } catch (err) {
+            console.error('Error fetching history', err);
+        }
+    };
+
     const advanceWorkflow = async () => {
         try {
             const res = await api.post(`/forms/job-cards/api/jobs/${id}/advance_status/`);
-            alert(`Workflow advanced to ${res.data.display}`);
             await fetchJob();
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to advance workflow');
@@ -55,42 +73,119 @@ const JobDetail = () => {
         }
     };
 
-    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>RETRIEVING ASSET DOSSIER...</div></PortfolioPage>;
-    if (!job) return <PortfolioPage>Job Not Found</PortfolioPage>;
+    const handleWorkshopPrint = () => {
+        const printWindow = window.open('', '_blank');
+        const content = `
+            <html>
+                <head>
+                    <title>WORKSHOP COPY - ${job.job_card_number}</title>
+                    <style>
+                        body { font-family: 'Inter', sans-serif; padding: 40px; color: #1a1a1a; }
+                        .header { border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+                        .job-no { font-size: 24px; font-weight: 800; }
+                        .workshop-label { background: #000; color: #fff; padding: 5px 15px; font-size: 12px; font-weight: 900; }
+                        .section { margin-bottom: 30px; }
+                        .section-title { font-size: 14px; font-weight: 900; text-transform: uppercase; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 15px; }
+                        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+                        .item label { font-size: 10px; color: #666; text-transform: uppercase; display: block; }
+                        .item value { font-size: 16px; font-weight: 700; }
+                        .description { white-space: pre-wrap; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; }
+                        @media print { .no-print { display: none; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="job-no">JOB #${job.job_card_number}</div>
+                            <div style="font-size: 14px; margin-top: 5px;">ELITE SHINE WORKSHOP COPY</div>
+                        </div>
+                        <div class="workshop-label">PRODUCTION ONLY</div>
+                    </div>
+                    
+                    <div class="section">
+                        <div class="section-title">Vehicle Technical Data</div>
+                        <div class="grid">
+                            <div class="item"><label>Make / Model</label><value>${job.brand} ${job.model} (${job.year})</value></div>
+                            <div class="item"><label>Plate Number</label><value>${job.plate_emirate} ${job.plate_code} ${job.registration_number}</value></div>
+                            <div class="item"><label>VIN / Chassis</label><value>${job.vin}</value></div>
+                            <div class="item"><label>Odometer</label><value>${job.kilometers} KM</value></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Production Details</div>
+                        <div class="grid">
+                            <div class="item"><label>Customer Name</label><value>${job.customer_name}</value></div>
+                            <div class="item"><label>Assigned Bay</label><value>${job.assigned_bay || 'N/A'}</value></div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <div class="section-title">Scope of Work</div>
+                        <div class="description">${job.job_description}</div>
+                    </div>
+
+                    <div style="margin-top: 50px; border-top: 1px dashed #ccc; padding-top: 20px; font-size: 10px; color: #999;">
+                        Generated on ${new Date().toLocaleString()} | Secure Internal Document | No Financial Content
+                    </div>
+
+                    <script>window.print();</script>
+                </body>
+            </html>
+        `;
+        printWindow.document.write(content);
+        printWindow.document.close();
+    };
+
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)', letterSpacing: '2px', fontWeight: '800', textAlign: 'center', marginTop: '100px' }}>DECODING ASSET DOSSIER...</div></PortfolioPage>;
+    if (!job) return <PortfolioPage><div style={{ color: 'var(--cream)', textAlign: 'center', marginTop: '100px' }}>ARCHIVE NOT FOUND</div></PortfolioPage>;
 
     return (
-        <PortfolioPage breadcrumb={`Operations / Job Cards / ${job.job_card_number}`}>
+        <PortfolioPage breadcrumb={`Operations / Job Dossier / ${job.job_card_number}`}>
+            <PortfolioBackButton onClick={() => navigate('/job-cards/board')} />
             <PrintHeader title={`Job Card: ${job.job_card_number}`} />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
-                <PortfolioTitle subtitle={`Registered to ${job.customer_name} • ${job.brand} ${job.model}`}>
-                    JOB DOSSIER
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '50px' }}>
+                <PortfolioTitle subtitle={`Authorized to ${job.title ? job.title + ' ' : ''}${job.customer_name} • ${job.brand} ${job.model}`}>
+                    TECHNICAL DOSSIER
                 </PortfolioTitle>
-                <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                     <PortfolioButton
                         variant="secondary"
                         onClick={() => {
-                            const link = `${window.location.host}/portal/${job.portal_token}`;
+                            const link = `${window.location.protocol}//${window.location.host}/portal/${job.portal_token}`;
                             navigator.clipboard.writeText(link);
                             alert('Customer Portal Link copied!');
                         }}
                     >
-                        <ShieldCheck size={18} style={{ marginRight: '10px' }} /> SHARE PORTAL
+                        <ShieldCheck size={16} /> SHARE PORTAL
                     </PortfolioButton>
                     <PortfolioButton
                         variant="secondary"
-                        onClick={() => window.open(`/forms/utils/generate-pdf/JobCard/${id}/`, '_blank')}
+                        onClick={fetchHistory}
                     >
-                        <Printer size={18} style={{ marginRight: '10px' }} /> JOB TICKET
+                        <History size={16} /> HISTORY
+                    </PortfolioButton>
+                    <PortfolioButton
+                        variant="secondary"
+                        onClick={handleWorkshopPrint}
+                    >
+                        <Hash size={16} /> WORKSHOP COPY
+                    </PortfolioButton>
+                    <PortfolioButton
+                        variant="secondary"
+                        onClick={() => window.open(`/job-cards/${job.id}/print`, '_blank')}
+                    >
+                        <Printer size={16} /> CLIENT COPY
                     </PortfolioButton>
 
                     {job.invoice ? (
-                        <PortfolioButton variant="gold" onClick={() => navigate(`/invoices/${job.invoice.id}`)}>
-                            <FileText size={18} style={{ marginRight: '10px' }} /> VIEW INVOICE
+                        <PortfolioButton variant="primary" onClick={() => navigate(`/invoices/${job.invoice.id}`)}>
+                            <FileText size={16} /> VIEW INVOICE
                         </PortfolioButton>
                     ) : (
-                        job.status === 'INVOICING_DELIVERY' && (
-                            <PortfolioButton variant="gold" onClick={generateInvoice}>
+                        job.status === 'READY' && (
+                            <PortfolioButton variant="primary" onClick={generateInvoice}>
                                 GENERATE INVOICE
                             </PortfolioButton>
                         )
@@ -108,156 +203,320 @@ const JobDetail = () => {
             </div>
 
             <PortfolioGrid columns="2fr 1fr">
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
-                    <div style={glassCardStyle}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                            <h3 style={sectionTitleStyle}>OPERATIONAL STATUS: {job.status_display.toUpperCase()}</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+
+                    {/* Primary Operations Card */}
+                    <PortfolioCard>
+                        <div style={cardHeaderStyle}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--gold)' }}>
+                                <Briefcase size={18} />
+                                <span style={cardTitleStyle}>OPERATIONS COMMAND</span>
+                            </div>
                             {job.is_released ? (
-                                <span style={badgeStyleSuccess}>RELEASED FOR PRODUCTION</span>
+                                <span style={badgeStyleSuccess}>RELEASED</span>
                             ) : (
-                                <span style={badgeStyleWarning}>PENDING MANAGEMENT CLEARANCE</span>
+                                <span style={badgeStyleWarning}>HELD FOR CLEARANCE</span>
                             )}
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-                            <PortfolioDetailBox label="PRIMARY COMPLAINTS / SERVICES">
-                                {job.job_description || 'No complaints logged.'}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px' }}>
+                            <PortfolioDetailBox label="Service Specifications">
+                                <div style={{ fontFamily: 'var(--font-serif)', fontSize: '15px', lineHeight: '1.7', color: 'var(--cream)', whiteSpace: 'pre-line' }}>
+                                    {job.job_description || 'No service parameters defined.'}
+                                </div>
                             </PortfolioDetailBox>
-                            <PortfolioDetailBox label="INTERNAL ADVISOR INTELLIGENCE">
-                                {job.initial_inspection_notes || 'No internal intelligence available.'}
-                            </PortfolioDetailBox>
+                            {job.initial_inspection_notes && (
+                                <PortfolioDetailBox label="Advisor Intelligence">
+                                    <div style={{ fontFamily: 'var(--font-serif)', fontSize: '14px', lineHeight: '1.6', color: 'rgba(232, 230, 227, 0.6)', fontStyle: 'italic' }}>
+                                        "{job.initial_inspection_notes}"
+                                    </div>
+                                </PortfolioDetailBox>
+                            )}
                         </div>
-                    </div>
+                    </PortfolioCard>
 
-                    <div style={glassCardStyle}>
-                        <h3 style={sectionTitleStyle}>CUSTOMER AUTHORIZATION</h3>
+                    <PortfolioGrid columns="1fr 1fr" gap="30px">
+                        {/* Asset Parameters */}
+                        <PortfolioCard>
+                            <div style={cardHeaderStyle}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--gold)' }}>
+                                    <Car size={18} />
+                                    <span style={cardTitleStyle}>ASSET PARAMETERS</span>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                <PortfolioInfoItem label="Registration" value={`${job.plate_emirate || ''} ${job.plate_code || ''} ${job.registration_number || ''}`} />
+                                <PortfolioInfoItem label="Identification (VIN)" value={job.vin} />
+                                <PortfolioInfoItem label="Operational Odometer" value={`${job.kilometers} KM`} />
+                            </div>
+                        </PortfolioCard>
+
+                        {/* Custody & Logistics */}
+                        <PortfolioCard>
+                            <div style={cardHeaderStyle}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--gold)' }}>
+                                    <User size={18} />
+                                    <span style={cardTitleStyle}>ASSET CUSTODY</span>
+                                </div>
+                            </div>
+                            {job.assigned_technician ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                                    <PortfolioInfoItem label="Technical Lead" value={job.assigned_technician} />
+                                    <PortfolioInfoItem label="Production Unit" value={job.assigned_bay || 'Unassigned'} />
+                                    <PortfolioInfoItem
+                                        label="Projected Delivery"
+                                        value={job.estimated_timeline ? new Date(job.estimated_timeline).toLocaleString() : 'Scheduling...'}
+                                        highlight={!!job.estimated_timeline}
+                                    />
+                                </div>
+                            ) : (
+                                <div style={{ color: 'rgba(232, 230, 227, 0.2)', fontSize: '13px', fontStyle: 'italic', padding: '10px', border: '1px dashed rgba(232, 230, 227, 0.1)', borderRadius: '8px' }}>
+                                    Tech assignment pending...
+                                </div>
+                            )}
+                        </PortfolioCard>
+                    </PortfolioGrid>
+
+                    {/* Authentication Card */}
+                    <PortfolioCard>
+                        <div style={cardHeaderStyle}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--gold)' }}>
+                                <PenTool size={18} />
+                                <span style={cardTitleStyle}>CLIENT AUTHENTICATION</span>
+                            </div>
+                        </div>
                         {job.signature_data ? (
                             <div style={signatureDisplayBox}>
-                                <img src={job.signature_data} alt="Customer Signature" style={{ maxHeight: '180px', filter: 'contrast(1.2)' }} />
-                                <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginTop: '15px', fontWeight: '800' }}>
-                                    DIGITALLY AUTHENTICATED ON {new Date(job.updated_at).toLocaleDateString().toUpperCase()}
+                                <div style={{ position: 'relative' }}>
+                                    <img src={job.signature_data} alt="Customer Signature" style={{ maxHeight: '100px', filter: 'contrast(1.2) invert(0.1)', opacity: 0.8 }} />
+                                    <div style={{
+                                        position: 'absolute', bottom: -20, left: 0, right: 0,
+                                        fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase'
+                                    }}>
+                                        Digitally Verified
+                                    </div>
+                                </div>
+                                <div style={{ fontSize: '10px', color: 'rgba(0,0,0,0.4)', marginTop: '30px', fontWeight: '500' }}>
+                                    Timestamp: {new Date(job.updated_at).toLocaleString()}
                                 </div>
                             </div>
                         ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '25px', padding: '40px' }}>
-                                <p style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '14px', textAlign: 'center', maxWidth: '400px' }}>
-                                    Vehicle reception signature is mandatory to initiate the production workflow.
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '25px', padding: '30px', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
+                                <p style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '13px', textAlign: 'center', maxWidth: '400px', fontFamily: 'var(--font-serif)' }}>
+                                    Asset reception signature is required to initiate technical operations.
                                 </p>
                                 <SignaturePad
                                     onSave={async (data) => {
                                         try {
                                             await api.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
                                             setJob({ ...job, signature_data: data });
-                                            alert('Signature captured successfully!');
                                         } catch (err) {
-                                            alert('Failed to save signature');
+                                            alert('Authentication failure');
                                         }
                                     }}
                                 />
                             </div>
                         )}
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-                        <div style={glassCardStyle}>
-                            <h4 style={sectionTitleStyle}>ASSET ATTRIBUTES</h4>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <InfoItem label="Registration" value={job.registration_number} />
-                                <InfoItem label="Vin / Chassis" value={job.vin} />
-                                <InfoItem label="Total Odometer" value={`${job.kilometers} KM`} />
-                            </div>
-                        </div>
-
-                        <div style={glassCardStyle}>
-                            <h4 style={sectionTitleStyle}>PRODUCTION ASSIGNMENT</h4>
-                            {job.assigned_technician ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                    <InfoItem label="Assigned Technician" value={job.assigned_technician} />
-                                    <InfoItem label="Workshop Bay" value={job.assigned_bay} />
-                                    <InfoItem label="Production Deadline" value={job.estimated_timeline ? new Date(job.estimated_timeline).toLocaleString() : 'PENDING'} />
-                                </div>
-                            ) : (
-                                <div style={{ color: 'rgba(232, 218, 206, 0.3)', fontSize: '13px', fontStyle: 'italic', padding: '10px' }}>
-                                    Awaiting technical allocation...
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    </PortfolioCard>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                    <div style={{ ...glassCardStyle, background: 'rgba(176, 141, 87, 0.05)', borderColor: 'rgba(176, 141, 87, 0.2)' }}>
-                        <h4 style={sectionTitleStyle}>FINANCIAL COMMAND</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                            <div style={summaryRow}><span style={{ opacity: 0.6 }}>Subtotal (Net)</span> <span>AED {job.total_amount}</span></div>
-                            <div style={summaryRow}><span style={{ opacity: 0.6 }}>VAT (5%)</span> <span>AED {job.vat_amount}</span></div>
-                            <div style={{ ...summaryRow, borderTop: '1px solid rgba(232, 230, 227, 0.1)', paddingTop: '15px', marginTop: '10px' }}>
-                                <span style={{ fontWeight: '800', color: 'var(--cream)' }}>GRAND TOTAL</span>
-                                <span style={{ fontSize: '26px', fontWeight: '900', color: '#10b981', fontFamily: 'var(--font-serif)' }}>AED {job.net_amount}</span>
+
+                    {/* Commercial Summary */}
+                    <PortfolioCard style={{ borderLeft: '2px solid var(--gold)', background: 'linear-gradient(180deg, rgba(176,141,87,0.05) 0%, rgba(20,20,20,0) 100%)' }}>
+                        <div style={cardHeaderStyle}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--gold)' }}>
+                                <Shield size={18} />
+                                <span style={cardTitleStyle}>COMMERCIAL SUMMARY</span>
                             </div>
                         </div>
-                    </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <div style={summaryRow}><span style={{ opacity: 0.5 }}>Net Valuation</span> <span>AED {parseFloat(job.total_amount).toLocaleString()}</span></div>
+                            <div style={summaryRow}><span style={{ opacity: 0.5 }}>Taxation (5%)</span> <span>AED {parseFloat(job.vat_amount).toLocaleString()}</span></div>
+                            <div style={{ ...summaryRow, borderTop: '1px solid rgba(232, 230, 227, 0.1)', paddingTop: '20px', marginTop: '10px' }}>
+                                <span style={{ fontWeight: '600', color: 'var(--cream)', fontSize: '12px', letterSpacing: '1px' }}>TOTAL CONTRACT</span>
+                                <span style={{ fontSize: '24px', fontWeight: '400', color: 'var(--gold)', fontFamily: 'var(--font-serif)' }}>AED {parseFloat(job.net_amount).toLocaleString()}</span>
+                            </div>
+                        </div>
+                    </PortfolioCard>
 
-                    <div style={glassCardStyle}>
-                        <h4 style={sectionTitleStyle}>QUALITY CONTROL</h4>
+                    {/* Quality Protocols */}
+                    <PortfolioCard>
+                        <div style={cardHeaderStyle}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--gold)' }}>
+                                <Activity size={18} />
+                                <span style={cardTitleStyle}>QUALITY PROTOCOLS</span>
+                            </div>
+                        </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                            <QCItem label="Pre-work Approval" checked={job.pre_work_head_sign_off} />
-                            <QCItem label="Post-work Sign-off" checked={job.post_work_head_sign_off} />
-                            <QCItem label="QC Final Inspection" checked={job.qc_sign_off} />
-                            <QCItem label="Operations Head Release" checked={job.floor_incharge_sign_off} />
+                            <QCItem label="Pre-Operation Validation" checked={job.pre_work_head_sign_off} />
+                            <QCItem label="Technical Execution OK" checked={job.post_work_head_sign_off} />
+                            <QCItem label="Quality Assurance Check" checked={job.qc_sign_off} />
+                            <QCItem label="Operational Clearance" checked={job.floor_incharge_sign_off} />
+                        </div>
+                    </PortfolioCard>
+
+                    <div style={{ textAlign: 'center', padding: '20px', borderRadius: '20px', background: 'rgba(232, 230, 227, 0.01)', border: '1px solid rgba(232, 230, 227, 0.05)' }}>
+                        <div style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '2px', color: 'rgba(232, 230, 227, 0.3)', marginBottom: '5px', fontWeight: '800' }}>Registry Blockchain Hash</div>
+                        <div style={{ fontSize: '10px', fontFamily: 'monospace', color: 'rgba(232, 230, 227, 0.2)' }}>
+                            {job.portal_token?.substring(0, 16).toUpperCase()}...-PORTAL-AUTH
                         </div>
                     </div>
                 </div>
             </PortfolioGrid>
+
+            {/* History Modal */}
+            {showHistory && (
+                <div style={modalOverlayStyle}>
+                    <PortfolioCard style={{ width: '90%', maxWidth: '800px', background: '#0a0a0a', border: '1px solid var(--gold)', boxShadow: '0 20px 80px rgba(0,0,0,0.8)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+                            <h2 style={{ color: 'var(--gold)', margin: 0, fontFamily: 'var(--font-serif)', fontSize: '24px' }}>Asset Service Archive</h2>
+                            <button onClick={() => setShowHistory(false)} style={closeBtnStyle}><X size={20} /></button>
+                        </div>
+                        <div style={{ maxHeight: '500px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            {history.length === 0 ? (
+                                <div style={{ color: 'rgba(232, 230, 227, 0.3)', textAlign: 'center', padding: '60px', fontFamily: 'var(--font-serif)' }}>
+                                    NO RECORDED SERVICE HISTORY FOR THIS IDENTIFICATION.
+                                </div>
+                            ) : history.map(h => (
+                                <div key={h.id} style={historyItemStyle} onClick={() => { setShowHistory(false); navigate(`/jobs/${h.id}`); }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <div style={{ fontSize: '15px', fontWeight: '400', color: 'var(--cream)', fontFamily: 'var(--font-serif)', marginBottom: '5px' }}>
+                                                {h.job_card_number} — {new Date(h.date).toLocaleDateString()}
+                                            </div>
+                                            <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase' }}>
+                                                {h.job_description?.substring(0, 80)}...
+                                            </div>
+                                        </div>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <div style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '14px' }}>AED {h.net_amount}</div>
+                                            <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.3)', textTransform: 'uppercase', marginTop: '4px' }}>{h.status_display}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </PortfolioCard>
+                </div>
+            )}
         </PortfolioPage>
     );
 };
 
-const InfoItem = ({ label, value }) => (
-    <div style={{ marginBottom: '5px' }}>
-        <div style={{ fontSize: '10px', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '2px' }}>{label}</div>
-        <div style={{ fontSize: '15px', fontWeight: '600', color: 'var(--cream)' }}>{value || 'N/A'}</div>
+// --- Sub-components & Styles ---
+
+const PortfolioInfoItem = ({ label, value, highlight }) => (
+    <div>
+        <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.3)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '6px', fontWeight: '800' }}>{label}</div>
+        <div style={{ fontSize: '15px', fontWeight: highlight ? '700' : '400', color: highlight ? 'var(--gold)' : 'var(--cream)', fontFamily: 'var(--font-serif)' }}>{value || 'N/A'}</div>
     </div>
 );
 
 const QCItem = ({ label, checked }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
         <div style={{
-            width: '20px',
-            height: '20px',
-            borderRadius: '6px',
-            border: `2px solid ${checked ? '#b08d57' : 'rgba(232, 230, 227, 0.1)'}`,
+            width: '18px',
+            height: '18px',
+            borderRadius: '4px',
+            border: `1px solid ${checked ? 'var(--gold)' : 'rgba(232, 230, 227, 0.1)'}`,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: checked ? '#b08d57' : 'transparent',
+            background: checked ? 'var(--gold)' : 'transparent',
             transition: 'all 0.3s'
         }}>
-            {checked && <CheckCircle2 size={14} color="#000" />}
+            {checked && <CheckCircle2 size={12} color="#000" />}
         </div>
-        <span style={{ fontSize: '13px', fontWeight: '600', color: checked ? 'var(--cream)' : 'rgba(232, 230, 227, 0.3)' }}>{label}</span>
+        <span style={{ fontSize: '13px', fontWeight: '400', color: checked ? 'var(--cream)' : 'rgba(232, 230, 227, 0.3)', fontFamily: 'var(--font-serif)' }}>{label}</span>
     </div>
 );
 
-const glassCardStyle = {
-    padding: '35px',
-    background: 'rgba(232, 230, 227, 0.03)',
-    border: '1px solid rgba(232, 230, 227, 0.1)',
-    borderRadius: '24px'
+const cardHeaderStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '30px',
+    borderBottom: '1px solid rgba(232, 230, 227, 0.05)',
+    paddingBottom: '15px'
 };
 
-const sectionTitleStyle = {
+const cardTitleStyle = {
     fontSize: '11px',
     textTransform: 'uppercase',
-    color: 'var(--gold)',
-    marginBottom: '30px',
-    fontWeight: '900',
-    letterSpacing: '2px'
+    letterSpacing: '2px',
+    fontWeight: '800'
 };
 
-const badgeStyleSuccess = { background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', padding: '6px 16px', borderRadius: '30px', fontSize: '10px', fontWeight: '900', border: '1px solid rgba(16, 185, 129, 0.2)', letterSpacing: '1px' };
-const badgeStyleWarning = { background: 'rgba(239, 68, 68, 0.1)', color: '#f43f5e', padding: '6px 16px', borderRadius: '30px', fontSize: '10px', fontWeight: '900', border: '1px solid rgba(239, 68, 68, 0.2)', letterSpacing: '1px' };
-const summaryRow = { display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'rgba(232, 230, 227, 0.6)' };
-const signatureDisplayBox = { textAlign: 'center', background: '#fff', padding: '30px', borderRadius: '20px', border: '1px solid rgba(232, 230, 227, 0.1)', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.05)' };
+const badgeStyleSuccess = {
+    background: 'rgba(16, 185, 129, 0.1)',
+    color: '#10b981',
+    padding: '4px 12px',
+    borderRadius: '4px',
+    fontSize: '10px',
+    fontWeight: '800',
+    border: '1px solid rgba(16, 185, 129, 0.2)',
+    letterSpacing: '1px'
+};
+
+const badgeStyleWarning = {
+    background: 'rgba(239, 68, 68, 0.1)',
+    color: '#f43f5e',
+    padding: '4px 12px',
+    borderRadius: '4px',
+    fontSize: '10px',
+    fontWeight: '800',
+    border: '1px solid rgba(239, 68, 68, 0.2)',
+    letterSpacing: '1px'
+};
+
+const summaryRow = { display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)' };
+
+const signatureDisplayBox = {
+    textAlign: 'center',
+    background: '#fff',
+    padding: '30px',
+    borderRadius: '12px',
+    border: '1px solid rgba(232, 230, 227, 0.1)',
+    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '150px'
+};
+
+const modalOverlayStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: 'rgba(0,0,0,0.85)',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '20px'
+};
+
+const closeBtnStyle = {
+    background: 'none',
+    border: 'none',
+    color: 'rgba(232, 230, 227, 0.5)',
+    cursor: 'pointer',
+    transition: 'color 0.2s'
+};
+
+const historyItemStyle = {
+    padding: '25px',
+    background: 'rgba(232, 230, 227, 0.03)',
+    border: '1px solid rgba(232, 230, 227, 0.08)',
+    borderRadius: '16px',
+    cursor: 'pointer',
+    transition: 'all 0.3s',
+    marginBottom: '5px'
+};
 
 export default JobDetail;

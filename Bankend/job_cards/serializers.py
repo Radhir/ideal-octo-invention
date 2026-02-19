@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import JobCard, JobCardPhoto, JobCardTask, Service, ServiceCategory
+from .models import JobCard, JobCardPhoto, JobCardTask, Service, ServiceCategory, WarrantyClaim
 
 class JobCardPhotoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,9 +36,25 @@ class JobCardSerializer(serializers.ModelSerializer):
             )
             validated_data['customer_profile'] = customer
             
-            # Update name if existing customer but new name provided (optional, or keep original)
             # For now, we respect the Job Card Entry as the source of truth for this specific job,
             # but we link to the profile.
+
+        # Auto-link or create Vehicle Node
+        vin = validated_data.get('vin')
+        if vin:
+            from masters.models import Vehicle
+            vehicle, created = Vehicle.objects.get_or_create(
+                vin=vin,
+                defaults={
+                    'registration_number': validated_data.get('registration_number', ''),
+                    'brand': validated_data.get('brand', ''),
+                    'model': validated_data.get('model', ''),
+                    'year': validated_data.get('year', 2024),
+                    'color': validated_data.get('color', ''),
+                    'customer': validated_data.get('customer_profile')
+                }
+            )
+            validated_data['vehicle_node'] = vehicle
             
         return super().create(validated_data)
 
@@ -52,12 +68,22 @@ class JobCardSerializer(serializers.ModelSerializer):
         return None
 
 class ServiceSerializer(serializers.ModelSerializer):
+    category_name = serializers.ReadOnlyField(source='category.name')
     class Meta:
         model = Service
-        fields = '__all__'
+        fields = ('id', 'name', 'price', 'category', 'category_name')
 
 class ServiceCategorySerializer(serializers.ModelSerializer):
     services = ServiceSerializer(many=True, read_only=True)
     class Meta:
         model = ServiceCategory
+        fields = '__all__'
+
+class WarrantyClaimSerializer(serializers.ModelSerializer):
+    customer_name = serializers.ReadOnlyField(source='customer.full_name')
+    job_card_number = serializers.ReadOnlyField(source='job_card.job_card_number')
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+
+    class Meta:
+        model = WarrantyClaim
         fields = '__all__'

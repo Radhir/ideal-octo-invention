@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
-    BookOpen, ArrowUpRight, ArrowDownRight, Search,
-    Filter, Download, Plus, ChevronLeft, ChevronRight,
-    DollarSign, TrendingUp, TrendingDown, BarChart3
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioStats,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioInput
+} from '../../components/PortfolioComponents';
+import {
+    Download, Plus, ChevronLeft, ChevronRight,
+    ArrowUpRight, ArrowDownRight, DollarSign, BookOpen
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,10 +26,9 @@ const AccountingPage = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const [txRes, accRes, _summaryRes] = await Promise.all([
+            const [txRes, accRes] = await Promise.all([
                 api.get('/finance/api/transactions/').catch(() => ({ data: [] })),
-                api.get('/finance/api/accounts/').catch(() => ({ data: [] })),
-                api.get('/finance/api/transactions/financial_summary/').catch(() => ({ data: {} }))
+                api.get('/finance/api/accounts/').catch(() => ({ data: [] }))
             ]);
             const txData = Array.isArray(txRes.data) ? txRes.data : txRes.data.results || [];
             const accData = Array.isArray(accRes.data) ? accRes.data : accRes.data.results || [];
@@ -71,131 +76,166 @@ const AccountingPage = () => {
         URL.revokeObjectURL(url);
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Loading General Ledger...</div>;
+    if (loading) return <div style={{ color: 'var(--cream)', padding: '80px', textAlign: 'center', opacity: 0.5 }}>Syncing Financial Command Center...</div>;
+
+    const stats = [
+        { label: 'Total Debits', value: `AED ${totalDebit.toLocaleString()}`, color: '#ef4444' },
+        { label: 'Total Credits', value: `AED ${totalCredit.toLocaleString()}`, color: '#10b981' },
+        { label: 'Net Balance', value: `AED ${netBalance.toLocaleString()}`, color: 'var(--gold)' },
+        { label: 'Active Accounts', value: accountCount, color: '#8b5cf6' }
+    ];
 
     return (
-        <div style={{ padding: '30px' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>FINANCE & ACCOUNTS</div>
-                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>General Ledger</h1>
+        <PortfolioPage breadcrumb="Finance / General Ledger">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <PortfolioTitle subtitle="Comprehensive audit trail of all fiscal movements and capital allocations.">
+                    General Ledger
+                </PortfolioTitle>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <PortfolioButton variant="secondary" onClick={exportCSV}>
+                        <Download size={18} /> Export CSV
+                    </PortfolioButton>
+                    <PortfolioButton variant="gold" onClick={() => navigate('/finance/transaction')}>
+                        <Plus size={18} /> New Entry
+                    </PortfolioButton>
                 </div>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                    <button onClick={exportCSV} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1.5px solid var(--gold-border)' }}>
-                        <Download size={16} /> Export CSV
-                    </button>
-                    <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1.5px solid var(--gold-border)' }}>
-                        <Plus size={16} /> New Entry
-                    </button>
-                </div>
-            </header>
-
-            {/* Summary Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                <LedgerStat label="Total Debits" value={`AED ${totalDebit.toLocaleString()}`} icon={ArrowUpRight} color="#3b82f6" />
-                <LedgerStat label="Total Credits" value={`AED ${totalCredit.toLocaleString()}`} icon={ArrowDownRight} color="#10b981" />
-                <LedgerStat label="Net Balance" value={`AED ${netBalance.toLocaleString()}`} icon={DollarSign} color="#b08d57" />
-                <LedgerStat label="Active Accounts" value={accountCount} icon={BookOpen} color="#8b5cf6" />
             </div>
 
-            {/* Filters */}
-            <GlassCard style={{ padding: '20px', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', left: '12px', top: '12px', color: '#64748b' }} />
-                        <input
-                            type="text"
-                            placeholder="Search by description or reference..."
+            <PortfolioStats stats={stats} />
+
+            <div style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '40px' }}>
+                {/* Filters Sidebar */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <PortfolioCard style={{ padding: '35px', background: 'rgba(0,0,0,0.2)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '30px' }}>
+                            <Filter size={18} color="var(--gold)" opacity={0.5} />
+                            <h3 style={{ margin: 0, fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Protocol Filters</h3>
+                        </div>
+
+                        <PortfolioInput
+                            label="SEARCH ARCHIVE"
+                            placeholder="Description or Ref..."
                             value={searchTerm}
                             onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
-                            style={{
-                                width: '100%', padding: '12px 12px 12px 40px', background: 'var(--input-bg)',
-                                border: '1.5px solid var(--gold-border)', borderRadius: '12px', color: 'var(--text-primary)', fontSize: '14px', outline: 'none', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.5px'
-                            }}
+                            style={{ marginBottom: '40px' }}
                         />
-                    </div>
-                    {['ALL', 'DEBIT', 'CREDIT'].map(f => (
-                        <button
-                            key={f}
-                            onClick={() => { setFilterType(f); setPage(1); }}
-                            style={{
-                                padding: '12px 24px', borderRadius: '12px', border: filterType === f ? '1.5px solid var(--gold-border)' : '1.5px solid rgba(176,141,87,0.2)', cursor: 'pointer', fontWeight: '900', fontSize: '12px',
-                                background: filterType === f ? 'var(--gold)' : 'var(--input-bg)',
-                                color: filterType === f ? '#000' : 'var(--text-primary)',
-                                textTransform: 'uppercase',
-                                letterSpacing: '1px'
-                            }}
-                        >{f}</button>
-                    ))}
-                </div>
-            </GlassCard>
 
-            {/* Ledger Table */}
-            <GlassCard style={{ padding: 0, overflow: 'hidden', border: '1.5px solid var(--gold-border)' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--text-primary)', fontSize: '14px' }}>
-                    <thead>
-                        <tr style={{ background: 'var(--input-bg)', textAlign: 'left', borderBottom: '2.5px solid var(--gold-border)' }}>
-                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Post Date</th>
-                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Ref Token</th>
-                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Description / Narrative</th>
-                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px' }}>Target Account</th>
-                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px', textAlign: 'right' }}>Debit (Out)</th>
-                            <th style={{ padding: '20px 18px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', fontSize: '11px', letterSpacing: '2px', textAlign: 'right' }}>Credit (In)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {paginated.length > 0 ? paginated.map((t, i) => (
-                            <tr key={t.id || i} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)' }}>
-                                <td style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', fontSize: '12px' }}>{t.date || '-'}</td>
-                                <td style={{ padding: '18px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '13px' }}>{t.reference || '-'}</td>
-                                <td style={{ padding: '18px', color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t.description || '-'}</td>
-                                <td style={{ padding: '18px', color: 'var(--gold)', fontWeight: '900', fontSize: '13px' }}>{t.account_name || t.account || '-'}</td>
-                                <td style={{ padding: '18px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.debit_amount) > 0 ? '#ef4444' : 'var(--text-secondary)', fontSize: '16px', fontFamily: 'Outfit, sans-serif' }}>
-                                    {parseFloat(t.debit_amount) > 0 ? parseFloat(t.debit_amount).toLocaleString() : '-'}
-                                </td>
-                                <td style={{ padding: '18px', textAlign: 'right', fontWeight: '900', color: parseFloat(t.credit_amount) > 0 ? '#10b981' : 'var(--text-secondary)', fontSize: '16px', fontFamily: 'Outfit, sans-serif' }}>
-                                    {parseFloat(t.credit_amount) > 0 ? parseFloat(t.credit_amount).toLocaleString() : '-'}
-                                </td>
-                            </tr>
-                        )) : (
-                            <tr>
-                                <td colSpan="6" style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
-                                    No ledger entries found. Create your first transaction to get started.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </GlassCard>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '20px' }}>
-                    <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer' }}>
-                        <ChevronLeft size={16} />
-                    </button>
-                    <span style={{ color: 'var(--text-secondary)', padding: '8px 14px', fontSize: '14px', fontWeight: '900' }}>Page {page} of {totalPages}</span>
-                    <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', padding: '8px 14px', borderRadius: '8px', cursor: 'pointer' }}>
-                        <ChevronRight size={16} />
-                    </button>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            <label style={{ color: 'var(--gold)', fontSize: '9px', fontWeight: '900', letterSpacing: '1px', marginBottom: '5px' }}>CLASSIFICATION</label>
+                            {['ALL', 'DEBIT', 'CREDIT'].map(f => (
+                                <button
+                                    key={f}
+                                    onClick={() => { setFilterType(f); setPage(1); }}
+                                    style={{
+                                        padding: '18px 25px',
+                                        background: filterType === f ? 'var(--gold)' : 'rgba(255,255,255,0.02)',
+                                        border: filterType === f ? 'none' : '1px solid rgba(232, 230, 227, 0.05)',
+                                        borderRadius: '12px',
+                                        color: filterType === f ? '#0a0a0a' : 'var(--cream)',
+                                        cursor: 'pointer',
+                                        textAlign: 'left',
+                                        fontSize: '11px',
+                                        fontWeight: '900',
+                                        letterSpacing: '1px',
+                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                        boxShadow: filterType === f ? '0 10px 20px rgba(176,141,87,0.2)' : 'none'
+                                    }}
+                                >
+                                    {f === 'ALL' ? 'UNIVERSAL VIEW' : f === 'DEBIT' ? 'DEBIT FLOWS' : 'CREDIT FLOWS'}
+                                </button>
+                            ))}
+                        </div>
+                    </PortfolioCard>
                 </div>
-            )}
-        </div>
+
+                {/* Ledger Table */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                    <PortfolioCard style={{ padding: 0, overflow: 'hidden', background: 'rgba(0,0,0,0.3)' }}>
+                        <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.03 }} />
+                        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, position: 'relative', zIndex: 1 }}>
+                            <thead>
+                                <tr style={{ background: 'rgba(176,141,87,0.05)' }}>
+                                    <th style={thStyle}>POST DATE</th>
+                                    <th style={thStyle}>REF TOKEN</th>
+                                    <th style={thStyle}>NARRATIVE</th>
+                                    <th style={thStyle}>ACCOUNT</th>
+                                    <th style={{ ...thStyle, textAlign: 'right' }}>DEBIT</th>
+                                    <th style={{ ...thStyle, textAlign: 'right' }}>CREDIT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {paginated.length > 0 ? paginated.map((t, i) => (
+                                    <tr key={t.id || i} style={{ borderBottom: '1px solid rgba(232, 230, 227, 0.03)' }} className="table-row-hover">
+                                        <td style={tdStyle}>{t.date || '-'}</td>
+                                        <td style={{ ...tdStyle, color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px' }}>{t.reference || '-'}</td>
+                                        <td style={{ ...tdStyle, color: 'var(--cream)', fontWeight: '300', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '11px' }}>{t.description || '-'}</td>
+                                        <td style={{ ...tdStyle, opacity: 0.5, fontSize: '11px' }}>{t.account_name || t.account || '-'}</td>
+                                        <td style={{ ...tdStyle, textAlign: 'right', color: parseFloat(t.debit_amount) > 0 ? '#ef4444' : 'rgba(232, 230, 227, 0.05)', fontFamily: 'var(--font-serif)', fontSize: '16px' }}>
+                                            {parseFloat(t.debit_amount) > 0 ? `-${parseFloat(t.debit_amount).toLocaleString()}` : '0.00'}
+                                        </td>
+                                        <td style={{ ...tdStyle, textAlign: 'right', color: parseFloat(t.credit_amount) > 0 ? '#10b981' : 'rgba(232, 230, 227, 0.05)', fontFamily: 'var(--font-serif)', fontSize: '16px' }}>
+                                            {parseFloat(t.credit_amount) > 0 ? `+${parseFloat(t.credit_amount).toLocaleString()}` : '0.00'}
+                                        </td>
+                                    </tr>
+                                )) : (
+                                    <tr>
+                                        <td colSpan="6" style={{ padding: '100px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.3)', letterSpacing: '2px', fontSize: '11px', fontWeight: '900' }}>
+                                            NO LEDGER ENTRIES DETECTED
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </PortfolioCard>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} style={pageBtnStyle}>
+                                <ChevronLeft size={16} />
+                            </button>
+                            <span style={{ display: 'flex', alignItems: 'center', color: 'var(--cream)', fontSize: '13px', letterSpacing: '1px' }}>PAGE {page} OF {totalPages}</span>
+                            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages} style={pageBtnStyle}>
+                                <ChevronRight size={16} />
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </PortfolioPage>
     );
 };
 
-const LedgerStat = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '20px', border: '1.5px solid var(--gold-border)' }}>
-        <div style={{ width: '60px', height: '60px', borderRadius: '15px', background: 'var(--gold-glow)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1.5px solid var(--gold-border)' }}>
-            <Icon size={28} color="var(--gold)" />
-        </div>
-        <div>
-            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '5px' }}>{label}</div>
-            <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
-        </div>
-    </GlassCard>
-);
+const thStyle = {
+    padding: '25px 30px',
+    textAlign: 'left',
+    fontSize: '10px',
+    fontWeight: '800',
+    color: 'var(--gold)',
+    textTransform: 'uppercase',
+    letterSpacing: '2px',
+    opacity: 0.9
+};
+
+const tdStyle = {
+    padding: '25px 30px',
+    fontSize: '13px',
+    color: 'var(--cream)',
+    fontWeight: '500'
+};
+
+const pageBtnStyle = {
+    background: 'transparent',
+    border: '1px solid rgba(232, 230, 227, 0.2)',
+    color: 'var(--cream)',
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.2s'
+};
 
 export default AccountingPage;

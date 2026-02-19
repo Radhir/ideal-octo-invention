@@ -13,9 +13,12 @@ class StockItemSerializer(serializers.ModelSerializer):
 
 class StockMovementSerializer(serializers.ModelSerializer):
     item_name = serializers.ReadOnlyField(source='item.name')
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+    
     class Meta:
         model = StockMovement
         fields = '__all__'
+        read_only_fields = ('status', 'date') # Status managed via actions, date auto-added
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Link, useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
+import { useNavigate } from 'react-router-dom';
 import {
     Plus, Search, Box, User, CreditCard,
     Printer, AlertTriangle, TrendingUp, Package,
-    ArrowUpCircle, ArrowDownCircle, Settings
+    ArrowUpCircle, ArrowDownCircle, Settings, ChevronRight
 } from 'lucide-react';
-import PrintHeader from '../../components/PrintHeader';
+import {
+    PortfolioPage, PortfolioTitle, PortfolioButton,
+    PortfolioStats, PortfolioGrid, PortfolioCard
+} from '../../components/PortfolioComponents';
 
 const StockList = () => {
     const navigate = useNavigate();
+    const [activeTab, setActiveTab] = useState('REGISTRY');
+    const [pendingItems, setPendingItems] = useState([]);
     const [items, setItems] = useState([]);
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,6 +22,7 @@ const StockList = () => {
 
     useEffect(() => {
         fetchData();
+        fetchPending();
     }, []);
 
     const fetchData = async () => {
@@ -26,7 +31,7 @@ const StockList = () => {
                 api.get('/forms/stock/api/items/'),
                 api.get('/forms/stock/api/items/inventory_stats/')
             ]);
-            setItems(itemRes.data);
+            setItems(itemRes.data.results || itemRes.data || []);
             setStats(statRes.data);
         } catch (err) {
             console.error('Error fetching stock data', err);
@@ -35,214 +40,324 @@ const StockList = () => {
         }
     };
 
-    const filteredItems = items.filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchTerm.toLowerCase())
+    const fetchPending = async () => {
+        try {
+            const res = await api.get('/forms/stock/api/movements/?status=PENDING');
+            setPendingItems(res.data.results || res.data || []);
+        } catch (err) {
+            console.error('Error fetching pending', err);
+        }
+    };
+
+    const handleApprove = async (id) => {
+        try {
+            await api.post(`/forms/stock/api/movements/${id}/approve/`);
+            // Refresh both lists as approval changes stock
+            fetchData();
+            fetchPending();
+            alert("Movement Approved & Stock Updated.");
+        } catch (err) {
+            alert("Approval Failed.");
+        }
+    };
+
+    const filteredItems = (items || []).filter(item =>
+        item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.sku && item.sku.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
+    const portfolioStats = [
+        { value: `AED ${(stats?.total_value / 1000 || 0).toFixed(1)}K`, label: 'INVENTORY VALUE', color: 'var(--gold)' },
+        { value: pendingItems.length, label: 'PENDING APPROVALS', color: pendingItems.length > 0 ? '#f59e0b' : '#10b981' },
+        { value: stats?.total_items || 0, label: 'MANAGED SKUS' }
+    ];
+
     return (
-        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
-            <PrintHeader title="Workshop Inventory & Asset Registry" />
-
-            <header className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', paddingLeft: '20px' }}>
-                <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                        <div className="pulse-dot" style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%' }} />
-                        <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '4px' }}>LIVE STOCK MONITOR</div>
-                    </div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', fontSize: '3rem', fontWeight: '900', margin: 0 }}>Stock Central</h1>
+        <PortfolioPage breadcrumb="Operations / Logistics / Asset Management">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="A strategic registry of high-performance materials and workshop essentials.">
+                    Asset Registry
+                </PortfolioTitle>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <PortfolioButton onClick={() => navigate('/stock/scanner')} variant="secondary" style={{ borderRadius: '14px', padding: '12px 24px' }}>
+                        <Settings size={18} style={{ marginRight: '8px' }} /> SMART SCANNER
+                    </PortfolioButton>
+                    <PortfolioButton onClick={() => navigate('/stock/create')} variant="gold" style={{ borderRadius: '14px', padding: '12px 24px' }}>
+                        <Plus size={18} style={{ marginRight: '8px' }} /> INITIALIZE ASSET
+                    </PortfolioButton>
                 </div>
-                <div style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
+            </div>
+
+            <PortfolioStats stats={portfolioStats} />
+
+            <div style={{
+                display: 'flex',
+                gap: '10px',
+                marginBottom: '60px',
+                padding: '10px',
+                background: 'rgba(255,255,255,0.02)',
+                borderRadius: '12px',
+                width: 'fit-content',
+                border: '1px solid rgba(255,255,255,0.05)'
+            }}>
+                {['REGISTRY', 'APPROVALS'].map(tab => (
                     <button
-                        onClick={() => window.print()}
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
                         style={{
-                            background: 'var(--bg-glass)',
-                            border: '1px solid var(--border-color)',
-                            padding: '12px 25px',
-                            borderRadius: '12px',
-                            color: 'var(--text-primary)',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            fontWeight: '700',
-                            transition: 'all 0.3s'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'}
-                    >
-                        <Printer size={18} /> Export Registry
-                    </button>
-                    <button
-                        className="btn-primary"
-                        onClick={() => navigate('/stock/scanner')}
-                        style={{
-                            background: 'rgba(176, 141, 87, 0.15)',
-                            border: '1px solid rgba(176, 141, 87, 0.4)',
-                            padding: '12px 25px',
-                            borderRadius: '12px',
-                            color: 'var(--text-primary)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            fontWeight: '700',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <Settings size={18} color="#b08d57" /> Smart Scanner
-                    </button>
-                    <button
-                        className="btn-primary"
-                        onClick={() => navigate('/stock/create')}
-                        style={{
-                            background: '#b08d57',
-                            color: '#000',
-                            padding: '12px 25px',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
+                            padding: '12px 30px',
+                            background: activeTab === tab ? 'var(--gold)' : 'transparent',
+                            border: 'none',
+                            color: activeTab === tab ? '#000' : 'rgba(232, 230, 227, 0.4)',
+                            fontSize: '10px',
                             fontWeight: '900',
-                            cursor: 'pointer'
+                            letterSpacing: '2px',
+                            cursor: 'pointer',
+                            borderRadius: '8px',
+                            transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
+                            boxShadow: activeTab === tab ? '0 10px 20px rgba(176,141,87,0.2)' : 'none'
                         }}
                     >
-                        <Plus size={18} /> New Item
+                        {tab} {tab === 'APPROVALS' && pendingItems.length > 0 && `(${pendingItems.length})`}
                     </button>
-                </div>
-            </header>
-
-            {/* Top Stats Dashboard */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '40px', padding: '0 20px' }}>
-                <InventoryStatCard
-                    label="Asset Value"
-                    value={`AED ${stats?.total_value?.toLocaleString() || 0}`}
-                    icon={<TrendingUp size={20} color="#b08d57" />}
-                    sub="Current Stock Capital"
-                />
-                <InventoryStatCard
-                    label="Low Stock Alert"
-                    value={stats?.low_stock_count || 0}
-                    icon={<AlertTriangle size={20} color={stats?.low_stock_count > 0 ? "#f43f5e" : "#64748b"} />}
-                    sub="Critical Buffer Levels"
-                    warning={stats?.low_stock_count > 0}
-                />
-                <InventoryStatCard
-                    label="Total SKUs"
-                    value={stats?.total_items || 0}
-                    icon={<Package size={20} color="#b08d57" />}
-                    sub="Managed Workshop Items"
-                />
-                <InventoryStatCard
-                    label="Daily Consumption"
-                    value="12 Units"
-                    icon={<ArrowDownCircle size={20} color="#3b82f6" />}
-                    sub="Projected Outflow"
-                />
+                ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '25px', position: 'relative', padding: '0 20px' }}>
-                <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={18} />
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by SKU, Name or Category..."
-                    style={{ paddingLeft: '45px', flex: 1, background: 'var(--input-bg)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
+            {activeTab === 'REGISTRY' && (
+                <>
+                    <div style={{ marginBottom: '40px', display: 'flex', gap: '20px', alignItems: 'center', marginTop: '30px' }}>
+                        <div style={searchContainerStyle}>
+                            <Search size={18} color="rgba(232, 230, 227, 0.2)" />
+                            <input
+                                type="text"
+                                placeholder="Search Registry (Name, SKU, Category)..."
+                                style={searchInputStyle}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <PortfolioButton variant="secondary" style={{ padding: '0 20px', height: '48px' }}>
+                            <Printer size={18} />
+                        </PortfolioButton>
+                    </div>
 
-            <div style={{ padding: '0 20px' }}>
-                <GlassCard style={{ padding: '0', overflowX: 'auto', border: '1px solid var(--border-color)' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                        <thead>
-                            <tr style={{ background: 'var(--input-bg)', borderBottom: '1px solid rgba(176, 141, 87, 0.2)' }}>
-                                <th style={{ padding: '20px', textAlign: 'left', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Item Name / SKU</th>
-                                <th style={{ padding: '20px', textAlign: 'left', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Balance</th>
-                                <th style={{ padding: '20px', textAlign: 'left', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Safety</th>
-                                <th style={{ padding: '20px', textAlign: 'center', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Status</th>
-                                <th style={{ padding: '20px', textAlign: 'right', fontSize: '10px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '900', letterSpacing: '2px' }}>Management</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr><td colSpan="5" style={{ padding: '50px', textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>Syncing Industrial Ledger...</td></tr>
-                            ) : filteredItems.length === 0 ? (
-                                <tr><td colSpan="5" style={{ padding: '50px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px' }}>No inventory items registered.</td></tr>
-                            ) : filteredItems.map(item => (
-                                <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background 0.3s' }} className="stock-row">
-                                    <td style={{ padding: '25px 20px' }}>
-                                        <div style={{ fontWeight: '800', color: 'var(--text-primary)', fontSize: '16px', marginBottom: '5px' }}>{item.name}</div>
-                                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '900', letterSpacing: '1px' }}>{item.category}</div>
-                                    </td>
-                                    <td style={{ padding: '20px' }}>
-                                        <div style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '18px' }}>{parseFloat(item.current_stock).toLocaleString()} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>{item.unit}</span></div>
-                                        <div style={{ fontSize: '10px', color: '#10b981', fontWeight: '800' }}>ONLINE</div>
-                                    </td>
-                                    <td style={{ padding: '20px' }}>
-                                        <div style={{ fontSize: '14px', color: 'var(--text-secondary)', fontWeight: '700' }}>{item.safety_level} {item.unit}</div>
-                                    </td>
-                                    <td style={{ padding: '20px', textAlign: 'center' }}>
-                                        <StockStatusIndicator current={parseFloat(item.current_stock)} safety={parseFloat(item.safety_level)} />
-                                    </td>
-                                    <td style={{ padding: '20px', textAlign: 'right' }}>
-                                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                                            <button
-                                                onClick={() => navigate('/stock/movement', { state: { itemId: item.id } })}
-                                                style={{
-                                                    background: 'rgba(176,141,87,0.1)',
-                                                    border: '1px solid rgba(176,141,87,0.3)',
-                                                    color: '#b08d57',
-                                                    padding: '8px 20px',
-                                                    borderRadius: '8px',
-                                                    fontSize: '11px',
-                                                    fontWeight: '900',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.3s'
-                                                }}
-                                                onMouseOver={(e) => e.currentTarget.style.background = 'rgba(176,141,87,0.2)'}
-                                                onMouseOut={(e) => e.currentTarget.style.background = 'rgba(176,141,87,0.1)'}
-                                            >
-                                                ADJUST
-                                            </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        {loading ? (
+                            <div style={{ color: 'var(--cream)', padding: '100px', textAlign: 'center', letterSpacing: '2px', fontWeight: '800' }}>RECOVERING INDUSTRIAL LEDGER...</div>
+                        ) : filteredItems.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '120px', color: 'rgba(232, 230, 227, 0.2)', background: 'rgba(232, 230, 227, 0.01)', borderRadius: '32px', border: '1px dashed rgba(232, 230, 227, 0.05)', fontFamily: 'var(--font-serif)' }}>
+                                NO ASSETS RECORDED IN THE CURRENT PARAMETERS.
+                            </div>
+                        ) : (
+                            <PortfolioGrid columns="repeat(auto-fill, minmax(420px, 1fr))">
+                                {filteredItems.map(item => (
+                                    <PortfolioCard
+                                        key={item.id}
+                                        style={{
+                                            padding: '40px',
+                                            background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
+                                        }}
+                                        className="workflow-card"
+                                    >
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+                                            <div style={skuBadgeStyle}>
+                                                <Package size={14} color="var(--gold)" />
+                                                <span>{item.sku || 'NO SKU'}</span>
+                                            </div>
+                                            <StockStatusIndicator current={parseFloat(item.current_stock)} safety={parseFloat(item.safety_level)} />
                                         </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </GlassCard>
-            </div>
-        </div>
+                                        -
+                                        <div style={{ marginBottom: '30px' }}>
+                                            <h3 style={assetNameStyle}>{item.name}</h3>
+                                            <div style={{ ...categoryStyle, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold)' }} />
+                                                {item.category.toUpperCase()}
+                                            </div>
+                                        </div>
+                                        -
+                                        <div style={balanceBox}>
+                                            <div style={{ textAlign: 'left' }}>
+                                                <div style={labelTag}>CURRENT BALANCE</div>
+                                                <div style={balanceValue}>
+                                                    {parseFloat(item.current_stock).toLocaleString()} <span style={{ fontSize: '14px', fontWeight: '400', color: 'rgba(232, 230, 227, 0.2)', marginLeft: '4px' }}>{item.unit.toUpperCase()}</span>
+                                                </div>
+                                            </div>
+                                            <div style={{ textAlign: 'right' }}>
+                                                <div style={labelTag}>SAFETY LIMIT</div>
+                                                <div style={{ fontSize: '18px', fontWeight: '700', color: 'rgba(232, 230, 227, 0.4)', marginTop: '8px', fontFamily: 'var(--font-serif)' }}>
+                                                    {item.safety_level} <span style={{ fontSize: '10px' }}>{item.unit.toUpperCase()}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        -
+                                        <div style={{ display: 'flex', gap: '15px', marginTop: '35px' }}>
+                                            <PortfolioButton
+                                                onClick={() => navigate('/stock/movement', { state: { itemId: item.id } })}
+                                                variant="secondary"
+                                                style={{ flex: 1, fontSize: '10px', height: '52px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}
+                                            >
+                                                ADJUST QUANTITY
+                                            </PortfolioButton>
+                                            <PortfolioButton
+                                                variant="gold"
+                                                style={{ height: '52px', width: '52px', padding: 0, borderRadius: '12px' }}
+                                                onClick={() => navigate(`/stock/items/${item.id}`)}
+                                            >
+                                                <ChevronRight size={20} />
+                                            </PortfolioButton>
+                                        </div>
+                                    </PortfolioCard>
+                                ))}
+                            </PortfolioGrid>
+                        )}
+                    </div>
+                </>
+            )}
+
+            {activeTab === 'APPROVALS' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '30px' }}>
+                    {pendingItems.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '100px', color: '#64748b' }}>
+                            <div style={{ fontSize: '18px', fontWeight: '700' }}>All Caught Up</div>
+                            <p style={{ fontSize: '13px' }}>No pending stock movements awaiting approval.</p>
+                        </div>
+                    ) : (
+                        pendingItems.map(move => (
+                            <PortfolioCard key={move.id} style={{ padding: '25px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
+                                        <span style={{
+                                            background: move.type === 'IN' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(244, 63, 94, 0.1)',
+                                            color: move.type === 'IN' ? '#10b981' : '#f43f5e',
+                                            padding: '4px 8px', borderRadius: '5px', fontSize: '10px', fontWeight: '900'
+                                        }}>
+                                            {move.type === 'IN' ? 'ENTRY' : 'EXIT'}
+                                        </span>
+                                        <span style={{ color: '#fff', fontWeight: '800', fontSize: '16px' }}>{move.item_name}</span>
+                                    </div>
+                                    <div style={{ color: '#94a3b8', fontSize: '13px' }}>
+                                        {parseFloat(move.quantity)} Units via Scanner • by {move.recorded_by || 'Unknown'} • {new Date(move.date).toLocaleString()}
+                                    </div>
+                                </div>
+                                <PortfolioButton
+                                    onClick={() => handleApprove(move.id)}
+                                    variant="primary"
+                                    style={{ padding: '0 25px', height: '40px', fontSize: '11px' }}
+                                >
+                                    APPROVE
+                                </PortfolioButton>
+                            </PortfolioCard>
+                        ))
+                    )}
+                </div>
+            )}
+        </PortfolioPage>
     );
 };
 
-const InventoryStatCard = ({ label, value, icon, sub, warning }) => (
-    <GlassCard style={{ padding: '30px', position: 'relative', overflow: 'hidden', border: warning ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid var(--border-color)' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-            <div style={{ background: 'var(--input-bg)', padding: '12px', borderRadius: '12px', border: '1px solid var(--border-color)' }}>{icon}</div>
-            {warning && <div className="pulse-dot" style={{ background: '#f43f5e', width: '8px', height: '8px', borderRadius: '50%' }} />}
-        </div>
-        <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>{label}</div>
-        <div style={{ fontSize: '32px', fontWeight: '900', color: 'var(--text-primary)', marginBottom: '8px', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
-        <div style={{ fontSize: '11px', color: warning ? '#f43f5e' : 'var(--text-muted)', fontWeight: '600' }}>{sub}</div>
-    </GlassCard>
-);
+const skuBadgeStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    background: 'rgba(232, 230, 227, 0.02)',
+    color: 'rgba(232, 230, 227, 0.4)',
+    padding: '6px 14px',
+    borderRadius: '10px',
+    fontSize: '10px',
+    fontWeight: '900',
+    border: '1px solid rgba(232, 230, 227, 0.05)',
+    letterSpacing: '1px'
+};
+
+const assetNameStyle = {
+    fontSize: '26px',
+    fontWeight: '300',
+    color: 'var(--cream)',
+    marginBottom: '8px',
+    fontFamily: 'var(--font-serif)',
+    letterSpacing: '0.5px'
+};
+
+const categoryStyle = {
+    fontSize: '10px',
+    fontWeight: '800',
+    color: 'var(--gold)',
+    letterSpacing: '2px',
+    opacity: 0.6
+};
+
+const balanceBox = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '20px 0',
+    borderTop: '1px solid rgba(232, 230, 227, 0.03)',
+    borderBottom: '1px solid rgba(232, 230, 227, 0.03)'
+};
+
+const labelTag = {
+    fontSize: '9px',
+    fontWeight: '900',
+    color: 'rgba(232, 230, 227, 0.3)',
+    letterSpacing: '1.5px',
+    textTransform: 'uppercase'
+};
+
+const balanceValue = {
+    fontSize: '32px',
+    fontWeight: '100',
+    color: 'var(--cream)',
+    fontFamily: 'var(--font-serif)',
+    marginTop: '5px'
+};
+
+const searchContainerStyle = {
+    flex: 1,
+    background: 'rgba(232, 230, 227, 0.02)',
+    border: '1px solid rgba(232, 230, 227, 0.05)',
+    borderRadius: '16px',
+    padding: '0 24px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '18px',
+    height: '48px',
+    boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.1)'
+};
+
+const searchInputStyle = {
+    background: 'none',
+    border: 'none',
+    color: 'var(--cream)',
+    padding: '15px 0',
+    width: '100%',
+    outline: 'none',
+    fontSize: '14px',
+    fontWeight: '400',
+    fontFamily: 'var(--font-serif)'
+};
 
 const StockStatusIndicator = ({ current, safety }) => {
     let color = '#10b981';
-    let label = 'HEALTHY';
+    let label = 'OPTIMAL';
     if (current <= 0) { color = '#f43f5e'; label = 'EMPTY'; }
-    else if (current <= safety) { color = '#f59e0b'; label = 'CRITICAL'; }
+    else if (current <= safety) { color = '#f59e0b'; label = 'LOW STOCK'; }
 
     return (
         <span style={{
-            color, background: `${color}1A`,
-            padding: '6px 15px', borderRadius: '8px',
-            fontSize: '10px', fontWeight: '900',
-            border: `1px solid ${color}33`,
-            letterSpacing: '1px'
+            color,
+            background: `${color}10`,
+            padding: '8px 16px',
+            borderRadius: '20px',
+            fontSize: '9px',
+            fontWeight: '900',
+            border: `1px solid ${color}20`,
+            letterSpacing: '2px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
         }}>
+            <div className={`status-pulse ${label !== 'OPTIMAL' ? 'active' : ''}`} style={{ background: color, width: '6px', height: '6px' }} />
             {label}
         </span>
     );

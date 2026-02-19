@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
-    Search, FileText, User, Calendar,
-    Shield, ArrowRight, Filter, ChevronRight
+    Search, FileText, Calendar, Shield, ArrowRight, Plus
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioInput,
+    PortfolioGrid,
+    PortfolioCard
+} from '../../components/PortfolioComponents';
 
 const SLAList = () => {
     const navigate = useNavigate();
@@ -34,156 +40,130 @@ const SLAList = () => {
         (s.customer_name || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const getLevelStyle = (level) => {
+    const getLevelBadge = (level) => {
         switch (level) {
-            case 'PLATINUM': return { color: '#fff', bg: 'linear-gradient(135deg, #94a3b8, #475569)', label: 'Platinum' };
-            case 'GOLD': return { color: '#000', bg: 'linear-gradient(135deg, #fbbf24, #b45309)', label: 'Gold' };
-            case 'SILVER': return { color: '#fff', bg: 'linear-gradient(135deg, #94a3b8, #64748b)', label: 'Silver' };
-            default: return { color: '#fff', bg: 'linear-gradient(135deg, #64748b, #334155)', label: 'Bronze' };
+            case 'PLATINUM': return { color: '#10b981', bg: 'rgba(16,185,129,0.1)', label: 'Platinum' };
+            case 'GOLD': return { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', label: 'Gold' };
+            case 'SILVER': return { color: '#94a3b8', bg: 'rgba(148,163,184,0.1)', label: 'Silver' };
+            default: return { color: '#64748b', bg: 'rgba(100,116,139,0.1)', label: 'Bronze' };
         }
     };
 
-    return (
-        <div style={{ padding: '30px 20px', minHeight: '100vh', background: 'var(--bg-primary)' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Registry</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>SLA Agreements</h1>
-                </div>
-                <button onClick={() => navigate('/construction')} style={createBtn}>
-                    <Shield size={18} /> Draft New Agreement
-                </button>
-            </header>
+    if (loading) return (
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+                <div style={{ color: 'var(--gold)', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '12px' }}>Loading Registry...</div>
+            </div>
+        </PortfolioPage>
+    );
 
-            <div style={{ marginBottom: '30px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'var(--gold)' }} size={20} />
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search by agreement # or customer name..."
-                    style={{
-                        padding: '18px 20px 18px 55px',
-                        fontSize: '16px',
-                        borderRadius: '15px',
-                        background: 'rgba(0,0,0,0.3)',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        color: '#fff',
-                        width: '100%',
-                        outline: 'none'
-                    }}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+    return (
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' }}>
+                <PortfolioTitle subtitle="Service Level Agreement Registry">Agreements</PortfolioTitle>
+                <PortfolioButton
+                    onClick={() => navigate('/construction')}
+                    variant="gold"
+                    style={{ marginBottom: '100px', display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                    <Plus size={18} /> New Agreement
+                </PortfolioButton>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px' }}>
-                {loading ? (
-                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '100px', color: 'var(--text-secondary)' }}>
-                        Querying Agreement Database...
-                    </div>
-                ) : filteredSLAs.length === 0 ? (
-                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '100px', color: 'var(--text-secondary)' }}>
-                        No agreements found matching your criteria.
+            <div style={{ marginBottom: '40px' }}>
+                <div style={{ position: 'relative', maxWidth: '600px' }}>
+                    <Search size={18} style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(232, 230, 227, 0.4)' }} />
+                    <input
+                        placeholder="Search by agreement # or customer..."
+                        style={{
+                            width: '100%',
+                            padding: '18px 20px 18px 50px',
+                            background: 'rgba(255,255,255,0.03)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '15px',
+                            color: 'var(--cream)',
+                            fontSize: '15px',
+                            outline: 'none',
+                            fontFamily: 'inherit'
+                        }}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+            </div>
+
+            <PortfolioGrid columns="repeat(auto-fill, minmax(350px, 1fr))">
+                {filteredSLAs.length === 0 ? (
+                    <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '60px', color: 'rgba(232, 230, 227, 0.4)', border: '1px dashed rgba(232,230,227,0.1)', borderRadius: '20px' }}>
+                        No agreements found matching your search.
                     </div>
                 ) : filteredSLAs.map(sla => {
-                    const lStyle = getLevelStyle(sla.service_level);
+                    const badge = getLevelBadge(sla.service_level);
                     return (
-                        <GlassCard key={sla.id} style={{ padding: '25px', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ position: 'absolute', top: 0, right: 0, padding: '8px 15px', background: lStyle.bg, color: lStyle.color, fontSize: '10px', fontWeight: '900', borderRadius: '0 0 0 12px' }}>
-                                {lStyle.label}
+                        <PortfolioCard key={sla.id} onClick={() => navigate(`/sla/${sla.id}`)}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+                                <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '600', letterSpacing: '1px' }}>
+                                    {sla.agreement_number}
+                                </div>
+                                <div style={{
+                                    padding: '4px 10px',
+                                    borderRadius: '4px',
+                                    background: badge.bg,
+                                    color: badge.color,
+                                    fontSize: '10px',
+                                    fontWeight: '700',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px'
+                                }}>
+                                    {badge.label}
+                                </div>
                             </div>
 
-                            <div style={{ marginBottom: '20px' }}>
-                                <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '800', marginBottom: '4px' }}>{sla.agreement_number}</div>
-                                <h3 style={{ margin: 0, color: '#fff', fontSize: '20px', fontWeight: '800' }}>{sla.customer_name || `Customer #${sla.customer}`}</h3>
-                            </div>
+                            <h3 style={{ margin: '0 0 25px 0', fontSize: '20px', fontWeight: '500', color: 'var(--cream)', lineHeight: '1.3' }}>
+                                {sla.customer_name || `Customer #${sla.customer}`}
+                            </h3>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '25px' }}>
                                 <div style={infoBox}>
-                                    <Calendar size={14} color="var(--gold)" />
-                                    <div>
-                                        <div style={infoLabel}>EXPIRY</div>
-                                        <div style={infoValue}>{new Date(sla.end_date).toLocaleDateString()}</div>
+                                    <div style={infoLabel}>Status</div>
+                                    <div style={{ fontSize: '13px', fontWeight: '600', color: sla.is_active ? '#10b981' : '#ef4444' }}>
+                                        {sla.is_active ? 'Active' : 'Inactive'}
                                     </div>
                                 </div>
                                 <div style={infoBox}>
-                                    <Shield size={14} color="var(--gold)" />
-                                    <div>
-                                        <div style={infoLabel}>TYPE</div>
-                                        <div style={infoValue}>{sla.agreement_type}</div>
+                                    <div style={infoLabel}>Expiry</div>
+                                    <div style={{ fontSize: '13px', color: 'var(--cream)' }}>
+                                        {new Date(sla.end_date).toLocaleDateString()}
                                     </div>
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: sla.is_active ? '#10b981' : '#f43f5e' }} />
-                                    <span style={{ fontSize: '10px', fontWeight: '700', color: sla.is_active ? '#10b981' : '#f43f5e' }}>
-                                        {sla.is_active ? 'ACTIVE' : 'INACTIVE'}
-                                    </span>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '15px', borderTop: '1px solid rgba(232,230,227,0.05)' }}>
+                                <span style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.4)' }}>{sla.agreement_type}</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--gold)', fontWeight: '500' }}>
+                                    View Details <ArrowRight size={14} />
                                 </div>
-                                <button
-                                    onClick={() => navigate(`/sla/${sla.id}`)}
-                                    style={inspectBtn}
-                                >
-                                    Inspect Contract <ChevronRight size={14} />
-                                </button>
                             </div>
-                        </GlassCard>
+                        </PortfolioCard>
                     );
                 })}
-            </div>
-        </div>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
 };
 
 const infoBox = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    background: 'rgba(255,255,255,0.03)',
     padding: '10px',
-    borderRadius: '12px',
-    border: '1px solid rgba(255,255,255,0.05)'
+    background: 'rgba(232, 230, 227, 0.03)',
+    borderRadius: '8px'
 };
 
 const infoLabel = {
-    fontSize: '9px',
-    color: 'var(--text-muted)',
-    fontWeight: '800'
-};
-
-const infoValue = {
-    fontSize: '12px',
-    color: '#fff',
-    fontWeight: '700'
-};
-
-const createBtn = {
-    background: 'var(--gold)',
-    color: '#000',
-    border: 'none',
-    padding: '12px 25px',
-    borderRadius: '12px',
-    fontSize: '14px',
-    fontWeight: '900',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-};
-
-const inspectBtn = {
-    background: 'transparent',
-    border: 'none',
-    color: '#fff',
-    fontSize: '12px',
-    fontWeight: '700',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '5px',
-    opacity: 0.7
+    fontSize: '10px',
+    color: 'rgba(232, 230, 227, 0.4)',
+    textTransform: 'uppercase',
+    marginBottom: '4px',
+    letterSpacing: '0.5px'
 };
 
 export default SLAList;

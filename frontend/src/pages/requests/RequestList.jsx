@@ -115,8 +115,7 @@ const RequestList = () => {
                     </tbody>
                 </table>
             </GlassCard>
-            <style>{`
-            `}</style>
+
         </div>
     );
 };

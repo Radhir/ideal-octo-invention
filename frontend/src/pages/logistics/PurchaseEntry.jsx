@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioInput,
+    PortfolioButton,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
 import { Save, ArrowLeft, ShoppingCart, User, Calendar, Plus, Trash2 } from 'lucide-react';
 
 const PurchaseEntry = () => {
@@ -52,110 +59,192 @@ const PurchaseEntry = () => {
         };
 
         try {
-            await api.post('/logistics/api/purchases/', submissionData);
-            alert('Purchase Entry Synchronized with Inventory Ledger.');
-            navigate('/stock');
+            const res = await api.post('/logistics/api/purchases/', submissionData);
+            navigate('/logistics/order-confirmation', { state: { order: res.data, totals } });
         } catch (err) {
             console.error(err);
-            alert('Failed to log purchase entry.');
+            alert('Failed to synchronize supply order protocol.');
         }
     };
 
     const totals = calculateTotals();
 
     return (
-        <div style={{ padding: '30px 20px' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                <button
-                    onClick={() => navigate(-1)}
-                    style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Procurement & Inventory</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: '#fff' }}>PURCHASE ENTRY</h1>
+        <PortfolioPage>
+            <div style={{ padding: '40px 0' }}>
+                <div style={{
+                    display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px',
+                    color: 'var(--cream)', fontSize: '13px', letterSpacing: '1px', cursor: 'pointer'
+                }} onClick={() => navigate(-1)}>
+                    <ArrowLeft size={16} /> BACK
                 </div>
-            </header>
 
-            <form onSubmit={handleSubmit} style={{ maxWidth: '1000px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <GlassCard style={{ padding: '35px' }}>
-                            <h3 style={sectionTitleStyle}><User size={18} color="var(--gold)" /> Vendor & Reference</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Vendor / Supplier Name</label>
-                                    <input name="vendor_name" className="form-control" value={formData.vendor_name} onChange={handleChange} required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Purchase Reference #</label>
-                                    <input name="purchase_number" className="form-control" value={formData.purchase_number} onChange={handleChange} required />
-                                </div>
-                            </div>
-                        </GlassCard>
-
-                        <GlassCard style={{ padding: '35px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                                <h3 style={{ ...sectionTitleStyle, marginBottom: 0 }}><ShoppingCart size={18} color="var(--gold)" /> Item Breakdown</h3>
-                                <button type="button" onClick={addItem} className="btn-outline" style={{ fontSize: '11px', padding: '8px 15px' }}>
-                                    <Plus size={14} /> ADD ITEM
-                                </button>
-                            </div>
-
-                            {formData.items.map((item, idx) => (
-                                <div key={idx} style={{ display: 'grid', gridTemplateColumns: '3fr 1fr 1fr 50px', gap: '15px', marginBottom: '15px', alignItems: 'end' }}>
-                                    <div>
-                                        {idx === 0 && <label style={labelStyle}>Item Description</label>}
-                                        <input className="form-control" value={item.detail} onChange={(e) => handleItemChange(idx, 'detail', e.target.value)} required placeholder="e.g. Engine Oil 5W30" />
-                                    </div>
-                                    <div>
-                                        {idx === 0 && <label style={labelStyle}>Qty</label>}
-                                        <input type="number" className="form-control" value={item.qty} onChange={(e) => handleItemChange(idx, 'qty', parseInt(e.target.value))} required />
-                                    </div>
-                                    <div>
-                                        {idx === 0 && <label style={labelStyle}>Price</label>}
-                                        <input type="number" className="form-control" value={item.price} onChange={(e) => handleItemChange(idx, 'price', parseFloat(e.target.value))} required />
-                                    </div>
-                                    <button type="button" onClick={() => removeItem(idx)} style={{ height: '45px', background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
-                                        <Trash2 size={18} />
-                                    </button>
-                                </div>
-                            ))}
-                        </GlassCard>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <GlassCard style={{ padding: '30px' }}>
-                            <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}><Calendar size={16} color="var(--gold)" /> Date</h3>
-                            <input name="date" type="date" className="form-control" value={formData.date} onChange={handleChange} required />
-                        </GlassCard>
-
-                        <GlassCard style={{ padding: '30px' }}>
-                            <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}>Financial Summary</h3>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--text-secondary)' }}>
-                                    <span>Subtotal</span>
-                                    <span>AED {totals.subtotal.toLocaleString()}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--gold)' }}>
-                                    <span>VAT (5%)</span>
-                                    <span>AED {totals.vat.toLocaleString()}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: '900', color: '#fff', borderTop: '1px solid var(--gold-border)', paddingTop: '10px' }}>
-                                    <span>TOTAL</span>
-                                    <span>AED {totals.grandTotal.toLocaleString()}</span>
-                                </div>
-                            </div>
-                        </GlassCard>
-
-                        <button type="submit" className="btn-primary" style={{ width: '100%', padding: '20px', borderRadius: '15px' }}>
-                            <Save size={20} /> SYNC PURCHASE
-                        </button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
+                    <PortfolioTitle
+                        title="SUPPLY ORDER PROTOCOL"
+                        subtitle={`PROCUREMENT // AUTH.ID: ${formData.purchase_number}`}
+                    />
+                    <div style={{
+                        textAlign: 'right',
+                        padding: '15px 25px',
+                        background: 'rgba(255,255,255,0.02)',
+                        borderRadius: '15px',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                        backdropFilter: 'blur(10px)'
+                    }}>
+                        <div style={{ fontSize: '9px', color: 'var(--gold)', letterSpacing: '2px', fontWeight: '900' }}>TIMESTAMP.LOG</div>
+                        <div style={{ fontSize: '15px', color: 'var(--cream)', fontWeight: '300', marginTop: '6px', fontFamily: 'var(--font-serif)' }}>{new Date().toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}</div>
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <form onSubmit={handleSubmit}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr', gap: '40px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                            <PortfolioCard style={{ padding: '35px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <User size={20} color="var(--gold)" />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>VENDORS</div>
+                                        <PortfolioSectionTitle title="SUPPLY SOURCE" style={{ marginBottom: 0, fontSize: '18px' }} />
+                                    </div>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
+                                    <PortfolioInput
+                                        label="VENDOR NAME"
+                                        name="vendor_name"
+                                        value={formData.vendor_name}
+                                        onChange={handleChange}
+                                        placeholder="Enter Supplier"
+                                    />
+                                    <PortfolioInput
+                                        label="REFERENCE #"
+                                        name="purchase_number"
+                                        value={formData.purchase_number}
+                                        onChange={handleChange}
+                                    />
+                                </div>
+                            </PortfolioCard>
+
+                            <PortfolioCard style={{ padding: '35px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '35px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <ShoppingCart size={20} color="var(--gold)" />
+                                        </div>
+                                        <div>
+                                            <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>INVENTORY.node</div>
+                                            <PortfolioSectionTitle title="ASSET MANIFEST" style={{ marginBottom: 0, fontSize: '18px' }} />
+                                        </div>
+                                    </div>
+                                    <PortfolioButton onClick={addItem} variant="glass" style={{ fontSize: '9px', padding: '10px 20px', height: 'auto' }}>
+                                        <Plus size={14} /> ADD.row
+                                    </PortfolioButton>
+                                </div>
+
+                                {formData.items.map((item, idx) => (
+                                    <div key={idx} style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '1fr 100px 140px 50px',
+                                        gap: '20px',
+                                        marginBottom: '20px',
+                                        alignItems: 'flex-end',
+                                        padding: '20px',
+                                        background: 'rgba(255,255,255,0.01)',
+                                        borderRadius: '12px',
+                                        border: '1px solid rgba(255,255,255,0.03)'
+                                    }}>
+                                        <PortfolioInput
+                                            label={idx === 0 ? "DESCRIPTION" : ""}
+                                            value={item.detail}
+                                            onChange={(e) => handleItemChange(idx, 'detail', e.target.value)}
+                                            placeholder="Part Name / Service"
+                                        />
+                                        <PortfolioInput
+                                            label={idx === 0 ? "QTY" : ""}
+                                            type="number"
+                                            value={item.qty}
+                                            onChange={(e) => handleItemChange(idx, 'qty', parseInt(e.target.value))}
+                                        />
+                                        <PortfolioInput
+                                            label={idx === 0 ? "UNIT PRICE" : ""}
+                                            type="number"
+                                            value={item.price}
+                                            onChange={(e) => handleItemChange(idx, 'price', parseFloat(e.target.value))}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => removeItem(idx)}
+                                            style={{
+                                                height: '52px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                background: 'transparent',
+                                                border: 'none',
+                                                color: '#ef4444',
+                                                cursor: 'pointer',
+                                                opacity: formData.items.length > 1 ? 1 : 0.3
+                                            }}
+                                            disabled={formData.items.length <= 1}
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </PortfolioCard>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                            <PortfolioCard style={{ padding: '30px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                                    <Calendar size={18} color="var(--gold)" />
+                                    <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '1px' }}>ENTRY DATE</div>
+                                </div>
+                                <PortfolioInput
+                                    name="date"
+                                    type="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                />
+                            </PortfolioCard>
+
+                            <PortfolioCard style={{ padding: '35px', background: 'rgba(176,141,87,0.03)' }}>
+                                <PortfolioSectionTitle title="FINANCIAL SUMMARY" style={{ fontSize: '15px' }} />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '20px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'rgba(255,255,255,0.4)' }}>
+                                        <span>Subtotal</span>
+                                        <span>AED {totals.subtotal.toLocaleString()}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: 'var(--gold)' }}>
+                                        <span>VAT (5%)</span>
+                                        <span>AED {totals.vat.toLocaleString()}</span>
+                                    </div>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        fontSize: '24px',
+                                        fontWeight: '900',
+                                        color: '#fff',
+                                        borderTop: '1px solid rgba(176,141,87,0.1)',
+                                        paddingTop: '20px',
+                                        marginTop: '5px'
+                                    }}>
+                                        <span style={{ fontFamily: 'var(--font-serif)', fontSize: '20px' }}>TOTAL</span>
+                                        <span>AED {totals.grandTotal.toLocaleString()}</span>
+                                    </div>
+                                </div>
+                            </PortfolioCard>
+
+                            <PortfolioButton type="submit" variant="gold" style={{ width: '100%', height: '70px', fontSize: '15px', fontWeight: '900', letterSpacing: '2px' }}>
+                                <Save size={20} /> SYNC.supply_order
+                            </PortfolioButton>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </PortfolioPage>
     );
 };
 

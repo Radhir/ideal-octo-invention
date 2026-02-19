@@ -27,8 +27,14 @@ class StockMovement(models.Model):
         ('OUT', 'Consumption (Job)'),
         ('ADJ', 'Adjustment (Audit)'),
     ]
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Approval'),
+        ('APPROVED', 'Approved'),
+        ('REJECTED', 'Rejected'),
+    ]
     item = models.ForeignKey(StockItem, on_delete=models.CASCADE, related_name='movements')
     type = models.CharField(max_length=10, choices=TYPES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     quantity = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateTimeField(auto_now_add=True)
     job_card = models.ForeignKey('job_cards.JobCard', on_delete=models.SET_NULL, null=True, blank=True)
@@ -38,12 +44,36 @@ class StockMovement(models.Model):
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
+        old_status = None
+        
+        if not is_new:
+            try:
+                old_instance = StockMovement.objects.get(pk=self.pk)
+                old_status = old_instance.status
+            except StockMovement.DoesNotExist:
+                pass
+
         super().save(*args, **kwargs)
-        if is_new:
+
+        # Logic: Only adjust stock if status is APPROVED
+        # Case 1: New record created as APPROVED (e.g. by Admin)
+        # Case 2: Existing record changed from NON-APPROVED to APPROVED
+        
+        should_adjust = False
+        if is_new and self.status == 'APPROVED':
+            should_adjust = True
+        elif not is_new and old_status != 'APPROVED' and self.status == 'APPROVED':
+            should_adjust = True
+            
+        if should_adjust:
             if self.type == 'IN':
                 self.item.current_stock += self.quantity
             elif self.type == 'OUT':
                 self.item.current_stock -= self.quantity
+            elif self.type == 'ADJ':
+                # ADJ is treated as a manual correction (can be positive or negative)
+                self.item.current_stock += self.quantity
+            
             self.item.save()
 
     def __str__(self):

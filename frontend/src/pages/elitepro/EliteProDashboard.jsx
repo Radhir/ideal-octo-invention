@@ -28,13 +28,17 @@ const EliteProDashboard = () => {
                 api.get('/logistics/api/sales-orders/pending-payment/')
             ]);
 
-            setShipments(shipmentsRes.data.slice(0, 5));
-            setLowStockProducts(productsRes.data);
+            const shipmentsData = shipmentsRes.data?.results || (Array.isArray(shipmentsRes.data) ? shipmentsRes.data : []);
+            const productsData = productsRes.data?.results || (Array.isArray(productsRes.data) ? productsRes.data : []);
+            const ordersData = ordersRes.data?.results || (Array.isArray(ordersRes.data) ? ordersRes.data : []);
+
+            setShipments(shipmentsData.slice(0, 5));
+            setLowStockProducts(productsData.slice(0, 5));
 
             setStats({
-                activeShipments: shipmentsRes.data.length,
-                totalInventoryValue: 250000, // Calculate from products
-                pendingOrders: ordersRes.data.length,
+                activeShipments: shipmentsData.length,
+                totalInventoryValue: 250000,
+                pendingOrders: ordersData.length,
                 monthlyRevenue: 450000, // Calculate from sales
             });
             setLoading(false);

@@ -13,7 +13,13 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 from locations.filters import BranchFilterBackend
 from core.permissions import IsAdminOrOwner
-from .serializers import JobCardSerializer, JobCardTaskSerializer, JobCardPhotoSerializer, ServiceCategorySerializer, ServiceSerializer
+from .serializers import (
+    JobCardSerializer, JobCardTaskSerializer, JobCardPhotoSerializer, 
+    ServiceCategorySerializer, ServiceSerializer, WarrantyClaimSerializer
+)
+from .models import (
+    JobCard, JobCardPhoto, JobCardTask, ServiceCategory, Service, WarrantyClaim
+)
 from invoices.models import Invoice
 from .utils import trigger_job_notification
 
@@ -110,10 +116,34 @@ def create_invoice_from_job(request, pk):
 # API Views
 class JobCardViewSet(viewsets.ModelViewSet):
     module_name = 'Operations'
-    queryset = JobCard.objects.all().order_by('-created_at')
     serializer_class = JobCardSerializer
-    permission_classes = [IsAdminOrOwner]
     filter_backends = [BranchFilterBackend]
+
+    def get_queryset(self):
+        queryset = JobCard.objects.all().order_by('-created_at')
+        
+        # Search by Name/Phone
+        q = self.request.query_params.get('q')
+        if q:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(customer_name__icontains=q) | 
+                Q(phone__icontains=q) |
+                Q(job_card_number__icontains=q)
+            )
+            
+        # Date Range Filter
+        start_date = self.request.query_params.get('start_date')
+        end_date = self.request.query_params.get('end_date')
+        if start_date and end_date:
+            queryset = queryset.filter(date__range=[start_date, end_date])
+            
+        # Status Filter (for Workshop Diary vs Invoice Book)
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+            
+        return queryset
 
     def perform_create(self, serializer):
         lead_id = self.request.data.get('lead_id')
@@ -147,24 +177,20 @@ class JobCardViewSet(viewsets.ModelViewSet):
     def advance_status(self, request, pk=None):
         job_card = self.get_object()
         next_status_map = {
-            'RECEPTION': 'ESTIMATION_ASSIGNMENT',
-            'ESTIMATION_ASSIGNMENT': 'WIP_QC',
-            'WIP_QC': 'INVOICING_DELIVERY',
-            'INVOICING_DELIVERY': 'CLOSED',
+            'RECEIVED': 'IN_PROGRESS',
+            'IN_PROGRESS': 'READY',
+            'READY': 'INVOICED',
+            'INVOICED': 'CLOSED',
         }
         next_status = next_status_map.get(job_card.status)
         
         if next_status:
-            if job_card.status == 'RECEPTION' and not job_card.checklists.exists():
-                # For now, allowing bypass if user really wants to, but keeping the logic
-                # For high-level production we might want to enforce it.
-                # return Response({'error': 'Vehicle Intake Checklist required to advance from Reception'}, status=status.HTTP_400_BAD_REQUEST)
-                pass
-                
-            # Removed strict invoice requirement for delivery as per "Software Remarks"
-            # if job_card.status == 'INVOICING' and not hasattr(job_card, 'invoice'):
-            #     return Response({'error': 'Invoice required to advance to Delivery'}, status=status.HTTP_400_BAD_REQUEST)
-            
+            # Automatic logic: if moving to INVOICED, ensure invoice exists
+            if next_status == 'INVOICED' and not hasattr(job_card, 'invoice'):
+                 # We can auto-create it or warn. User said "from received to in process to ready to invoiced".
+                 # Let's auto-create if missing to fulfill the "automatic" feel.
+                 self.create_invoice(request, pk=pk)
+                 
             job_card.status = next_status
             job_card.save()
             trigger_job_notification(job_card)
@@ -285,13 +311,11 @@ class CustomerPortalDetailView(APIView):
 
         # Build step statuses correctly: completed / active / pending
         step_definitions = [
-            ('RECEPTION', 'Step 1: Reception'),
-            ('ESTIMATION', 'Step 2: Estimation'),
-            ('WORK_ASSIGNMENT', 'Step 3: Assignment'),
-            ('WIP', 'Step 4: In Progress'),
-            ('QC', 'Step 5: Quality Check'),
-            ('INVOICING', 'Step 6: Billing'),
-            ('DELIVERY', 'Step 7: Ready for Delivery'),
+            ('RECEIVED', 'Reception'),
+            ('IN_PROGRESS', 'Workshop'),
+            ('READY', 'Quality Check'),
+            ('INVOICED', 'Billing'),
+            ('CLOSED', 'Delivered'),
         ]
         current = job_card.status_index
         steps = []
@@ -339,3 +363,17 @@ class CustomerPortalDetailView(APIView):
                 })
 
         return Response(data)
+
+class WarrantyClaimViewSet(viewsets.ModelViewSet):
+    module_name = 'Operations'
+    queryset = WarrantyClaim.objects.all().order_by('-created_at')
+    serializer_class = WarrantyClaimSerializer
+    permission_classes = [IsAdminOrOwner]
+    filter_backends = [BranchFilterBackend]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        customer_id = self.request.query_params.get('customer')
+        if customer_id:
+            queryset = queryset.filter(customer_id=customer_id)
+        return queryset

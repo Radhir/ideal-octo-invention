@@ -1,15 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useLocation, useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { ArrowLeft, Save, Box, ArrowUpCircle, ArrowDownCircle, AlertCircle, FileText } from 'lucide-react';
+import { Save, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioBackButton,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioTextarea
+} from '../../components/PortfolioComponents';
 
 const StockMovementEntry = () => {
     const navigate = useNavigate();
     const location = useLocation();
+
     const [items, setItems] = useState([]);
     const [jobs, setJobs] = useState([]);
     const [loading, setLoading] = useState(true);
+
     const [formData, setFormData] = useState({
         item: location.state?.itemId || '',
         type: location.state?.type || 'IN',
@@ -43,7 +54,7 @@ const StockMovementEntry = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         try {
             await api.post('/forms/stock/api/movements/', formData);
             alert('Inventory Movement Recorded Successfully.');
@@ -54,128 +65,161 @@ const StockMovementEntry = () => {
         }
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '50px', textAlign: 'center' }}>Syncing Supply Chain...</div>;
+    if (loading) return (
+        <PortfolioPage breadcrumb="Operations / Logistics / LEDGER">
+            <div style={{ color: 'var(--cream)', padding: '100px', textAlign: 'center', opacity: 0.5 }}>SYNCING SUPPLY CHAIN LEDGER...</div>
+        </PortfolioPage>
+    );
 
     return (
-        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: '#0a0a0a' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px', paddingLeft: '20px' }}>
-                <button
-                    onClick={() => navigate('/stock')}
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '4px', marginBottom: '10px' }}>STOCK LOGISTICS</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '3rem', fontWeight: '900', margin: 0, color: '#fff' }}>Record Movement</h1>
-                </div>
-            </header>
+        <PortfolioPage breadcrumb="Operations / Logistics / Ledger Entry">
+            <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioBackButton onClick={() => navigate('/stock')} />
+                <PortfolioTitle subtitle="Record a material transaction to the workshop's permanent industrial ledger.">
+                    Logistics Movement
+                </PortfolioTitle>
+            </div>
 
-            <form onSubmit={handleSubmit} style={{ maxWidth: '900px' }}>
-                <GlassCard style={{ padding: '40px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '25px', marginBottom: '35px' }}>
-                        <div style={{ gridColumn: '1 / span 2' }}>
-                            <label style={labelStyle}>SELECT INVENTORY ITEM</label>
-                            <select name="item" className="form-control" onChange={handleChange} value={formData.item} required
-                                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', width: '100%', padding: '15px', borderRadius: '12px' }}>
-                                <option value="">Select Item to Adjust...</option>
-                                {items.map(item => (
-                                    <option key={item.id} value={item.id}>{item.name} ({item.current_stock} {item.unit} available)</option>
-                                ))}
-                            </select>
+            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+                <form onSubmit={handleSubmit}>
+                    <PortfolioCard style={{ padding: '60px' }}>
+                        <div style={{ marginBottom: '50px' }}>
+                            <div style={sectionHeader}>1. TARGET ASSET</div>
+                            <PortfolioSelect
+                                label="SELECT INVENTORY ITEM"
+                                name="item"
+                                value={formData.item}
+                                onChange={handleChange}
+                                required
+                                options={[
+                                    { value: '', label: 'Select Item to Adjust...' },
+                                    ...items.map(item => ({
+                                        value: item.id,
+                                        label: `${item.name.toUpperCase()} (${item.current_stock} ${item.unit} AVAILABLE)`
+                                    }))
+                                ]}
+                            />
                         </div>
 
-                        <div>
-                            <label style={labelStyle}>MOVEMENT TYPE</label>
-                            <div style={{ display: 'flex', gap: '10px' }}>
-                                <TypeButton
-                                    active={formData.type === 'IN'}
-                                    onClick={() => setFormData({ ...formData, type: 'IN' })}
-                                    icon={<ArrowUpCircle size={18} />}
-                                    label="Restock (In)"
-                                    color="#10b981"
-                                />
-                                <TypeButton
-                                    active={formData.type === 'OUT'}
-                                    onClick={() => setFormData({ ...formData, type: 'OUT' })}
-                                    icon={<ArrowDownCircle size={18} />}
-                                    label="Consumption (Out)"
-                                    color="#f43f5e"
+                        <div style={{ marginBottom: '50px' }}>
+                            <div style={sectionHeader}>2. TRANSACTION PARAMETERS</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '30px', alignItems: 'flex-end' }}>
+                                <div>
+                                    <label style={labelTag}>MOVEMENT TYPE</label>
+                                    <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+                                        <PortfolioButton
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, type: 'IN' })}
+                                            variant={formData.type === 'IN' ? 'primary' : 'secondary'}
+                                            style={{
+                                                flex: 1,
+                                                height: '60px',
+                                                border: formData.type === 'IN' ? '1px solid #10b981' : '1px solid rgba(232, 230, 227, 0.1)',
+                                                background: formData.type === 'IN' ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                                                color: formData.type === 'IN' ? '#10b981' : 'rgba(232, 230, 227, 0.4)'
+                                            }}
+                                        >
+                                            <ArrowUpCircle size={18} /> RESTOCK
+                                        </PortfolioButton>
+                                        <PortfolioButton
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, type: 'OUT' })}
+                                            variant={formData.type === 'OUT' ? 'primary' : 'secondary'}
+                                            style={{
+                                                flex: 1,
+                                                height: '60px',
+                                                border: formData.type === 'OUT' ? '1px solid #f43f5e' : '1px solid rgba(232, 230, 227, 0.1)',
+                                                background: formData.type === 'OUT' ? 'rgba(244, 63, 94, 0.1)' : 'transparent',
+                                                color: formData.type === 'OUT' ? '#f43f5e' : 'rgba(232, 230, 227, 0.4)'
+                                            }}
+                                        >
+                                            <ArrowDownCircle size={18} /> CONSUMPTION
+                                        </PortfolioButton>
+                                    </div>
+                                </div>
+                                <PortfolioInput
+                                    label="QUANTITY"
+                                    name="quantity"
+                                    type="number"
+                                    step="0.01"
+                                    value={formData.quantity}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="0.00"
                                 />
                             </div>
-                        </div>
-
-                        <div>
-                            <label style={labelStyle}>QUANTITY</label>
-                            <input name="quantity" className="form-control" type="number" step="0.01" onChange={handleChange} required
-                                placeholder="Enter amount..."
-                                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', width: '100%', padding: '15px', borderRadius: '12px' }} />
                         </div>
 
                         {formData.type === 'OUT' && (
-                            <div style={{ gridColumn: '1 / span 2' }}>
-                                <label style={labelStyle}>LINK TO JOB CARD (FOR CONSUMPTION)</label>
-                                <select name="job_card" className="form-control" onChange={handleChange}
-                                    style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', width: '100%', padding: '15px', borderRadius: '12px' }}>
-                                    <option value="">Search Job Cards...</option>
-                                    {jobs.map(job => (
-                                        <option key={job.id} value={job.id}>{job.job_card_number} - {job.customer_name} ({job.registration_number})</option>
-                                    ))}
-                                </select>
+                            <div style={{ marginBottom: '50px' }}>
+                                <div style={sectionHeader}>3. ASSIGNMENT</div>
+                                <PortfolioSelect
+                                    label="LINK TO ACTIVE JOB CARD"
+                                    name="job_card"
+                                    value={formData.job_card}
+                                    onChange={handleChange}
+                                    options={[
+                                        { value: '', label: 'Select job for material assignment...' },
+                                        ...jobs.map(job => ({
+                                            value: job.id,
+                                            label: `${job.job_card_number} — ${job.customer_name} (${job.registration_number})`
+                                        }))
+                                    ]}
+                                />
                             </div>
                         )}
 
-                        <div style={{ gridColumn: '1 / span 2' }}>
-                            <label style={labelStyle}>NARRATIVE / REASON</label>
-                            <textarea name="reason" className="form-control" onChange={handleChange} rows="3"
-                                placeholder="Details of this adjustment..."
-                                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', width: '100%', padding: '15px', borderRadius: '12px' }}></textarea>
+                        <div style={{ marginBottom: '60px' }}>
+                            <div style={sectionHeader}>{formData.type === 'OUT' ? '4. AUDIT TRAIL' : '3. AUDIT TRAIL'}</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '30px' }}>
+                                <PortfolioTextarea
+                                    label="LEGER NARRATIVE"
+                                    name="reason"
+                                    value={formData.reason}
+                                    onChange={handleChange}
+                                    rows="3"
+                                    placeholder="Explanation for this adjustment..."
+                                />
+                                <PortfolioInput
+                                    label="AUTHORIZED BY"
+                                    name="recorded_by"
+                                    value={formData.recorded_by}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Officer Name"
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <label style={labelStyle}>RECORDED BY</label>
-                            <input name="recorded_by" className="form-control" onChange={handleChange} required
-                                style={{ background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', width: '100%', padding: '15px', borderRadius: '12px' }} />
-                        </div>
-                    </div>
-
-                    <button type="submit" className="btn-primary" style={{ width: '100%', padding: '20px', fontSize: '16px', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', background: '#b08d57', color: '#000', borderRadius: '12px', border: 'none', cursor: 'pointer' }}>
-                        <Save size={20} /> SYNC WITH INVENTORY LEDGER
-                    </button>
-                </GlassCard>
-            </form>
-        </div>
+                        <PortfolioButton
+                            type="submit"
+                            variant="primary"
+                            style={{ width: '100%', height: '70px', fontSize: '14px' }}
+                        >
+                            <Save size={20} /> SYNCHRONIZE LEDGER
+                        </PortfolioButton>
+                    </PortfolioCard>
+                </form>
+            </div>
+        </PortfolioPage>
     );
 };
 
-const TypeButton = ({ active, onClick, icon, label, color }) => (
-    <div
-        onClick={onClick}
-        style={{
-            flex: 1,
-            padding: '15px',
-            borderRadius: '12px',
-            border: `2px solid ${active ? color : 'rgba(255,255,255,0.05)'}`,
-            background: active ? `${color}1A` : 'rgba(0,0,0,0.2)',
-            color: active ? color : '#94a3b8',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-            fontWeight: '800',
-            fontSize: '12px',
-            transition: 'all 0.3s'
-        }}
-    >
-        {icon} {label}
-    </div>
-);
-
-const labelStyle = {
-    color: '#94a3b8',
+const sectionHeader = {
     fontSize: '11px',
-    fontWeight: '800',
+    fontWeight: '900',
+    color: 'var(--gold)',
+    letterSpacing: '3px',
+    textTransform: 'uppercase',
+    marginBottom: '30px',
+    opacity: 0.8,
+    borderBottom: '1px solid rgba(176, 141, 87, 0.2)',
+    paddingBottom: '10px'
+};
+
+const labelTag = {
+    fontSize: '13px',
+    color: 'rgba(232, 230, 227, 0.6)',
     marginBottom: '10px',
     display: 'block',
     letterSpacing: '1px'

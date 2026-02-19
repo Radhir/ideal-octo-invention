@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { ArrowLeft, PlusCircle, CreditCard, FileText, Tag, Calendar } from 'lucide-react';
+import { PlusCircle, CreditCard, Tag, Upload } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioTextarea,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
 
 const TransactionEntry = () => {
     const navigate = useNavigate();
@@ -102,7 +111,6 @@ const TransactionEntry = () => {
             await api.post('/finance/api/transactions/', submitData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            alert('Financial Ledger Updated Successfully.');
             navigate('/finance');
         } catch (err) {
             console.error(err);
@@ -110,181 +118,153 @@ const TransactionEntry = () => {
         }
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '50px', textAlign: 'center' }}>Syncing Ledger...</div>;
+    if (loading) return <div style={{ padding: '80px', textAlign: 'center', color: 'var(--cream)', opacity: 0.5 }}>Synchronizing Ledger...</div>;
 
     return (
-        <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                <button
-                    onClick={() => navigate('/finance')}
-                    style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)' }}
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE LEDGER</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: 'var(--text-primary)' }}>New Transaction</h1>
-                </div>
-            </header>
+        <PortfolioPage breadcrumb="Finance / Executive Ledger / New Entry">
+            <PortfolioTitle subtitle="Record a new fiscal event into the master general ledger with full audit capability.">
+                Transaction Entry
+            </PortfolioTitle>
 
-            <form onSubmit={handleSubmit} style={{ maxWidth: '1000px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-                    <GlassCard style={{ padding: '40px', border: '1.5px solid var(--gold-border)' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '25px', marginBottom: '35px' }}>
-                            <div style={{ gridColumn: '1 / -1' }}>
-                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Target Account</label>
-                                <select name="account" onChange={handleChange} required
-                                    style={{
-                                        background: 'var(--input-bg)',
-                                        border: '1.5px solid var(--gold-border)',
-                                        color: 'var(--text-primary)',
-                                        width: '100%',
-                                        padding: '18px',
-                                        borderRadius: '15px',
-                                        fontSize: '15px',
-                                        fontWeight: '900',
-                                        outline: 'none',
-                                        cursor: 'pointer',
-                                        appearance: 'none',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px'
-                                    }}>
-                                    <option value="" style={{ background: 'var(--bg-secondary)' }}>Select Account...</option>
+            <form onSubmit={handleSubmit} style={{ maxWidth: '1200px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '40px' }}>
+
+                    {/* Main Form Area */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                        <PortfolioCard>
+                            <PortfolioSectionTitle>Fiscal Classification</PortfolioSectionTitle>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                <PortfolioSelect
+                                    label="TARGET ACCOUNT"
+                                    name="account"
+                                    value={formData.account}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="">SELECT LEDGER ACCOUNT...</option>
                                     {accounts.map(acc => (
-                                        <option key={acc.id} value={acc.id} style={{ background: 'var(--bg-secondary)' }}>{acc.code} - {acc.name}</option>
+                                        <option key={acc.id} value={acc.id}>{acc.code} - {acc.name}</option>
                                     ))}
-                                </select>
+                                </PortfolioSelect>
+
+                                <PortfolioSelect
+                                    label="FLOW TYPE"
+                                    name="transaction_type"
+                                    value={formData.transaction_type}
+                                    onChange={handleChange}
+                                >
+                                    <option value="DEBIT">DEBIT (EXPENDITURE)</option>
+                                    <option value="CREDIT">CREDIT (REVENUE/CAPITAL)</option>
+                                </PortfolioSelect>
+
+                                <PortfolioSelect
+                                    label="DEPARTMENT"
+                                    name="department"
+                                    value={formData.department}
+                                    onChange={handleChange}
+                                >
+                                    <option value="GENERAL">GENERAL & ADMIN</option>
+                                    <option value="OPERATIONS">OPERATIONS</option>
+                                    <option value="MARKETING">MARKETING</option>
+                                    <option value="HR">HR & VISA</option>
+                                    <option value="INVENTORY">INVENTORY</option>
+                                </PortfolioSelect>
+
+                                <PortfolioInput
+                                    label="REFERENCE TOKEN"
+                                    name="reference"
+                                    value={formData.reference}
+                                    onChange={handleChange}
+                                    placeholder="INV-001 / REC-992"
+                                />
                             </div>
-                            <div>
-                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Flow Type</label>
-                                <select name="transaction_type" onChange={handleChange}
+                        </PortfolioCard>
+
+                        <PortfolioCard>
+                            <PortfolioSectionTitle>Transaction Details</PortfolioSectionTitle>
+
+                            <div style={{ marginBottom: '30px' }}>
+                                <label style={{ display: 'block', color: 'rgba(232, 230, 227, 0.6)', fontSize: '13px', marginBottom: '15px', letterSpacing: '1px' }}>
+                                    TRANSACTION VALUE (AED)
+                                </label>
+                                <input
+                                    name="amount"
+                                    type="number"
+                                    step="0.01"
+                                    value={formData.amount}
+                                    onChange={handleChange}
+                                    required
                                     style={{
-                                        background: 'var(--input-bg)',
-                                        border: '1.5px solid var(--gold-border)',
-                                        color: 'var(--text-primary)',
+                                        background: 'transparent',
+                                        border: 'none',
+                                        borderBottom: '2px solid var(--gold)',
+                                        color: 'var(--cream)',
                                         width: '100%',
-                                        padding: '18px',
-                                        borderRadius: '15px',
-                                        fontSize: '15px',
-                                        fontWeight: '900',
+                                        fontSize: '48px',
+                                        fontFamily: 'var(--font-serif)',
                                         outline: 'none',
-                                        cursor: 'pointer',
-                                        appearance: 'none',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px'
-                                    }}>
-                                    <option value="DEBIT" style={{ background: 'var(--bg-secondary)' }}>DEBIT (EXPENDITURE)</option>
-                                    <option value="CREDIT" style={{ background: 'var(--bg-secondary)' }}>CREDIT (REVENUE/CAPITAL)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Amount (AED Excl. VAT)</label>
-                                <input name="amount" type="number" step="0.01" onChange={handleChange} required
-                                    style={{
-                                        background: 'var(--input-bg)',
-                                        border: '1.5px solid var(--gold-border)',
-                                        color: 'var(--text-primary)',
-                                        width: '100%',
-                                        padding: '18px',
-                                        borderRadius: '15px',
-                                        fontSize: '24px',
-                                        fontWeight: '900',
-                                        outline: 'none',
-                                        fontFamily: 'Outfit, sans-serif'
-                                    }} />
+                                        padding: '10px 0'
+                                    }}
+                                    placeholder="0.00"
+                                />
                             </div>
 
-                            {/* VAT Automation */}
-                            <div style={{ gridColumn: '1 / -1', background: 'var(--gold-glow)', padding: '20px', borderRadius: '15px', border: '1.5px solid var(--gold-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{
+                                background: 'rgba(176, 141, 87, 0.1)',
+                                border: '1px solid rgba(176, 141, 87, 0.2)',
+                                borderRadius: '15px',
+                                padding: '25px',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                marginBottom: '40px'
+                            }}>
                                 <div>
-                                    <div style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px' }}>VAT Automation (UAE 5%)</div>
-                                    <div style={{ color: 'var(--text-secondary)', fontSize: '11px', fontWeight: '800' }}>Automatically append tax and adjust total amount</div>
+                                    <div style={{ color: 'var(--gold)', fontWeight: '700', fontSize: '14px', marginBottom: '5px' }}>VAT AUTOMATION (5%)</div>
+                                    <div style={{ color: 'rgba(232, 230, 227, 0.6)', fontSize: '12px' }}>Automatically calculate and append UAE VAT tax to this entry.</div>
                                 </div>
                                 <input
                                     type="checkbox"
                                     checked={applyVAT}
                                     onChange={(e) => setApplyVAT(e.target.checked)}
-                                    style={{ width: '24px', height: '24px', cursor: 'pointer', accentColor: 'var(--gold)' }}
+                                    style={{ width: '20px', height: '20px', accentColor: 'var(--gold)', cursor: 'pointer' }}
                                 />
                             </div>
 
-                            <div>
-                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Department</label>
-                                <select name="department" onChange={handleChange}
-                                    style={{
-                                        background: 'var(--input-bg)',
-                                        border: '1.5px solid var(--gold-border)',
-                                        color: 'var(--text-primary)',
-                                        width: '100%',
-                                        padding: '18px',
-                                        borderRadius: '15px',
-                                        fontSize: '14px',
-                                        fontWeight: '900',
-                                        outline: 'none',
-                                        cursor: 'pointer',
-                                        textTransform: 'uppercase'
-                                    }}>
-                                    <option value="GENERAL" style={{ background: 'var(--bg-secondary)' }}>GENERAL & ADMIN</option>
-                                    <option value="OPERATIONS" style={{ background: 'var(--bg-secondary)' }}>OPERATIONS</option>
-                                    <option value="MARKETING" style={{ background: 'var(--bg-secondary)' }}>MARKETING</option>
-                                    <option value="HR" style={{ background: 'var(--bg-secondary)' }}>HR & VISA</option>
-                                    <option value="INVENTORY" style={{ background: 'var(--bg-secondary)' }}>INVENTORY</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Reference #</label>
-                                <input name="reference" onChange={handleChange} placeholder="Invoice or Receipt #"
-                                    style={{
-                                        background: 'var(--input-bg)',
-                                        border: '1.5px solid var(--gold-border)',
-                                        color: 'var(--text-primary)',
-                                        width: '100%',
-                                        padding: '18px',
-                                        borderRadius: '15px',
-                                        fontSize: '15px',
-                                        fontWeight: '900',
-                                        outline: 'none',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '1px'
-                                    }} />
-                            </div>
-                            <div style={{ gridColumn: '1 / -1' }}>
-                                <label style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '900', marginBottom: '10px', display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>Description / Narrative</label>
-                                <textarea name="description" rows="3" onChange={handleChange} placeholder="Detailed reason for transaction..."
-                                    style={{
-                                        background: 'var(--input-bg)',
-                                        border: '1.5px solid var(--gold-border)',
-                                        color: 'var(--text-primary)',
-                                        width: '100%',
-                                        padding: '18px',
-                                        borderRadius: '15px',
-                                        resize: 'none',
-                                        fontFamily: 'inherit',
-                                        fontSize: '15px',
-                                        fontWeight: '900',
-                                        outline: 'none',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px'
-                                    }}></textarea>
-                            </div>
-                        </div>
+                            <PortfolioTextarea
+                                label="NARRATIVE / DESCRIPTION"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                rows="4"
+                                placeholder="Enter detailed justification for this ledger entry..."
+                            />
+                        </PortfolioCard>
+                    </div>
 
-                        <button type="submit" className="btn-primary" style={{ width: '100%', height: '70px', borderRadius: '35px', fontSize: '1.3rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', border: '2px solid var(--gold-border)', background: 'var(--gold)', color: '#000', letterSpacing: '1px' }}>
-                            <CreditCard size={28} /> COMMIT TO LEDGER
-                        </button>
-                    </GlassCard>
+                    {/* Sidebar / Evidence */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                        <PortfolioButton
+                            variant="gold"
+                            onClick={handleSubmit}
+                            style={{ width: '100%', height: '80px', fontSize: '16px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }}
+                        >
+                            <CreditCard size={24} /> COMMIT LEDGER
+                        </PortfolioButton>
 
-                    {/* Receipt Evidence */}
-                    <div>
-                        <GlassCard style={{ padding: '25px', marginBottom: '20px' }}>
-                            <h4 style={{ margin: '0 0 15px 0', fontSize: '13px', fontWeight: '800', color: '#b08d57', textTransform: 'uppercase', letterSpacing: '1px' }}>Verification Receipt</h4>
+                        <PortfolioCard>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '25px' }}>
+                                <Tag size={20} color="var(--gold)" />
+                                <h3 style={{ margin: 0, fontSize: '14px', color: 'var(--cream)', textTransform: 'uppercase', letterSpacing: '1px' }}>Evidence & Audit</h3>
+                            </div>
+
                             <div
                                 onClick={() => document.getElementById('receipt-upload').click()}
                                 style={{
                                     width: '100%',
                                     aspectRatio: '3/4',
-                                    background: 'rgba(0,0,0,0.3)',
-                                    border: '2px dashed rgba(255,255,255,0.1)',
+                                    background: 'rgba(232, 230, 227, 0.02)',
+                                    border: '1px dashed rgba(232, 230, 227, 0.2)',
                                     borderRadius: '15px',
                                     display: 'flex',
                                     flexDirection: 'column',
@@ -294,34 +274,39 @@ const TransactionEntry = () => {
                                     overflow: 'hidden',
                                     transition: 'all 0.3s'
                                 }}
-                                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#b08d57'}
-                                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--gold)'}
+                                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(232, 230, 227, 0.2)'}
                             >
                                 {receiptPreview ? (
                                     <img src={receiptPreview} alt="Receipt Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 ) : (
                                     <>
-                                        <PlusCircle size={32} color="#64748b" />
-                                        <span style={{ color: '#64748b', fontSize: '11px', marginTop: '10px' }}>TAP TO SECURE IMAGE</span>
+                                        <div style={{
+                                            width: '60px',
+                                            height: '60px',
+                                            borderRadius: '50%',
+                                            background: 'rgba(232, 230, 227, 0.05)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            marginBottom: '15px'
+                                        }}>
+                                            <Upload size={24} color="rgba(232, 230, 227, 0.4)" />
+                                        </div>
+                                        <span style={{ color: 'rgba(232, 230, 227, 0.4)', fontSize: '11px', letterSpacing: '1px', textTransform: 'uppercase' }}>UPLOAD RECEIPT</span>
                                     </>
                                 )}
                             </div>
                             <input id="receipt-upload" type="file" hidden accept="image/*" onChange={handlePhotoUpload} />
-                        </GlassCard>
 
-                        <div style={{ background: 'rgba(176,141,87,0.1)', padding: '20px', borderRadius: '15px', border: '1px solid rgba(176,141,87,0.2)' }}>
-                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
-                                <Tag size={16} color="#b08d57" />
-                                <span style={{ fontWeight: '800', fontSize: '12px' }}>Ledger Integrity</span>
-                            </div>
-                            <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', lineHeight: '1.6' }}>
-                                All entries are permanent. SEC compliance requires image evidence for all debit flows over 500 AED.
+                            <p style={{ marginTop: '20px', fontSize: '12px', color: 'rgba(232, 230, 227, 0.4)', lineHeight: '1.6', textAlign: 'center' }}>
+                                All debit entries exceeding AED 500 require digital evidence for SEC compliance.
                             </p>
-                        </div>
+                        </PortfolioCard>
                     </div>
                 </div>
             </form>
-        </div>
+        </PortfolioPage>
     );
 };
 

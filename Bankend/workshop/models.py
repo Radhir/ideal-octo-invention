@@ -98,5 +98,38 @@ class WorkshopIncident(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
 
+
+class Booth(models.Model):
+    STATUS_CHOICES = [
+        ('READY', 'Ready / Empty'),
+        ('ACTIVE', 'Active / Painting'),
+        ('BAKING', 'Baking Cycle'),
+        ('MAINTENANCE', 'Maintenance'),
+        ('QC', 'Quality Control'),
+    ]
+    
+    name = models.CharField(max_length=100, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='READY')
+    current_job = models.OneToOneField('job_cards.JobCard', on_delete=models.SET_NULL, null=True, blank=True, related_name='active_booth')
+    
+    # Telemetry (Mocked/Future proof)
+    temperature = models.DecimalField(max_digits=5, decimal_places=2, default=25.0)
+    humidity = models.DecimalField(max_digits=5, decimal_places=2, default=45.0)
+    
+    last_service_date = models.DateField(null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
-        return f"Incident {self.incident_number} - {self.get_incident_type_display()}"
+        return self.name
+
+class PaintMix(models.Model):
+    job_card = models.ForeignKey('job_cards.JobCard', on_delete=models.CASCADE, related_name='paint_mixes')
+    paint_code = models.CharField(max_length=100)
+    color_name = models.CharField(max_length=255)
+    formula_data = models.JSONField(default=dict, help_text="Detailed mix weights")
+    total_quantity = models.DecimalField(max_digits=10, decimal_places=2, help_text="Quantity in Liters")
+    mixed_by = models.ForeignKey(Employee, on_delete=models.SET_NULL, null=True, related_name='paint_mixes')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Mix: {self.paint_code} for {self.job_card.job_card_number}"

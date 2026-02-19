@@ -9,7 +9,7 @@ export const PortfolioPage = ({ children, breadcrumb = '' }) => {
     return (
         <div style={{
             minHeight: '100vh',
-            background: '#0a0a0a',
+            background: 'transparent',
             padding: '60px 80px',
             position: 'relative'
         }}>
@@ -206,24 +206,48 @@ export const PortfolioGrid = ({ children, columns = 'repeat(auto-fill, minmax(28
  */
 export const PortfolioStats = ({ stats }) => {
     return (
-        <div style={{ display: 'flex', gap: '40px', marginBottom: '80px', flexWrap: 'wrap' }}>
-            {stats.map((stat, index) => (
-                <div key={index}>
-                    <div style={{
-                        fontSize: '48px',
-                        fontFamily: 'var(--font-serif)',
-                        color: stat.color || 'var(--cream)',
-                        fontWeight: '300'
-                    }}>
-                        {stat.value}
-                    </div>
-                    <div style={{
-                        fontSize: '13px',
-                        color: 'rgba(232, 230, 227, 0.6)',
-                        letterSpacing: '1px',
-                        marginTop: '5px'
-                    }}>
-                        {stat.label}
+        <div style={{ display: 'flex', gap: '60px', marginBottom: '80px', flexWrap: 'wrap' }}>
+            {stats && stats.map((stat, index) => (
+                <div key={index} style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+                    {stat.icon && (
+                        <div style={{ marginTop: '5px', opacity: 0.8 }}>
+                            {typeof stat.icon === 'function' || (typeof stat.icon === 'object' && stat.icon !== null) ? (
+                                React.createElement(stat.icon, { size: 32, color: stat.color || 'var(--gold)', strokeWidth: 1 })
+                            ) : (
+                                stat.icon
+                            )}
+                        </div>
+                    )}
+                    <div>
+                        <div style={{
+                            fontSize: '48px',
+                            fontFamily: 'var(--font-serif)',
+                            color: stat.color || 'var(--cream)',
+                            fontWeight: '300',
+                            lineHeight: '1'
+                        }}>
+                            {stat.value}
+                        </div>
+                        <div style={{
+                            fontSize: '11px',
+                            color: 'rgba(232, 230, 227, 0.6)',
+                            letterSpacing: '2px',
+                            marginTop: '8px',
+                            fontWeight: '800',
+                            textTransform: 'uppercase'
+                        }}>
+                            {stat.label}
+                        </div>
+                        {stat.subvalue && (
+                            <div style={{
+                                fontSize: '11px',
+                                color: 'rgba(232, 230, 227, 0.3)',
+                                marginTop: '4px',
+                                letterSpacing: '0.5px'
+                            }}>
+                                {stat.subvalue}
+                            </div>
+                        )}
                     </div>
                 </div>
             ))}
@@ -233,45 +257,85 @@ export const PortfolioStats = ({ stats }) => {
 
 /**
  * Portfolio Input
- * Styled form input
+ * Styled form input that handles text, select, and textarea
  */
-export const PortfolioInput = ({ label, ...props }) => {
-    return (
-        <div style={{ marginBottom: '30px' }}>
-            {label && (
-                <label style={{
-                    display: 'block',
-                    color: 'rgba(232, 230, 227, 0.6)',
-                    fontSize: '13px',
-                    marginBottom: '10px',
-                    letterSpacing: '1px'
-                }}>
-                    {label}
-                </label>
-            )}
+export const PortfolioInput = ({ label, type = 'text', options = [], ...props }) => {
+    const inputStyle = {
+        width: '100%',
+        padding: '15px 20px',
+        background: 'rgba(232, 230, 227, 0.03)',
+        border: '1px solid rgba(232, 230, 227, 0.1)', // Subtle base border
+        borderRadius: '12px',
+        color: 'var(--cream)',
+        fontSize: '14px',
+        fontFamily: 'inherit',
+        outline: 'none',
+        transition: 'all 0.3s ease',
+        boxSizing: 'border-box',
+        ...props.style
+    };
+
+    const renderInput = () => {
+        if (type === 'select') {
+            return (
+                <div style={{ position: 'relative', width: '100%' }}>
+                    <select
+                        {...props}
+                        style={{
+                            ...inputStyle,
+                            background: '#0a0a0a',
+                            appearance: 'none',
+                            WebkitAppearance: 'none',
+                            MozAppearance: 'none',
+                            cursor: 'pointer',
+                            paddingRight: '45px',
+                            border: '1px solid rgba(232, 230, 227, 0.2)', // Single crisp border
+                            outline: 'none'
+                        }}
+                    >
+                        {options.length > 0 ? options.map((opt, idx) => (
+                            <option key={idx} value={opt.value !== undefined ? opt.value : opt} style={{ background: '#0a0a0a', color: 'var(--cream)' }}>
+                                {opt.label !== undefined ? opt.label : opt}
+                            </option>
+                        )) : props.children}
+                    </select>
+                    <div style={{
+                        position: 'absolute',
+                        right: '18px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        pointerEvents: 'none',
+                        color: 'var(--gold)',
+                        opacity: 0.8,
+                        display: 'flex',
+                        alignItems: 'center'
+                    }}>
+                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+            );
+        }
+
+        if (type === 'textarea') {
+            return (
+                <textarea
+                    {...props}
+                    style={{ ...inputStyle, resize: 'vertical' }}
+                />
+            );
+        }
+
+        return (
             <input
                 {...props}
-                style={{
-                    width: '100%',
-                    padding: '15px 20px',
-                    background: 'transparent',
-                    border: '1px solid rgba(232, 230, 227, 0.3)',
-                    borderRadius: '10px',
-                    color: 'var(--cream)',
-                    fontSize: '15px',
-                    fontFamily: 'inherit',
-                    ...props.style
-                }}
+                type={type}
+                style={inputStyle}
             />
-        </div>
-    );
-};
+        );
+    };
 
-/**
- * Portfolio Select
- * Styled select dropdown
- */
-export const PortfolioSelect = ({ label, children, ...props }) => {
     return (
         <div style={{ marginBottom: '30px' }}>
             {label && (
@@ -285,62 +349,14 @@ export const PortfolioSelect = ({ label, children, ...props }) => {
                     {label}
                 </label>
             )}
-            <select
-                {...props}
-                style={{
-                    width: '100%',
-                    padding: '15px 20px',
-                    background: '#0a0a0a',
-                    border: '1px solid rgba(232, 230, 227, 0.3)',
-                    borderRadius: '10px',
-                    color: 'var(--cream)',
-                    fontSize: '15px',
-                    fontFamily: 'inherit',
-                    ...props.style
-                }}
-            >
-                {children}
-            </select>
+            {renderInput()}
         </div>
     );
 };
 
-/**
- * Portfolio Textarea
- * Styled textarea
- */
-export const PortfolioTextarea = ({ label, ...props }) => {
-    return (
-        <div style={{ marginBottom: '30px' }}>
-            {label && (
-                <label style={{
-                    display: 'block',
-                    color: 'rgba(232, 230, 227, 0.6)',
-                    fontSize: '13px',
-                    marginBottom: '10px',
-                    letterSpacing: '1px'
-                }}>
-                    {label}
-                </label>
-            )}
-            <textarea
-                {...props}
-                style={{
-                    width: '100%',
-                    padding: '15px 20px',
-                    background: 'transparent',
-                    border: '1px solid rgba(232, 230, 227, 0.3)',
-                    borderRadius: '10px',
-                    color: 'var(--cream)',
-                    fontSize: '15px',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    ...props.style
-                }}
-            />
-        </div>
-    );
-};
+// Kept for backward compatibility or direct use
+export const PortfolioSelect = (props) => <PortfolioInput {...props} type="select" />;
+export const PortfolioTextarea = (props) => <PortfolioInput {...props} type="textarea" />;
 
 /**
  * Portfolio Detail Box

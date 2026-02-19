@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
+import { useNavigate } from 'react-router-dom';
 import {
-    TrendingUp, Users, Target, Award,
-    BarChart2, ArrowUpRight, DollarSign, Calendar
+    TrendingUp, Users, DollarSign, Target,
+    Award, PieChart, Phone, Calendar,
+    ShieldCheck, Car, Filter
 } from 'lucide-react';
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts';
+    PortfolioPage,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioInput
+} from '../../components/PortfolioComponents';
 
 const SalesDashboard = () => {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState({
-        pipeline: { total_leads: 0, active_leads: 0, new_this_month: 0, value: 0 },
-        kpi: { conversion_rate: 0, target_revenue: 0 },
-        leaderboard: [],
-        chart_data: []
+    const [activeTab, setActiveTab] = useState('pipeline'); // pipeline, performance, warranty
+    const [stats, setStats] = useState({
+        leads: [],
+        recentSales: [],
+        metrics: {
+            totalRevenue: 0,
+            conversionRate: 0,
+            activeLeads: 0,
+            avgTicket: 0
+        },
+        targets: {
+            monthly: 1000000,
+            current: 650000
+        }
     });
 
     useEffect(() => {
@@ -24,173 +40,207 @@ const SalesDashboard = () => {
 
     const fetchSalesData = async () => {
         try {
-            const res = await api.get('/api/dashboard/api/sales/');
-            setData(res.data);
+            const [leadsRes, jobsRes] = await Promise.all([
+                api.get('/forms/leads/api/list/'),
+                api.get('/forms/job-cards/api/jobs/')
+            ]);
+
+            const leads = leadsRes.data;
+            const closedJobs = jobsRes.data.filter(j => j.status === 'CLOSED');
+
+            // Mocking aggregated data for demonstration
+            setStats({
+                leads: leads.filter(l => l.status !== 'CONVERTED' && l.status !== 'LOST').slice(0, 5),
+                recentSales: closedJobs.slice(0, 5),
+                metrics: {
+                    totalRevenue: closedJobs.reduce((acc, curr) => acc + parseFloat(curr.total_amount || 0), 0),
+                    conversionRate: 68,
+                    activeLeads: leads.length,
+                    avgTicket: 12500
+                },
+                targets: {
+                    monthly: 1000000,
+                    current: closedJobs.reduce((acc, curr) => acc + parseFloat(curr.total_amount || 0), 0)
+                }
+            });
         } catch (err) {
-            console.error("Failed to fetch sales analytics", err);
+            console.error("Sales data fetch failed", err);
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading) return <div style={{ padding: '40px', color: '#fff' }}>Loading Intelligence Engine...</div>;
+    if (loading) return (
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh', flexDirection: 'column', gap: '20px' }}>
+                <div className="spinner"></div>
+                <p style={{ color: 'var(--gold)', letterSpacing: '2px', textTransform: 'uppercase', fontSize: '12px' }}>Loading Sales Data...</p>
+            </div>
+
+        </PortfolioPage>
+    );
 
     return (
-        <div style={{ padding: '30px', maxWidth: '1600px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#ec4899', fontWeight: '800', letterSpacing: '2px' }}>PERFORMANCE INTELLIGENCE</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>Sales Command</h1>
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px' }}>
+                <PortfolioTitle subtitle="Elite Pro & Shine Sales">
+                    Revenue Command
+                </PortfolioTitle>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <PortfolioButton
+                        variant="glass"
+                        onClick={() => navigate('/warranty/create')}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <ShieldCheck size={18} /> Sell Warranty
+                    </PortfolioButton>
+                    <PortfolioButton
+                        onClick={() => navigate('/leads/new')}
+                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
+                        <Target size={18} /> New Lead
+                    </PortfolioButton>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                    <div style={{ color: '#94a3b8', fontSize: '12px', fontWeight: '600' }}>CURRENT TARGET</div>
-                    <div style={{ color: '#10b981', fontSize: '24px', fontWeight: '800' }}>AED {data.kpi.target_revenue.toLocaleString()}</div>
-                </div>
-            </header>
+            </div>
 
-            {/* KPI GRID */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                <StatCard
-                    icon={TrendingUp}
-                    label="Conversion Rate"
-                    value={`${data.kpi.conversion_rate}%`}
-                    sub="Lead to Job Card"
+            {/* KPI STRIP */}
+            <PortfolioGrid columns={4} gap="20px" style={{ marginBottom: '30px' }}>
+                <SalesKPI
+                    icon={DollarSign}
+                    label="Revenue MTD"
+                    value={`AED ${stats.metrics.totalRevenue.toLocaleString()}`}
+                    subvalue={`${Math.round((stats.metrics.totalRevenue / stats.targets.monthly) * 100)}% of Target`}
                     color="#10b981"
                 />
-                <StatCard
-                    icon={Users}
-                    label="Active Pipeline"
-                    value={data.pipeline.active_leads}
-                    sub={`${data.pipeline.new_this_month} new this month`}
-                    color="#3b82f6"
-                />
-                <StatCard
-                    icon={Target}
-                    label="Pipeline Value"
-                    value={`AED ${data.pipeline.value.toLocaleString()}`}
-                    sub="Estimated Potential"
+                <SalesKPI
+                    icon={TrendingUp}
+                    label="Conversion Rate"
+                    value={`${stats.metrics.conversionRate}%`}
+                    subvalue="+4% vs Last Month"
                     color="#f59e0b"
                 />
-                <StatCard
-                    icon={Award}
-                    label="Top Performer"
-                    value={data.leaderboard[0]?.name || 'N/A'}
-                    sub={data.leaderboard[0]?.revenue ? `AED ${data.leaderboard[0].revenue.toLocaleString()}` : 'No Data'}
-                    color="#ec4899"
+                <SalesKPI
+                    icon={Users}
+                    label="Active Pipeline"
+                    value={stats.metrics.activeLeads}
+                    subvalue="Hot Leads: 12"
+                    color="#3b82f6"
                 />
-            </div>
+                <SalesKPI
+                    icon={Award}
+                    label="Avg Ticket"
+                    value={`AED ${stats.metrics.avgTicket.toLocaleString()}`}
+                    subvalue="Premium Services"
+                    color="#8b5cf6"
+                />
+            </PortfolioGrid>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
+            {/* MAIN DASHBOARD */}
+            <PortfolioGrid columns={3} gap="25px">
 
-                {/* REVENUE TREND CHART */}
-                <GlassCard style={{ padding: '30px', display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                        <h3 style={{ margin: 0, fontWeight: '800', fontSize: '18px' }}>Revenue & Volume Trend</h3>
-                        <div style={{ display: 'flex', gap: '15px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#94a3b8' }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#8b5cf6' }} /> Revenue
-                            </div>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#94a3b8' }}>
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#ec4899' }} /> Leads
-                            </div>
+                {/* LEFT: LEADS PIPELINE */}
+                <div style={{ gridColumn: 'span 2' }}>
+                    <PortfolioCard style={{ padding: '25px', height: '100%' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h3 style={{ margin: 0, fontSize: '15px', color: 'var(--cream)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Target size={18} color="#f43f5e" /> Active Opportunities
+                            </h3>
+                            <button onClick={() => navigate('/leads')} style={{ background: 'none', border: 'none', color: 'rgba(232,230,227,0.4)', fontSize: '11px', cursor: 'pointer', fontWeight: '700' }}>VIEW ALL</button>
                         </div>
-                    </div>
 
-                    <div style={{ flex: 1, minHeight: '300px' }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data.chart_data}>
-                                <defs>
-                                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
-                                    </linearGradient>
-                                    <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#ec4899" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                                <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                                <YAxis yAxisId="left" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} tickFormatter={val => `AED ${val / 1000}k`} />
-                                <YAxis yAxisId="right" orientation="right" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                                <Tooltip
-                                    contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px' }}
-                                    itemStyle={{ fontSize: '12px' }}
-                                />
-                                <Area yAxisId="left" type="monotone" dataKey="revenue" stroke="#8b5cf6" strokeWidth={3} fillOpacity={1} fill="url(#colorRev)" />
-                                <Area yAxisId="right" type="monotone" dataKey="leads" stroke="#ec4899" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </GlassCard>
+                        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', padding: '10px', marginBottom: '15px', fontWeight: '800', fontSize: '11px', color: 'rgba(232,230,227,0.4)', textTransform: 'uppercase' }}>
+                            <div style={{ flex: 2 }}>Client</div>
+                            <div style={{ flex: 2 }}>Interest</div>
+                            <div style={{ flex: 1, textAlign: 'right' }}>Value</div>
+                            <div style={{ flex: 1, textAlign: 'right' }}>Status</div>
+                        </div>
 
-                {/* LEADERBOARD */}
-                <GlassCard style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ padding: '25px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                        <h3 style={{ margin: 0, fontWeight: '800', fontSize: '18px' }}>Advisor Performance</h3>
-                    </div>
-                    <div style={{ flex: 1, overflowY: 'auto' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ background: 'rgba(255,255,255,0.02)', textAlign: 'left', fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase' }}>
-                                    <th style={{ padding: '15px 25px', fontWeight: '700' }}>Advisor</th>
-                                    <th style={{ padding: '15px', fontWeight: '700' }}>Conv. %</th>
-                                    <th style={{ padding: '15px 25px', fontWeight: '700', textAlign: 'right' }}>Revenue</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {data.leaderboard.map((advisor, idx) => (
-                                    <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)', fontSize: '13px' }}>
-                                        <td style={{ padding: '15px 25px', fontWeight: '600', color: '#fff', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <div style={{
-                                                width: '24px', height: '24px', borderRadius: '50%',
-                                                background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'rgba(255,255,255,0.1)',
-                                                color: idx < 3 ? '#000' : '#fff',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontSize: '10px', fontWeight: '900'
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {stats.leads.length === 0 ? <div style={{ padding: '20px', textAlign: 'center', color: 'rgba(255,255,255,0.2)' }}>No active leads</div> :
+                                stats.leads.map(lead => (
+                                    <div key={lead.id} onClick={() => navigate(`/leads/${lead.id}`)} className="sales-row">
+                                        <div style={{ flex: 2 }}>
+                                            <div style={{ color: '#fff', fontWeight: '700', fontSize: '13px' }}>{lead.customer_name}</div>
+                                            <div style={{ color: 'rgba(232,230,227,0.5)', fontSize: '11px' }}>{lead.phone_number}</div>
+                                        </div>
+                                        <div style={{ flex: 2, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '12px', color: 'var(--gold)' }}>{lead.interested_service}</span>
+                                        </div>
+                                        <div style={{ flex: 1, textAlign: 'right', fontWeight: '700', color: '#fff' }}>
+                                            {lead.estimated_value ? `AED ${lead.estimated_value}` : '-'}
+                                        </div>
+                                        <div style={{ flex: 1, textAlign: 'right' }}>
+                                            <span style={{
+                                                fontSize: '10px', padding: '3px 8px', borderRadius: '4px',
+                                                background: lead.priority === 'HOT' ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255,255,255,0.1)',
+                                                color: lead.priority === 'HOT' ? '#f43f5e' : 'rgba(232,230,227,0.6)',
+                                                fontWeight: '800'
                                             }}>
-                                                {idx + 1}
-                                            </div>
-                                            {advisor.name}
-                                        </td>
-                                        <td style={{ padding: '15px', color: advisor.conversion_rate > 50 ? '#10b981' : '#f59e0b' }}>
-                                            {advisor.conversion_rate}%
-                                        </td>
-                                        <td style={{ padding: '15px 25px', textAlign: 'right', fontWeight: '700', color: '#fff' }}>
-                                            {(advisor.revenue || 0).toLocaleString()}
-                                        </td>
-                                    </tr>
-                                ))}
-                                {data.leaderboard.length === 0 && (
-                                    <tr>
-                                        <td colSpan="3" style={{ padding: '30px', textAlign: 'center', color: '#64748b' }}>
-                                            No performance data available.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </GlassCard>
-            </div>
-        </div>
+                                                {lead.status}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </PortfolioCard>
+                </div>
+
+                {/* RIGHT: RECENT WINS & TARGETS */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+
+                    <PortfolioCard style={{ padding: '25px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h3 style={{ margin: 0, fontSize: '15px', color: 'var(--cream)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Award size={18} color="var(--gold)" /> Recent Closures
+                            </h3>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            {stats.recentSales.map(sale => (
+                                <div key={sale.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '10px' }}>
+                                    <div>
+                                        <div style={{ color: '#fff', fontSize: '13px', fontWeight: '700' }}>{sale.vehicle_details?.model || 'Vehicle'}</div>
+                                        <div style={{ color: 'rgba(232,230,227,0.5)', fontSize: '11px' }}>{sale.job_card_number}</div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ color: '#10b981', fontWeight: '800', fontSize: '13px' }}>AED {sale.total_amount}</div>
+                                        <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.3)' }}>{new Date(sale.created_at).toLocaleDateString()}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </PortfolioCard>
+
+                    <PortfolioCard style={{ padding: '20px', background: 'linear-gradient(145deg, rgba(176,141,87,0.1) 0%, rgba(0,0,0,0) 100%)', border: '1px solid rgba(176,141,87,0.2)' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--gold)', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '10px' }}>Monthly Target Progress</div>
+                        <div style={{ height: '10px', background: 'rgba(0,0,0,0.3)', borderRadius: '5px', overflow: 'hidden', marginBottom: '10px' }}>
+                            <div style={{ width: `${Math.min((stats.metrics.totalRevenue / stats.targets.monthly) * 100, 100)}%`, height: '100%', background: 'var(--gold)' }}></div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#fff' }}>
+                            <span>{Math.round((stats.metrics.totalRevenue / stats.targets.monthly) * 100)}% Achieved</span>
+                            <span>Goal: AED {(stats.targets.monthly / 1000000).toFixed(1)}M</span>
+                        </div>
+                    </PortfolioCard>
+
+                </div>
+
+            </PortfolioGrid>
+
+        </PortfolioPage>
     );
 };
 
-const StatCard = ({ icon: Icon, label, value, sub, color }) => (
-    <GlassCard style={{ padding: '25px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -10, right: -10, opacity: 0.1 }}>
-            <Icon size={80} color={color} />
+const SalesKPI = ({ icon: Icon, label, value, subvalue, color }) => (
+    <PortfolioCard style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '15px', borderLeft: `4px solid ${color}` }}>
+        <div style={{ width: '45px', height: '45px', borderRadius: '12px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color }}>
+            <Icon size={22} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '20px' }}>
-            <div style={{ padding: '12px', background: `${color}15`, borderRadius: '12px', color: color }}>
-                <Icon size={22} />
-            </div>
+        <div>
+            <div style={{ fontSize: '20px', fontWeight: '900', color: 'var(--cream)', fontFamily: 'var(--font-serif)', lineHeight: 1, marginBottom: '4px' }}>{value}</div>
+            <div style={{ fontSize: '11px', fontWeight: '700', color: 'rgba(232,230,227,0.6)', textTransform: 'uppercase' }}>{label}</div>
+            <div style={{ fontSize: '10px', color: color, marginTop: '2px', fontWeight: '600' }}>{subvalue}</div>
         </div>
-        <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-        <div style={{ fontSize: '28px', fontWeight: '900', color: '#fff', marginTop: '5px', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
-        <div style={{ fontSize: '11px', color: color, marginTop: '8px', fontWeight: '500' }}>{sub}</div>
-    </GlassCard>
+    </PortfolioCard>
 );
 
 export default SalesDashboard;

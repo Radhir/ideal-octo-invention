@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import GlassCard from '../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioStats
+} from '../components/PortfolioComponents';
 import {
     ShieldAlert, AlertTriangle, CheckCircle, Clock,
-    FileText, Eye, BarChart3, TrendingUp,
-    Search, Filter, ChevronRight
+    FileText, Eye, BarChart3, TrendingUp, Shield
 } from 'lucide-react';
 
 const RiskAuditPage = () => {
@@ -78,74 +83,78 @@ const RiskAuditPage = () => {
     const severityColor = { HIGH: '#ef4444', MEDIUM: '#f59e0b', LOW: '#10b981' };
     const typeIcon = { QC: ShieldAlert, FINANCE: AlertTriangle, COMPLIANCE: FileText, APPROVAL: Eye };
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Running Risk Analysis...</div>;
-
     return (
-        <div style={{ padding: '30px' }}>
-            <header style={{ marginBottom: '40px' }}>
-                <div style={{ fontSize: '10px', color: '#ef4444', fontWeight: '800', letterSpacing: '2px' }}>GOVERNANCE & COMPLIANCE</div>
-                <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Risk & Audit</h1>
-            </header>
+        <PortfolioPage>
+            <PortfolioTitle
+                title="Risk & Audit"
+                subtitle="Governance, Quality Assurance & Compliance Monitoring"
+            />
 
-            {/* Risk Dashboard */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '30px' }}>
-                <GlassCard style={{ padding: '30px', background: `linear-gradient(135deg, ${riskColor}15, transparent)`, border: `1px solid ${riskColor}30` }}>
-                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '1px' }}>Risk Score</div>
-                    <div style={{ fontSize: '48px', fontWeight: '900', color: riskColor, lineHeight: 1.2 }}>{riskScore}</div>
-                    <div style={{ fontSize: '13px', fontWeight: '800', color: riskColor }}>{riskLevel} RISK</div>
-                </GlassCard>
-                <RiskStat label="Open Audit Items" value={auditItems.length} icon={AlertTriangle} color="#f59e0b" />
-                <RiskStat label="QC Failures" value={qcPending.length} icon={ShieldAlert} color="#ef4444" />
-                <RiskStat label="Overdue Payments" value={overdueInvoices.length} icon={Clock} color="#8b5cf6" />
-            </div>
+            <PortfolioGrid columns="1fr 1fr 1fr 1fr">
+                <PortfolioCard style={{
+                    padding: '25px',
+                    background: `linear-gradient(135deg, ${riskColor}10, transparent)`,
+                    border: `1px solid ${riskColor}30`,
+                    display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.6)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px' }}>Risk Score</div>
+                    <div style={{ fontSize: '56px', fontWeight: '900', color: riskColor, lineHeight: 1 }}>{riskScore}</div>
+                    <div style={{
+                        marginTop: '10px', fontSize: '12px', fontWeight: '800',
+                        color: riskColor, background: `${riskColor}15`,
+                        padding: '4px 10px', borderRadius: '20px', letterSpacing: '1px'
+                    }}>{riskLevel} RISK</div>
+                </PortfolioCard>
+                <PortfolioStats label="Open Audit Items" value={auditItems.length} icon={AlertTriangle} color="#f59e0b" />
+                <PortfolioStats label="QC Failures" value={qcPending.length} icon={ShieldAlert} color="#ef4444" />
+                <PortfolioStats label="Overdue Payments" value={overdueInvoices.length} icon={Clock} color="#8b5cf6" />
+            </PortfolioGrid>
 
-            {/* Risk Breakdown */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px' }}>
-                {/* Audit Items List */}
-                <GlassCard style={{ padding: '30px' }}>
-                    <h3 style={{ margin: '0 0 25px 0', fontSize: '18px', fontWeight: '800' }}>Active Audit Items</h3>
+            <PortfolioGrid columns="2fr 1fr" style={{ marginTop: '25px' }}>
+                <PortfolioCard>
+                    <h3 style={{ margin: '0 0 25px 0', fontSize: '16px', fontWeight: '800', color: '#fff' }}>Active Audit Items</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {auditItems.length > 0 ? auditItems.map((item, i) => {
                             const ItemIcon = typeIcon[item.type] || AlertTriangle;
+                            const color = severityColor[item.severity];
                             return (
                                 <div key={i} style={{
                                     padding: '18px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)',
-                                    border: `1px solid ${severityColor[item.severity]}20`, display: 'flex', alignItems: 'center', gap: '15px'
+                                    border: `1px solid ${color}20`, display: 'flex', alignItems: 'center', gap: '15px'
                                 }}>
                                     <div style={{
                                         width: '40px', height: '40px', borderRadius: '10px',
-                                        background: `${severityColor[item.severity]}15`,
+                                        background: `${color}15`,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
                                     }}>
-                                        <ItemIcon size={18} color={severityColor[item.severity]} />
+                                        <ItemIcon size={18} color={color} />
                                     </div>
                                     <div style={{ flex: 1 }}>
-                                        <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '3px' }}>{item.title}</div>
-                                        <div style={{ fontSize: '12px', color: '#64748b' }}>{item.detail}</div>
+                                        <div style={{ fontWeight: '700', fontSize: '13px', marginBottom: '3px', color: '#fff' }}>{item.title}</div>
+                                        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)' }}>{item.detail}</div>
                                     </div>
                                     <div style={{ textAlign: 'right' }}>
                                         <span style={{
-                                            padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: '800',
-                                            background: `${severityColor[item.severity]}15`, color: severityColor[item.severity],
-                                            border: `1px solid ${severityColor[item.severity]}30`
+                                            padding: '3px 10px', borderRadius: '4px', fontSize: '10px', fontWeight: '700',
+                                            background: `${color}15`, color: color,
+                                            border: `1px solid ${color}30`
                                         }}>{item.severity}</span>
-                                        <div style={{ fontSize: '11px', color: '#475569', marginTop: '5px' }}>{item.date}</div>
+                                        <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.4)', marginTop: '5px' }}>{item.date}</div>
                                     </div>
                                 </div>
                             );
                         }) : (
-                            <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
-                                <CheckCircle size={40} style={{ margin: '0 auto 15px', opacity: 0.5 }} />
+                            <div style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
+                                <CheckCircle size={40} style={{ margin: '0 auto 15px', opacity: 0.5, color: '#10b981' }} />
                                 <p>All clear - no open audit items.</p>
                             </div>
                         )}
                     </div>
-                </GlassCard>
+                </PortfolioCard>
 
-                {/* Risk Categories */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <GlassCard style={{ padding: '25px' }}>
-                        <h4 style={{ margin: '0 0 20px 0', fontSize: '15px', fontWeight: '800' }}>Risk Categories</h4>
+                    <PortfolioCard>
+                        <h4 style={{ margin: '0 0 20px 0', fontSize: '14px', fontWeight: '800', color: '#fff' }}>Risk Categories</h4>
                         {[
                             { label: 'Quality Control', count: qcPending.length, total: jobs.length, color: '#ef4444' },
                             { label: 'Financial', count: overdueInvoices.length, total: invoices.length, color: '#f59e0b' },
@@ -153,58 +162,46 @@ const RiskAuditPage = () => {
                             { label: 'Operational', count: openJobs.length, total: jobs.length || 1, color: '#8b5cf6' },
                         ].map((cat, i) => (
                             <div key={i} style={{ marginBottom: '18px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '8px' }}>
-                                    <span style={{ fontWeight: '600' }}>{cat.label}</span>
-                                    <span style={{ color: '#64748b' }}>{cat.count} / {cat.total}</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '8px' }}>
+                                    <span style={{ fontWeight: '600', color: '#fff' }}>{cat.label}</span>
+                                    <span style={{ color: 'rgba(255,255,255,0.5)' }}>{cat.count} / {cat.total}</span>
                                 </div>
-                                <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                                <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden' }}>
                                     <div style={{
                                         width: `${Math.min(100, (cat.count / Math.max(cat.total, 1)) * 100)}%`,
-                                        height: '100%', background: cat.color, borderRadius: '3px', transition: 'width 0.5s'
+                                        height: '100%', background: cat.color, borderRadius: '2px'
                                     }} />
                                 </div>
                             </div>
                         ))}
-                    </GlassCard>
+                    </PortfolioCard>
 
-                    <GlassCard style={{ padding: '25px', background: 'linear-gradient(135deg, rgba(176,141,87,0.08), transparent)' }}>
+                    <PortfolioCard style={{ background: 'linear-gradient(135deg, rgba(176,141,87,0.08), transparent)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' }}>
-                            <div style={{ background: '#b08d5720', padding: '10px', borderRadius: '10px' }}>
-                                <BarChart3 color="#b08d57" size={20} />
+                            <div style={{ background: 'rgba(176,141,87,0.1)', padding: '8px', borderRadius: '8px' }}>
+                                <Shield color="var(--gold)" size={18} />
                             </div>
-                            <h4 style={{ margin: 0, fontWeight: '800', fontSize: '14px' }}>Compliance Summary</h4>
+                            <h4 style={{ margin: 0, fontWeight: '800', fontSize: '14px', color: '#fff' }}>Compliance Summary</h4>
                         </div>
-                        <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.7 }}>
+                        <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                                 <span>Total Jobs Audited</span>
-                                <span style={{ fontWeight: '800', color: '#fff' }}>{jobs.length}</span>
+                                <span style={{ fontWeight: '700', color: '#fff' }}>{jobs.length}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                                 <span>Fully Compliant</span>
-                                <span style={{ fontWeight: '800', color: '#10b981' }}>{jobs.filter(j => j.qc_sign_off && j.floor_incharge_sign_off).length}</span>
+                                <span style={{ fontWeight: '700', color: '#10b981' }}>{jobs.filter(j => j.qc_sign_off && j.floor_incharge_sign_off).length}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <span>Needs Review</span>
-                                <span style={{ fontWeight: '800', color: '#f59e0b' }}>{auditItems.length}</span>
+                                <span style={{ fontWeight: '700', color: '#f59e0b' }}>{auditItems.length}</span>
                             </div>
                         </div>
-                    </GlassCard>
+                    </PortfolioCard>
                 </div>
-            </div>
-        </div>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
 };
-
-const RiskStat = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '18px' }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon size={24} color={color} />
-        </div>
-        <div>
-            <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '22px', fontWeight: '900', color: '#fff' }}>{value}</div>
-        </div>
-    </GlassCard>
-);
 
 export default RiskAuditPage;

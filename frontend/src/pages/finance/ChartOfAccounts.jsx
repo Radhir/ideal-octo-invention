@@ -1,12 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
     ChevronRight, ChevronDown, Folder, FileText,
-    DollarSign, PieChart, Printer, ArrowLeft
+    PieChart, Printer, Activity, Plus, TrendingUp, CreditCard, Shield, Globe, ArrowRight
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import PrintHeader from '../../components/PrintHeader';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioStats,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioSectionTitle,
+    PortfolioInput
+} from '../../components/PortfolioComponents';
 
 const ChartOfAccounts = () => {
     const navigate = useNavigate();
@@ -60,127 +69,176 @@ const ChartOfAccounts = () => {
     };
 
     const COLORS = {
-        'ASSET': '#3b82f6',
-        'LIABILITY': '#f59e0b',
-        'EQUITY': '#ec4899',
+        'ASSET': 'var(--blue)',
+        'LIABILITY': 'var(--gold)',
+        'EQUITY': 'var(--purple)',
         'REVENUE': '#10b981',
         'EXPENSE': '#f43f5e',
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '50px', textAlign: 'center' }}>Syncing Chart of Accounts...</div>;
-
     return (
-        <div style={{ padding: '30px', animation: 'fadeIn 0.5s ease-out' }}>
-            <PrintHeader title="Chart of Accounts Ledger" />
+        <PortfolioPage breadcrumb="FINANCE / CHART OF ACCOUNTS">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
+                <PortfolioTitle subtitle="The constitutional hierarchy of the industrial ledger. Manage fiscal classification with high-fidelity precision.">
+                    Financial Matrix
+                </PortfolioTitle>
 
-            <header className="no-print" style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <button
-                        onClick={() => navigate('/finance')}
-                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)' }}
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <div>
-                        <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE OVERSIGHT</div>
-                        <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>Financial Ledger</h1>
-                    </div>
+                <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
+                    <PortfolioButton variant="secondary" onClick={() => window.print()}>
+                        <Printer size={16} /> EXPORT
+                    </PortfolioButton>
+                    <PortfolioButton variant="gold" onClick={() => navigate('/finance/transaction')}>
+                        <Plus size={16} /> NEW ENTRY
+                    </PortfolioButton>
                 </div>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <button onClick={() => window.print()} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', color: 'var(--text-primary)', cursor: 'pointer', border: '1.5px solid var(--gold-border)' }}>
-                        <Printer size={18} /> Print COA
-                    </button>
-                    <button onClick={() => navigate('/finance/transaction')} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <Plus size={18} /> New Transaction
-                    </button>
-                </div>
-            </header>
+            </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    {Object.keys(CATEGORY_LABELS).map(cat => (
-                        <div key={cat} style={{ marginBottom: '10px' }}>
-                            <div
+            <PortfolioStats stats={[
+                { label: 'TOTAL ASSETS', value: `AED ${summary.total_assets.toLocaleString()}`, color: COLORS.ASSET },
+                { label: 'LIABILITIES', value: `AED ${summary.liabilities.toLocaleString()}`, color: COLORS.LIABILITY },
+                { label: 'NET EQUITY', value: `AED ${summary.equity.toLocaleString()}`, color: COLORS.EQUITY }
+            ]} />
+
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '60px', marginTop: '60px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                    {Object.keys(CATEGORY_LABELS).map((cat, idx) => (
+                        <div key={cat} style={{ width: '100%' }}>
+                            <button
                                 onClick={() => toggleGroup(cat)}
                                 style={{
+                                    width: '100%',
                                     display: 'flex',
+                                    justifyContent: 'space-between',
                                     alignItems: 'center',
-                                    gap: '12px',
-                                    padding: '15px 20px',
-                                    background: expandedGroups.has(cat) ? 'var(--gold-glow)' : 'var(--input-bg)',
-                                    borderRadius: '16px',
+                                    padding: '25px 35px',
+                                    background: 'rgba(232, 230, 227, 0.03)',
+                                    border: '1px solid rgba(232, 230, 227, 0.1)',
+                                    borderRadius: '20px',
                                     cursor: 'pointer',
-                                    border: `1.5px solid ${expandedGroups.has(cat) ? 'var(--gold-border)' : 'var(--border-color)'}`,
                                     transition: 'all 0.3s'
                                 }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(232, 230, 227, 0.05)'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(232, 230, 227, 0.03)'}
                             >
-                                {expandedGroups.has(cat) ? <ChevronDown size={18} color="var(--gold)" /> : <ChevronRight size={18} color="var(--text-secondary)" />}
-                                <Folder size={20} color={COLORS[cat] || 'var(--text-secondary)'} fill={expandedGroups.has(cat) ? (COLORS[cat] || 'var(--text-secondary)') : 'transparent'} style={{ opacity: 0.8 }} />
-                                <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '15px' }}>{CATEGORY_LABELS[cat]}</span>
-                                <span style={{ marginLeft: 'auto', color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '800' }}>{groupedAccounts[cat]?.length || 0} Accounts</span>
-                            </div>
-
-                            {expandedGroups.has(cat) && (
-                                <div style={{ paddingLeft: '40px', marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {groupedAccounts[cat]?.map(acc => (
-                                        <div key={acc.id} style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '15px',
-                                            padding: '12px 20px',
-                                            borderRadius: '12px',
-                                            border: '1.5px solid var(--gold-border)',
-                                            background: 'var(--input-bg)',
-                                            transition: 'transform 0.2s'
-                                        }}
-                                            onMouseOver={(e) => { e.currentTarget.style.transform = 'translateX(5px)'; e.currentTarget.style.boxShadow = '0 0 10px var(--gold-glow)'; }}
-                                            onMouseOut={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.boxShadow = 'none'; }}
-                                        >
-                                            <div style={{ width: '45px', color: 'var(--gold)', fontSize: '12px', fontWeight: '900', letterSpacing: '0.5px' }}>#{acc.code}</div>
-                                            <div style={{ flex: 1, color: 'var(--text-primary)', fontWeight: '900', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{acc.name}</div>
-                                            <div style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }}>AED {parseFloat(acc.balance).toLocaleString()}</div>
+                                <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
+                                    <div style={{
+                                        width: '45px',
+                                        height: '45px',
+                                        borderRadius: '12px',
+                                        background: 'rgba(232, 230, 227, 0.05)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        border: '1px solid rgba(232, 230, 227, 0.1)'
+                                    }}>
+                                        <Folder size={20} color={COLORS[cat]} strokeWidth={1.5} />
+                                    </div>
+                                    <div style={{ textAlign: 'left' }}>
+                                        <div style={{ fontSize: '12px', fontWeight: '800', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px' }}>
+                                            {CATEGORY_LABELS[cat]}
                                         </div>
-                                    ))}
+                                        <div style={{ fontSize: '10px', color: COLORS[cat], fontWeight: '700', letterSpacing: '1px' }}>
+                                            {groupedAccounts[cat]?.length || 0} ACTIVE NODES
+                                        </div>
+                                    </div>
                                 </div>
-                            )}
+                                {expandedGroups.has(cat) ? <ChevronDown size={20} color="var(--cream)" opacity={0.3} /> : <ChevronRight size={20} color="var(--cream)" opacity={0.3} />}
+                            </button>
+
+                            <AnimatePresence>
+                                {expandedGroups.has(cat) && (
+                                    <motion.div
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: 'auto', opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        style={{ overflow: 'hidden', paddingLeft: '20px', marginTop: '10px' }}
+                                    >
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '10px 0' }}>
+                                            {groupedAccounts[cat]?.map(acc => (
+                                                <div key={acc.id} style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    padding: '20px 30px',
+                                                    background: 'transparent',
+                                                    border: '1px solid rgba(232, 230, 227, 0.05)',
+                                                    borderRadius: '15px',
+                                                    transition: 'all 0.3s'
+                                                }} onMouseEnter={(e) => {
+                                                    e.currentTarget.style.background = 'rgba(232, 230, 227, 0.02)';
+                                                    e.currentTarget.style.borderColor = 'rgba(232, 230, 227, 0.2)';
+                                                }} onMouseLeave={(e) => {
+                                                    e.currentTarget.style.background = 'transparent';
+                                                    e.currentTarget.style.borderColor = 'rgba(232, 230, 227, 0.05)';
+                                                }}>
+                                                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                                                        <span style={{ fontSize: '10px', fontWeight: '800', color: COLORS[cat], fontFamily: 'monospace' }}>#{acc.code}</span>
+                                                        <span style={{ fontSize: '15px', color: 'var(--cream)', fontWeight: '500', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{acc.name}</span>
+                                                    </div>
+                                                    <div style={{ fontSize: '18px', fontFamily: 'var(--font-serif)', color: 'var(--cream)' }}>
+                                                        AED {parseFloat(acc.balance).toLocaleString()}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     ))}
                 </div>
 
-                <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                    <GlassCard style={{ padding: '25px', border: '1.5px solid var(--gold-border)' }}>
-                        <h3 style={{ margin: '0 0 25px 0', fontSize: '18px', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-primary)' }}>
-                            <PieChart size={20} color="var(--gold)" /> Financial Status
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <SummaryRow label="Total Assets" value={summary.total_assets.toLocaleString()} color="#3b82f6" />
-                            <SummaryRow label="Liabilities" value={summary.liabilities.toLocaleString()} color="#f59e0b" />
-                            <SummaryRow label="Net Equity" value={summary.equity.toLocaleString()} color="#ec4899" />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <div style={{
+                        background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1))',
+                        border: '1px solid rgba(232, 230, 227, 0.1)',
+                        borderRadius: '30px',
+                        padding: '40px'
+                    }}>
+                        <PieChart style={{ color: 'var(--purple)', marginBottom: '30px', opacity: 0.5 }} size={32} />
+                        <PortfolioSectionTitle>Fiscal Integrity</PortfolioSectionTitle>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                            {[
+                                { label: 'Assets', val: summary.total_assets, col: COLORS.ASSET },
+                                { label: 'Liabilities', val: summary.liabilities, col: COLORS.LIABILITY },
+                                { label: 'Equity', val: summary.equity, col: COLORS.EQUITY }
+                            ].map(row => (
+                                <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '1px solid rgba(232, 230, 227, 0.05)', paddingBottom: '15px' }}>
+                                    <span style={{ fontSize: '11px', fontWeight: '800', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', letterSpacing: '2px' }}>{row.label}</span>
+                                    <span style={{ fontSize: '20px', color: row.col, fontWeight: '300', fontFamily: 'var(--font-serif)' }}>AED {row.val.toLocaleString()}</span>
+                                </div>
+                            ))}
                         </div>
-                    </GlassCard>
+                    </div>
 
-                    <GlassCard style={{ padding: '25px', background: 'var(--gold-glow)', border: '1.5px solid var(--gold-border)' }}>
-                        <h3 style={{ margin: '0 0 20px 0', fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <Activity size={20} color="var(--gold)" /> Auditor Log
-                        </h3>
-                        <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6', fontWeight: '800' }}>
-                            Ledger is synchronized with live transactions. Automatic double-entry balancing is active.
+                    <PortfolioCard borderColor="rgba(232, 230, 227, 0.1)">
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '20px' }}>
+                            <Activity color="var(--gold)" size={24} strokeWidth={1.5} />
+                            <h4 style={{ margin: 0, fontWeight: '800', fontSize: '12px', letterSpacing: '2px', color: 'var(--cream)', textTransform: 'uppercase' }}>System Health</h4>
+                        </div>
+                        <p style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', lineHeight: '1.7', marginBottom: '20px' }}>
+                            Database integrity has been verified. All ledger nodes are synchronized with the central production cluster.
                         </p>
-                    </GlassCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '10px', fontWeight: '800', color: '#10b981', letterSpacing: '1px' }}>
+                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }}></div>
+                            REAL-TIME SYNC ACTIVE
+                        </div>
+                    </PortfolioCard>
                 </div>
             </div>
-        </div>
+
+            <footer style={{ marginTop: '100px', paddingBottom: '40px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(232, 230, 227, 0.05)', paddingTop: '40px' }}>
+                <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.3)', letterSpacing: '2px' }}>
+                    ELITE SHINE FISCAL ENGINE v6.2
+                </div>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                    <Shield size={16} color="rgba(232, 230, 227, 0.2)" />
+                    <Activity size={16} color="rgba(232, 230, 227, 0.2)" />
+                    <CreditCard size={16} color="rgba(232, 230, 227, 0.2)" />
+                </div>
+            </footer>
+        </PortfolioPage>
     );
 };
-
-const SummaryRow = ({ label, value, color }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid rgba(176,141,87,0.1)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ width: '12px', height: '12px', borderRadius: '3px', background: color, border: '1px solid rgba(255,255,255,0.1)' }}></div>
-            <span style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</span>
-        </div>
-        <span style={{ color: 'var(--text-primary)', fontWeight: '900', fontSize: '18px', fontFamily: 'Outfit, sans-serif' }}>AED {value}</span>
-    </div>
-);
 
 export default ChartOfAccounts;

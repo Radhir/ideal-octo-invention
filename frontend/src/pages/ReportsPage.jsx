@@ -1,16 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import GlassCard from '../components/GlassCard';
 import { useNavigate } from 'react-router-dom';
 import {
     BarChart3, TrendingUp, Users, Package,
     FileText, Download, Calendar, CreditCard,
-    Briefcase, CheckCircle2, Clock, AlertCircle
+    Briefcase, CheckCircle2, Clock, AlertCircle,
+    ArrowUpRight
 } from 'lucide-react';
 import {
     LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-    PieChart, Pie, Cell, BarChart, Bar, Legend
+    PieChart, Pie, Cell, Legend
 } from 'recharts';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioGrid,
+    PortfolioCard,
+    PortfolioStats,
+    PortfolioSectionTitle
+} from '../components/PortfolioComponents';
 
 const ReportsPage = () => {
     const navigate = useNavigate();
@@ -25,8 +33,6 @@ const ReportsPage = () => {
         totalBookings: 0,
         totalRevenue: 0,
     });
-    const [jobs, setJobs] = useState([]);
-    const [_invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -46,9 +52,6 @@ const ReportsPage = () => {
             const invoicesData = Array.isArray(invoicesRes.data) ? invoicesRes.data : invoicesRes.data.results || [];
             const leadsData = Array.isArray(leadsRes.data) ? leadsRes.data : leadsRes.data.results || [];
             const bookingsData = Array.isArray(bookingsRes.data) ? bookingsRes.data : bookingsRes.data.results || [];
-
-            setJobs(jobsData);
-            setInvoices(invoicesData);
 
             const paidInv = invoicesData.filter(i => i.payment_status === 'PAID');
             const totalRev = paidInv.reduce((sum, i) => sum + (parseFloat(i.grand_total) || 0), 0);
@@ -73,217 +76,176 @@ const ReportsPage = () => {
 
     const viewReport = (model) => {
         const routes = {
-            'JobCard': '/job-cards',
-            'Invoice': '/invoices',
+            'JobCard': '/reports/jobs',
+            'Invoice': '/reports/financial',
             'Lead': '/leads',
             'Booking': '/bookings',
-            'StockForm': '/stock',
+            'StockForm': '/reports/inventory',
             'LeaveApplication': '/requests',
-            'WorkshopDiary': '/job-cards', // Best fallback for workshop context
+            'WorkshopDiary': '/job-cards',
             'Operation': '/job-cards',
-            'AdvisorDaily': '/advisor-daily-report'
+            'AdvisorDaily': '/advisor-daily-report',
+            'Budget': '/finance/budget'
         };
         const path = routes[model] || '/';
-        navigate(`${path}?print_confirm = true`);
+        navigate(`${path}?print_confirm=true`);
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Loading Reports...</div>;
+    if (loading) return (
+        <PortfolioPage><div style={{ color: 'var(--gold)', letterSpacing: '2px', fontWeight: '900', fontSize: '10px', padding: '100px', textAlign: 'center' }}>CALIBRATING ANALYTICS ENGINE...</div></PortfolioPage>
+    );
 
-    // Count jobs by status
-    const statusCounts = {};
-    jobs.forEach(j => {
-        statusCounts[j.status] = (statusCounts[j.status] || 0) + 1;
-    });
+    const portfolioStatsData = [
+        { label: "FISCAL REVENUE", value: `AED ${stats.totalRevenue.toLocaleString()}`, color: "var(--gold)" },
+        { label: "ACTIVE PIPELINE", value: stats.totalJobs, color: "#3b82f6" },
+        { label: "MARKET LEADS", value: stats.totalLeads, color: "#ec4899" },
+        { label: "SETTLEMENT GAP", value: stats.pendingInvoices, color: "#f43f5e" },
+    ];
 
     return (
-        <div style={{ padding: '30px' }}>
-            <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px' }}>ANALYTICS CENTER</div>
-                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Reports Dashboard</h1>
-                </div>
-            </header>
-
-            {/* KPI Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                <KPICard icon={Briefcase} label="Total Jobs" value={stats.totalJobs} color="#3b82f6" />
-                <KPICard icon={CreditCard} label="Total Revenue" value={`AED ${stats.totalRevenue.toLocaleString()} `} color="#10b981" />
-                <KPICard icon={FileText} label="Invoices" value={stats.totalInvoices} color="#f59e0b" />
-                <KPICard icon={Users} label="Total Leads" value={stats.totalLeads} color="#ec4899" />
+        <PortfolioPage breadcrumb="Executive Intelligence / Analytics Hub">
+            <div style={{ marginBottom: '80px' }}>
+                <PortfolioTitle subtitle="System-wide telemetry and operational performance metrics.">
+                    Intelligence Command
+                </PortfolioTitle>
             </div>
 
-            {/* Charts Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '25px', marginBottom: '30px' }}>
-                {/* Revenue Trend Chart */}
-                <GlassCard style={{ padding: '25px', minHeight: '400px' }}>
-                    <h3 style={sectionTitle}>Revenue Trend (Last 6 Months)</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={[
-                            { name: 'Aug', revenue: 45000 },
-                            { name: 'Sep', revenue: 52000 },
-                            { name: 'Oct', revenue: 48000 },
-                            { name: 'Nov', revenue: 61000 },
-                            { name: 'Dec', revenue: 55000 },
-                            { name: 'Jan', revenue: stats.totalRevenue || 75000 } // Use real if available
-                        ]}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                            <XAxis dataKey="name" stroke="#94a3b8" />
-                            <YAxis stroke="#94a3b8" />
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
-                                itemStyle={{ color: '#b08d57' }}
-                            />
-                            <Line type="monotone" dataKey="revenue" stroke="#b08d57" strokeWidth={3} dot={{ r: 6, fill: '#b08d57' }} activeDot={{ r: 8 }} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </GlassCard>
+            <PortfolioStats stats={portfolioStatsData} />
 
-                {/* Job Distribution Chart */}
-                <GlassCard style={{ padding: '25px' }}>
-                    <h3 style={sectionTitle}>Job Status Distribution</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                            <Pie
-                                data={[
-                                    { name: 'Active', value: stats.activeJobs },
-                                    { name: 'Completed', value: stats.closedJobs },
-                                    { name: 'Pending', value: (stats.totalJobs - stats.activeJobs - stats.closedJobs) || 0 }
-                                ]}
-                                innerRadius={60}
-                                outerRadius={80}
-                                paddingAngle={5}
-                                dataKey="value"
-                            >
-                                <Cell key="cell-0" fill="#3b82f6" />
-                                <Cell key="cell-1" fill="#10b981" />
-                                <Cell key="cell-2" fill="#f59e0b" />
-                            </Pie>
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', color: '#fff' }}
-                            />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </GlassCard>
-            </div>
-            {/* Invoice Summary */}
-            <GlassCard style={{ padding: '25px' }}>
-                <h3 style={sectionTitle}>Invoice Summary</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                    <div style={{ padding: '20px', background: 'rgba(16,185,129,0.05)', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
-                        <CheckCircle2 size={20} color="#10b981" style={{ marginBottom: '8px' }} />
-                        <div style={{ fontSize: '24px', fontWeight: '800', color: '#10b981' }}>{stats.paidInvoices}</div>
-                        <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase' }}>Paid</div>
+            <PortfolioGrid columns="2fr 1fr" gap="40px" style={{ marginTop: '60px' }}>
+                <PortfolioCard>
+                    <div style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '5px' }}>TELEMETRY</div>
+                            <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '20px', fontWeight: '400', fontFamily: 'var(--font-serif)' }}>Revenue Velocity</h3>
+                        </div>
+                        <div style={{ fontSize: '11px', color: 'rgba(232,230,227,0.3)', fontWeight: '700', letterSpacing: '1px' }}>QUARTERLY TREND</div>
                     </div>
-                    <div style={{ padding: '20px', background: 'rgba(245,158,11,0.05)', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.2)' }}>
-                        <Clock size={20} color="#f59e0b" style={{ marginBottom: '8px' }} />
-                        <div style={{ fontSize: '24px', fontWeight: '800', color: '#f59e0b' }}>{stats.pendingInvoices}</div>
-                        <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase' }}>Pending</div>
+                    <div style={{ height: '350px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={[
+                                { name: 'OCT', revenue: 48000 },
+                                { name: 'NOV', revenue: 61000 },
+                                { name: 'DEC', revenue: 55000 },
+                                { name: 'JAN', revenue: stats.totalRevenue || 75000 }
+                            ]}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(232, 230, 227, 0.03)" vertical={false} />
+                                <XAxis
+                                    dataKey="name"
+                                    stroke="rgba(232,230,227,0.2)"
+                                    fontSize={10}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    dy={10}
+                                    style={{ fontWeight: '800', letterSpacing: '1px' }}
+                                />
+                                <YAxis
+                                    stroke="rgba(232,230,227,0.2)"
+                                    fontSize={10}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={val => `${val / 1000}K`}
+                                    style={{ fontWeight: '800' }}
+                                />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#0c0c0c', border: '1px solid rgba(176, 141, 87, 0.2)', borderRadius: '12px', color: '#fff' }}
+                                    itemStyle={{ color: 'var(--gold)', fontSize: '12px', fontWeight: '800' }}
+                                    cursor={{ stroke: 'rgba(176, 141, 87, 0.2)', strokeWidth: 1 }}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="revenue"
+                                    stroke="var(--gold)"
+                                    strokeWidth={4}
+                                    dot={{ r: 4, fill: '#0c0c0c', stroke: 'var(--gold)', strokeWidth: 2 }}
+                                    activeDot={{ r: 8, strokeWidth: 0, fill: 'var(--gold)' }}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
-                </div>
-                <div style={{ padding: '15px', background: 'rgba(176,141,87,0.05)', borderRadius: '10px', border: '1px solid rgba(176,141,87,0.2)' }}>
-                    <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', marginBottom: '5px' }}>Total Revenue (Paid)</div>
-                    <div style={{ fontSize: '28px', fontWeight: '900', color: '#b08d57' }}>AED {stats.totalRevenue.toLocaleString()}</div>
-                </div>
-            </GlassCard>
+                </PortfolioCard>
 
-            {/* Quick Counts */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                <StatBlock label="Active Jobs" value={stats.activeJobs} icon={Clock} color="#3b82f6" />
-                <StatBlock label="Completed Jobs" value={stats.closedJobs} icon={CheckCircle2} color="#10b981" />
-                <StatBlock label="Bookings" value={stats.totalBookings} icon={Calendar} color="#8b5cf6" />
-                <StatBlock label="Leads" value={stats.totalLeads} icon={Users} color="#ec4899" />
-            </div>
+                <PortfolioCard>
+                    <div style={{ marginBottom: '40px' }}>
+                        <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '5px' }}>QUOTIENT</div>
+                        <h3 style={{ margin: 0, color: 'var(--cream)', fontSize: '20px', fontWeight: '400', fontFamily: 'var(--font-serif)' }}>Capacity Load</h3>
+                    </div>
+                    <div style={{ height: '350px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={[
+                                        { name: 'ACTIVE', value: stats.activeJobs },
+                                        { name: 'ARCHIVED', value: stats.closedJobs },
+                                        { name: 'QUEUED', value: Math.max(0, stats.totalJobs - stats.activeJobs - stats.closedJobs) }
+                                    ]}
+                                    innerRadius={80}
+                                    outerRadius={100}
+                                    paddingAngle={8}
+                                    dataKey="value"
+                                    stroke="none"
+                                >
+                                    <Cell fill="#3b82f6" />
+                                    <Cell fill="var(--gold)" />
+                                    <Cell fill="rgba(232, 230, 227, 0.1)" />
+                                </Pie>
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#0c0c0c', border: '1px solid rgba(176, 141, 87, 0.2)', borderRadius: '12px' }}
+                                />
+                                <Legend
+                                    verticalAlign="bottom"
+                                    height={36}
+                                    iconType="circle"
+                                    formatter={(value) => <span style={{ color: 'rgba(232,230,227,0.5)', fontSize: '10px', fontWeight: '800', letterSpacing: '1px' }}>{value}</span>}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </PortfolioCard>
+            </PortfolioGrid>
 
-            {/* Export Section - Redesigned as Module Hub */}
-            <div style={{ marginTop: '40px' }}>
-                <h3 style={sectionTitle}>System Reports Library</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px' }}>
+            <div style={{ marginTop: '100px' }}>
+                <PortfolioSectionTitle>Archive Dossiers</PortfolioSectionTitle>
+                <PortfolioGrid columns="repeat(auto-fill, minmax(280px, 1fr))" gap="25px">
                     {[
-                        { label: 'Job Cards', model: 'JobCard', icon: Briefcase, desc: 'Workflow & Status Operations' },
-                        { label: 'Invoices', model: 'Invoice', icon: FileText, desc: 'Revenue & Financial Transactions' },
-                        { label: 'Leads', model: 'Lead', icon: Users, desc: 'Sales Pipeline & Conversion' },
-                        { label: 'Bookings', model: 'Booking', icon: Calendar, desc: 'Scheduled Appointments' },
-                        { label: 'Operations', model: 'Operation', icon: CheckCircle2, desc: 'Task Execution Logs' },
-                        { label: 'Inventory', model: 'StockForm', icon: Package, desc: 'Stock Levels & Valuation' },
-                        { label: 'Leave Requests', model: 'LeaveApplication', icon: AlertCircle, desc: 'HR & Employee Absence' },
-                        { label: 'Workshop Diary', model: 'WorkshopDiary', icon: Clock, desc: 'Daily Operational Logs' },
-                        { label: 'Advisor Daily', model: 'AdvisorDaily', icon: TrendingUp, desc: 'Morning Briefing & Conversion' },
+                        { label: 'Job Cards', model: 'JobCard', icon: Briefcase, desc: 'Operational workflow telemetry.' },
+                        { label: 'Fiscal Ledger', model: 'Invoice', icon: FileText, desc: 'Revenue & settlement history.' },
+                        { label: 'Sales Pipeline', model: 'Lead', icon: Users, desc: 'Conversion & market acquisition.' },
+                        { label: 'Apt. Registry', model: 'Booking', icon: Calendar, desc: 'High-level scheduling book.' },
+                        { label: 'Execution Logs', model: 'Operation', icon: CheckCircle2, desc: 'Technical task performance.' },
+                        { label: 'Asset Inventory', model: 'StockForm', icon: Package, desc: 'Valuation & resource levels.' },
+                        { label: 'Governance', model: 'LeaveApplication', icon: AlertCircle, desc: 'Human resource & compliance.' },
+                        { label: 'Production Log', model: 'WorkshopDiary', icon: Clock, desc: 'Daily workshop telemetry.' },
+                        { label: 'Advisor Daily', model: 'AdvisorDaily', icon: TrendingUp, desc: 'Morning strategic briefing.' },
+                        { label: 'Capital Budgeting', model: 'Budget', icon: BarChart3, desc: 'Fiscal limits & forecasts.' },
                     ].map(r => (
-                        <GlassCard
+                        <PortfolioCard
                             key={r.model}
                             onClick={() => viewReport(r.model)}
-                            style={{
-                                padding: '20px',
-                                cursor: 'pointer',
-                                transition: 'all 0.3s ease',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '10px'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'translateY(-5px)';
-                                e.currentTarget.style.borderColor = 'rgba(176,141,87,0.3)';
-                                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
-                                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)';
-                            }}
+                            className="archive-card"
+                            style={{ cursor: 'pointer', transition: 'all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1)' }}
                         >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <div style={{ background: 'rgba(176,141,87,0.1)', padding: '10px', borderRadius: '10px' }}>
-                                    <r.icon size={20} color="#b08d57" />
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                                <div style={{
+                                    width: '45px', height: '45px', borderRadius: '12px',
+                                    background: 'rgba(176,141,87,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    border: '1px solid rgba(176,141,87,0.1)'
+                                }}>
+                                    <r.icon size={22} color="var(--gold)" />
                                 </div>
-                                <Download size={16} color="#64748b" />
+                                <ArrowUpRight size={16} color="rgba(232, 230, 227, 0.1)" />
                             </div>
                             <div>
-                                <h4 style={{ margin: '0 0 5px 0', fontSize: '15px', fontWeight: '700', color: '#f1f5f9' }}>{r.label}</h4>
-                                <p style={{ margin: 0, fontSize: '12px', color: '#64748b' }}>{r.desc}</p>
+                                <h4 style={{ margin: '0 0 8px 0', fontSize: '18px', fontWeight: '500', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>{r.label}</h4>
+                                <p style={{ margin: 0, fontSize: '12px', color: 'rgba(232, 230, 227, 0.3)', lineHeight: '1.6', letterSpacing: '0.5px' }}>{r.desc}</p>
                             </div>
-                        </GlassCard>
+                        </PortfolioCard>
                     ))}
-                </div>
+                </PortfolioGrid>
             </div>
-        </div >
+
+        </PortfolioPage>
     );
-};
-
-const KPICard = ({ icon: Icon, label, value, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '20px', borderLeft: `4px solid ${color} ` }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: `${color} 15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon size={24} color={color} />
-        </div>
-        <div>
-            <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '24px', fontWeight: '900', color: '#fff' }}>{value}</div>
-        </div>
-    </GlassCard>
-);
-
-const StatBlock = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '20px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1 }}>
-            <Icon size={80} color={color} />
-        </div>
-        <Icon size={20} color={color} style={{ marginBottom: '10px', position: 'relative' }} />
-        <div style={{ fontSize: '28px', fontWeight: '900', color: '#fff', position: 'relative' }}>{value}</div>
-        <div style={{ fontSize: '11px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '5px', position: 'relative' }}>{label}</div>
-    </GlassCard>
-);
-
-const sectionTitle = {
-    fontSize: '12px',
-    textTransform: 'uppercase',
-    color: '#b08d57',
-    marginBottom: '20px',
-    fontWeight: '800',
-    letterSpacing: '2px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
 };
 
 export default ReportsPage;

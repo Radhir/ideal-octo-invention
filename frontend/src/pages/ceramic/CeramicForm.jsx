@@ -1,9 +1,18 @@
 import React, { useState } from 'react';
 import api from '../../api/axios';
 import { useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft, PenTool } from 'lucide-react';
+import { Save, User, Car, Shield, Award, PenTool } from 'lucide-react';
 import SignaturePad from '../../components/SignaturePad';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioButton,
+    PortfolioBackButton,
+    PortfolioGrid
+} from '../../components/PortfolioComponents';
 
 const CeramicForm = () => {
     const navigate = useNavigate();
@@ -25,6 +34,7 @@ const CeramicForm = () => {
         coating_brand: '',
         coating_type: 'CERAMIC',
         warranty_period: '',
+        signature_data: null
     });
 
     const handleChange = (e) => {
@@ -40,7 +50,6 @@ const CeramicForm = () => {
                 contact_number: `${formData.phone_prefix}${formData.phone_suffix_code}${formData.contact_number}`
             };
             await api.post('/forms/ceramic/api/warranties/', submissionData);
-            alert('Ceramic Warranty Registered Successfully');
             navigate('/ceramic');
         } catch (err) {
             console.error('Error saving warranty', err);
@@ -49,168 +58,235 @@ const CeramicForm = () => {
     };
 
     return (
-        <div style={{ padding: '30px 20px' }}>
-            <button
-                onClick={() => navigate('/ceramic')}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '20px' }}
-            >
-                <ArrowLeft size={20} /> Back to List
-            </button>
+        <PortfolioPage breadcrumb="Warranty / Register Ceramic">
+            <PortfolioBackButton onClick={() => navigate('/ceramic')} />
 
-            <GlassCard style={{ padding: '40px', maxWidth: '800px', margin: '0 auto' }}>
-                <h2 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', marginBottom: '30px', fontSize: '1.8rem' }}>Ceramic Registration</h2>
+            <div style={{ marginBottom: '80px' }}>
+                <PortfolioTitle
+                    subtitle="Enroll a new surface protection application into the Elite Shine global registry."
+                >
+                    Surface<br />Enrollment
+                </PortfolioTitle>
+            </div>
 
-                <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
-                        <div className="section">
-                            <h3 style={sectionTitleStyle}>Customer Info</h3>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Full Name</label>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <select
-                                        name="salutation"
-                                        className="form-control"
-                                        value={formData.salutation}
-                                        onChange={handleChange}
-                                        style={{ width: '80px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px' }}
-                                    >
-                                        <option value="Mr.">Mr.</option>
-                                        <option value="Mrs.">Mrs.</option>
-                                        <option value="Ms.">Ms.</option>
-                                    </select>
-                                    <input name="full_name" className="form-control" onChange={handleChange} required style={{ flex: 1 }} />
-                                </div>
+            <form onSubmit={handleSubmit}>
+                <PortfolioGrid columns="1fr 1fr">
+                    <PortfolioCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+                            <User size={18} color="var(--gold)" opacity={0.5} />
+                            <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900', color: 'var(--gold)' }}>Customer Dossier</span>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '15px', marginBottom: '25px' }}>
+                            <div style={{ width: '120px' }}>
+                                <PortfolioSelect
+                                    label="Salutation"
+                                    name="salutation"
+                                    value={formData.salutation}
+                                    onChange={handleChange}
+                                    options={[
+                                        { value: 'Mr.', label: 'Mr.' },
+                                        { value: 'Mrs.', label: 'Mrs.' },
+                                        { value: 'Ms.', label: 'Ms.' }
+                                    ]}
+                                />
                             </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Contact Number</label>
-                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                    <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
-                                    <select
-                                        name="phone_suffix_code"
-                                        className="form-control"
-                                        value={formData.phone_suffix_code}
-                                        onChange={handleChange}
-                                        style={{ width: '60px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px', padding: '0 5px' }}
-                                    >
-                                        {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
-                                            <option key={num} value={num}>{num}</option>
-                                        ))}
-                                    </select>
-                                    <input name="contact_number" className="form-control" onChange={handleChange} required
-                                        placeholder="1234567" maxLength="7" />
-                                </div>
-                            </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Email</label>
-                                <input name="email" type="email" className="form-control" onChange={handleChange} required />
+                            <div style={{ flex: 1 }}>
+                                <PortfolioInput
+                                    label="Full Name"
+                                    name="full_name"
+                                    value={formData.full_name}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Enter client name"
+                                />
                             </div>
                         </div>
 
-                        <div className="section">
-                            <h3 style={sectionTitleStyle}>Vehicle Details</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '15px' }}>
-                                <div>
-                                    <label style={labelStyle}>Brand</label>
-                                    <input name="vehicle_brand" className="form-control" onChange={handleChange} required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Model</label>
-                                    <input name="vehicle_model" className="form-control" onChange={handleChange} required />
-                                </div>
+                        <div style={{ display: 'flex', gap: '15px', marginBottom: '25px' }}>
+                            <div style={{ width: '160px' }}>
+                                <PortfolioSelect
+                                    label="Network Code"
+                                    name="phone_suffix_code"
+                                    value={formData.phone_suffix_code}
+                                    onChange={handleChange}
+                                    options={[...Array(9).keys()].map(n => ({ value: n.toString(), label: `+971 5${n}` }))}
+                                />
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '15px' }}>
-                                <div>
-                                    <label style={labelStyle}>Year</label>
-                                    <input name="vehicle_year" type="number" className="form-control" onChange={handleChange} value={formData.vehicle_year} required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Color</label>
-                                    <input name="vehicle_color" className="form-control" onChange={handleChange} required />
-                                </div>
-                            </div>
-                            <div style={{ marginBottom: '15px' }}>
-                                <label style={labelStyle}>Plate & VIN</label>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    <input name="license_plate" placeholder="Plate" className="form-control" onChange={handleChange} required />
-                                    <input name="vin" placeholder="VIN" className="form-control" onChange={handleChange} required />
-                                </div>
+                            <div style={{ flex: 1 }}>
+                                <PortfolioInput
+                                    label="Contact Number"
+                                    name="contact_number"
+                                    value={formData.contact_number}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="1234567"
+                                    maxLength="7"
+                                />
                             </div>
                         </div>
-                    </div>
 
-                    <div className="section" style={{ marginBottom: '30px' }}>
-                        <h3 style={sectionTitleStyle}>Coating & Warranty</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px' }}>
-                            <div>
-                                <label style={labelStyle}>Date</label>
-                                <input name="installation_date" type="date" className="form-control" onChange={handleChange} value={formData.installation_date} required />
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Branch</label>
-                                <select name="branch_location" className="form-control" onChange={handleChange}>
-                                    <option value="DXB">Dubai</option>
-                                    <option value="AUH">Abu Dhabi</option>
-                                    <option value="SHJ">Sharjah</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Type</label>
-                                <select name="coating_type" className="form-control" onChange={handleChange}>
-                                    <option value="CERAMIC">Ceramic Coating</option>
-                                    <option value="GRAPHENE">Graphene Coating</option>
-                                    <option value="QUARTZ">Quartz Coating</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style={{ marginTop: '15px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                            <div>
-                                <label style={labelStyle}>Coating Brand</label>
-                                <input name="coating_brand" className="form-control" onChange={handleChange} required />
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Warranty Period</label>
-                                <input name="warranty_period" placeholder="e.g. 5 Years" className="form-control" onChange={handleChange} required />
-                            </div>
-                        </div>
-                    </div>
+                        <PortfolioInput
+                            label="Email Address"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="client@luxury.ae"
+                        />
+                    </PortfolioCard>
 
-                    <div className="section" style={{ marginBottom: '30px' }}>
-                        <h3 style={sectionTitleStyle}>Customer Authorization</h3>
-                        <p style={{ color: '#94a3b8', fontSize: '12px', marginBottom: '15px' }}>The customer confirms that the application has been inspected and the warranty terms are accepted.</p>
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <SignaturePad
-                                title="Authorization Signature"
-                                onSave={(data) => setFormData({ ...formData, signature_data: data })}
+                    <PortfolioCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+                            <Car size={18} color="var(--gold)" opacity={0.5} />
+                            <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900', color: 'var(--gold)' }}>Asset Registry</span>
+                        </div>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioInput
+                                label="Brand"
+                                name="vehicle_brand"
+                                value={formData.vehicle_brand}
+                                onChange={handleChange}
+                                required
                             />
-                        </div>
+                            <PortfolioInput
+                                label="Model"
+                                name="vehicle_model"
+                                value={formData.vehicle_model}
+                                onChange={handleChange}
+                                required
+                            />
+                        </PortfolioGrid>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioInput
+                                label="Year"
+                                name="vehicle_year"
+                                type="number"
+                                value={formData.vehicle_year}
+                                onChange={handleChange}
+                                required
+                            />
+                            <PortfolioInput
+                                label="Color"
+                                name="vehicle_color"
+                                value={formData.vehicle_color}
+                                onChange={handleChange}
+                                required
+                            />
+                        </PortfolioGrid>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioInput
+                                label="License Plate"
+                                name="license_plate"
+                                value={formData.license_plate}
+                                onChange={handleChange}
+                                required
+                                placeholder="A 00000"
+                            />
+                            <PortfolioInput
+                                label="VIN"
+                                name="vin"
+                                value={formData.vin}
+                                onChange={handleChange}
+                                required
+                                placeholder="Identification Number"
+                            />
+                        </PortfolioGrid>
+                    </PortfolioCard>
+                </PortfolioGrid>
+
+                <PortfolioCard style={{ marginTop: '40px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+                        <Award size={18} color="var(--gold)" opacity={0.5} />
+                        <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900', color: 'var(--gold)' }}>Protection Specification</span>
                     </div>
 
-                    <button type="submit" className="btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                        <Save size={20} /> Save Warranty
-                    </button>
-                </form>
-            </GlassCard>
-        </div>
+                    <PortfolioGrid columns="repeat(3, 1fr)">
+                        <PortfolioInput
+                            label="Application Date"
+                            name="installation_date"
+                            type="date"
+                            value={formData.installation_date}
+                            onChange={handleChange}
+                            required
+                        />
+                        <PortfolioSelect
+                            label="Studio Branch"
+                            name="branch_location"
+                            value={formData.branch_location}
+                            onChange={handleChange}
+                            options={[
+                                { value: 'DXB', label: 'Dubai' },
+                                { value: 'AUH', label: 'Abu Dhabi' },
+                                { value: 'SHJ', label: 'Sharjah' }
+                            ]}
+                        />
+                        <PortfolioSelect
+                            label="Coating Classification"
+                            name="coating_type"
+                            value={formData.coating_type}
+                            onChange={handleChange}
+                            options={[
+                                { value: 'CERAMIC', label: 'Ceramic Coating' },
+                                { value: 'GRAPHENE', label: 'Graphene Coating' },
+                                { value: 'QUARTZ', label: 'Quartz Coating' }
+                            ]}
+                        />
+                    </PortfolioGrid>
+
+                    <PortfolioGrid columns="1fr 1fr" style={{ marginTop: '25px' }}>
+                        <PortfolioInput
+                            label="Product Solution"
+                            name="coating_brand"
+                            value={formData.coating_brand}
+                            onChange={handleChange}
+                            required
+                            placeholder="e.g. Gyeon, Ceramic Pro"
+                        />
+                        <PortfolioInput
+                            label="Warranty Period"
+                            name="warranty_period"
+                            value={formData.warranty_period}
+                            onChange={handleChange}
+                            required
+                            placeholder="e.g. 5 Years"
+                        />
+                    </PortfolioGrid>
+                </PortfolioCard>
+
+                <PortfolioCard style={{ marginTop: '40px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+                        <PenTool size={18} color="var(--gold)" opacity={0.5} />
+                        <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900', color: 'var(--gold)' }}>Authentication protocol</span>
+                    </div>
+
+                    <p style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '14px', marginBottom: '30px', fontFamily: 'var(--font-serif)' }}>
+                        The undersigned certifies that the application has been inspected and meets the Elite Shine standards of excellence.
+                    </p>
+
+                    <div style={{ display: 'flex', justifyContent: 'center', background: 'rgba(232, 230, 227, 0.02)', padding: '40px', borderRadius: '20px', border: '1px solid rgba(232, 230, 227, 0.05)' }}>
+                        <SignaturePad
+                            title="Owner Signature"
+                            onSave={(data) => setFormData({ ...formData, signature_data: data })}
+                        />
+                    </div>
+                </PortfolioCard>
+
+                <div style={{ marginTop: '80px', display: 'flex', justifyContent: 'flex-end', gap: '30px' }}>
+                    <PortfolioButton variant="glass" onClick={() => navigate('/ceramic')} type="button">
+                        DISCARD.node
+                    </PortfolioButton>
+                    <PortfolioButton variant="gold" type="submit" style={{ padding: '15px 50px' }}>
+                        <Save size={18} /> INITIATE.registry
+                    </PortfolioButton>
+                </div>
+            </form>
+        </PortfolioPage>
     );
-};
-
-const sectionTitleStyle = {
-    fontSize: '12px',
-    textTransform: 'uppercase',
-    color: '#b08d57',
-    marginBottom: '15px',
-    borderLeft: '3px solid #b08d57',
-    paddingLeft: '10px',
-    fontWeight: '700'
-};
-
-const labelStyle = {
-    display: 'block',
-    fontSize: '11px',
-    color: '#94a3b8',
-    marginBottom: '5px',
-    textTransform: 'uppercase',
-    fontWeight: '600'
 };
 
 export default CeramicForm;

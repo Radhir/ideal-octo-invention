@@ -1,0 +1,48 @@
+
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 168 modules transformed.
+[31m✗[39m Build failed in 891ms
+[31merror during build:
+[31m[vite:esbuild] Transform failed with 3 errors:
+R:/webplot/frontend/src/pages/jobs/JobWorkflow.jsx:217:6: ERROR: The symbol "getStepDescription" has already been declared
+R:/webplot/frontend/src/pages/jobs/JobWorkflow.jsx:228:6: ERROR: The symbol "getStepBadges" has already been declared
+R:/webplot/frontend/src/pages/jobs/JobWorkflow.jsx:283:7: ERROR: Multiple exports with the same name "default"[31m
+file: [36mR:/webplot/frontend/src/pages/jobs/JobWorkflow.jsx:217:6[31m
+[33m
+[33mThe symbol "getStepDescription" has already been declared[33m
+215 |  export default JobWorkflow;
+216 |  
+217 |  const getStepDescription = (status) => {
+    |        ^
+218 |      switch (status) {
+219 |          case 'RECEPTION': return 'Initial vehicle walkthrough, photography of existing damages, and collection of cus...
+
+[33mThe symbol "getStepBadges" has already been declared[33m
+226 |  };
+227 |  
+228 |  const getStepBadges = (status, jobData) => {
+    |        ^
+229 |      if (!jobData) return null;
+230 |  
+
+[33mMultiple exports with the same name "default"[33m
+281 |  };
+282 |  
+283 |  export default JobWorkflow;
+    |         ^
+284 |  
+[31m
+    at failureErrorWithLog (R:\webplot\frontend\node_modules\esbuild\lib\main.js:1467:15)
+    at R:\webplot\frontend\node_modules\esbuild\lib\main.js:736:50
+    at responseCallbacks.<computed> (R:\webplot\frontend\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (R:\webplot\frontend\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (R:\webplot\frontend\node_modules\esbuild\lib\main.js:581:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)[39m

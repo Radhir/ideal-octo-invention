@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft, Plus, X } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioInput,
+    PortfolioButton,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
+import { Save, ArrowLeft, Plus, X, Layers, User, Car } from 'lucide-react';
 import { SERVICES_CATALOG } from '../../constants/services';
-
 import { CAR_BRANDS, CAR_MODELS, CAR_COLORS, YEAR_CHOICES, PLATE_EMIRATES, PLATE_CODES } from '../../constants/vehicle_data';
 
 const JobCreate = () => {
     const navigate = useNavigate();
     const location = useLocation();
+
 
     const [formData, setFormData] = useState({
         job_card_number: `JC-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -128,7 +135,6 @@ const JobCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Strictly construct only valid model fields to avoid 400 Bad Request
             const submissionData = {
                 job_card_number: formData.job_card_number + "-" + Math.floor(Math.random() * 999),
                 date: formData.date,
@@ -155,146 +161,122 @@ const JobCreate = () => {
                 initial_inspection_notes: formData.initial_inspection_notes || ""
             };
 
-            // Optional: link to lead/booking if they exist
             if (formData.lead_id) submissionData.lead_id = formData.lead_id;
             if (formData.booking_id) submissionData.booking_id = formData.booking_id;
-
-            console.log('Raw Service Advisor:', formData.service_advisor);
-            console.log('Constructed Payload:', submissionData);
 
             const res = await api.post('/forms/job-cards/api/jobs/', submissionData);
             alert('Job Card Created successfully!');
             navigate(`/service-advisor/form?jobId=${res.data.id}`);
         } catch (err) {
-            console.error('Full Error Object:', err);
-            let errorMessage = 'Failed to create Job Card.';
-
-            if (err.response && err.response.data) {
-                // DRF validation errors are usually an object with field names
-                const serverData = err.response.data;
-                const fieldErrors = Object.entries(serverData)
-                    .map(([field, errors]) => `${field}: ${Array.isArray(errors) ? errors.join(', ') : errors}`)
-                    .join('\n');
-
-                errorMessage = `Validation Error (Status: ${err.response.status}):\n${fieldErrors}`;
-
-                // If it's a non-field error
-                if (serverData.non_field_errors) {
-                    errorMessage += `\nGeneral: ${serverData.non_field_errors.join(', ')}`;
-                }
-                if (serverData.detail) {
-                    errorMessage += `\nDetail: ${serverData.detail}`;
-                }
-            }
-            alert(errorMessage);
+            console.error('Submission Error:', err);
+            alert('Failed to create Job Card. Please check all fields.');
         }
     };
 
     return (
-        <div style={{ padding: '20px' }}>
-            <button
-                onClick={() => navigate('/job-cards')}
-                style={{ background: 'none', border: 'none', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '15px', fontSize: '13px' }}
-            >
-                <ArrowLeft size={16} /> Back to List
-            </button>
+        <PortfolioPage>
+            <div style={{ padding: '40px 0' }}>
+                <div style={{
+                    display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px',
+                    color: 'var(--cream)', fontSize: '13px', letterSpacing: '1px', cursor: 'pointer'
+                }} onClick={() => navigate('/job-cards')}>
+                    <ArrowLeft size={16} /> BACK TO LIST
+                </div>
 
-            <GlassCard style={{ padding: '30px', maxWidth: '1000px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
-                    <h2 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '1.5rem', margin: 0 }}>NEW JOB CARD</h2>
-                    <span style={{ color: '#b08d57', fontWeight: '800', fontSize: '14px' }}>#{formData.job_card_number}</span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '60px' }}>
+                    <PortfolioTitle
+                        title="NEW JOB CARD"
+                        subtitle={`RECEPTION // ${formData.job_card_number}`}
+                    />
+                    <div style={{
+                        textAlign: 'right',
+                        padding: '12px 20px',
+                        background: 'rgba(255,255,255,0.02)',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(255,255,255,0.05)'
+                    }}>
+                        <div style={{ fontSize: '9px', color: 'var(--gold)', letterSpacing: '2px', fontWeight: '800' }}>TIMESTAMP</div>
+                        <div style={{ fontSize: '14px', color: 'var(--cream)', fontWeight: '700', marginTop: '4px' }}>{new Date().toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}</div>
+                    </div>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 1.1fr) 1fr', gap: '30px', marginBottom: '20px' }}>
-                        <div className="section">
-                            <h3 style={sectionTitleStyle}>RECEPTION & CUSTOMER</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(400px, 1fr) 1fr', gap: '20px', marginBottom: '15px' }}>
-                                <div>
-                                    <label style={labelStyle}>Customer Name</label>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <select
-                                            name="salutation"
-                                            className="form-control"
-                                            value={formData.salutation}
-                                            onChange={handleChange}
-                                            style={{ width: '80px', height: '36px', background: 'var(--input-bg)' }}
-                                        >
-                                            <option value="Mr.">Mr.</option>
-                                            <option value="Mrs.">Mrs.</option>
-                                            <option value="Ms.">Ms.</option>
-                                        </select>
-                                        <input
-                                            type="text"
-                                            name="customer_name"
-                                            className="form-control"
-                                            placeholder="Enter Full Name"
-                                            value={formData.customer_name}
-                                            onChange={handleChange}
-                                            required
-                                            style={{ flex: 1, height: '36px' }}
-                                        />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+                        {/* LEFT COLUMN: Customer & Vehicle */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                            <PortfolioCard style={{ padding: '35px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <User size={20} color="var(--gold)" />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>SECTION // 01</div>
+                                        <PortfolioSectionTitle title="CLIENT IDENTITY" style={{ marginBottom: 0, fontSize: '18px' }} />
                                     </div>
                                 </div>
-                                <div>
-                                    <label style={labelStyle}>Phone Number</label>
-                                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                        <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
-                                        <select
-                                            name="phone_suffix_code"
-                                            className="form-control"
-                                            value={formData.phone_suffix_code}
-                                            onChange={handleChange}
-                                            style={{ width: '60px', height: '36px', background: 'var(--input-bg)' }}
-                                        >
-                                            {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
-                                                <option key={num} value={num}>{num}</option>
-                                            ))}
-                                        </select>
-                                        <input
-                                            type="text"
-                                            name="phone_number"
-                                            className="form-control"
-                                            placeholder="7-digits"
-                                            value={formData.phone_number}
-                                            onChange={handleChange}
-                                            required
-                                            style={{ flex: 1, height: '36px' }}
-                                            maxLength="7"
-                                        />
+                                <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px', marginBottom: '25px' }}>
+                                    <PortfolioInput
+                                        label="TITLE"
+                                        name="salutation"
+                                        type="select"
+                                        value={formData.salutation}
+                                        onChange={handleChange}
+                                        options={[{ value: 'Mr.', label: 'Mr.' }, { value: 'Mrs.', label: 'Mrs.' }, { value: 'Ms.', label: 'Ms.' }]}
+                                    />
+                                    <PortfolioInput
+                                        label="FULL NAME"
+                                        name="customer_name"
+                                        value={formData.customer_name}
+                                        onChange={handleChange}
+                                        placeholder="Customer Name"
+                                    />
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px' }}>
+                                    <PortfolioInput
+                                        label="PREFIX"
+                                        name="phone_suffix_code"
+                                        type="select"
+                                        value={formData.phone_suffix_code}
+                                        onChange={handleChange}
+                                        options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(n => ({ value: n, label: `05${n}` }))}
+                                    />
+                                    <PortfolioInput
+                                        label="MOBILE NUMBER"
+                                        name="phone_number"
+                                        value={formData.phone_number}
+                                        onChange={handleChange}
+                                        placeholder="7-digits"
+                                        maxLength="7"
+                                    />
+                                </div>
+                            </PortfolioCard>
+
+                            <PortfolioCard style={{ padding: '35px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Car size={20} color="var(--gold)" />
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>SECTION // 02</div>
+                                        <PortfolioSectionTitle title="VEHICLE PROFILE" style={{ marginBottom: 0, fontSize: '18px' }} />
                                     </div>
                                 </div>
-                            </div>
-                            <div style={{ marginBottom: '12px' }}>
-                                <label style={labelStyle}>Address (Optional)</label>
-                                <input name="address" className="form-control" value={formData.address} onChange={handleChange} style={{ height: '36px' }} />
-                            </div>
 
-                            <h3 style={{ ...sectionTitleStyle, marginTop: '20px' }}>NOTES & COMPLAINTS</h3>
-                            <textarea name="job_description" className="form-control" rows="3" value={formData.job_description} onChange={handleChange} placeholder="Damages, special requests..." style={{ fontSize: '13px', minHeight: '80px' }}></textarea>
-                        </div>
-
-                        <div className="section">
-                            <h3 style={sectionTitleStyle}>VEHICLE DETAILS</h3>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '12px', marginBottom: '10px' }}>
-                                <div>
-                                    <label style={labelStyle}>Brand</label>
-                                    <select name="brand" className="form-control" value={formData.brand} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }} autoComplete="off">
-                                        {CAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Model</label>
-                                    <input
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+                                    <PortfolioInput
+                                        label="BRAND"
+                                        name="brand"
+                                        type="select"
+                                        value={formData.brand}
+                                        onChange={handleChange}
+                                        options={CAR_BRANDS.map(b => ({ value: b, label: b }))}
+                                    />
+                                    <PortfolioInput
+                                        label="MODEL"
                                         name="model"
-                                        className="form-control"
                                         value={formData.model}
                                         onChange={handleChange}
-                                        required
                                         list="car-models"
-                                        placeholder="Type model..."
-                                        style={{ height: '34px' }}
                                     />
                                     <datalist id="car-models">
                                         {CAR_MODELS[formData.brand]?.map(m => (
@@ -302,214 +284,196 @@ const JobCreate = () => {
                                         ))}
                                     </datalist>
                                 </div>
-                            </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '10px' }}>
-                                <div>
-                                    <label style={labelStyle}>Year</label>
-                                    <select name="year" className="form-control" value={formData.year} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }} autoComplete="off">
-                                        {YEAR_CHOICES.map(y => <option key={y} value={y}>{y}</option>)}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Color</label>
-                                    <input
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '20px' }}>
+                                    <PortfolioInput
+                                        label="YEAR"
+                                        name="year"
+                                        type="select"
+                                        value={formData.year}
+                                        onChange={handleChange}
+                                        options={YEAR_CHOICES.map(y => ({ value: y, label: y }))}
+                                    />
+                                    <PortfolioInput
+                                        label="COLOR"
                                         name="color"
-                                        className="form-control"
                                         value={formData.color}
                                         onChange={handleChange}
-                                        required
                                         list="car-colors"
-                                        placeholder="Pick color..."
-                                        style={{ height: '34px' }}
                                     />
                                     <datalist id="car-colors">
-                                        {CAR_COLORS.map(c => (
-                                            <option key={c} value={c} />
-                                        ))}
+                                        {CAR_COLORS.map(c => <option key={c} value={c} />)}
                                     </datalist>
+                                    <PortfolioInput
+                                        label="ODOMETER (KM)"
+                                        name="kilometers"
+                                        type="number"
+                                        value={formData.kilometers}
+                                        onChange={handleChange}
+                                    />
                                 </div>
-                                <div>
-                                    <label style={labelStyle}>Kilometers</label>
-                                    <input name="kilometers" type="number" className="form-control" value={formData.kilometers} onChange={handleChange} required style={{ height: '34px' }} />
-                                </div>
-                            </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr 1fr', gap: '10px', marginBottom: '10px' }}>
-                                <div>
-                                    <label style={labelStyle}>Emirate</label>
-                                    <select name="plate_emirate" className="form-control" value={formData.plate_emirate} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
-                                        {PLATE_EMIRATES.map(e => <option key={e} value={e}>{e}</option>)}
-                                    </select>
+                                <div style={{ display: 'grid', gridTemplateColumns: '100px 80px 1fr', gap: '15px', marginBottom: '20px' }}>
+                                    <PortfolioInput
+                                        label="EMIRATES"
+                                        name="plate_emirate"
+                                        type="select"
+                                        value={formData.plate_emirate}
+                                        onChange={handleChange}
+                                        options={PLATE_EMIRATES.map(e => ({ value: e, label: e }))}
+                                    />
+                                    <PortfolioInput
+                                        label="CODE"
+                                        name="plate_code"
+                                        type="select"
+                                        value={formData.plate_code}
+                                        onChange={handleChange}
+                                        options={PLATE_CODES.map(c => ({ value: c, label: c }))}
+                                    />
+                                    <PortfolioInput
+                                        label="PLATE NO."
+                                        name="license_plate"
+                                        value={formData.license_plate}
+                                        onChange={handleChange}
+                                    />
                                 </div>
-                                <div>
-                                    <label style={labelStyle}>Code</label>
-                                    <select name="plate_code" className="form-control" value={formData.plate_code} onChange={handleChange} required style={{ height: '34px', fontSize: '13px', padding: '0 10px' }}>
-                                        {PLATE_CODES.map(c => <option key={c} value={c}>{c}</option>)}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Number</label>
-                                    <input name="license_plate" className="form-control" value={formData.license_plate} onChange={handleChange} required style={{ height: '34px' }} />
-                                </div>
-                            </div>
 
-                            <div>
-                                <label style={labelStyle}>VIN Number</label>
-                                <input name="vin" className="form-control" value={formData.vin} onChange={handleChange} required style={{ height: '34px' }} />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="section" style={{ marginBottom: '30px' }}>
-                        <h3 style={sectionTitleStyle}>Service Selection</h3>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={labelStyle}>Service Category</label>
-                                <select
-                                    className="form-control"
-                                    value={activeCategory}
-                                    onChange={(e) => setActiveCategory(e.target.value)}
-                                >
-                                    <option value="">Select Category...</option>
-                                    {Object.keys(SERVICES_CATALOG).map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Specific Service</label>
-                                <select
-                                    className="form-control"
-                                    onChange={(e) => {
-                                        if (e.target.value) {
-                                            const service = SERVICES_CATALOG[activeCategory][e.target.value];
-                                            addService(service);
-                                            e.target.value = '';
-                                        }
-                                    }}
-                                    disabled={!activeCategory}
-                                >
-                                    <option value="">Select Service...</option>
-                                    {activeCategory && SERVICES_CATALOG[activeCategory].map((s, idx) => (
-                                        <option key={idx} value={idx}>{s.name} - AED {(s.price * 1.05).toFixed(2)} (Incl. VAT)</option>
-                                    ))}
-                                </select>
-                            </div>
+                                <PortfolioInput
+                                    label="VIN (CHASSIS NO.)"
+                                    name="vin"
+                                    value={formData.vin}
+                                    onChange={handleChange}
+                                />
+                            </PortfolioCard>
                         </div>
 
-                        {/* Selected Services List */}
-                        <div style={{ marginBottom: '20px' }}>
-                            <label style={labelStyle}>Selected Services</label>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                {formData.selected_services.length === 0 ? (
-                                    <div style={{ padding: '15px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: '1px dashed rgba(255,255,255,0.1)', color: '#64748b', fontSize: '13px' }}>
-                                        No services selected yet.
+                        {/* RIGHT COLUMN: Services & Summary */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                            <PortfolioCard style={{ padding: '35px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Layers size={20} color="var(--gold)" />
                                     </div>
-                                ) : (
-                                    formData.selected_services.map((s, idx) => (
-                                        <div key={idx} style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            padding: '12px 15px',
-                                            background: 'rgba(176, 141, 87, 0.05)',
-                                            borderRadius: '10px',
-                                            border: '1px solid rgba(176, 141, 87, 0.1)'
-                                        }}>
-                                            <div>
-                                                <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff' }}>{s.name}</div>
-                                                <div style={{ fontSize: '12px', color: '#b08d57' }}>AED {s.price}</div>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeService(idx)}
-                                                style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: '#ef4444', padding: '5px', borderRadius: '5px', cursor: 'pointer' }}
-                                            >
-                                                <X size={16} />
-                                            </button>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
+                                    <div>
+                                        <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>SECTION // 03</div>
+                                        <PortfolioSectionTitle title="SERVICE CONFIGURATION" style={{ marginBottom: 0, fontSize: '18px' }} />
+                                    </div>
+                                </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Subtotal (Net)</label>
-                                    <div style={{ fontSize: '16px', fontWeight: '700', color: '#94a3b8' }}>AED {formData.total_price.toFixed(2)}</div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '30px' }}>
+                                    <PortfolioInput
+                                        label="CATEGORY"
+                                        name="category"
+                                        type="select"
+                                        value={activeCategory}
+                                        onChange={(e) => setActiveCategory(e.target.value)}
+                                        options={[
+                                            { value: '', label: 'Select Category...' },
+                                            ...Object.keys(SERVICES_CATALOG).map(cat => ({ value: cat, label: cat }))
+                                        ]}
+                                    />
+                                    <PortfolioInput
+                                        label="SERVICE"
+                                        name="service"
+                                        type="select"
+                                        disabled={!activeCategory}
+                                        value=""
+                                        onChange={(e) => {
+                                            if (e.target.value) {
+                                                const service = SERVICES_CATALOG[activeCategory][parseInt(e.target.value)];
+                                                addService(service);
+                                            }
+                                        }}
+                                        options={[
+                                            { value: '', label: 'Add Service...' },
+                                            ...(activeCategory && SERVICES_CATALOG[activeCategory]
+                                                ? SERVICES_CATALOG[activeCategory].map((s, idx) => ({
+                                                    value: idx,
+                                                    label: `${s.name} — AED ${(s.price * 1.05).toFixed(0)}`
+                                                }))
+                                                : [])
+                                        ]}
+                                    />
                                 </div>
-                                <div>
-                                    <label style={labelStyle}>VAT (5%)</label>
-                                    <div style={{ fontSize: '16px', fontWeight: '700', color: '#94a3b8' }}>AED {(formData.vat_amount || 0).toFixed(2)}</div>
+
+                                {/* Services List */}
+                                <div style={{ marginBottom: '30px', minHeight: '100px' }}>
+                                    <label style={{ display: 'block', fontSize: '11px', color: 'var(--gold)', marginBottom: '10px', letterSpacing: '1px' }}>SELECTED SERVICES</label>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        {formData.selected_services.length === 0 ? (
+                                            <div style={{ padding: '20px', textAlign: 'center', border: '1px dashed rgba(232, 230, 227, 0.2)', borderRadius: '10px', color: 'rgba(232, 230, 227, 0.4)', fontSize: '13px' }}>
+                                                No services added. Select a category to begin.
+                                            </div>
+                                        ) : (
+                                            formData.selected_services.map((s, idx) => (
+                                                <div key={idx} style={{
+                                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                                    padding: '15px', background: 'var(--gold-glow)', borderRadius: '10px', border: '1px solid var(--gold-border)'
+                                                }}>
+                                                    <div>
+                                                        <div style={{ color: 'var(--cream)', fontSize: '14px', fontWeight: '500' }}>{s.name}</div>
+                                                        <div style={{ color: 'var(--gold)', fontSize: '12px' }}>AED {s.price}</div>
+                                                    </div>
+                                                    <button type="button" onClick={() => removeService(idx)} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>
+                                                        <X size={16} />
+                                                    </button>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
                                 </div>
-                                <div style={{ gridColumn: 'span 2', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '10px' }}>
-                                    <label style={labelStyle}>Total Estimate (Gross)</label>
-                                    <div style={{ fontSize: '24px', fontWeight: '900', color: '#b08d57' }}>AED {(formData.net_amount || formData.total_price).toFixed(2)}</div>
+
+                                <PortfolioInput
+                                    label="CUSTOMER PREFERENCES / COMPLAINTS"
+                                    name="job_description"
+                                    type="textarea"
+                                    rows={3}
+                                    value={formData.job_description}
+                                    onChange={handleChange}
+                                    placeholder="Enter specific requests or reported issues..."
+                                />
+                            </PortfolioCard>
+
+                            <PortfolioCard style={{ background: 'var(--bg-secondary)' }}>
+                                <PortfolioSectionTitle title="FINANCIAL ESTIMATE" />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px', color: 'rgba(232, 230, 227, 0.6)' }}>
+                                    <span>Subtotal (Net)</span>
+                                    <span>AED {formData.total_price.toFixed(2)}</span>
                                 </div>
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Service Advisor</label>
-                                <select
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontSize: '14px', color: 'rgba(232, 230, 227, 0.6)' }}>
+                                    <span>VAT (5%)</span>
+                                    <span>AED {formData.vat_amount.toFixed(2)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: '20px', borderTop: '1px solid rgba(232, 230, 227, 0.1)', fontSize: '24px', fontWeight: '600', color: 'var(--gold)' }}>
+                                    <span>TOTAL</span>
+                                    <span>AED {(formData.net_amount || formData.total_price).toFixed(2)}</span>
+                                </div>
+                            </PortfolioCard>
+
+                            <PortfolioCard>
+                                <PortfolioInput
+                                    label="SERVICE ADVISOR"
                                     name="service_advisor"
-                                    className="form-control"
+                                    type="select"
                                     value={formData.service_advisor}
                                     onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Select Advisor...</option>
-                                    {users.filter(u => u.hr_profile).map(u => (
-                                        <option key={u.hr_profile.id || u.id} value={u.hr_profile.id}>{u.first_name || u.username}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Check-in Date</label>
-                                <input name="date" type="date" className="form-control" value={formData.date} onChange={handleChange} required />
-                            </div>
-                        </div>
-
-                        <div style={{ marginTop: '20px' }}>
-                            <label style={labelStyle}>Internal Notes / Additional Complaints</label>
-                            <textarea
-                                name="initial_inspection_notes"
-                                className="form-control"
-                                rows="2"
-                                value={formData.initial_inspection_notes}
-                                onChange={handleChange}
-                                placeholder="Any specific requirements or existing damages..."
-                            ></textarea>
+                                    options={[
+                                        { value: '', label: 'Select Advisor...' },
+                                        ...users.filter(u => u.hr_profile).map(u => ({ value: u.hr_profile.id, label: u.first_name || u.username }))
+                                    ]}
+                                />
+                                <div style={{ marginTop: '30px' }}>
+                                    <PortfolioButton primary type="submit" style={{ width: '100%', height: '56px', fontSize: '14px' }}>
+                                        <Save size={18} /> INITIALIZE JOB CARD
+                                    </PortfolioButton>
+                                </div>
+                            </PortfolioCard>
                         </div>
                     </div>
-
-                    <button type="submit" className="btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                        <Save size={20} /> Create Job Card
-                    </button>
                 </form>
-            </GlassCard>
-        </div>
+            </div>
+        </PortfolioPage>
     );
-};
-
-const sectionTitleStyle = {
-    fontSize: '12px',
-    textTransform: 'uppercase',
-    color: '#b08d57',
-    marginBottom: '15px',
-    borderLeft: '3px solid #b08d57',
-    paddingLeft: '10px',
-    fontWeight: '700'
-};
-
-const labelStyle = {
-    display: 'block',
-    fontSize: '11px',
-    color: '#94a3b8',
-    marginBottom: '5px',
-    textTransform: 'uppercase',
-    fontWeight: '600'
 };
 
 export default JobCreate;

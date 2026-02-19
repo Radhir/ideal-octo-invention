@@ -3,8 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import LiveTrackingMap from '../../components/logistics/LiveTrackingMap';
 import TripChat from '../../components/logistics/TripChat';
-import GlassCard from '../../components/GlassCard';
-import { ArrowLeft, Truck, MapPin, Navigation, Clock, User } from 'lucide-react';
+import { ArrowLeft, Truck, MapPin, Navigation, Clock, User, Signal } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const PickDropTrackingPage = () => {
     const { id } = useParams();
@@ -42,30 +48,32 @@ const PickDropTrackingPage = () => {
     const dropoffCoords = [25.3, 55.4]; // Dummy for now
 
     return (
-        <div style={{ padding: '30px 20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <button
-                        onClick={() => navigate('/pick-drop')}
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <div>
-                        <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Fleet Operations</div>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2rem', fontWeight: '900', margin: 0, color: '#fff' }}>Live Tracking: {trip.jc_number || 'TRIP'}</h1>
+        <PortfolioPage breadcrumb="LOGISTICS // LIVE TRACKING">
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle={`Strategic orchestration of Movement protocol ${trip.jc_number || 'TRIP'}.`}>
+                    Live Vector
+                </PortfolioTitle>
+                <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '5px' }}>STATUS</div>
+                        <div style={{ color: '#f59e0b', fontWeight: '100', textTransform: 'uppercase', fontSize: '24px', fontFamily: 'var(--font-serif)' }}>{trip.status}</div>
                     </div>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>Status</div>
-                    <div style={{ color: '#f59e0b', fontWeight: '900', textTransform: 'uppercase', fontSize: '14px' }}>{trip.status}</div>
+                    <PortfolioBackButton onClick={() => navigate('/pick-drop')} />
                 </div>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr', gap: '30px', flex: 1, minHeight: 0 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr', gap: '40px', flex: 1, minHeight: 0 }}>
                 {/* Map Section */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    <div style={{ flex: 1, position: 'relative', borderRadius: '15px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <div style={{
+                        flex: 1,
+                        position: 'relative',
+                        borderRadius: '20px',
+                        overflow: 'hidden',
+                        border: '1px solid rgba(255,255,255,0.05)',
+                        background: 'rgba(0,0,0,0.5)'
+                    }}>
+                        <div className="telemetry-grid" style={{ zIndex: 1 }} />
                         <LiveTrackingMap
                             driverCoords={driverCoords}
                             pickupCoords={pickupCoords}
@@ -74,45 +82,51 @@ const PickDropTrackingPage = () => {
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
-                        <GlassCard style={{ padding: '20px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <User size={20} color="#b08d57" />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '25px' }}>
+                        <PortfolioCard style={{ padding: '30px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <User size={20} color="var(--gold)" />
+                                </div>
                                 <div>
-                                    <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase' }}>Associate</div>
-                                    <div style={{ color: '#fff', fontWeight: '800' }}>{trip.driver_name || 'Unassigned'}</div>
+                                    <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', marginBottom: '4px' }}>OPERATIVE</div>
+                                    <div style={{ color: 'var(--cream)', fontWeight: '300', fontSize: '15px' }}>{trip.driver_name || 'UNASSIGNED'}</div>
                                 </div>
                             </div>
-                        </GlassCard>
-                        <GlassCard style={{ padding: '20px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <Truck size={20} color="#b08d57" />
+                        </PortfolioCard>
+                        <PortfolioCard style={{ padding: '30px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Truck size={20} color="var(--gold)" />
+                                </div>
                                 <div>
-                                    <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase' }}>Vehicle</div>
-                                    <div style={{ color: '#fff', fontWeight: '800' }}>{trip.license_plate}</div>
+                                    <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', marginBottom: '4px' }}>ASSET</div>
+                                    <div style={{ color: 'var(--cream)', fontWeight: '300', fontSize: '15px' }}>{trip.license_plate}</div>
                                 </div>
                             </div>
-                        </GlassCard>
-                        <GlassCard style={{ padding: '20px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <Clock size={20} color="#b08d57" />
+                        </PortfolioCard>
+                        <PortfolioCard style={{ padding: '30px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Signal size={20} color="var(--gold)" />
+                                </div>
                                 <div>
-                                    <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase' }}>Last Update</div>
-                                    <div style={{ color: '#fff', fontWeight: '800' }}>
-                                        {trip.last_updated_coords ? new Date(trip.last_updated_coords).toLocaleTimeString() : 'Waiting for Signal...'}
+                                    <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', marginBottom: '4px' }}>LAST SIGNAL</div>
+                                    <div style={{ color: 'var(--cream)', fontWeight: '300', fontSize: '15px' }}>
+                                        {trip.last_updated_coords ? new Date(trip.last_updated_coords).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'WAITING...'}
                                     </div>
                                 </div>
                             </div>
-                        </GlassCard>
+                        </PortfolioCard>
                     </div>
                 </div>
 
                 {/* Comms Section */}
-                <div style={{ height: '100%', minHeight: '600px' }}>
+                <div style={{ height: '100%', minHeight: '700px' }}>
                     <TripChat tripId={id} />
                 </div>
             </div>
-        </div>
+        </PortfolioPage>
     );
 };
 

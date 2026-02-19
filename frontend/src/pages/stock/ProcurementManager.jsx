@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
-    FileText, ShoppingCart, Clock, CheckCircle,
-    AlertCircle, Plus, Search, ChevronRight,
-    Truck, Package, ArrowRight, Download
+    ShoppingCart, Clock, CheckCircle,
+    Plus, Truck, Package, Download, ChevronRight
 } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioStats
+} from '../../components/PortfolioComponents';
 
 const ProcurementManager = () => {
     const [orders, setOrders] = useState([]);
@@ -35,155 +41,147 @@ const ProcurementManager = () => {
 
     const getStatusStyle = (status) => {
         switch (status) {
-            case 'COMPLETED': return { color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)' };
-            case 'RECEIVED': return { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)' };
-            case 'SENT': return { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)' };
-            case 'CANCELLED': return { color: '#f43f5e', bg: 'rgba(244, 63, 94, 0.1)' };
-            default: return { color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.1)' };
+            case 'COMPLETED': return { color: '#10b981', label: 'FULFILLED' };
+            case 'RECEIVED': return { color: '#3b82f6', label: 'PARTIAL' };
+            case 'SENT': return { color: '#f59e0b', label: 'DISPATCHED' };
+            case 'CANCELLED': return { color: '#f43f5e', label: 'VOID' };
+            default: return { color: 'rgba(232, 230, 227, 0.4)', label: 'DRAFT' };
         }
     };
 
     return (
-        <div style={{ padding: '30px', maxWidth: '1400px', margin: '0 auto', animation: 'fadeIn 0.5s ease-out' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Procurement Workflow</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>Purchase Orders</h1>
-                    <p style={{ color: '#94a3b8', fontSize: '14px', marginTop: '5px' }}>Track material acquisition and stock fulfillment.</p>
-                </div>
-                <button
-                    style={{
-                        display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 25px',
-                        background: 'rgba(176, 141, 87, 0.1)', color: '#b08d57', border: '1px solid #b08d57', borderRadius: '12px',
-                        fontWeight: '900', cursor: 'pointer', transition: 'all 0.3s ease'
-                    }}
+        <PortfolioPage breadcrumb="Operations / Logistics / Procurement">
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="Command center for material acquisition and industrial supply chain fulfillment.">
+                    Procurement Ledger
+                </PortfolioTitle>
+                <PortfolioButton
+                    variant="primary"
+                    style={{ height: '60px', padding: '0 30px' }}
                 >
-                    <Plus size={20} /> CREATE PO
-                </button>
+                    <Plus size={18} /> INITIALIZE NEW PO
+                </PortfolioButton>
             </header>
 
-            {/* QUICK STATS */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '40px' }}>
-                <StatCard icon={<Clock color="#f59e0b" />} label="Active Orders" value={stats.pending} />
-                <StatCard icon={<CheckCircle color="#10b981" />} label="Fulfilled" value={stats.received} />
-                <StatCard icon={<ShoppingCart color="#3b82f6" />} label="Commitment" value={`AED ${stats.total_val.toLocaleString()}`} />
-                <StatCard icon={<Package color="#8b5cf6" />} label="Total SKUs" value={orders.length * 5} /> {/* Mock SKU count */}
-            </div>
+            <PortfolioStats
+                stats={[
+                    { label: 'ACTIVE ORDERS', value: stats.pending, icon: <Clock size={20} /> },
+                    { label: 'FULFILLED', value: stats.received, icon: <CheckCircle size={20} /> },
+                    { label: 'COMMITMENT', value: `AED ${stats.total_val.toLocaleString()}`, icon: <ShoppingCart size={20} /> },
+                    { label: 'TOTAL SKUS', value: orders.length * 5, icon: <Package size={20} /> }
+                ]}
+            />
 
-            <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                            <th style={thStyle}>PO NUMBER</th>
-                            <th style={thStyle}>SUPPLIER</th>
-                            <th style={thStyle}>ORDER DATE</th>
-                            <th style={thStyle}>STATUS</th>
-                            <th style={thStyle}>TOTAL (AED)</th>
-                            <th style={thStyle}>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders.map(order => {
-                            const status = getStatusStyle(order.status);
-                            return (
-                                <tr key={order.id} style={trStyle}>
-                                    <td style={tdStyle}>
-                                        <div style={{ fontWeight: '900', color: '#fff' }}>{order.po_number}</div>
-                                        <div style={{ fontSize: '10px', color: '#64748b' }}>#{order.id}</div>
-                                    </td>
-                                    <td style={tdStyle}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '24px', height: '24px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <Truck size={14} color="#b08d57" />
-                                            </div>
-                                            <span style={{ fontWeight: '700' }}>{order.supplier_name}</span>
-                                        </div>
-                                    </td>
-                                    <td style={tdStyle}>{order.order_date}</td>
-                                    <td style={tdStyle}>
-                                        <span style={{
-                                            padding: '4px 12px', borderRadius: '20px', fontSize: '10px', fontWeight: '900',
-                                            background: status.bg, color: status.color
+            <div style={{ marginTop: '60px' }}>
+                <div style={sectionHeader}>INDUSTRIAL ACQUISITION LOG</div>
+                <PortfolioGrid minWidth="450px">
+                    {orders.map(order => {
+                        const status = getStatusStyle(order.status);
+                        return (
+                            <PortfolioCard key={order.id} style={{ padding: '30px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px' }}>
+                                    <div>
+                                        <div style={{
+                                            fontFamily: "'Cormorant Garamond', serif",
+                                            fontSize: '24px',
+                                            color: 'var(--cream)',
+                                            marginBottom: '5px'
                                         }}>
-                                            {order.status}
-                                        </span>
-                                    </td>
-                                    <td style={tdStyle}>
-                                        <div style={{ fontWeight: '900', color: '#b08d57' }}>
-                                            {parseFloat(order.total_amount).toLocaleString()}
+                                            {order.po_number || `PO-${order.id.toString().padStart(4, '0')}`}
                                         </div>
-                                    </td>
-                                    <td style={tdStyle}>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button style={actionBtnStyle} title="View Details">
-                                                <ChevronRight size={16} />
-                                            </button>
-                                            <button style={actionBtnStyle} title="Download PDF">
-                                                <Download size={16} />
-                                            </button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(232, 230, 227, 0.4)', fontSize: '11px', letterSpacing: '1px' }}>
+                                            <Truck size={12} color="var(--gold)" />
+                                            {order.supplier_name.toUpperCase()}
                                         </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                    </div>
+                                    <div style={{
+                                        fontSize: '10px',
+                                        fontWeight: '900',
+                                        letterSpacing: '2px',
+                                        padding: '6px 12px',
+                                        borderRadius: '4px',
+                                        background: `${status.color}15`,
+                                        color: status.color,
+                                        border: `1px solid ${status.color}30`
+                                    }}>
+                                        {status.label}
+                                    </div>
+                                </div>
+
+                                <div style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr',
+                                    gap: '20px',
+                                    padding: '20px 0',
+                                    borderTop: '1px solid rgba(232, 230, 227, 0.05)',
+                                    borderBottom: '1px solid rgba(232, 230, 227, 0.05)',
+                                    marginBottom: '20px'
+                                }}>
+                                    <div>
+                                        <div style={labelTag}>ISSUED ON</div>
+                                        <div style={{ color: 'var(--cream)', fontSize: '14px' }}>{order.order_date}</div>
+                                    </div>
+                                    <div>
+                                        <div style={labelTag}>TOTAL VALUE</div>
+                                        <div style={{ color: 'var(--gold)', fontSize: '18px', fontWeight: '900' }}>
+                                            AED {parseFloat(order.total_amount).toLocaleString()}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'flex', gap: '15px' }}>
+                                    <PortfolioButton
+                                        variant="secondary"
+                                        style={{ flex: 1, height: '45px', fontSize: '11px' }}
+                                    >
+                                        <Download size={14} /> DOWNLOAD PDF
+                                    </PortfolioButton>
+                                    <PortfolioButton
+                                        variant="secondary"
+                                        style={{ height: '45px', width: '45px', padding: 0 }}
+                                    >
+                                        <ChevronRight size={16} />
+                                    </PortfolioButton>
+                                </div>
+                            </PortfolioCard>
+                        );
+                    })}
+                </PortfolioGrid>
+
                 {orders.length === 0 && !loading && (
-                    <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
-                        <ShoppingCart size={48} style={{ marginBottom: '15px', opacity: 0.2 }} />
-                        <p>No purchase orders found. Start by creating your first PO.</p>
+                    <div style={{
+                        padding: '100px 20px',
+                        textAlign: 'center',
+                        background: 'rgba(232, 230, 227, 0.02)',
+                        borderRadius: '20px',
+                        border: '1px dashed rgba(232, 230, 227, 0.1)'
+                    }}>
+                        <ShoppingCart size={40} style={{ color: 'var(--gold)', marginBottom: '20px', opacity: 0.3 }} />
+                        <div style={{ color: 'var(--cream)', fontSize: '18px', fontFamily: "'Cormorant Garamond', serif" }}>No Purchase Orders Registered</div>
+                        <div style={{ color: 'rgba(232, 230, 227, 0.4)', fontSize: '12px', marginTop: '10px' }}>Start by initializing a new procurement request.</div>
                     </div>
                 )}
-            </GlassCard>
-        </div>
+            </div>
+        </PortfolioPage>
     );
 };
 
-const StatCard = ({ icon, label, value }) => (
-    <GlassCard style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {icon}
-        </div>
-        <div>
-            <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '700', textTransform: 'uppercase' }}>{label}</div>
-            <div style={{ fontSize: '18px', fontWeight: '900', color: '#fff', marginTop: '2px' }}>{value}</div>
-        </div>
-    </GlassCard>
-);
-
-const thStyle = {
-    textAlign: 'left',
-    padding: '15px 25px',
+const sectionHeader = {
     fontSize: '11px',
     fontWeight: '900',
-    color: '#64748b',
+    color: 'var(--gold)',
+    letterSpacing: '3px',
     textTransform: 'uppercase',
-    letterSpacing: '1px'
+    marginBottom: '30px',
+    opacity: 0.8
 };
 
-const trStyle = {
-    borderBottom: '1px solid rgba(255,255,255,0.02)',
-    transition: 'background 0.2s'
-};
-
-const tdStyle = {
-    padding: '20px 25px',
-    fontSize: '13px',
-    color: '#94a3b8'
-};
-
-const actionBtnStyle = {
-    background: 'rgba(255,255,255,0.03)',
-    border: '1px solid rgba(255,255,255,0.05)',
-    borderRadius: '8px',
-    width: '32px',
-    height: '32px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    color: '#94a3b8',
-    transition: 'all 0.2s'
+const labelTag = {
+    fontSize: '10px',
+    color: 'rgba(232, 230, 227, 0.4)',
+    marginBottom: '5px',
+    letterSpacing: '1px',
+    fontWeight: '700'
 };
 
 export default ProcurementManager;

@@ -57,7 +57,7 @@ def audit_post_save(sender, instance, created, **kwargs):
         AuditLog.objects.create(
             user=meta.get('user'),
             ip_address=meta.get('ip'),
-            user_agent=meta.get('ua'),
+            user_agent=meta.get('ua', ''),
             content_type=ContentType.objects.get_for_model(instance),
             object_id=str(instance.pk),
             object_repr=str(instance)[:255],

@@ -1,23 +1,25 @@
 /* Invoice Print Styles */
 .invoice-print-container {
-    padding: 20px;
+    padding: 40px;
     background: #f0f0f0;
     min-height: 100vh;
     display: flex;
     justify-content: center;
+    font-family: 'Outfit', sans-serif;
 }
 
 .invoice-document {
     width: 210mm;
     min-height: 297mm;
     background: white;
-    padding: 40px;
+    padding: 15mm;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     position: relative;
     color: #1a1a2e;
-    font-family: 'Outfit', sans-serif;
+    box-sizing: border-box;
 }
 
+/* UI Chrome */
 .print-controls {
     position: fixed;
     top: 20px;
@@ -42,23 +44,26 @@
     font-weight: 600;
 }
 
+/* Paid Stamp */
 .paid-stamp {
     position: absolute;
-    top: 100px;
-    right: 100px;
+    top: 120px;
+    right: 80px;
     color: #10b981;
     border: 4px solid #10b981;
-    padding: 10px 20px;
-    font-size: 32px;
+    padding: 10px 30px;
+    font-size: 36px;
     font-weight: 900;
     transform: rotate(-15deg);
-    opacity: 0.3;
+    opacity: 0.25;
+    z-index: 0;
 }
 
+/* Header */
 .invoice-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     border-bottom: 2px solid #b08d57;
     padding-bottom: 20px;
 }
@@ -68,18 +73,22 @@
     font-size: 32px;
     color: #b08d57;
     letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .subtitle {
     margin: 0;
-    color: #64748b;
-    font-weight: 600;
-    letter-spacing: 1px;
+    color: #1a1a2e;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 10px;
+    text-transform: uppercase;
+    margin-top: 5px;
 }
 
 .trn {
     margin-top: 5px;
-    font-size: 13px;
+    font-size: 12px;
     color: #64748b;
 }
 
@@ -101,58 +110,70 @@
 }
 
 .date {
-    margin: 0;
+    margin: 2px 0 0;
     color: #64748b;
     font-size: 14px;
 }
 
+/* Bill To */
+.bill-to {
+    margin-bottom: 30px;
+}
+
 .bill-to h3 {
-    color: #b08d57;
-    margin-bottom: 10px;
-    font-size: 16px;
+    color: #94a3b8;
+    margin: 0 0 5px 0;
+    font-size: 12px;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .customer-name {
     font-weight: 700;
     font-size: 18px;
     margin: 0;
+    color: #1a1a2e;
 }
 
 .customer-trn {
     color: #64748b;
     font-size: 14px;
-    margin: 5px 0 0;
+    margin: 2px 0 0;
 }
 
+/* Table */
 .invoice-table {
     width: 100%;
-    margin-top: 40px;
+    margin-top: 20px;
     border-collapse: collapse;
 }
 
 .invoice-table th {
-    background: #1a1a2e;
-    color: white;
+    background: #f8fafc;
+    color: #1a1a2e;
     padding: 12px;
     text-align: left;
-    font-size: 13px;
+    font-size: 12px;
     text-transform: uppercase;
+    border-bottom: 2px solid #e2e8f0;
+    font-weight: 700;
 }
 
 .invoice-table td {
     padding: 15px 12px;
     border-bottom: 1px solid #e2e8f0;
     color: #334155;
+    font-size: 14px;
 }
 
 .invoice-table td.center { text-align: center; }
 .invoice-table td.right { text-align: right; }
 
+/* Totals */
 .totals-section {
     display: flex;
     justify-content: flex-end;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .totals {
@@ -162,13 +183,13 @@
 .total-row {
     display: flex;
     justify-content: space-between;
-    padding: 10px 0;
+    padding: 8px 0;
     color: #64748b;
     font-size: 14px;
 }
 
 .total-row.grand {
-    border-top: 2px solid #b08d57;
+    border-top: 2px solid #1a1a2e;
     margin-top: 10px;
     padding-top: 15px;
     color: #1a1a2e;
@@ -176,28 +197,53 @@
     font-size: 18px;
 }
 
+/* Footer */
 .footer-note {
     position: absolute;
-    bottom: 40px;
-    left: 40px;
-    right: 40px;
+    bottom: 20mm;
+    left: 15mm;
+    right: 15mm;
     text-align: center;
     color: #94a3b8;
-    font-size: 12px;
+    font-size: 11px;
     border-top: 1px solid #e2e8f0;
-    padding-top: 20px;
+    padding-top: 15px;
 }
 
+/* Print Overrides */
 @media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    
+    body {
+        margin: 0;
+        background: white;
+    }
+
     .invoice-print-container {
         padding: 0;
         background: white;
+        display: block;
+        min-height: auto;
     }
+    
     .invoice-document {
         box-shadow: none;
-        padding: 20px;
+        padding: 15mm; /* Maintain padding on print */
+        width: 100%;
+        min-height: auto;
+        border: none;
     }
-    .no-print {
-        display: none;
+    
+    .print-controls, .no-print {
+        display: none !important;
+    }
+
+    /* Ensure background colors print */
+    .invoice-table th {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }

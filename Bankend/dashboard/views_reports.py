@@ -11,6 +11,7 @@ from job_cards.models import JobCard
 from bookings.models import Booking
 from invoices.models import Invoice
 from leads.models import Lead
+from job_cards.serializers import JobCardSerializer
 
 def workshop_diary_view_context(request):
     today = timezone.now().date()
@@ -54,7 +55,7 @@ def get_dashboard_stats(request):
         'todays_bookings': Booking.objects.filter(created_at__date=today).count(),
         'new_leads': Lead.objects.filter(created_at__date=today).count(),
         'monthly_revenue': Invoice.objects.filter(created_at__date__gte=month_start).aggregate(Sum('grand_total'))['grand_total__sum'] or 0,
-        'recent_activity': JobCard.objects.order_by('-updated_at')[:5]
+        'recent_activity': JobCardSerializer(JobCard.objects.order_by('-updated_at')[:5], many=True).data
     }
     return stats
 

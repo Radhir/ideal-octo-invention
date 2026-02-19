@@ -2,8 +2,17 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft, Truck, User, MapPin, Calendar, Car, EyeOff } from 'lucide-react';
+import { Save, ArrowLeft, Truck, User, MapPin, Calendar, Car, EyeOff, ClipboardList, Info } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioSectionTitle,
+    PortfolioInput,
+    PortfolioButton,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const PickDropForm = () => {
     const navigate = useNavigate();
@@ -73,158 +82,169 @@ const PickDropForm = () => {
     };
 
     return (
-        <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                <button
-                    onClick={() => navigate('/pick-drop')}
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Logistics Associate</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: '#fff' }}>Schedule Movement</h1>
-                </div>
+        <PortfolioPage breadcrumb="LOGISTICS // MOVEMENT CONTROL">
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
+                <PortfolioTitle subtitle="Industrial-grade scheduling for elite vehicle movement protocols and strategic fleet orchestration.">
+                    Dispatch<br />Protocol
+                </PortfolioTitle>
+                <PortfolioBackButton onClick={() => navigate('/pick-drop')} />
             </header>
 
-            <form onSubmit={handleSubmit} style={{ maxWidth: '1000px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <GlassCard style={{ padding: '35px' }}>
-                            <h3 style={sectionTitleStyle}><Car size={18} color="#b08d57" /> Vehicle & Identity</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '20px', marginBottom: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Linked Job Card</label>
-                                    <select name="job_card" className="form-control" value={formData.job_card} onChange={handleChange}>
-                                        <option value="">Standby / Unlinked</option>
-                                        {jobCards.map(jc => (
-                                            <option key={jc.id} value={jc.id}>{jc.jc_number} - {jc.customer_name}</option>
-                                        ))}
-                                    </select>
+            <form onSubmit={handleSubmit}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '40px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                        {/* Section 01: Vehicle & Identity */}
+                        <PortfolioCard style={{ padding: '50px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
+                                    <Car size={20} />
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                    <div>
-                                        <label style={labelStyle}>Customer Name</label>
-                                        <input name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required />
-                                    </div>
-                                    <div>
-                                        <label style={labelStyle}>Contact #</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <input
-                                                name="phone"
-                                                className="form-control"
-                                                value={!isManager && formData.phone ? formData.phone.replace(/.(?=.{4})/g, '*') : formData.phone}
-                                                onChange={handleChange}
-                                                required
-                                                readOnly={!isManager}
-                                                style={!isManager ? { background: 'rgba(255,255,255,0.03)', color: '#64748b' } : {}}
-                                            />
-                                            {!isManager && <EyeOff size={14} style={{ position: 'absolute', right: '10px', top: '12px', opacity: 0.5 }} />}
-                                        </div>
-                                    </div>
+                                <div>
+                                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>SECTION 01</div>
+                                    <div style={{ fontSize: '20px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)' }}>Vehicle & Identity</div>
                                 </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Brand</label>
-                                    <input name="vehicle_brand" className="form-control" value={formData.vehicle_brand} onChange={handleChange} placeholder="e.g. Porsche" required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Model</label>
-                                    <input name="vehicle_model" className="form-control" value={formData.vehicle_model} onChange={handleChange} placeholder="e.g. 911 GT3" required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Plate #</label>
-                                    <input name="license_plate" className="form-control" value={formData.license_plate} onChange={handleChange} placeholder="Dubai A 12345" required />
-                                </div>
-                            </div>
-                        </GlassCard>
 
-                        <GlassCard style={{ padding: '35px' }}>
-                            <h3 style={sectionTitleStyle}><MapPin size={18} color="#b08d57" /> Route Configuration</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
-                                <div>
-                                    <label style={labelStyle}>Pickup Point</label>
-                                    <input name="pickup_location" className="form-control" value={formData.pickup_location} onChange={handleChange} placeholder="Specify detailed pickup address..." required />
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
+                                <PortfolioInput
+                                    label="LINKED.protocol"
+                                    type="select"
+                                    name="job_card"
+                                    value={formData.job_card}
+                                    onChange={handleChange}
+                                >
+                                    <option value="">Standby / Unlinked</option>
+                                    {jobCards.map(jc => (
+                                        <option key={jc.id} value={jc.id}>{jc.jc_number} - {jc.customer_name}</option>
+                                    ))}
+                                </PortfolioInput>
+
+                                <PortfolioInput
+                                    label="CUSTOMER.identity"
+                                    name="customer_name"
+                                    value={formData.customer_name}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '25px' }}>
+                                <div style={{ position: 'relative' }}>
+                                    <PortfolioInput
+                                        label="COMMUNICATION.link"
+                                        name="phone"
+                                        value={!isManager && formData.phone ? formData.phone.replace(/.(?=.{4})/g, '*') : formData.phone}
+                                        onChange={handleChange}
+                                        required
+                                        readOnly={!isManager}
+                                        style={!isManager ? { background: 'rgba(255,255,255,0.03)', color: 'rgba(232, 230, 227, 0.3)' } : {}}
+                                    />
+                                    {!isManager && <EyeOff size={14} style={{ position: 'absolute', right: '15px', top: '48px', opacity: 0.3 }} />}
+                                </div>
+                                <PortfolioInput label="MANUFACTURER" name="vehicle_brand" value={formData.vehicle_brand} onChange={handleChange} placeholder="e.g. Porsche" required />
+                                <PortfolioInput label="MODEL.node" name="vehicle_model" value={formData.vehicle_model} onChange={handleChange} placeholder="e.g. 911 GT3" required />
+                            </div>
+
+                            <div style={{ marginTop: '25px' }}>
+                                <PortfolioInput label="PLATE.registry" name="license_plate" value={formData.license_plate} onChange={handleChange} placeholder="Dubai A 12345" required />
+                            </div>
+                        </PortfolioCard>
+
+                        {/* Section 02: Route Configuration */}
+                        <PortfolioCard style={{ padding: '50px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>
+                                    <MapPin size={20} />
                                 </div>
                                 <div>
-                                    <label style={labelStyle}>Delivery Point</label>
-                                    <input name="drop_off_location" className="form-control" value={formData.drop_off_location} onChange={handleChange} placeholder="Specify detailed drop-off address..." required />
+                                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>SECTION 02</div>
+                                    <div style={{ fontSize: '20px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)' }}>Route Configuration</div>
                                 </div>
                             </div>
-                        </GlassCard>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                <PortfolioInput label="PICKUP POINT" name="pickup_location" value={formData.pickup_location} onChange={handleChange} placeholder="Strategic pickup address..." required />
+                                <PortfolioInput label="DELIVERY POINT" name="drop_off_location" value={formData.drop_off_location} onChange={handleChange} placeholder="Precise drop-off location..." required />
+                            </div>
+                        </PortfolioCard>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <GlassCard style={{ padding: '30px' }}>
-                            <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}><Calendar size={16} color="#b08d57" /> Timing</h3>
-                            <label style={labelStyle}>Scheduled Time</label>
-                            <input name="scheduled_time" type="datetime-local" className="form-control" value={formData.scheduled_time} onChange={handleChange} required />
-                        </GlassCard>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                        {/* Timing Block */}
+                        <PortfolioCard style={{ padding: '40px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px' }}>
+                                <Calendar size={18} color="var(--gold)" opacity={0.5} />
+                                <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>TIMING PROTOCOL</div>
+                            </div>
+                            <PortfolioInput label="SCHEDULED TIME" name="scheduled_time" type="datetime-local" value={formData.scheduled_time} onChange={handleChange} required />
+                        </PortfolioCard>
 
-                        <GlassCard style={{ padding: '30px' }}>
-                            <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}><User size={16} color="#b08d57" /> Assignment</h3>
-                            <label style={labelStyle}>Assign Driver</label>
-                            <select
-                                name="driver"
-                                className="form-control"
-                                value={formData.driver}
-                                onChange={(e) => {
-                                    const selectedDriver = DRIVER_LIST.find(d => d.name === e.target.value);
-                                    if (selectedDriver) {
-                                        const [brand, ...modelParts] = selectedDriver.vehicle.split(' ');
-                                        setFormData({
-                                            ...formData,
-                                            driver: selectedDriver.name,
-                                            vehicle_brand: brand || '',
-                                            vehicle_model: modelParts.join(' ') || ''
-                                        });
-                                    } else {
-                                        handleChange(e);
-                                    }
-                                }}
-                                required
-                            >
-                                <option value="">Select Driver...</option>
-                                {DRIVER_LIST.map(driver => (
-                                    <option key={driver.name} value={driver.name}>{driver.name} ({driver.vehicle})</option>
-                                ))}
-                                <optgroup label="System Employees">
-                                    {employees.map(emp => (
-                                        <option key={emp.id} value={emp.full_name}>{emp.full_name}</option>
+                        {/* Assignment Block */}
+                        <PortfolioCard style={{ padding: '45px', position: 'relative', overflow: 'hidden' }}>
+                            <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.05 }} />
+                            <div style={{ position: 'relative', zIndex: 1 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '35px' }}>
+                                    <User size={18} color="var(--gold)" opacity={0.5} />
+                                    <div style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>OPERATIVE ASSIGNMENT</div>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    {DRIVER_LIST.map(driver => (
+                                        <div
+                                            key={driver.name}
+                                            onClick={() => {
+                                                const [brand, ...modelParts] = driver.vehicle.split(' ');
+                                                setFormData({
+                                                    ...formData,
+                                                    driver: driver.name,
+                                                    vehicle_brand: brand || '',
+                                                    vehicle_model: modelParts.join(' ') || ''
+                                                });
+                                            }}
+                                            style={{
+                                                padding: '20px',
+                                                background: formData.driver === driver.name ? 'rgba(176,141,87,0.1)' : 'rgba(255,255,255,0.02)',
+                                                border: formData.driver === driver.name ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.05)',
+                                                borderRadius: '12px',
+                                                cursor: 'pointer',
+                                                transition: 'all 0.3s ease',
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <div>
+                                                <div style={{ fontSize: '14px', color: 'var(--cream)', fontWeight: '700' }}>{driver.name}</div>
+                                                <div style={{ fontSize: '10px', color: 'rgba(232,230,227,0.4)', marginTop: '4px' }}>{driver.vehicle}</div>
+                                            </div>
+                                            {formData.driver === driver.name && <div className="status-pulse" />}
+                                        </div>
                                     ))}
-                                </optgroup>
-                            </select>
-                        </GlassCard>
+                                </div>
 
-                        <button type="submit" className="btn-primary" style={{ width: '100%', padding: '20px', fontSize: '16px', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', borderRadius: '15px' }}>
-                            <Save size={20} /> SYNC LOGISTICS
-                        </button>
+                                <div style={{ marginTop: '30px' }}>
+                                    <PortfolioInput
+                                        label="OTHER OPERATIVE"
+                                        type="select"
+                                        name="driver"
+                                        value={DRIVER_LIST.some(d => d.name === formData.driver) ? '' : formData.driver}
+                                        onChange={handleChange}
+                                    >
+                                        <option value="">Select Manual...</option>
+                                        {employees.map(emp => (
+                                            <option key={emp.id} value={emp.full_name}>{emp.full_name}</option>
+                                        ))}
+                                    </PortfolioInput>
+                                </div>
+                            </div>
+                        </PortfolioCard>
+
+                        <PortfolioButton type="submit" variant="gold" style={{ width: '100%', height: '80px', fontSize: '15px', fontWeight: '900', letterSpacing: '2px' }}>
+                            <Save size={20} /> SYNC.dispatch
+                        </PortfolioButton>
                     </div>
                 </div>
             </form>
-        </div>
+        </PortfolioPage>
     );
 };
 
-const labelStyle = {
-    display: 'block',
-    fontSize: '11px',
-    color: '#94a3b8',
-    marginBottom: '8px',
-    textTransform: 'uppercase',
-    fontWeight: '800',
-    letterSpacing: '1px'
-};
-
-const sectionTitleStyle = {
-    margin: '0 0 25px 0',
-    fontSize: '18px',
-    fontWeight: '900',
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
-};
-
-export default PickDropForm;

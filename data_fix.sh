@@ -1,5 +1,0 @@
-docker exec eliteshine_db psql -U eliteshine_user -d eliteshine_erp -c "ALTER TABLE job_cards_jobcard ALTER COLUMN assigned_technician DROP NOT NULL;"
-docker exec eliteshine_db psql -U eliteshine_user -d eliteshine_erp -c "ALTER TABLE job_cards_jobcard ALTER COLUMN service_advisor DROP NOT NULL;"
-docker exec eliteshine_db psql -U eliteshine_user -d eliteshine_erp -c "UPDATE job_cards_jobcard SET assigned_technician = NULL WHERE assigned_technician IS NOT NULL AND assigned_technician !~ '^[0-9]+$';"
-docker exec eliteshine_db psql -U eliteshine_user -d eliteshine_erp -c "UPDATE job_cards_jobcard SET service_advisor = NULL WHERE service_advisor = '';"
-docker exec eliteshine_db psql -U eliteshine_user -d eliteshine_erp -c "UPDATE job_cards_jobcard SET service_advisor = NULL WHERE service_advisor IS NOT NULL AND service_advisor !~ '^[0-9]+$';"

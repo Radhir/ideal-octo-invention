@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
 import { useParams, useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { ArrowLeft, Printer, Download, Clock, User, Car, FileText, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Printer, Download, FileText, CheckCircle } from 'lucide-react';
 import PrintHeader from '../../components/PrintHeader';
 import SignaturePad from '../../components/SignaturePad';
+import {
+    PortfolioPage,
+    PortfolioCard,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const EstimateDetail = () => {
     const { id } = useParams();
@@ -28,116 +34,124 @@ const EstimateDetail = () => {
         }
     };
 
-    if (loading) return <div style={{ padding: '50px', textAlign: 'center', color: '#fff' }}>Loading Quotation...</div>;
-    if (!estimate) return <div style={{ padding: '50px', textAlign: 'center', color: '#fff' }}>Quotation Not Found</div>;
+    if (loading) return (
+        <PortfolioPage>
+            <div style={{ padding: '50px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.4)' }}>Loading Quotation...</div>
+        </PortfolioPage>
+    );
+
+    if (!estimate) return (
+        <PortfolioPage>
+            <div style={{ padding: '50px', textAlign: 'center', color: '#f43f5e' }}>Quotation Not Found</div>
+        </PortfolioPage>
+    );
 
     return (
-        <div style={{ padding: '30px 20px' }}>
+        <PortfolioPage breadcrumb="Sales Division / Estimates">
             <PrintHeader title="Professional Quotation" />
 
-            <header className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    <button
-                        onClick={() => navigate(-1)}
-                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
+            <div className="no-print">
+                <PortfolioBackButton onClick={() => navigate(-1)} />
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+                    <PortfolioTitle
+                        subtitle={`Reference: ${estimate.job_card_number}`}
                     >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <div>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '1.5rem', margin: 0 }}>Quotation Detail</h1>
-                        <p style={{ color: '#94a3b8', fontSize: '14px', margin: 0 }}>Reference: {estimate.job_card_number}</p>
+                        Quotation Detail
+                    </PortfolioTitle>
+
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <PortfolioButton
+                            variant="glass"
+                            onClick={() => window.print()}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                            <Printer size={18} /> Print Quotation
+                        </PortfolioButton>
+                        <PortfolioButton
+                            variant="gold"
+                            onClick={() => navigate(`/job-cards/${id}`)}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                            <FileText size={18} /> View Job Card
+                        </PortfolioButton>
                     </div>
                 </div>
+            </div>
 
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                        onClick={() => window.print()}
-                        className="glass-card"
-                        style={{ padding: '10px 20px', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
-                    >
-                        <Printer size={18} /> Print Quotation
-                    </button>
-                    <button
-                        onClick={() => navigate(`/job-cards/${id}`)}
-                        className="btn-primary"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                        <FileText size={18} /> View Job Card
-                    </button>
-                </div>
-            </header>
-
-            <GlassCard className="printable-quotation" style={{ padding: '40px', maxWidth: '900px', margin: '0 auto' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginBottom: '40px' }}>
+            <PortfolioCard className="printable-quotation" style={{ padding: '50px', maxWidth: '900px', margin: '0 auto', border: '1px solid var(--gold)', boxShadow: '0 0 50px rgba(176,141,87,0.05)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', marginBottom: '50px' }}>
                     <div>
                         <h4 style={sectionLabelStyle}>Client Details</h4>
-                        <div style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '5px' }}>{estimate.customer_name}</div>
-                        <div style={{ color: '#94a3b8', fontSize: '14px' }}>{estimate.phone}</div>
-                        <div style={{ color: '#64748b', fontSize: '12px', marginTop: '5px' }}>{estimate.address}</div>
+                        <div style={{ fontSize: '1.4rem', fontWeight: '900', marginBottom: '5px', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>{estimate.customer_name}</div>
+                        <div style={{ color: 'var(--gold)', fontSize: '14px', fontWeight: '800' }}>{estimate.phone}</div>
+                        <div style={{ color: 'rgba(232, 230, 227, 0.6)', fontSize: '12px', marginTop: '5px' }}>{estimate.address}</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
                         <h4 style={sectionLabelStyle}>Vehicle Information</h4>
-                        <div style={{ fontSize: '1.1rem', fontWeight: '700' }}>{estimate.brand} {estimate.model} ({estimate.year})</div>
-                        <div style={{ color: '#b08d57', fontWeight: '800' }}>{estimate.registration_number}</div>
-                        <div style={{ color: '#94a3b8', fontSize: '13px' }}>VIN: {estimate.vin}</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '700', color: 'var(--cream)' }}>{estimate.brand} {estimate.model} ({estimate.year})</div>
+                        <div style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '16px', letterSpacing: '1px' }}>{estimate.registration_number}</div>
+                        <div style={{ color: 'rgba(232, 230, 227, 0.6)', fontSize: '12px', marginTop: '5px' }}>VIN: {estimate.vin}</div>
                     </div>
                 </div>
 
-                <div style={{ marginBottom: '40px' }}>
+                <div style={{ marginBottom: '50px' }}>
                     <h4 style={sectionLabelStyle}>Proposed Services & Scope</h4>
                     <div style={{
-                        background: 'rgba(255,255,255,0.02)',
-                        padding: '25px',
+                        background: 'rgba(232, 230, 227, 0.02)',
+                        padding: '30px',
                         borderRadius: '15px',
-                        border: '1px solid rgba(255,255,255,0.05)',
-                        color: '#fff',
+                        border: '1px solid rgba(232, 230, 227, 0.05)',
+                        color: 'var(--cream)',
                         fontSize: '15px',
-                        lineHeight: '1.6',
-                        whiteSpace: 'pre-wrap'
+                        lineHeight: '1.8',
+                        whiteSpace: 'pre-wrap',
+                        fontFamily: 'var(--font-mono)'
                     }}>
                         {estimate.job_description}
                     </div>
                 </div>
 
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '40px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '50px' }}>
                     <thead>
                         <tr style={{ borderBottom: '2px solid rgba(176, 141, 87, 0.2)', background: 'rgba(176, 141, 87, 0.05)' }}>
-                            <th style={{ padding: '15px', textAlign: 'left', fontSize: '12px', color: '#b08d57' }}>SERVICE DESCRIPTION</th>
-                            <th style={{ padding: '15px', textAlign: 'right', fontSize: '12px', color: '#b08d57' }}>ESTIMATED TOTAL (AED)</th>
+                            <th style={{ padding: '15px', textAlign: 'left', fontSize: '11px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '1px' }}>SERVICE DESCRIPTION</th>
+                            <th style={{ padding: '15px', textAlign: 'right', fontSize: '11px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '1px' }}>ESTIMATED TOTAL (AED)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td style={{ padding: '20px 15px', color: '#f8fafc' }}>
-                                <div style={{ fontWeight: '700' }}>Comprehensive Service Estimate</div>
-                                <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '5px' }}>As per initial inspection and client requirements</div>
+                            <td style={{ padding: '25px 15px', color: 'var(--cream)' }}>
+                                <div style={{ fontWeight: '800', fontSize: '16px' }}>Comprehensive Service Estimate</div>
+                                <div style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.6)', marginTop: '5px' }}>As per initial inspection and client requirements</div>
                             </td>
-                            <td style={{ padding: '20px 15px', textAlign: 'right', fontWeight: '800', fontSize: '1.1rem', color: '#fff' }}>
+                            <td style={{ padding: '25px 15px', textAlign: 'right', fontWeight: '800', fontSize: '1.2rem', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
                                 {estimate.total_amount}
                             </td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '50px' }}>
                     <div style={{ width: '300px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ color: '#94a3b8' }}>Subtotal (Net)</span>
-                            <span style={{ color: '#fff' }}>AED {estimate.total_amount}</span>
+                            <span style={{ color: 'rgba(232, 230, 227, 0.6)', fontSize: '14px' }}>Subtotal (Net)</span>
+                            <span style={{ color: 'var(--cream)' }}>AED {estimate.total_amount}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                            <span style={{ color: '#94a3b8' }}>VAT (5%)</span>
-                            <span style={{ color: '#fff' }}>AED {estimate.vat_amount}</span>
+                            <span style={{ color: 'rgba(232, 230, 227, 0.6)', fontSize: '14px' }}>VAT (5%)</span>
+                            <span style={{ color: 'var(--cream)' }}>AED {estimate.vat_amount}</span>
                         </div>
                         <div style={{
                             display: 'flex',
                             justifyContent: 'space-between',
-                            paddingTop: '15px',
-                            marginTop: '15px',
+                            paddingTop: '20px',
+                            marginTop: '20px',
                             borderTop: '2px solid rgba(176, 141, 87, 0.3)',
-                            fontSize: '1.4rem',
+                            fontSize: '1.6rem',
                             fontWeight: '900',
-                            color: '#b08d57'
+                            color: 'var(--gold)',
+                            fontFamily: 'var(--font-serif)'
                         }}>
                             <span>GRAND TOTAL</span>
                             <span>AED {estimate.net_amount}</span>
@@ -146,17 +160,17 @@ const EstimateDetail = () => {
                 </div>
 
                 {/* Signature Section - Quotation Acceptance */}
-                <div style={{ marginTop: '50px', borderTop: '1px solid rgba(176, 141, 87, 0.2)', paddingTop: '30px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+                <div style={{ marginTop: '50px', borderTop: '1px solid rgba(176, 141, 87, 0.2)', paddingTop: '40px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '50px' }}>
                         <div>
                             <h4 style={sectionLabelStyle}>Client Acceptance</h4>
-                            <p style={{ color: '#64748b', fontSize: '11px', marginBottom: '15px' }}>
+                            <p style={{ color: 'rgba(232, 230, 227, 0.6)', fontSize: '11px', marginBottom: '15px' }}>
                                 I hereby accept this quotation and authorize Elite Shine to proceed with the services listed above.
                             </p>
                             {estimate.signature_data ? (
-                                <div style={{ background: '#fff', padding: '15px', borderRadius: '10px', textAlign: 'center' }}>
+                                <div style={{ background: '#fff', padding: '15px', borderRadius: '10px', textAlign: 'center', border: '1px solid rgba(176, 141, 87, 0.2)' }}>
                                     <img src={estimate.signature_data} alt="Accepted Signature" style={{ maxHeight: '60px' }} />
-                                    <p style={{ color: '#000', fontSize: '10px', marginTop: '5px', fontWeight: '800' }}>ACCEPTED & AUTHORIZED</p>
+                                    <p style={{ color: '#000', fontSize: '10px', marginTop: '5px', fontWeight: '800', letterSpacing: '1px' }}>ACCEPTED & AUTHORIZED</p>
                                 </div>
                             ) : (
                                 <div className="no-print">
@@ -178,49 +192,32 @@ const EstimateDetail = () => {
                         <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                             <div style={{ marginBottom: '20px' }}>
                                 <h4 style={sectionLabelStyle}>Authorized Representative</h4>
-                                <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', height: '40px', width: '200px', marginLeft: 'auto' }}></div>
-                                <p style={{ fontSize: '11px', color: '#64748b', marginTop: '5px' }}>{estimate.service_advisor || 'Elite Shine Manager'}</p>
+                                <div style={{ borderBottom: '1px solid rgba(232, 230, 227, 0.2)', height: '40px', width: '200px', marginLeft: 'auto' }}></div>
+                                <p style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.6)', marginTop: '5px', textTransform: 'uppercase', letterSpacing: '1px' }}>{estimate.service_advisor || 'Elite Shine Manager'}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div style={{ marginTop: '40px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
-                    <h4 style={{ fontSize: '10px', textTransform: 'uppercase', color: '#64748b', marginBottom: '10px' }}>Terms & Conditions</h4>
-                    <p style={{ fontSize: '11px', color: '#64748b', lineHeight: '1.5' }}>
+                <div style={{ marginTop: '50px', borderTop: '1px solid rgba(232, 230, 227, 0.1)', paddingTop: '20px' }}>
+                    <h4 style={{ fontSize: '10px', textTransform: 'uppercase', color: 'rgba(232, 230, 227, 0.4)', marginBottom: '10px', letterSpacing: '1px' }}>Terms & Conditions</h4>
+                    <p style={{ fontSize: '10px', color: 'rgba(232, 230, 227, 0.4)', lineHeight: '1.6' }}>
                         1. This quotation is valid for 7 days from the date of issue.<br />
                         2. Final costs may vary based on additional findings during service.<br />
-                        3. All parts and labor are subject to availability.
+                        3. All parts and labor are subject to availability.<br />
+                        4. 50% deposit required for parts procurement where applicable.
                     </p>
                 </div>
-            </GlassCard>
+            </PortfolioCard>
 
-            <style>{`
-                @media print {
-                    body { background: #fff !important; color: #000 !important; }
-                    .printable-quotation { 
-                        background: #fff !important; 
-                        color: #000 !important; 
-                        border: 1px solid #eee !important; 
-                        box-shadow: none !important; 
-                        max-width: 100% !important; 
-                        margin: 0 !important;
-                        padding: 20px !important;
-                    }
-                    .printable-quotation * { color: #000 !important; }
-                    .printable-quotation h4 { color: #b08d57 !important; }
-                    .printable-quotation div[style*="background"] { background: #fafafa !important; border-color: #eee !important; }
-                    .no-print, header, button { display: none !important; }
-                }
-            `}</style>
-        </div>
+        </PortfolioPage>
     );
 };
 
 const sectionLabelStyle = {
-    fontSize: '10px',
+    fontSize: '11px',
     textTransform: 'uppercase',
-    color: '#b08d57',
+    color: 'var(--gold)',
     marginBottom: '10px',
     letterSpacing: '1px',
     fontWeight: '800'

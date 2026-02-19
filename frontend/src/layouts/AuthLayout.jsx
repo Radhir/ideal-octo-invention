@@ -5,12 +5,12 @@ const AuthLayout = () => {
     return (
         <div className="auth-layout" style={{
             minHeight: '100vh',
+            width: '100vw',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'transparent'
+            background: '#000',
+            overflow: 'hidden'
         }}>
-            <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '900px', padding: '20px' }}>
+            <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%' }}>
                 <Outlet />
             </div>
         </div>

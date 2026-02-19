@@ -1,11 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft } from 'lucide-react';
+import { Save } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioBackButton,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioTextarea
+} from '../../components/PortfolioComponents';
 
 const StockForm = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+
     const [formData, setFormData] = useState({
         department: '',
         request_by: '',
@@ -17,9 +28,7 @@ const StockForm = () => {
         item_description: ''
     });
 
-    const location = useLocation();
-
-    React.useEffect(() => {
+    useEffect(() => {
         if (location.state) {
             setFormData(prev => ({
                 ...prev,
@@ -35,95 +44,145 @@ const StockForm = () => {
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        if (e) e.preventDefault();
         try {
-            await api.post('/forms/stock/api/items/', formData);
-            alert('Stock Request Created Successfully');
+            // Corrected endpoint to match StockForm model in backend
+            await api.post('/forms/stock/api/requests/', formData);
+            alert('Logistics Request Registered Successfully');
             navigate('/stock');
         } catch (err) {
             console.error('Error creating stock request', err);
-            alert('Failed to create stock request.');
+            alert('Failed to sync with industrial database.');
         }
     };
 
     return (
-        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: '#0a0a0a' }}>
-            <button
-                onClick={() => navigate('/stock')}
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', display: 'inline-flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginBottom: '30px', padding: '10px 20px', borderRadius: '12px', fontWeight: '700' }}
-            >
-                <ArrowLeft size={18} /> BACK TO LOGISTICS
-            </button>
+        <PortfolioPage breadcrumb="Operations / Logistics / Registration">
+            <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioBackButton onClick={() => navigate('/stock')} />
+                <PortfolioTitle subtitle="Initialize a formal ledger entry for material acquisition and vehicle-specific logistics.">
+                    Asset Procurement
+                </PortfolioTitle>
+            </div>
 
-            <GlassCard style={{ padding: '40px', maxWidth: '800px', margin: '0 auto', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ marginBottom: '40px' }}>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '900', letterSpacing: '4px', marginBottom: '10px' }}>PROCUREMENT ENGINE</div>
-                    <h2 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', margin: 0, fontSize: '2.5rem', fontWeight: '900' }}>Item Registration</h2>
-                </div>
-
+            <div style={{ maxWidth: '900px', margin: '0 auto' }}>
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                        <div>
-                            <label style={labelStyle}>Department</label>
-                            <input name="department" className="form-control" value={formData.department} onChange={handleChange} required />
+                    <PortfolioCard style={{ padding: '60px' }}>
+                        <div style={{ marginBottom: '50px' }}>
+                            <div style={sectionHeader}>1. OPERATIONAL CONTEXT</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                <PortfolioInput
+                                    label="DEPARTMENT"
+                                    name="department"
+                                    value={formData.department}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="e.g. Ceramic Lab"
+                                />
+                                <PortfolioInput
+                                    label="REQUESTED BY"
+                                    name="request_by"
+                                    value={formData.request_by}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Officer Name"
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label style={labelStyle}>Requested By</label>
-                            <input name="request_by" className="form-control" value={formData.request_by} onChange={handleChange} required />
-                        </div>
-                    </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                        <div>
-                            <label style={labelStyle}>Car Type</label>
-                            <input name="car_type" className="form-control" value={formData.car_type} onChange={handleChange} required />
+                        <div style={{ marginBottom: '50px' }}>
+                            <div style={sectionHeader}>2. ASSET IDENTIFICATION</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                <PortfolioInput
+                                    label="CAR MODEL"
+                                    name="car_type"
+                                    value={formData.car_type}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="e.g. Porsche 911 GT3"
+                                />
+                                <PortfolioInput
+                                    label="PLATE NUMBER"
+                                    name="plate_number"
+                                    value={formData.plate_number}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Dubai A-00000"
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label style={labelStyle}>Plate Number</label>
-                            <input name="plate_number" className="form-control" value={formData.plate_number} onChange={handleChange} required />
-                        </div>
-                    </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                        <div>
-                            <label style={labelStyle}>Amount</label>
-                            <input name="amount" type="number" className="form-control" value={formData.amount} onChange={handleChange} required />
+                        <div style={{ marginBottom: '50px' }}>
+                            <div style={sectionHeader}>3. FISCAL PARAMETERS</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '30px' }}>
+                                <PortfolioInput
+                                    label="AMOUNT (AED)"
+                                    name="amount"
+                                    type="number"
+                                    value={formData.amount}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="0.00"
+                                />
+                                <PortfolioInput
+                                    label="ENTRY DATE"
+                                    name="date"
+                                    type="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    required
+                                />
+                                <PortfolioSelect
+                                    label="PAYMENT METHOD"
+                                    name="payment_type"
+                                    value={formData.payment_type}
+                                    onChange={handleChange}
+                                    options={[
+                                        { value: 'CASH', label: 'CASH ON HAND' },
+                                        { value: 'CARD', label: 'CORPORATE CARD' },
+                                        { value: 'TRANSFER', label: 'WIRE TRANSFER' }
+                                    ]}
+                                />
+                            </div>
                         </div>
-                        <div>
-                            <label style={labelStyle}>Date</label>
-                            <input name="date" type="date" className="form-control" value={formData.date} onChange={handleChange} required />
-                        </div>
-                        <div>
-                            <label style={labelStyle}>Payment Type</label>
-                            <select name="payment_type" className="form-control" onChange={handleChange}>
-                                <option value="CASH">Cash</option>
-                                <option value="CARD">Card</option>
-                                <option value="TRANSFER">Transfer</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div style={{ marginBottom: '30px' }}>
-                        <label style={labelStyle}>Item Description</label>
-                        <textarea name="item_description" className="form-control" rows="4" onChange={handleChange} required></textarea>
-                    </div>
+                        <div style={{ marginBottom: '60px' }}>
+                            <div style={sectionHeader}>4. TECHNICAL DESCRIPTION</div>
+                            <PortfolioTextarea
+                                label="ITEMIZED SPECIFICATIONS"
+                                name="item_description"
+                                value={formData.item_description}
+                                onChange={handleChange}
+                                required
+                                rows="5"
+                                placeholder="Detail the materials or parts required for this operation..."
+                            />
+                        </div>
 
-                    <button type="submit" className="btn-primary" style={{ width: '100%', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', background: '#b08d57', color: '#000', fontWeight: '900', border: 'none', borderRadius: '12px', cursor: 'pointer' }}>
-                        <Save size={20} /> SYNC WITH INDUSTRIAL DATABASE
-                    </button>
+                        <PortfolioButton
+                            type="submit"
+                            variant="primary"
+                            style={{ width: '100%', height: '70px', fontSize: '14px' }}
+                        >
+                            <Save size={20} /> SYNC WITH INDUSTRIAL DATABASE
+                        </PortfolioButton>
+                    </PortfolioCard>
                 </form>
-            </GlassCard>
-        </div >
+            </div>
+        </PortfolioPage>
     );
 };
 
-const labelStyle = {
-    display: 'block',
+const sectionHeader = {
     fontSize: '11px',
-    color: '#94a3b8',
-    marginBottom: '5px',
+    fontWeight: '900',
+    color: 'var(--gold)',
+    letterSpacing: '3px',
     textTransform: 'uppercase',
-    fontWeight: '600'
+    marginBottom: '30px',
+    opacity: 0.8,
+    borderBottom: '1px solid rgba(176, 141, 87, 0.2)',
+    paddingBottom: '10px'
 };
 
 export default StockForm;

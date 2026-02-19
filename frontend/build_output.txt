@@ -1,0 +1,27 @@
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 132 modules transformed.
+Γ£ù Build failed in 1.35s
+error during build:
+[vite:esbuild] Transform failed with 1 error:
+R:/webplot/frontend/src/pages/pick_drop/PickDropTrackingPage.jsx:130:14: ERROR: Unterminated regular expression
+file: R:/webplot/frontend/src/pages/pick_drop/PickDropTrackingPage.jsx:130:14
+
+Unterminated regular expression
+128 |              </div>
+129 |          </PortfolioPage>
+130 |          </div>
+    |                ^
+131 |      );
+132 |  };
+
+    at failureErrorWithLog (R:\webplot\frontend\node_modules\esbuild\lib\main.js:1467:15)
+    at R:\webplot\frontend\node_modules\esbuild\lib\main.js:736:50
+    at responseCallbacks.<computed> (R:\webplot\frontend\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (R:\webplot\frontend\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (R:\webplot\frontend\node_modules\esbuild\lib\main.js:581:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)

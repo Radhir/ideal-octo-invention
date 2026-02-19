@@ -1,0 +1,75 @@
+
+> frontend@0.0.0 build
+> vite build
+
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 48 modules transformed.
+[31m✗[39m Build failed in 266ms
+[31merror during build:
+[31m[vite:esbuild] Transform failed with 6 errors:
+R:/webplot/frontend/src/pages/jobs/JobList.jsx:216:6: ERROR: The symbol "jobListItemStyle" has already been declared
+R:/webplot/frontend/src/pages/jobs/JobList.jsx:233:6: ERROR: The symbol "statusIndicatorStyle" has already been declared
+R:/webplot/frontend/src/pages/jobs/JobList.jsx:245:6: ERROR: The symbol "statusBadgeStyle" has already been declared
+R:/webplot/frontend/src/pages/jobs/JobList.jsx:256:6: ERROR: The symbol "searchContainerStyle" has already been declared
+R:/webplot/frontend/src/pages/jobs/JobList.jsx:267:6: ERROR: The symbol "searchInputStyle" has already been declared
+...[31m
+file: [36mR:/webplot/frontend/src/pages/jobs/JobList.jsx:216:6[31m
+[33m
+[33mThe symbol "jobListItemStyle" has already been declared[33m
+214 |  export default JobList;
+215 |  
+216 |  const jobListItemStyle = (color) => ({
+    |        ^
+217 |      padding: '25px 35px',
+218 |      background: 'rgba(232, 230, 227, 0.03)',
+
+[33mThe symbol "statusIndicatorStyle" has already been declared[33m
+231 |  });
+232 |  
+233 |  const statusIndicatorStyle = (color) => ({
+    |        ^
+234 |      width: '48px',
+235 |      height: '48px',
+
+[33mThe symbol "statusBadgeStyle" has already been declared[33m
+243 |  });
+244 |  
+245 |  const statusBadgeStyle = (color) => ({
+    |        ^
+246 |      padding: '4px 12px',
+247 |      background: `${color}15`,
+
+[33mThe symbol "searchContainerStyle" has already been declared[33m
+254 |  });
+255 |  
+256 |  const searchContainerStyle = {
+    |        ^
+257 |      flex: 1,
+258 |      background: 'rgba(232, 230, 227, 0.03)',
+
+[33mThe symbol "searchInputStyle" has already been declared[33m
+265 |  };
+266 |  
+267 |  const searchInputStyle = {
+    |        ^
+268 |      background: 'none',
+269 |      border: 'none',
+
+[33mMultiple exports with the same name "default"[33m
+276 |  };
+277 |  
+278 |  export default JobList;
+    |         ^
+279 |  
+[31m
+    at failureErrorWithLog (R:\webplot\frontend\node_modules\esbuild\lib\main.js:1467:15)
+    at R:\webplot\frontend\node_modules\esbuild\lib\main.js:736:50
+    at responseCallbacks.<computed> (R:\webplot\frontend\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (R:\webplot\frontend\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (R:\webplot\frontend\node_modules\esbuild\lib\main.js:581:7)
+    at Socket.emit (node:events:508:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)[39m

@@ -779,3 +779,121 @@ body {
 .scale-hover:active {
   transform: scale(0.98);
 }
+/* --- ISOLATED PRINTING SYSTEM --- */
+@media print {
+    /* Hide ALL ERP Chrome */
+    .app-sidebar, 
+    .premium-header, 
+    .header-status-actions, 
+    .nav-arrows, 
+    .view-switcher, 
+    .logout-icon-btn,
+    .quick-access-hub,
+    .universal-bottom-nav,
+    .workflow-center,
+    .me-pill,
+    .status-indicator,
+    button:not(.print-visible),
+    nav,
+    aside,
+    [role="navigation"],
+    .no-print {
+        display: none !important;
+    }
+
+    /* Reset Page for High Fidelity Output */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .portfolio-page-content,
+    #root,
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+    }
+
+    /* Force background colors/images for documents */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Ensure ID Cards and Invoices center correctly */
+    .print-centered {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 100vh !important;
+    }
+
+    /* Page Breaks */
+    .page-break {
+        page-break-before: always;
+    }
+}
+/* --- OPERATIONAL TELEMETRY & PULSE --- */
+.telemetry-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: 
+        linear-gradient(rgba(176,141,87, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(176,141,87, 0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    z-index: 0;
+}
+
+.status-pulse {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #10b981;
+    position: relative;
+}
+
+.status-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid #10b981;
+    animation: pulse-ring 2s cubic-bezier(0.24, 1, 0.32, 1) infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(0.5); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+}
+
+.pulse {
+    animation: pulse-op 2s ease-in-out infinite;
+}
+
+@keyframes pulse-op {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+.table-row-hover:hover {
+    background: rgba(176, 141, 87, 0.03);
+    transition: background 0.3s ease;
+}
+
+.portfolio-spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(176, 141, 87, 0.1);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

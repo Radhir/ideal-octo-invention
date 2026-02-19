@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
     Calendar, Download, Package, CheckCircle,
-    TrendingUp, FileText, RefreshCw, AlertCircle, Printer
+    TrendingUp, RefreshCw, AlertCircle, Printer
 } from 'lucide-react';
-import PrintHeader from '../../components/PrintHeader';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioStats,
+    PortfolioGrid,
+    PortfolioCard,
+    PortfolioButton,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
 
 const WorkshopDiary = () => {
     const [history, setHistory] = useState([]);
@@ -44,107 +51,84 @@ const WorkshopDiary = () => {
         window.open(`${api.defaults.baseURL}/forms/utils/generate-pdf/WorkshopDiary/0/`, '_blank');
     };
 
-    if (loading) return <div style={{ color: '#fff', padding: '40px' }}>Analyzing Daily Snapshots...</div>;
+    if (loading) return (
+        <PortfolioPage breadcrumb="Operations / Intelligence / Archive">
+            <div style={{ color: 'var(--cream)', padding: '100px', textAlign: 'center', letterSpacing: '2px', fontWeight: '800' }}>
+                RECOVERING OPERATIONAL SNAPSHOTS...
+            </div>
+        </PortfolioPage>
+    );
+
+    const latest = history[0] || {};
+    const stats = [
+        { value: latest.new_bookings_count || 0, label: 'DAILY BOOKINGS', color: 'var(--gold)' },
+        { value: latest.new_jobs_count || 0, label: 'INBOUND JOBS', color: '#f59e0b' },
+        { value: latest.closed_jobs_count || 0, label: 'DISPATCHED', color: '#10b981' },
+        { value: `AED ${(latest.revenue || 0).toLocaleString()}`, label: 'REALIZED REVENUE', color: '#ec4899' }
+    ];
 
     return (
-        <div style={{ padding: '30px' }}>
-            <PrintHeader title="Workshop Diary" />
-            <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px' }}>OPERATIONAL NEXUS</div>
-                    <h1 style={{ margin: '5px 0 0 0', fontSize: '2.5rem', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Workshop Diary</h1>
-                </div>
+        <PortfolioPage breadcrumb="Operations / Intelligence / Workshop Diary">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="A chronological record of workshop performance and daily operational snapshots.">
+                    Workshop Diary
+                </PortfolioTitle>
                 <div style={{ display: 'flex', gap: '15px' }}>
-                    <button
-                        onClick={captureToday}
-                        disabled={isCapturing}
-                        className="btn-primary"
-                        style={{ display: 'flex', alignItems: 'center', gap: '10px', background: isCapturing ? '#334155' : undefined }}
-                    >
-                        <RefreshCw size={18} className={isCapturing ? 'spin' : ''} /> {isCapturing ? 'Capturing...' : 'Capture Snapshot'}
-                    </button>
-                    <button onClick={() => window.print()} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '10px 20px', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>
-                        <Printer size={18} /> Print Report
-                    </button>
-                    <button onClick={exportPDF} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(255,255,255,0.1)', color: '#fff' }}>
-                        <Download size={18} /> Export PDF
-                    </button>
+                    <PortfolioButton onClick={captureToday} disabled={isCapturing} variant="secondary">
+                        <RefreshCw size={18} className={isCapturing ? 'spin' : ''} style={{ marginRight: '10px' }} />
+                        {isCapturing ? 'SYNCHRONIZING...' : 'CAPTURE SNAPSHOT'}
+                    </PortfolioButton>
+                    <PortfolioButton onClick={() => window.print()} variant="secondary">
+                        <Printer size={18} style={{ marginRight: '10px' }} /> PRINT
+                    </PortfolioButton>
+                    <PortfolioButton onClick={exportPDF} variant="primary">
+                        <Download size={18} style={{ marginRight: '10px' }} /> EXPORT
+                    </PortfolioButton>
                 </div>
-            </header>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                <MetricCard label="Today's Bookings" value={history[0]?.new_bookings_count || 0} icon={Calendar} color="#3b82f6" />
-                <MetricCard label="Jobs Received" value={history[0]?.new_jobs_count || 0} icon={Package} color="#f59e0b" />
-                <MetricCard label="Jobs Closed" value={history[0]?.closed_jobs_count || 0} icon={CheckCircle} color="#10b981" />
-                <MetricCard label="Sales Revenue" value={`AED ${(history[0]?.revenue || 0).toLocaleString()}`} icon={TrendingUp} color="#ec4899" />
             </div>
+
+            <PortfolioStats stats={stats} />
 
             <ActiveOperations />
 
-            <div style={{ marginTop: '40px' }}>
-                <h2 style={{ color: '#fff', marginBottom: '20px', fontSize: '1.5rem', fontWeight: '800' }}>Historical Snapshots</h2>
-                <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
-                        <thead>
-                            <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
-                                <th style={{ padding: '20px' }}>Date</th>
-                                <th style={{ padding: '20px' }}>New Bookings</th>
-                                <th style={{ padding: '20px' }}>Jobs Received</th>
-                                <th style={{ padding: '20px' }}>Jobs Closed</th>
-                                <th style={{ padding: '20px' }}>Daily Revenue</th>
-                                <th style={{ padding: '20px' }}>Audit Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {history.map((entry) => (
-                                <tr key={entry.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.2s' }}>
-                                    <td style={{ padding: '20px', fontWeight: '700', color: '#b08d57' }}>{entry.date}</td>
-                                    <td style={{ padding: '20px' }}>{entry.new_bookings_count}</td>
-                                    <td style={{ padding: '20px' }}>{entry.new_jobs_count}</td>
-                                    <td style={{ padding: '20px' }}>{entry.closed_jobs_count}</td>
-                                    <td style={{ padding: '20px', fontWeight: '800' }}>AED {parseFloat(entry.revenue || 0).toLocaleString()}</td>
-                                    <td style={{ padding: '20px' }}>
-                                        <span style={{
-                                            padding: '5px 12px',
-                                            borderRadius: '20px',
-                                            fontSize: '11px',
-                                            background: 'rgba(16, 185, 129, 0.1)',
-                                            color: '#10b981',
-                                            border: '1px solid rgba(16, 185, 129, 0.2)'
-                                        }}>Verified</span>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    {history.length === 0 && (
-                        <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
-                            <AlertCircle size={40} style={{ margin: '0 auto 15px auto', opacity: 0.5 }} />
-                            <p>No operational snapshots captured yet.</p>
-                        </div>
-                    )}
-                </GlassCard>
-            </div>
+            <PortfolioSectionTitle style={{ marginTop: '100px' }}>Historical Snapshots</PortfolioSectionTitle>
 
-            <style>{`
-                .spin { animation: rotate 1s linear infinite; }
-                @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            `}</style>
-        </div>
+            <PortfolioGrid columns="1fr">
+                {history.map((entry) => (
+                    <PortfolioCard key={entry.id} style={{ padding: '30px', display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr 1fr', alignItems: 'center' }}>
+                        <div>
+                            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', marginBottom: '5px' }}>SNAPSHOT DATE</div>
+                            <div style={{ fontSize: '20px', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>{entry.date}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px' }}>BOOKINGS</div>
+                            <div style={{ fontSize: '18px', color: 'var(--cream)' }}>{entry.new_bookings_count}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px' }}>RECEIVED</div>
+                            <div style={{ fontSize: '18px', color: 'var(--cream)' }}>{entry.new_jobs_count}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px' }}>RELEASED</div>
+                            <div style={{ fontSize: '18px', color: 'var(--cream)' }}>{entry.closed_jobs_count}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px' }}>REVENUE</div>
+                            <div style={{ fontSize: '18px', color: 'var(--gold)', fontWeight: '800' }}>AED {parseFloat(entry.revenue || 0).toLocaleString()}</div>
+                        </div>
+                    </PortfolioCard>
+                ))}
+                {history.length === 0 && (
+                    <div style={{ padding: '100px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.2)', background: 'rgba(232, 230, 227, 0.01)', borderRadius: '32px', border: '1px dashed rgba(232, 230, 227, 0.05)' }}>
+                        <AlertCircle size={40} style={{ margin: '0 auto 15px auto', opacity: 0.5 }} />
+                        <p style={{ letterSpacing: '1px' }}>NO OPERATIONAL SIGNALS ARCHIVED.</p>
+                    </div>
+                )}
+            </PortfolioGrid>
+
+        </PortfolioPage>
     );
 };
-
-const MetricCard = ({ label, value, icon: Icon, color }) => (
-    <GlassCard style={{ padding: '25px', display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Icon size={24} color={color} />
-        </div>
-        <div>
-            <div style={{ fontSize: '12px', color: '#64748b', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>{label}</div>
-            <div style={{ fontSize: '24px', fontWeight: '900', color: '#fff' }}>{value}</div>
-        </div>
-    </GlassCard>
-);
 
 const ActiveOperations = () => {
     const [pendingJobs, setPendingJobs] = useState([]);
@@ -153,7 +137,6 @@ const ActiveOperations = () => {
     const fetchPending = async () => {
         try {
             const res = await api.get('/forms/job-cards/api/jobs/');
-            // Filter locally for unreleased jobs (or update API to filter)
             setPendingJobs(res.data.filter(j => !j.is_released));
         } catch (err) {
             console.error('Error fetching pending jobs', err);
@@ -167,65 +150,63 @@ const ActiveOperations = () => {
     }, []);
 
     const releaseJob = async (jobId) => {
-        if (!confirm('Release this job card for workshop scheduling?')) return;
+        if (!confirm('Authorize this job card for workshop scheduling?')) return;
         try {
             await api.post(`/forms/job-cards/api/jobs/${jobId}/release/`);
             fetchPending();
         } catch (err) {
-            alert('Release failed: ' + (err.response?.data?.error || 'Unknown error'));
+            alert('Authorization failed: ' + (err.response?.data?.error || 'Unknown error'));
         }
     };
 
     if (loading) return null;
 
     return (
-        <div style={{ marginTop: '30px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2 style={{ color: '#fff', margin: 0, fontSize: '1.5rem', fontWeight: '800' }}>Active Operations - Pending Release</h2>
-                <span style={{ background: '#b08d57', color: '#fff', padding: '4px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '700' }}>
-                    {pendingJobs.length} JOBS HOLDING
-                </span>
+        <div style={{ marginTop: '80px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
+                <PortfolioSectionTitle>Active Operations</PortfolioSectionTitle>
+                <div style={{ background: 'rgba(176, 141, 87, 0.1)', color: 'var(--gold)', padding: '8px 20px', borderRadius: '50px', fontSize: '11px', fontWeight: '800', letterSpacing: '2px', border: '1px solid rgba(176, 141, 87, 0.2)' }}>
+                    {pendingJobs.length} JOBS ON HOLD
+                </div>
             </div>
 
-            <GlassCard style={{ padding: '0', overflow: 'hidden' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#fff', fontSize: '14px' }}>
-                    <thead>
-                        <tr style={{ background: 'rgba(255,255,255,0.03)', textAlign: 'left' }}>
-                            <th style={{ padding: '20px' }}>Job #</th>
-                            <th style={{ padding: '20px' }}>Customer</th>
-                            <th style={{ padding: '20px' }}>Vehicle</th>
-                            <th style={{ padding: '20px' }}>Amount</th>
-                            <th style={{ padding: '20px' }}>Created</th>
-                            <th style={{ padding: '20px' }}>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {pendingJobs.map((job) => (
-                            <tr key={job.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                <td style={{ padding: '20px', fontWeight: '700', color: '#b08d57' }}>#{job.job_card_number}</td>
-                                <td style={{ padding: '20px' }}>{job.customer_name}</td>
-                                <td style={{ padding: '20px' }}>{job.brand} {job.model}</td>
-                                <td style={{ padding: '20px', fontWeight: '700' }}>AED {job.net_amount}</td>
-                                <td style={{ padding: '20px' }}>{new Date(job.created_at).toLocaleDateString()}</td>
-                                <td style={{ padding: '20px' }}>
-                                    <button
-                                        onClick={() => releaseJob(job.id)}
-                                        className="btn-primary"
-                                        style={{ padding: '8px 16px', fontSize: '12px', background: '#10b981' }}
-                                    >
-                                        Release for Schedule
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {pendingJobs.length === 0 && (
-                    <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
-                        All current jobs have been released to workshop.
-                    </div>
-                )}
-            </GlassCard>
+            <PortfolioGrid columns="1fr">
+                {pendingJobs.map((job) => (
+                    <PortfolioCard key={job.id} style={{ padding: '30px', display: 'grid', gridTemplateColumns: '1.2fr 1.5fr 1.5fr 1fr 1fr', alignItems: 'center' }}>
+                        <div>
+                            <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '1px', marginBottom: '5px' }}>JOB ID</div>
+                            <div style={{ fontSize: '16px', color: 'var(--cream)', fontWeight: '700' }}>#{job.job_card_number}</div>
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px', marginBottom: '5px' }}>CLIENT</div>
+                            <div style={{ fontSize: '15px', color: 'var(--cream)' }}>{job.customer_name}</div>
+                        </div>
+                        <div>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px', marginBottom: '5px' }}>VEHICLE ASSET</div>
+                            <div style={{ fontSize: '15px', color: 'var(--cream)' }}>{job.brand} {job.model}</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '9px', color: 'rgba(232,230,227,0.4)', fontWeight: '800', letterSpacing: '1px', marginBottom: '5px' }}>VALUE</div>
+                            <div style={{ fontSize: '15px', color: 'var(--cream)', fontWeight: '700' }}>AED {job.net_amount}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <PortfolioButton
+                                onClick={() => releaseJob(job.id)}
+                                variant="gold"
+                                style={{ padding: '10px 20px', fontSize: '10px', height: '40px' }}
+                            >
+                                RELEASE
+                            </PortfolioButton>
+                        </div>
+                    </PortfolioCard>
+                ))}
+            </PortfolioGrid>
+
+            {pendingJobs.length === 0 && (
+                <div style={{ textAlign: 'center', padding: '60px', color: 'rgba(232, 230, 227, 0.2)', border: '1px dashed rgba(232, 230, 227, 0.1)', borderRadius: '24px' }}>
+                    ALL PROTOCOLS DISPATCHED TO WORKSHOP.
+                </div>
+            )}
         </div>
     );
 };

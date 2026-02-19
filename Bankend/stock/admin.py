@@ -22,3 +22,15 @@ class PurchaseOrderAdmin(admin.ModelAdmin):
     list_filter = ['status', 'order_date']
     search_fields = ['po_number', 'supplier__name']
     inlines = [PurchaseOrderItemInline]
+
+@admin.register(StockItem)
+class StockItemAdmin(admin.ModelAdmin):
+    list_display = ['name', 'category', 'current_stock', 'sku']
+    list_filter = ['category']
+    search_fields = ['name', 'sku']
+
+@admin.register(StockMovement)
+class StockMovementAdmin(admin.ModelAdmin):
+    list_display = ['item', 'type', 'quantity', 'date', 'recorded_by', 'status']
+    list_filter = ['type', 'date', 'status']
+    search_fields = ['item__name', 'recorded_by']

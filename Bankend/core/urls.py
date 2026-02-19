@@ -43,6 +43,7 @@ urlpatterns = [
     path('forms/leaves/', include('leaves.urls')),
     path('forms/pick-and-drop/', include('pick_and_drop.urls')),
     path('forms/attendance/', include('attendance.urls')),
+    path('forms/masters/', include('masters.urls')),
     path('finance/', include('finance.urls')),
     path('hr/', include('hr.urls')),
     path('customers/', include('customers.urls')),

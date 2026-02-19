@@ -3,6 +3,8 @@ from rest_framework.routers import DefaultRouter
 from .views import NavigationTreeView
 from .views_reports import workshop_diary_view, WorkshopDiaryViewSet, get_dashboard_stats_api
 from .views_sales import get_sales_dashboard_stats
+from .views_management import get_management_stats
+from .views_logistics import get_logistics_stats
 from .views_chat import ChatMessageViewSet
 
 router = DefaultRouter()
@@ -15,4 +17,6 @@ urlpatterns = [
     path('workshop-diary/', workshop_diary_view, name='workshop_diary'),
     path('api/stats/', get_dashboard_stats_api, name='dashboard_stats_api'),
     path('api/sales/', get_sales_dashboard_stats, name='sales_dashboard_stats'),
+    path('api/management/stats/', get_management_stats, name='management_stats'),
+    path('api/logistics/stats/', get_logistics_stats, name='logistics_stats'),
 ]

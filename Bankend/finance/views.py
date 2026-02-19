@@ -1,5 +1,6 @@
 from rest_framework import viewsets
-from core.permissions import IsAdminOrOwner
+from rest_framework.permissions import IsAuthenticated
+from core.permissions import IsAdminOrOwner, HasModulePermission
 from .models import Account, AccountCategory, Budget, Transaction, Commission
 from .serializers import (
     AccountSerializer, AccountCategorySerializer, 
@@ -11,19 +12,19 @@ class AccountCategoryViewSet(viewsets.ModelViewSet):
     module_name = 'Finance'
     queryset = AccountCategory.objects.all()
     serializer_class = AccountCategorySerializer
-    permission_classes = [IsAdminOrOwner]
+    permission_classes = [IsAuthenticated, HasModulePermission]
 
 class AccountViewSet(viewsets.ModelViewSet):
     module_name = 'Finance'
     queryset = Account.objects.all().order_by('code')
     serializer_class = AccountSerializer
-    permission_classes = [IsAdminOrOwner]
+    permission_classes = [IsAuthenticated, HasModulePermission]
 
 class BudgetViewSet(viewsets.ModelViewSet):
     module_name = 'Finance'
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
-    permission_classes = [IsAdminOrOwner]
+    permission_classes = [IsAuthenticated, HasModulePermission]
 
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -36,7 +37,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     module_name = 'Finance'
     queryset = Transaction.objects.all().order_by('-date')
     serializer_class = TransactionSerializer
-    permission_classes = [IsAdminOrOwner]
+    permission_classes = [IsAuthenticated, HasModulePermission]
 
     @action(detail=False, methods=['get'])
     def financial_summary(self, request):
@@ -49,7 +50,7 @@ class CommissionViewSet(viewsets.ModelViewSet):
     module_name = 'Finance'
     queryset = Commission.objects.all().order_by('-date')
     serializer_class = CommissionSerializer
-    permission_classes = [IsAdminOrOwner]
+    permission_classes = [IsAuthenticated, HasModulePermission]
 
     @action(detail=False, methods=['get'])
     def summary(self, request):

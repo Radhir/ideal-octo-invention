@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'reports',  # Sales and performance reporting
     'workshop',
     'channels',
+    'masters',
 ]
 
 MIDDLEWARE = [
@@ -129,14 +130,30 @@ ASGI_APPLICATION = 'core.asgi.application'
 USE_POSTGRES = os.environ.get('USE_POSTGRES', 'False').lower() in ('true', '1', 'yes')
 
 if USE_POSTGRES:
+    # Handle DB_HOST discrepancy between Docker (db) and Local (localhost)
+    db_host = os.environ.get('DB_HOST', 'db')
+
+    # Intelligent Fallback:
+    # If DB_HOST is set to 'db' (Docker service name) but we are NOT running in Docker,
+    # override it to 'localhost' to allow local commands (migrations, etc.) to work.
+    if db_host == 'db' and not os.path.exists('/.dockerenv'):
+        import sys
+        # Only print warning if we are actually running a command, to avoid log noise
+        if 'runserver' in sys.argv or 'migrate' in sys.argv:
+            print(f"✨  [EliteShine Config] DB_HOST is '{db_host}' but not in Docker. Falling back to 'localhost' for local development.")
+        db_host = 'localhost'
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': os.environ.get('POSTGRES_DB', 'eliteshine_erp'),
             'USER': os.environ.get('POSTGRES_USER', 'eliteshine_user'),
             'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'Elite123!ChangeMe'),
-            'HOST': os.environ.get('DB_HOST', 'db'),
+            'HOST': db_host,
             'PORT': os.environ.get('DB_PORT', '5432'),
+            'OPTIONS': {
+                'connect_timeout': 5, # Allow quick failure for fallback if needed in some scripts
+            }
         }
     }
 else:

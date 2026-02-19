@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Link } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Plus, Search, Calendar, User, CheckCircle2, XCircle, Printer } from 'lucide-react';
-import PrintHeader from '../../components/PrintHeader';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus, Search, CheckCircle2, XCircle, Printer } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioCard,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioInput
+} from '../../components/PortfolioComponents';
 
 const LeaveList = () => {
+    const navigate = useNavigate();
     const [leaves, setLeaves] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -30,88 +36,95 @@ const LeaveList = () => {
     );
 
     return (
-        <div style={{ padding: '30px 20px' }}>
-            <PrintHeader title="Leave Application Registry" />
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
-                <div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#b08d57', fontSize: '1.8rem' }}>Leave Applications</h1>
-                    <p style={{ color: '#94a3b8' }}>Staff time-off management</p>
-                </div>
+        <PortfolioPage breadcrumb="Workforce Logistics / Leave Registry">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+                <PortfolioTitle
+                    subtitle="Staff time-off management and approval workflows"
+                >
+                    Leave Applications
+                </PortfolioTitle>
                 <div style={{ display: 'flex', gap: '15px' }}>
-                    <button
-                        onClick={() => window.print()}
-                        className="glass-card"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', cursor: 'pointer', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff' }}
-                    >
-                        <Printer size={20} /> Print Registry
-                    </button>
-                    <Link to="/leaves/create" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-                        <Plus size={20} /> Apply for Leave
-                    </Link>
+                    <PortfolioButton variant="secondary" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Printer size={18} /> Print Registry
+                    </PortfolioButton>
+                    <PortfolioButton variant="gold" onClick={() => navigate('/leaves/create')} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Plus size={18} /> Apply for Leave
+                    </PortfolioButton>
                 </div>
-            </header>
+            </div>
 
-            <div style={{ marginBottom: '20px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={18} />
-                <input
-                    type="text"
-                    className="form-control"
+            <div style={{ marginBottom: '30px' }}>
+                <PortfolioInput
+                    icon={Search}
                     placeholder="Search employees..."
-                    style={{ paddingLeft: '45px' }}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{ maxWidth: '400px' }}
                 />
             </div>
 
-            <GlassCard style={{ padding: '0', overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#f8fafc' }}>
-                    <thead>
-                        <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)' }}>
-                            <th style={{ padding: '15px', textAlign: 'left', fontSize: '12px', textTransform: 'uppercase', color: '#b08d57' }}>Employee</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontSize: '12px', textTransform: 'uppercase', color: '#b08d57' }}>Type</th>
-                            <th style={{ padding: '15px', textAlign: 'left', fontSize: '12px', textTransform: 'uppercase', color: '#b08d57' }}>Period</th>
-                            <th style={{ padding: '15px', textAlign: 'center', fontSize: '12px', textTransform: 'uppercase', color: '#b08d57' }}>Days</th>
-                            <th style={{ padding: '15px', textAlign: 'center', fontSize: '12px', textTransform: 'uppercase', color: '#b08d57' }}>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <tr><td colSpan="5" style={{ padding: '30px', textAlign: 'center' }}>Loading...</td></tr>
-                        ) : filteredLeaves.length === 0 ? (
-                            <tr><td colSpan="5" style={{ padding: '30px', textAlign: 'center' }}>No applications found.</td></tr>
-                        ) : (
-                            filteredLeaves.map((l) => (
-                                <tr key={l.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <td style={{ padding: '15px' }}>
-                                        <div style={{ fontWeight: '600' }}>{l.employee_name}</div>
-                                        <div style={{ fontSize: '12px', color: '#94a3b8' }}>{l.position}</div>
-                                    </td>
-                                    <td style={{ padding: '15px' }}>
-                                        <span style={{ color: '#b08d57', fontSize: '12px', fontWeight: '700' }}>{l.leave_type}</span>
-                                    </td>
-                                    <td style={{ padding: '15px' }}>
-                                        <div style={{ fontSize: '13px' }}>{l.leave_period_from} to {l.leave_period_to}</div>
-                                    </td>
-                                    <td style={{ padding: '15px', textAlign: 'center' }}>{l.total_days}</td>
-                                    <td style={{ padding: '15px' }}>
-                                        <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-                                            <div title="Manager Approval" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: l.manager_approval ? '#10b981' : '#f43f5e' }}>
-                                                {l.manager_approval ? <CheckCircle2 size={14} /> : <XCircle size={14} />} MGR
+            <PortfolioCard style={{ padding: 0, overflow: 'hidden' }}>
+                <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', color: 'var(--cream)' }}>
+                        <thead>
+                            <tr style={{ borderBottom: '1px solid rgba(232, 230, 227, 0.1)', background: 'rgba(176,141,87,0.05)' }}>
+                                <th style={{ padding: '20px', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', color: 'var(--gold)', letterSpacing: '1px', fontWeight: '800' }}>Employee</th>
+                                <th style={{ padding: '20px', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', color: 'var(--gold)', letterSpacing: '1px', fontWeight: '800' }}>Type</th>
+                                <th style={{ padding: '20px', textAlign: 'left', fontSize: '11px', textTransform: 'uppercase', color: 'var(--gold)', letterSpacing: '1px', fontWeight: '800' }}>Period</th>
+                                <th style={{ padding: '20px', textAlign: 'center', fontSize: '11px', textTransform: 'uppercase', color: 'var(--gold)', letterSpacing: '1px', fontWeight: '800' }}>Days</th>
+                                <th style={{ padding: '20px', textAlign: 'center', fontSize: '11px', textTransform: 'uppercase', color: 'var(--gold)', letterSpacing: '1px', fontWeight: '800' }}>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr><td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.5)' }}>Loading registry...</td></tr>
+                            ) : filteredLeaves.length === 0 ? (
+                                <tr><td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.5)' }}>No applications found.</td></tr>
+                            ) : (
+                                filteredLeaves.map((l) => (
+                                    <tr key={l.id} style={{ borderBottom: '1px solid rgba(232, 230, 227, 0.05)', transition: 'background 0.2s' }} className="hover-row">
+                                        <td style={{ padding: '20px' }}>
+                                            <div style={{ fontWeight: '600', fontSize: '14px', color: 'var(--cream)' }}>{l.employee_name}</div>
+                                            <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.5)', marginTop: '4px' }}>{l.position}</div>
+                                        </td>
+                                        <td style={{ padding: '20px' }}>
+                                            <span style={{
+                                                fontSize: '10px',
+                                                fontWeight: '800',
+                                                textTransform: 'uppercase',
+                                                padding: '5px 10px',
+                                                background: 'rgba(176,141,87,0.1)',
+                                                border: '1px solid rgba(176,141,87,0.2)',
+                                                borderRadius: '4px',
+                                                color: 'var(--gold)',
+                                                letterSpacing: '0.5px'
+                                            }}>{l.leave_type}</span>
+                                        </td>
+                                        <td style={{ padding: '20px' }}>
+                                            <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.8)' }}>
+                                                {new Date(l.leave_period_from).toLocaleDateString()} <span style={{ color: 'rgba(232, 230, 227, 0.3)', margin: '0 5px' }}>→</span> {new Date(l.leave_period_to).toLocaleDateString()}
                                             </div>
-                                            <div title="HR Approval" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '10px', color: l.hr_approval ? '#10b981' : '#f43f5e' }}>
-                                                {l.hr_approval ? <CheckCircle2 size={14} /> : <XCircle size={14} />} HR
+                                        </td>
+                                        <td style={{ padding: '20px', textAlign: 'center', fontWeight: '700', fontSize: '14px' }}>{l.total_days}</td>
+                                        <td style={{ padding: '20px' }}>
+                                            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+                                                <div title="Manager Approval" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: '800', color: l.manager_approval ? '#10b981' : 'rgba(244,63,94,0.7)' }}>
+                                                    {l.manager_approval ? <CheckCircle2 size={14} /> : <XCircle size={14} />} MGR
+                                                </div>
+                                                <div title="HR Approval" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '10px', fontWeight: '800', color: l.hr_approval ? '#10b981' : 'rgba(244,63,94,0.7)' }}>
+                                                    {l.hr_approval ? <CheckCircle2 size={14} /> : <XCircle size={14} />} HR
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </GlassCard>
-            <style>{`
-            `}</style>
-        </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </PortfolioCard>
+
+        </PortfolioPage>
     );
 };
 

@@ -1,44 +1,47 @@
 /* Job Card Print Styles */
 .job-card-print-container {
-    padding: 20px;
+    padding: 40px;
     background: #f0f0f0;
     min-height: 100vh;
     display: flex;
     justify-content: center;
+    font-family: 'Outfit', sans-serif;
 }
 
 .job-card-document {
     width: 210mm;
     min-height: 297mm;
     background: white;
-    padding: 30px;
+    padding: 15mm;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     position: relative;
     color: #1a1a2e;
-    font-family: 'Outfit', sans-serif;
-    line-height: 1.4;
+    box-sizing: border-box;
 }
 
 .job-card-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     border-bottom: 2px solid #b08d57;
-    padding-bottom: 15px;
+    padding-bottom: 20px;
 }
 
 .header-left h1 {
     margin: 0;
-    font-size: 28px;
+    font-size: 32px;
     color: #b08d57;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
 .header-left .subtitle {
-    margin: 0;
-    font-weight: 600;
-    color: #64748b;
-    font-size: 14px;
+    margin: 5px 0 0;
+    color: #1a1a2e;
+    font-weight: 700;
+    letter-spacing: 4px;
+    font-size: 10px;
+    text-transform: uppercase;
 }
 
 .header-right {
@@ -49,119 +52,225 @@
     margin: 0;
     font-size: 24px;
     text-transform: uppercase;
+    color: #1a1a2e;
 }
 
 .job-card-id {
     font-weight: 700;
-    font-size: 18px;
+    font-size: 16px;
     margin: 5px 0 0;
 }
 
-.section {
-    margin-bottom: 20px;
-}
-
-.section-title {
-    background: #1a1a2e;
-    color: white;
-    padding: 5px 10px;
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-}
-
+/* Info Grid */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
 }
 
-.info-row {
-    display: flex;
-    gap: 10px;
-}
-
-.label {
-    font-weight: 600;
-    color: #64748b;
-    font-size: 13px;
-    min-width: 100px;
-}
-
-.value {
-    font-weight: 700;
-    font-size: 13px;
-}
-
-.vehicle-diagram {
-    border: 1px solid #e2e8f0;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
+.info-section {
     background: #f8fafc;
-    color: #94a3b8;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-.checklist-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-}
-
-.checklist-item {
+.section-header {
+    background: #1a1a2e;
+    color: white;
+    padding: 8px 15px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
+}
+
+.section-header h3 {
+    margin: 0;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-fields {
+    padding: 15px;
+}
+
+.field-row {
+    display: flex;
+    margin-bottom: 8px;
+    font-size: 13px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 4px;
+}
+
+.field-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.field-row label {
+    width: 80px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.field-value {
+    font-weight: 700;
+    color: #1a1a2e;
+    flex: 1;
+}
+
+/* Vehicle Grid */
+.vehicle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 15px;
+}
+
+.field-col label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.field-col .field-value {
+    font-size: 14px;
+    background: white;
+    padding: 5px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+/* Descriptions */
+.job-description {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.description-field {
+    padding: 15px;
+    font-family: 'Courier New', monospace; 
     font-size: 12px;
+    line-height: 1.5;
+    color: #334155;
 }
 
-.checkbox {
-    width: 16px;
-    height: 16px;
-    border: 1px solid #cbd5e1;
-    border-radius: 3px;
+/* Financials */
+.financial-summary {
+    width: 300px;
+    margin-left: auto;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
 }
 
-.checkbox.checked {
-    background: #1a1a2e;
-    border-color: #1a1a2e;
+.summary-header {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #b08d57;
+    padding-bottom: 5px;
+    color: #1a1a2e;
 }
 
-.signatures {
+.summary-row {
     display: flex;
     justify-content: space-between;
-    margin-top: 40px;
-    padding-top: 20px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.summary-row.net {
+    font-weight: 800;
+    color: #1a1a2e;
+    font-size: 15px;
     border-top: 1px solid #e2e8f0;
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.summary-row.balance {
+    color: #b91c1c;
+    font-weight: 700;
+}
+
+/* Signatures */
+.signature-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 50px;
+    margin-bottom: 20px;
 }
 
 .signature-box {
-    width: 45%;
+    width: 40%;
     text-align: center;
 }
 
-.sig-line {
-    border-bottom: 1px solid #000;
+.signature-line {
+    border-bottom: 1px solid #1a1a2e;
     height: 40px;
     margin-bottom: 8px;
 }
 
-.sig-label {
-    font-size: 12px;
-    font-weight: 600;
+.signature-box p {
+    font-size: 11px;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+    margin: 0;
 }
 
+/* Print Overrides */
 @media print {
+    @page {
+        size: A4;
+        margin: 0;
+    }
+    
+    body {
+        margin: 0;
+        background: white;
+    }
+
     .job-card-print-container {
         padding: 0;
         background: white;
+        display: block;
+        min-height: auto;
     }
+    
     .job-card-document {
         box-shadow: none;
-        padding: 15px;
+        padding: 15mm;
+        width: 100%;
+        min-height: auto;
+        border: none;
+    }
+    
+    .print-controls, .no-print {
+        display: none !important;
+    }
+
+    .section-header {
+        background: #eee !important;
+        color: black !important;
+        border-bottom: 1px solid #ccc;
+    }
+
+    /* Force background colors for headers if user settings allow, otherwise fallback to borders */
+    .section-header {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 }

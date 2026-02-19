@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioStats,
+    PortfolioButton,
+    PortfolioCard,
+    PortfolioBackButton,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
 import {
     FileText,
-    CheckCircle, XCircle, ArrowLeft, Download
+    CheckCircle, XCircle, Download, Calendar as CalendarIcon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DateRangePicker from '../../components/finance/DateRangePicker';
@@ -34,114 +42,117 @@ const InvoiceBook = () => {
     }, [fetchData]);
 
     return (
-        <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <button
-                        onClick={() => navigate('/finance')}
-                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)' }}
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <div>
-                        <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px' }}>EXECUTIVE BILLING</div>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: 'var(--text-primary)' }}>Invoice Book</h1>
-                    </div>
+        <PortfolioPage breadcrumb="FINANCE // INVOICE BOOK">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '80px' }}>
+                <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-end' }}>
+                    <PortfolioBackButton onClick={() => navigate('/finance')} />
+                    <PortfolioTitle subtitle="A detailed historical registry of all financial transactions and fiscal certificates.">
+                        INVOICE BOOK
+                    </PortfolioTitle>
                 </div>
 
-                <div style={{ display: 'flex', gap: '15px' }}>
+                <div style={{ display: 'flex', gap: '15px', marginBottom: '100px' }}>
                     <DateRangePicker
                         startDate={startDate}
                         endDate={endDate}
                         onStartChange={setStartDate}
                         onEndChange={setEndDate}
                         onApply={fetchData}
+                        styled
                     />
-                    <button className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '10px', height: '45px', padding: '0 25px', borderRadius: '25px', fontSize: '12px', fontWeight: '900', border: '1.5px solid var(--gold-border)', background: 'var(--gold)', color: '#000', letterSpacing: '1px' }}>
-                        <Download size={18} /> EXPORT BOOK
-                    </button>
+                    <PortfolioButton variant="gold" onClick={() => { }} style={{ padding: '12px 25px' }}>
+                        <Download size={16} /> EXPORT BOOK
+                    </PortfolioButton>
                 </div>
-            </header>
+            </div>
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '100px', color: 'var(--text-secondary)' }}>Compiling Fiscal Records...</div>
+                <div style={{ padding: '80px', textAlign: 'center', color: 'var(--cream)', opacity: 0.5 }}>Compiling Fiscal Records...</div>
             ) : (
                 <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                        <SummaryCard label="Invoices" value={summary?.total_invoices || 0} color="var(--gold)" />
-                        <SummaryCard label="Total Grand" value={`AED ${(summary?.total_grand || 0).toLocaleString()}`} color="#10b981" />
-                        <SummaryCard label="VAT Collected" value={`AED ${(summary?.total_vat || 0).toLocaleString()}`} color="#3b82f6" />
-                        <SummaryCard label="Outstanding" value={summary?.pending_count || 0} color="#ef4444" />
-                    </div>
+                    <PortfolioStats stats={[
+                        { label: 'TOTAL INVOICES', value: summary?.total_invoices || 0 },
+                        { label: 'GRAND TOTAL', value: `AED ${(summary?.total_grand || 0).toLocaleString()}`, color: 'var(--cream)' },
+                        { label: 'VAT COLLECTED', value: `AED ${(summary?.total_vat || 0).toLocaleString()}`, color: 'var(--gold)' },
+                        { label: 'OUTSTANDING', value: summary?.pending_count || 0, color: '#f43f5e' }
+                    ]} />
 
-                    <GlassCard style={{ padding: '30px', border: '1.5px solid var(--gold-border)' }}>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr style={{ borderBottom: '2.5px solid var(--gold-border)', color: 'var(--gold)', fontSize: '11px', textTransform: 'uppercase', background: 'var(--input-bg)', letterSpacing: '2px' }}>
-                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Post Date</th>
-                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Invoice Token</th>
-                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Client Narrartive</th>
-                                    <th style={{ padding: '18px 15px', textAlign: 'left', fontWeight: '900' }}>Fiscal Status</th>
-                                    <th style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '900' }}>VAT (5%)</th>
-                                    <th style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '900' }}>Grand Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {entries.map(entry => (
-                                    <tr key={entry.id} style={{ borderBottom: '1.5px solid rgba(176,141,87,0.1)' }} className="hover-row">
-                                        <td style={{ padding: '18px 15px', fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '900' }}>{new Date(entry.date).toLocaleDateString()}</td>
-                                        <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--gold)', fontSize: '14px' }}>#{entry.number}</td>
-                                        <td style={{ padding: '18px 15px', fontWeight: '900', color: 'var(--text-primary)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{entry.customer}</td>
-                                        <td style={{ padding: '18px 15px' }}>
-                                            <PaymentStatus status={entry.status} />
-                                        </td>
-                                        <td style={{ padding: '18px 15px', textAlign: 'right', color: 'var(--text-primary)', fontSize: '14px', fontWeight: '900', fontFamily: 'Outfit, sans-serif' }}>
-                                            AED {parseFloat(entry.vat_amount).toLocaleString()}
-                                        </td>
-                                        <td style={{ padding: '18px 15px', textAlign: 'right', fontWeight: '1000', fontSize: '18px', color: entry.status === 'PAID' ? '#10b981' : 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>
-                                            AED {parseFloat(entry.grand_total).toLocaleString()}
-                                        </td>
+                    <div style={{ marginTop: '60px' }}>
+                        <PortfolioSectionTitle>FISCAL ENTRIES</PortfolioSectionTitle>
+
+                        <div style={{
+                            background: 'rgba(232, 230, 227, 0.02)',
+                            border: '1.5px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '24px',
+                            overflow: 'hidden',
+                            marginTop: '30px'
+                        }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ background: 'rgba(232, 230, 227, 0.05)', borderBottom: '1px solid rgba(232, 230, 227, 0.1)' }}>
+                                        <th style={thStyle}>Date</th>
+                                        <th style={thStyle}>Identity #</th>
+                                        <th style={thStyle}>Client Narrative</th>
+                                        <th style={thStyle}>Status</th>
+                                        <th style={{ ...thStyle, textAlign: 'right' }}>VAT (5%)</th>
+                                        <th style={{ ...thStyle, textAlign: 'right' }}>Grand Total</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </GlassCard>
+                                </thead>
+                                <tbody>
+                                    {entries.map(entry => (
+                                        <tr key={entry.id} style={{ borderBottom: '1px solid rgba(232, 230, 227, 0.05)', transition: 'background 0.3s' }}>
+                                            <td style={tdStyle}>{new Date(entry.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                                            <td style={{ ...tdStyle, color: 'var(--gold)', fontWeight: '700', letterSpacing: '1px' }}>{entry.number}</td>
+                                            <td style={{ ...tdStyle, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{entry.customer}</td>
+                                            <td style={tdStyle}>
+                                                <div style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    color: entry.status === 'PAID' ? '#10b981' : '#f43f5e',
+                                                    fontSize: '10px',
+                                                    fontWeight: '800',
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '1px'
+                                                }}>
+                                                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }}></div>
+                                                    {entry.status}
+                                                </div>
+                                            </td>
+                                            <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'var(--font-serif)', fontSize: '15px' }}>
+                                                AED {parseFloat(entry.vat_amount).toLocaleString()}
+                                            </td>
+                                            <td style={{ ...tdStyle, textAlign: 'right', fontFamily: 'var(--font-serif)', fontSize: '18px', color: 'var(--cream)' }}>
+                                                AED {parseFloat(entry.grand_total).toLocaleString()}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </>
             )}
-
-            <style>{`
-                .hover-row:hover { background: rgba(0,0,0,0.02); }
-            `}</style>
-        </div>
+        </PortfolioPage>
     );
 };
 
-const SummaryCard = ({ label, value, color }) => (
-    <GlassCard style={{ padding: '20px', textAlign: 'center', border: '1.5px solid var(--gold-border)' }}>
-        <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px' }}>{label}</div>
-        <div style={{ fontSize: '24px', fontWeight: '900', color: color || 'var(--text-primary)', fontFamily: 'Outfit, sans-serif' }}>{value}</div>
-    </GlassCard>
-);
+const thStyle = {
+    padding: '25px 30px',
+    textAlign: 'left',
+    fontSize: '10px',
+    fontWeight: '800',
+    color: 'var(--gold)',
+    textTransform: 'uppercase',
+    letterSpacing: '2px',
+    opacity: 0.8
+};
 
-const PaymentStatus = ({ status }) => {
-    const isPaid = status === 'PAID';
-    return (
-        <span style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            padding: '5px 12px',
-            borderRadius: '20px',
-            fontSize: '11px',
-            fontWeight: '900',
-            background: isPaid ? '#10b98125' : '#ef444425',
-            color: isPaid ? '#10b981' : '#ef4444',
-            border: `1.5px solid ${isPaid ? '#10b98160' : '#ef444460'}`,
-            textTransform: 'uppercase'
-        }}>
-            {isPaid ? <CheckCircle size={14} /> : <XCircle size={14} />} {status}
-        </span>
-    );
+const tdStyle = {
+    padding: '25px 30px',
+    fontSize: '13px',
+    color: 'var(--cream)',
+    opacity: 0.9
 };
 
 export default InvoiceBook;

@@ -1,79 +1,180 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import GlassCard from '../../components/GlassCard';
 import {
-    ScrollText, Plus, ShieldAlert, CheckCircle2,
-    Edit3, Trash2, ArrowLeft
+    ScrollText, Plus, ShieldAlert,
+    Edit3, Trash2, Gavel
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import {
+    PortfolioPage,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioTitle,
+    PortfolioButton,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const HRRules = () => {
     const navigate = useNavigate();
     const [rules, setRules] = useState([]);
-    const [_loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+
+    const fetchRules = async () => {
+        try {
+            setLoading(true);
+            const res = await api.get('/hr/api/rules/');
+            // Transform backend data to match UI expectations
+            const transformed = res.data.map(r => ({
+                id: r.id,
+                title: r.rule_name,
+                value: r.rule_name.includes('Rate') ? `${r.rule_value}x` : (r.rule_name.includes('AED') ? `AED ${r.rule_value}` : `${r.rule_value} Mins`),
+                description: r.description
+            }));
+            setRules(transformed);
+        } catch (err) {
+            console.error('Error fetching rules', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchRules = async () => {
-            try {
-                const res = await api.get('/hr/api/rules/');
-                // Transform backend data if needed to match UI expectations
-                const transformed = res.data.map(r => ({
-                    id: r.id,
-                    name: r.rule_name,
-                    value: r.rule_name.includes('Rate') ? `${r.rule_value}x` : (r.rule_name.includes('AED') ? `AED ${r.rule_value}` : `${r.rule_value} Mins`),
-                    desc: r.description
-                }));
-                setRules(transformed);
-            } catch (err) {
-                console.error("Failed to fetch rules", err);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchRules();
     }, []);
 
+    const deleteRule = async (id) => {
+        if (!window.confirm("Are you sure you want to decommission this regulation?")) return;
+        try {
+            await api.delete(`/hr/api/rules/${id}/`);
+            fetchRules();
+        } catch (err) {
+            console.error('Error deleting rule', err);
+        }
+    };
+
     return (
-        <div style={{ padding: '30px 20px', background: 'var(--bg-primary)', minHeight: '100vh' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                <button
-                    onClick={() => navigate('/hr/hub')}
-                    style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '12px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                >
-                    <ArrowLeft size={20} color="var(--gold)" />
-                </button>
+        <PortfolioPage breadcrumb="HR / Governance / Regulations">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
                 <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Compliance Intelligence</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: 'var(--text-primary)', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>HR RULES & POLICIES</h1>
-                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem' }}>Define compliance and payroll multipliers</p>
+                    <PortfolioTitle subtitle="Standard Operating Procedures and dynamic HR compliance frameworks.">
+                        Institutional Regulations
+                    </PortfolioTitle>
                 </div>
-            </header>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px' }}>
-                <button className="glass-card" style={{ border: '2px dashed var(--gold-border)', background: 'var(--input-bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px', padding: '40px', color: 'var(--gold)', cursor: 'pointer' }}>
-                    <Plus size={40} />
-                    <span style={{ fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Add New Policy</span>
-                </button>
-
-                {rules.map(rule => (
-                    <GlassCard key={rule.id} style={{ padding: '25px', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                            <div style={{ background: 'var(--gold-glow)', padding: '12px', borderRadius: '10px', border: '1px solid var(--gold-border)' }}>
-                                <ScrollText size={20} color="var(--gold)" />
-                            </div>
-                            <div style={{ display: 'flex', gap: '10px', color: '#64748b' }}>
-                                <Edit3 size={16} cursor="pointer" />
-                                <Trash2 size={16} cursor="pointer" />
-                            </div>
-                        </div>
-                        <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', fontWeight: '900', color: 'var(--text-primary)' }}>{rule.name}</h3>
-                        <div style={{ fontSize: '28px', fontWeight: '900', color: 'var(--gold)', marginBottom: '10px' }}>{rule.value}</div>
-                        <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.5', fontWeight: '800' }}>{rule.desc}</p>
-                    </GlassCard>
-                ))}
+                <PortfolioButton onClick={() => navigate('/construction')} variant="primary">
+                    <Plus size={18} style={{ marginRight: '10px' }} /> ESTABLISH PROTOCOL
+                </PortfolioButton>
             </div>
-        </div>
+
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '100px', color: 'var(--gold)', letterSpacing: '2px', fontWeight: '900', fontSize: '10px' }}>
+                    SYNCHRONIZING POLICY ENGINE...
+                </div>
+            ) : (
+                <PortfolioGrid columns="repeat(auto-fill, minmax(420px, 1fr))" gap="40px">
+                    {rules.length === 0 ? (
+                        <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '100px', color: 'rgba(232, 230, 227, 0.1)' }}>
+                            <ScrollText size={80} strokeWidth={1} style={{ marginBottom: '30px', opacity: 0.3 }} />
+                            <div style={{ fontSize: '24px', fontFamily: 'var(--font-serif)', marginBottom: '10px' }}>No Active Regulations</div>
+                            <p style={{ fontSize: '14px', letterSpacing: '1px' }}>INITIALIZE GOVERNANCE FRAMEWORK TO BEGIN</p>
+                        </div>
+                    ) : rules.map(rule => (
+                        <PortfolioCard key={rule.id} style={{ padding: '0', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ padding: '40px', flex: 1 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px' }}>
+                                    <div style={{
+                                        width: '50px',
+                                        height: '50px',
+                                        borderRadius: '12px',
+                                        background: 'rgba(176, 141, 87, 0.05)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        border: '1px solid rgba(176, 141, 87, 0.1)'
+                                    }}>
+                                        <Gavel size={24} color="var(--gold)" />
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button
+                                            onClick={() => navigate('/construction')}
+                                            style={actionBtnStyle}
+                                            title="Edit Protocol"
+                                        >
+                                            <Edit3 size={16} />
+                                        </button>
+                                        <button
+                                            onClick={() => deleteRule(rule.id)}
+                                            style={{ ...actionBtnStyle, color: 'rgba(244, 63, 94, 0.4)' }}
+                                            title="Decommission"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <h3 style={{
+                                    margin: '0 0 10px 0',
+                                    color: 'var(--cream)',
+                                    fontSize: '18px',
+                                    fontWeight: '800',
+                                    fontFamily: 'var(--font-serif)',
+                                    lineHeight: '1.3'
+                                }}>
+                                    {rule.title}
+                                </h3>
+
+                                <div style={{ fontSize: '24px', fontWeight: '900', color: 'var(--gold)', marginBottom: '20px', fontFamily: 'monospace' }}>
+                                    {rule.value}
+                                </div>
+
+                                <p style={{
+                                    margin: 0,
+                                    color: 'rgba(232, 230, 227, 0.4)',
+                                    fontSize: '13px',
+                                    lineHeight: '1.7',
+                                    marginBottom: '30px',
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: '3',
+                                    WebkitBoxOrient: 'vertical',
+                                    overflow: 'hidden'
+                                }}>
+                                    {rule.description}
+                                </p>
+
+                                <div style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    fontSize: '10px',
+                                    color: 'var(--gold)',
+                                    fontWeight: '800',
+                                    letterSpacing: '1px',
+                                    textTransform: 'uppercase',
+                                    paddingTop: '20px',
+                                    borderTop: '1px solid rgba(232, 230, 227, 0.03)'
+                                }}>
+                                    <ShieldAlert size={14} /> Enforcement Level: Mandatory
+                                </div>
+                            </div>
+                        </PortfolioCard>
+                    ))}
+                </PortfolioGrid>
+            )}
+        </PortfolioPage>
     );
+};
+
+const actionBtnStyle = {
+    width: '36px',
+    height: '36px',
+    borderRadius: '10px',
+    background: 'rgba(232, 230, 227, 0.02)',
+    border: '1px solid rgba(232, 230, 227, 0.05)',
+    color: 'rgba(232, 230, 227, 0.3)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease'
 };
 
 export default HRRules;

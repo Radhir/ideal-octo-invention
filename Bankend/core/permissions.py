@@ -100,3 +100,48 @@ class IsFinanceUser(permissions.BasePermission):
             return any(r in role for r in allowed)
         except:
             return False
+
+class HasModulePermission(permissions.BasePermission):
+    """
+    Granular RBAC based on ModulePermission model.
+    Requires view to have a 'module_name' attribute.
+    """
+    def has_permission(self, request, view):
+        # Superusers and Elite users bypass
+        if is_elite_user(request.user):
+            return True
+            
+        module_name = getattr(view, 'module_name', None)
+        if not module_name:
+            # If no module name is defined on the view, fall back to existing legacy permissions or deny
+            # For safety, we deny unless it matches IsAdminOrOwner logic which is usually comprised
+            return False 
+            
+        try:
+            profile = request.user.hr_profile
+            # Check for ModulePermission entry
+            # Note: We use .filter().first() to avoid errors if multiple or none exist
+            perm = profile.module_permissions.filter(module_name=module_name).first()
+            
+            if not perm:
+                # If no explicit permission record exists, deny access
+                # (Unless we want a default open policy, but security dictates default closed)
+                return False
+                
+            if request.method in permissions.SAFE_METHODS:
+                return perm.can_view
+            
+            if request.method == 'POST':
+                return perm.can_create
+                
+            if request.method in ['PUT', 'PATCH']:
+                return perm.can_edit
+                
+            if request.method == 'DELETE':
+                return perm.can_delete
+                
+            return False
+        except Exception as e:
+            # Log error if needed
+            print(f"RBAC Error: {e}")
+            return False

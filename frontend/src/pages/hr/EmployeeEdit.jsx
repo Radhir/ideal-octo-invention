@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { UserPlus, ArrowLeft, Save, Shield, DollarSign, Calendar } from 'lucide-react';
+import { UserPlus, Save, Shield, LayoutGrid, RotateCcw, MapPin, Globe, CreditCard } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioTextarea,
+    PortfolioButton,
+    PortfolioBackButton
+} from '../../components/PortfolioComponents';
 
 const EmployeeEdit = () => {
     const navigate = useNavigate();
@@ -65,11 +75,32 @@ const EmployeeEdit = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const [profileImage, setProfileImage] = useState(null);
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files[0]) {
+            setProfileImage(e.target.files[0]);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const submitData = new FormData();
+        Object.keys(formData).forEach(key => {
+            if (formData[key] !== null && formData[key] !== undefined) {
+                submitData.append(key, formData[key]);
+            }
+        });
+
+        if (profileImage) {
+            submitData.append('profile_image', profileImage);
+        }
+
         try {
-            await api.patch(`/hr/api/employees/${id}/`, formData);
-            alert('Personnel Record Updated Successfully.');
+            await api.patch(`/hr/api/employees/${id}/`, submitData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
             navigate('/hr');
         } catch (err) {
             console.error(err);
@@ -77,90 +108,328 @@ const EmployeeEdit = () => {
         }
     };
 
-    if (loading) return <div style={{ padding: '50px', textAlign: 'center', color: 'var(--gold)' }}>Syncing with Archive...</div>;
+    if (loading) return (
+        <PortfolioPage>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh', color: 'var(--gold)' }}>
+                Syncing with Archive...
+            </div>
+        </PortfolioPage>
+    );
 
     return (
-        <div style={{ padding: '40px 30px', background: 'var(--bg-primary)', minHeight: '100vh', color: 'var(--text-primary)' }}>
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                    <button
-                        onClick={() => navigate('/hr')}
-                        style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', padding: '12px', borderRadius: '12px', cursor: 'pointer', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                        <ArrowLeft size={20} color="var(--gold)" />
-                    </button>
-                    <div>
-                        <div style={{ color: 'var(--gold)', fontWeight: '900', letterSpacing: '4px', fontSize: '10px', marginBottom: '5px', textTransform: 'uppercase' }}>Human Capital Management</div>
-                        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: 'var(--text-primary)' }}>EDIT PROFILE</h1>
-                        <p style={{ color: 'var(--gold)', fontSize: '12px', fontWeight: '800', margin: '5px 0 0 0' }}>{formData.full_name} | {formData.employee_id}</p>
-                    </div>
+        <PortfolioPage breadcrumb="Human Capital / Edit Profile">
+            <PortfolioBackButton onClick={() => navigate('/hr')} />
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle
+                    subtitle={`Modifying active personnel record for ${formData.full_name || '...'} | ID: ${formData.employee_id || '...'}`}
+                >
+                    Update Dossier
+                </PortfolioTitle>
+                <div style={{
+                    padding: '10px 20px',
+                    background: 'rgba(232, 230, 227, 0.05)',
+                    borderRadius: '50px',
+                    border: '1px solid rgba(232, 230, 227, 0.1)',
+                    fontSize: '11px',
+                    color: 'var(--gold)',
+                    fontWeight: '800',
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase'
+                }}>
+                    Status: Active
                 </div>
-            </header>
+            </div>
 
             <form onSubmit={handleSubmit}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '30px', maxWidth: '1200px', margin: '0 auto' }}>
+                <PortfolioGrid columns="1fr 1fr">
 
                     {/* Reuse similar structure to Registration */}
-                    <GlassCard style={{ padding: '40px', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px', borderBottom: '1.5px solid var(--gold-border)', paddingBottom: '20px' }}>
-                            <UserPlus size={24} color="var(--gold)" />
-                            <h3 style={{ fontFamily: 'Outfit, sans-serif', margin: 0, fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Personal Identity Portfolio</h3>
+                    <PortfolioCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', color: 'var(--gold)' }}>
+                            <UserPlus size={18} />
+                            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>Identity Portfolio</span>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '25px' }}>
-                            <FormGroup label="Employee ID" name="employee_id" value={formData.employee_id} onChange={handleChange} required />
-                            <FormGroup label="Full Name" name="full_name" value={formData.full_name} onChange={handleChange} required />
-                            <FormGroup label="Nationality" name="nationality" value={formData.nationality} onChange={handleChange} />
-                            <FormGroup label="Gender" name="gender" type="select" options={['Male', 'Female']} value={formData.gender} onChange={handleChange} />
-                            <FormGroup label="Date of Birth" name="dob" type="date" value={formData.dob} onChange={handleChange} />
-                            <FormGroup label="Marital Status" name="marital_status" type="select" options={['Single', 'Married', 'Divorced']} value={formData.marital_status} onChange={handleChange} />
-                            <FormGroup label="Security PIN" name="pin_code" type="number" value={formData.pin_code} onChange={handleChange} required />
-                        </div>
-                    </GlassCard>
 
-                    <GlassCard style={{ padding: '40px', border: '1.5px solid var(--gold-border)', background: 'var(--input-bg)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px', borderBottom: '1.5px solid var(--gold-border)', paddingBottom: '20px' }}>
-                            <Shield size={24} color="var(--gold)" />
-                            <h3 style={{ fontFamily: 'Outfit, sans-serif', margin: 0, fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Professional Deployment</h3>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '25px' }}>
-                            <FormGroup label="Department" name="department" value={formData.department} onChange={handleChange} />
-                            <FormGroup label="Position / Role" name="role" value={formData.role} onChange={handleChange} />
-                            <FormGroup label="Reporting Manager" name="manager" value={formData.manager} onChange={handleChange} />
-                            <FormGroup label="Joining Date" name="date_joined" type="date" value={formData.date_joined} onChange={handleChange} />
-                            <FormGroup label="Salary Type" name="salary_type" type="select" options={['MONTHLY', 'DAILY', 'HOURLY']} value={formData.salary_type} onChange={handleChange} />
-                            <FormGroup label="Base Rate / Salary (AED)" name="basic_salary" type="number" value={formData.basic_salary} onChange={handleChange} />
-                        </div>
-                    </GlassCard>
+                        <PortfolioGrid columns="1fr 2fr">
+                            <PortfolioInput
+                                label="Employee ID"
+                                name="employee_id"
+                                value={formData.employee_id}
+                                onChange={handleChange}
+                                required
+                            />
+                            <PortfolioInput
+                                label="Full Legal Name"
+                                name="full_name"
+                                value={formData.full_name}
+                                onChange={handleChange}
+                                required
+                            />
+                        </PortfolioGrid>
 
-                    <button type="submit" className="glass-card" style={{ height: '80px', fontSize: '1.25rem', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', background: 'var(--gold)', color: '#000', border: '1.5px solid var(--gold-border)', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                        <Save size={28} /> UPDATE ARCHIVE RECORD
-                    </button>
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{
+                                display: 'block',
+                                marginBottom: '10px',
+                                color: 'var(--gold)',
+                                fontSize: '11px',
+                                fontWeight: '800',
+                                letterSpacing: '1px',
+                                textTransform: 'uppercase'
+                            }}>
+                                Profile Photograph
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                style={{
+                                    width: '100%',
+                                    padding: '10px',
+                                    background: 'rgba(232, 230, 227, 0.05)',
+                                    border: '1px solid rgba(232, 230, 227, 0.1)',
+                                    borderRadius: '8px',
+                                    color: 'var(--cream)',
+                                    fontSize: '13px'
+                                }}
+                            />
+                            {formData.profile_image && !profileImage && (
+                                <div style={{ marginTop: '10px', fontSize: '11px', color: 'gray' }}>
+                                    Current: <a href={formData.profile_image} target="_blank" rel="noreferrer" style={{ color: 'var(--gold)' }}>View Image</a>
+                                </div>
+                            )}
+                        </div>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioSelect
+                                label="Gender"
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                            >
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </PortfolioSelect>
+
+                            <PortfolioInput
+                                label="Nationality"
+                                name="nationality"
+                                value={formData.nationality}
+                                onChange={handleChange}
+                            />
+                        </PortfolioGrid>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioInput
+                                label="Date of Birth"
+                                name="dob"
+                                type="date"
+                                value={formData.dob}
+                                onChange={handleChange}
+                            />
+                            <PortfolioSelect
+                                label="Marital Status"
+                                name="marital_status"
+                                value={formData.marital_status}
+                                onChange={handleChange}
+                            >
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                            </PortfolioSelect>
+                        </PortfolioGrid>
+
+                        <PortfolioInput
+                            label="Security PIN (Access Control)"
+                            name="pin_code"
+                            type="number"
+                            value={formData.pin_code}
+                            onChange={handleChange}
+                            required
+                        />
+                    </PortfolioCard>
+
+                    {/* section 2: professional */}
+                    <PortfolioCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', color: 'var(--gold)' }}>
+                            <LayoutGrid size={18} />
+                            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>Deployment Protocols</span>
+                        </div>
+
+                        <PortfolioSelect
+                            label="Department"
+                            name="department"
+                            value={formData.department}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select Department</option>
+                            {['Cyber Security', 'IT & Development', 'Engineering', 'HR & Admin', 'Sales', 'Executive Office', 'Operations', 'Finance'].map(opt => (
+                                <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                        </PortfolioSelect>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioInput
+                                label="Position / Role"
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                            />
+                            <PortfolioInput
+                                label="Reporting Manager"
+                                name="manager"
+                                value={formData.manager}
+                                onChange={handleChange}
+                            />
+                        </PortfolioGrid>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioInput
+                                label="Joining Date"
+                                name="date_joined"
+                                type="date"
+                                value={formData.date_joined}
+                                onChange={handleChange}
+                            />
+                            <PortfolioInput
+                                label="Work Email"
+                                name="workEmail"
+                                type="email"
+                                value={formData.workEmail}
+                                onChange={handleChange}
+                            />
+                        </PortfolioGrid>
+
+                        <PortfolioGrid columns="1fr 1fr">
+                            <PortfolioSelect
+                                label="Compensation Model"
+                                name="salary_type"
+                                value={formData.salary_type}
+                                onChange={handleChange}
+                            >
+                                <option value="MONTHLY">Monthly Salary</option>
+                                <option value="DAILY">Daily Rate</option>
+                                <option value="HOURLY">Hourly Rate</option>
+                            </PortfolioSelect>
+                            <PortfolioInput
+                                label="Base Rate (AED)"
+                                name="basic_salary"
+                                type="number"
+                                value={formData.basic_salary}
+                                onChange={handleChange}
+                            />
+                        </PortfolioGrid>
+                    </PortfolioCard>
+                    {/* section 3: locations */}
+                    <PortfolioCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', color: 'var(--gold)' }}>
+                            <MapPin size={18} />
+                            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>UAE Assignment</span>
+                        </div>
+
+                        <PortfolioInput
+                            label="Residential Address"
+                            name="uae_address"
+                            value={formData.uae_address}
+                            onChange={handleChange}
+                        />
+                        <PortfolioInput
+                            label="Primary Mobile"
+                            name="uae_mobile"
+                            value={formData.uae_mobile}
+                            onChange={handleChange}
+                        />
+
+                        <div style={{
+                            background: 'rgba(232, 230, 227, 0.05)',
+                            padding: '20px',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            marginTop: '20px'
+                        }}>
+                            <div style={{ fontSize: '10px', color: 'var(--gold)', marginBottom: '15px', fontWeight: '900', textTransform: 'uppercase' }}>Emergency Local Contact</div>
+                            <PortfolioGrid columns="1fr 1fr">
+                                <PortfolioInput placeholder="Contact Name" name="uae_emer_name" value={formData.uae_emer_name} onChange={handleChange} style={{ marginBottom: 0 }} />
+                                <PortfolioInput placeholder="Relation" name="uae_emer_relation" value={formData.uae_emer_relation} onChange={handleChange} style={{ marginBottom: 0 }} />
+                            </PortfolioGrid>
+                            <PortfolioInput placeholder="Contact Mobile" name="uae_emer_phone" value={formData.uae_emer_phone} onChange={handleChange} style={{ marginBottom: 0, marginTop: '15px' }} />
+                        </div>
+                    </PortfolioCard>
+
+                    <PortfolioCard>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', color: 'rgba(255, 255, 255, 0.5)' }}>
+                            <Globe size={18} />
+                            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>Home Country Repository</span>
+                        </div>
+
+                        <PortfolioInput
+                            label="Country of Origin"
+                            name="home_country"
+                            value={formData.home_country}
+                            onChange={handleChange}
+                        />
+                        <PortfolioInput
+                            label="Permanent Address"
+                            name="home_address"
+                            value={formData.home_address}
+                            onChange={handleChange}
+                        />
+
+                        <div style={{
+                            background: 'rgba(232, 230, 227, 0.02)',
+                            padding: '20px',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(232, 230, 227, 0.05)',
+                            marginTop: '20px'
+                        }}>
+                            <div style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.5)', marginBottom: '15px', fontWeight: '900', textTransform: 'uppercase' }}>Global Emergency Node</div>
+                            <PortfolioGrid columns="1fr 1fr">
+                                <PortfolioInput placeholder="Home Contact Name" name="home_emer_name" value={formData.home_emer_name} onChange={handleChange} style={{ marginBottom: 0 }} />
+                                <PortfolioInput placeholder="Relation" name="home_emer_relation" value={formData.home_emer_relation} onChange={handleChange} style={{ marginBottom: 0 }} />
+                            </PortfolioGrid>
+                            <PortfolioInput placeholder="International Mobile" name="home_emer_phone" value={formData.home_emer_phone} onChange={handleChange} style={{ marginBottom: 0, marginTop: '15px' }} />
+                        </div>
+                    </PortfolioCard>
+                </PortfolioGrid>
+
+                {/* section 4: compliance & skills */}
+                <PortfolioCard style={{ marginTop: '30px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', color: 'var(--gold)' }}>
+                        <Shield size={18} />
+                        <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>Compliance & Competencies</span>
+                    </div>
+
+                    <PortfolioGrid columns="repeat(4, 1fr)">
+                        <PortfolioInput label="Passport Number" name="passport_no" value={formData.passport_no} onChange={handleChange} />
+                        <PortfolioInput label="Passport Expiry" name="passport_expiry" type="date" value={formData.passport_expiry} onChange={handleChange} />
+                        <PortfolioInput label="Visa UID" name="visa_uid" value={formData.visa_uid} onChange={handleChange} />
+                        <PortfolioInput label="Visa Expiry" name="visa_expiry" type="date" value={formData.visa_expiry} onChange={handleChange} />
+                    </PortfolioGrid>
+
+                    <PortfolioTextarea
+                        label="Skill Set Synopsis"
+                        name="skills"
+                        value={formData.skills}
+                        onChange={handleChange}
+                        placeholder="List operational capabilities..."
+                        rows={4}
+                    />
+                </PortfolioCard>
+
+
+                <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'flex-end', gap: '20px' }}>
+                    <PortfolioButton variant="secondary" onClick={() => navigate('/hr')} type="button">
+                        <RotateCcw size={18} style={{ marginRight: '8px' }} />
+                        Discard Changes
+                    </PortfolioButton>
+                    <PortfolioButton variant="gold" type="submit" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '15px 50px' }}>
+                        <Save size={20} /> UPDATE ARCHIVE RECORD
+                    </PortfolioButton>
                 </div>
             </form>
-        </div>
+        </PortfolioPage>
     );
 };
-
-const FormGroup = ({ label, name, value, onChange, type = 'text', options = [], required = false, placeholder = '' }) => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <label className="form-label" style={{ color: 'var(--gold)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '900' }}>{label}</label>
-        {type === 'select' ? (
-            <select name={name} className="form-control" value={value || ''} onChange={onChange} required={required} style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', fontWeight: '900', height: '45px' }}>
-                {options.map(opt => <option key={opt} value={opt} style={{ background: 'var(--bg-primary)' }}>{opt}</option>)}
-            </select>
-        ) : (
-            <input
-                name={name}
-                type={type}
-                className="form-control"
-                value={value || ''}
-                onChange={onChange}
-                required={required}
-                placeholder={placeholder}
-                style={{ background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', color: 'var(--text-primary)', fontWeight: '900', height: '45px' }}
-            />
-        )}
-    </div>
-);
 
 export default EmployeeEdit;

@@ -1,42 +1,72 @@
 services:
   db:
     image: postgres:15-alpine
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: eliteshine_erp
-      POSTGRES_USER: eliteshine_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme123}
+      POSTGRES_DB: ${POSTGRES_DB:-eliteshine_erp}
+      POSTGRES_USER: ${POSTGRES_USER:-eliteshine_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+    restart: always
 
   backend:
-    image: python:3.11-slim
-    working_dir: /app
+    build:
+      context: ./Bankend
+      dockerfile: Dockerfile
+    image: eliteshine-backend:latest
+    env_file:
+      - .env
     command: >
-      sh -c " apt-get update && apt-get install -y git && git clone https://github.com/Radhir/ideal-octo-invention.git /tmp/repo && cp -r /tmp/repo/Bankend/* /app/ && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000 "
+      sh -c "python manage.py migrate && 
+             python manage.py collectstatic --noinput && 
+             gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 5 --timeout 120"
     environment:
       - DEBUG=False
       - USE_POSTGRES=True
       - DB_HOST=db
-      - DB_NAME=eliteshine_erp
-      - DB_USER=eliteshine_user
-      - DB_PASSWORD=${DB_PASSWORD:-changeme123}
-    ports:
-      - "8000:8000"
+      - DB_NAME=${POSTGRES_DB:-eliteshine_erp}
+      - DB_USER=${POSTGRES_USER:-eliteshine_user}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - /opt/eliteshine/migrations_job_cards:/app/job_cards/migrations
     depends_on:
       - db
-    restart: unless-stopped
+    restart: always
 
   frontend:
-    image: node:18-alpine
-    working_dir: /app
-    command: >
-      sh -c " apk add --no-cache git && git clone https://github.com/Radhir/ideal-octo-invention.git /tmp/repo && cp -r /tmp/repo/frontend/* /app/ && npm install && npm run build && npx serve -s dist -l 3000 "
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=/api
+        - VITE_API_URL=
+    image: eliteshine-frontend:prod
     ports:
-      - "80:3000"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - static_volume:/app/staticfiles:ro
+      - media_volume:/app/media:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - backend
+    restart: always
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:

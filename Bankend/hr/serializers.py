@@ -38,10 +38,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
     branch_name = serializers.CharField(source='branch.name', read_only=True)
     module_permissions = ModulePermissionSerializer(many=True, read_only=True)
     
+    # Explicitly add workEmail and fullName for User creation context
+    workEmail = serializers.EmailField(write_only=True, required=False)
+    fullName = serializers.CharField(write_only=True, required=False)
+
     class Meta:
         model = Employee
         fields = [
-            'id', 'employee_id', 'username', 'full_name', 'department', 'department_name',
+            'id', 'employee_id', 'username', 'full_name', 'full_name_passport', 'department', 'department_name',
             'company', 'company_name', 'branch', 'branch_name', 'pin_code', 'role', 
             'basic_salary', 'housing_allowance', 'transport_allowance', 'date_joined', 
             'is_active', 'bio', 'profile_image', 'accent_color', 'module_permissions',
@@ -49,8 +53,47 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'passport_no', 'passport_expiry', 'visa_uid', 'visa_expiry', 'skills',
             'uae_address', 'uae_mobile', 'home_country', 'home_address', 'home_mobile',
             'uae_emer_name', 'uae_emer_phone', 'uae_emer_relation',
-            'home_emer_name', 'home_emer_phone', 'home_emer_relation'
+            'home_emer_name', 'home_emer_phone', 'home_emer_relation',
+            'workEmail', 'fullName'
         ]
+
+    def create(self, validated_data):
+        # Extract fields needed for User creation and REMOVE from validated_data
+        email = validated_data.pop('workEmail', '').lower()
+        full_name_input = validated_data.pop('fullName', '')
+        employee_id = validated_data.get('employee_id')
+        
+        # Split full name
+        names = full_name_input.split(' ', 1)
+        first_name = names[0]
+        last_name = names[1] if len(names) > 1 else ''
+
+        # Create or Get User
+        # Username defaults to email, or employee_id if email is missing
+        username = email if email else employee_id
+        
+        user, created = User.objects.get_or_create(
+            username=username,
+            defaults={
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'is_active': True
+            }
+        )
+        
+        if created:
+            # Set default password: Elite@{employee_id}
+            user.set_password(f"Elite@{employee_id}")
+            user.save()
+            
+        # Link User to Employee
+        validated_data['user'] = user
+        
+        # Remove fields that are not part of Employee model if they were passed in for User creation logic
+        # (Though DRF mostly filters out non-model fields, ensuring safety)
+        
+        return super().create(validated_data)
 
 class HRRuleSerializer(serializers.ModelSerializer):
     class Meta:

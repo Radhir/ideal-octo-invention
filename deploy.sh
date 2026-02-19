@@ -1,46 +1,42 @@
 #!/bin/bash
-# ============================================
-# EliteShine ERP - Production Deployment Script
-# Optimized for CI/CD pipelines
-# ============================================
 
-set -e
+# ==============================================
+# EliteShine ERP - Hostinger VPS Deployment Script
+# ==============================================
 
-echo "=========================================="
-echo "  EliteShine ERP - Deployment Automation"
-echo "=========================================="
+# Configuration
+DOCKER_COMPOSE_FILE="docker-compose.hostinger.yml"
+PROJECT_DIR=$(pwd)
 
-# Step 1: Ensure Docker is ready
-if ! command -v docker &> /dev/null; then
-    echo "Error: Docker not installed on host."
-    exit 1
+echo "🚀 Starting deployment in $PROJECT_DIR..."
+
+# Check if .env exists
+if [ ! -f .env ]; then
+    if [ -f .env.production ]; then
+        echo "⚠️ .env file not found. Copying from .env.production..."
+        cp .env.production .env
+        echo "‼️ ACTION REQUIRED: Edit the .env file and set your actual production secrets (POSTGRES_PASSWORD, SECRET_KEY, etc.)"
+        exit 1
+    else
+        echo "❌ Error: Neither .env nor .env.production found. Please create one."
+        exit 1
+    fi
 fi
 
-# Step 2: Setup Environment
-PROJECT_DIR="/opt/eliteshine"
-mkdir -p $PROJECT_DIR
-
-if [ ! -f $PROJECT_DIR/.env ]; then
-    echo "Warning: .env not found in $PROJECT_DIR. Using environment defaults."
+# Check for SSL certificates (first-time setup hint)
+if [ ! -d "./certbot/conf/live" ]; then
+    echo "ℹ️ SSL certificates not found in ./certbot/conf/live"
+    echo "ℹ️ If this is the first time, you may need to run certbot manually once or ensure port 80 is open for the challenge."
 fi
 
-# Step 3: Deployment Logic
-echo "[1/3] Refreshing container stack..."
-# Auth is handled in GitHub Actions before running this
-cd $PROJECT_DIR
-docker compose pull
+# Build and start services
+echo "📦 Building and starting containers..."
+docker compose -f $DOCKER_COMPOSE_FILE up -d --build
 
-echo "[2/3] Restarting services with latest builds..."
-docker compose up -d
-
-echo "[3/3] Running post-deployment hooks..."
-docker compose exec -T backend python manage.py migrate --noinput
-docker compose exec -T backend python manage.py collectstatic --noinput
-
-echo "Pruning stale images..."
+# Clean up
+echo "🧹 Cleaning up old images..."
 docker image prune -f
 
-echo "=========================================="
-echo "  EliteShine ERP - Deployment Successful!"
-echo "=========================================="
-docker compose ps
+echo "✅ Deployment complete!"
+echo "📡 Status:"
+docker compose -f $DOCKER_COMPOSE_FILE ps

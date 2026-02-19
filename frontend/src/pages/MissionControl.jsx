@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/axios';
-import BentoCard from '../components/BentoCard';
-import GlassCard from '../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioButton
+} from '../components/PortfolioComponents';
 import {
     Shield, BarChart, Users,
     ArrowRight, Calendar as CalendarIcon,
     PlusCircle, Clock, CreditCard, Truck,
-    UserCheck, ChevronLeft, ChevronRight
+    UserCheck, ChevronLeft, ChevronRight, Activity, Zap, Cpu, Global, Target
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,7 +47,8 @@ const MissionControl = () => {
             const recent = jobs.slice(0, 5).map((j, idx) => ({
                 id: j.id || idx,
                 time: j.created_at ? new Date(j.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '--',
-                activity: `${j.job_card_number || 'JC'} - ${j.customer_name || 'Customer'} (${j.status_display || j.status})`
+                activity: `${j.job_card_number || 'JC'} - ${j.customer_name || 'Customer'}`,
+                status: j.status
             }));
             setRecentJobs(recent);
 
@@ -70,299 +76,202 @@ const MissionControl = () => {
     const handlePrevMonth = () => setViewDate(new Date(currentYear, currentMonth - 1, 1));
     const handleNextMonth = () => setViewDate(new Date(currentYear, currentMonth + 1, 1));
 
-    const _renderCalendar = () => {
-        const days = [];
-        const totalDays = daysInMonth(currentMonth, currentYear);
-        const startDay = firstDayOfMonth(currentMonth, currentYear);
-
-        for (let i = 0; i < startDay; i++) {
-            days.push(<div key={`empty-${i}`} style={{ width: '100%', aspectRatio: '1', opacity: 0.1 }} />);
-        }
-
-        for (let d = 1; d <= totalDays; d++) {
-            const isToday = d === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
-            const isSelected = d === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-
-            days.push(
-                <div
-                    key={d}
-                    onClick={() => setSelectedDate(new Date(currentYear, currentMonth, d))}
-                    style={{
-                        width: '100%',
-                        aspectRatio: '1',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: isSelected ? '800' : '500',
-                        color: isSelected ? '#fff' : 'var(--text-secondary)',
-                        background: isSelected ? 'var(--gold)' : isToday ? 'var(--input-bg)' : 'transparent',
-                        border: isSelected ? '1px solid var(--gold-border)' : isToday ? '1px solid var(--border-color)' : '1px solid transparent',
-                        transition: 'all 0.2s'
-                    }}
-                    onMouseOver={(e) => !isSelected && (e.currentTarget.style.background = 'var(--bg-glass)')}
-                    onMouseOut={(e) => !isSelected && (e.currentTarget.style.background = isToday ? 'var(--input-bg)' : 'transparent')}
-                >
-                    {d}
-                </div>
-            );
-        }
-        return days;
-    };
-
     return (
-        <div className="bento-section" style={{ padding: '40px 20px', minHeight: '100vh', background: 'var(--bg-primary)', transition: 'background-color 0.3s ease' }}>
-            <header style={{ marginBottom: '40px', paddingLeft: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                <div>
-                    <div style={{ color: 'var(--gold)', fontWeight: '900', letterSpacing: '4px', fontSize: '12px', marginBottom: '10px' }}>MISSION CONTROL</div>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--text-primary)', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Systems Overview</h1>
-                </div>
-
-                <div style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
-                    <button
-                        onClick={() => navigate('/job-cards/create')}
-                        style={{
-                            background: 'var(--bg-glass)',
-                            border: '1px solid var(--gold-border)',
-                            color: 'var(--text-primary)',
-                            padding: '12px 25px',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            cursor: 'pointer',
-                            fontWeight: '700',
-                            transition: 'all 0.3s'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'var(--gold)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
-                    >
-                        <PlusCircle size={18} /> Create Job Card
-                    </button>
-                    <button
-                        onClick={() => navigate('/hr/attendance')}
-                        style={{
-                            background: 'var(--bg-glass)',
-                            border: '1px solid var(--border-color)',
-                            color: 'var(--text-primary)',
-                            padding: '12px 25px',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            cursor: 'pointer',
-                            fontWeight: '700',
-                            transition: 'all 0.3s'
-                        }}
-                        onMouseOver={(e) => e.currentTarget.style.background = 'var(--border-color)'}
-                        onMouseOut={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
-                    >
-                        <UserCheck size={18} color="#10b981" /> Attendance
-                    </button>
+        <PortfolioPage breadcrumb="SYSTEMS // MISSION CONTROL">
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="Strategic orchestration of enterprise vectors and operational rhythm.">
+                    Operations<br />Center
+                </PortfolioTitle>
+                <div style={{ display: 'flex', gap: '20px' }}>
+                    <PortfolioButton variant="glass" onClick={() => navigate('/job-cards/create')}>
+                        <PlusCircle size={16} /> NEW OPERATIONALjc
+                    </PortfolioButton>
+                    <PortfolioButton variant="gold" onClick={() => navigate('/hr/attendance')}>
+                        <UserCheck size={16} /> ATTENDANCE.log
+                    </PortfolioButton>
                 </div>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(400px, 1fr) 400px', gap: '25px', padding: '0 20px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+            <PortfolioGrid columns="2.2fr 1.2fr" gap="40px">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px' }}>
+                        <BentoBox title="Revenue Stream" subtitle="MTD INVOICED" value={stats.revenue} icon={BarChart} trend="+12.4%" />
+                        <BentoBox title="Strategic Load" subtitle="ACTIVE UNITS" value={`${stats.activeJobs} Units`} icon={Zap} trend="Optimal" />
+                    </div>
 
-                    {/* Operational Calendar Bento */}
-                    <BentoCard
-                        span={2}
-                        rows={2}
-                        label="Operational Cycle"
-                        title="Master Schedule"
-                        description=""
-                        icon={CalendarIcon}
-                    >
-                        <div style={{ marginTop: '20px' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                                <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>{monthNames[currentMonth]} {currentYear}</div>
-                                <div style={{ display: 'flex', gap: '10px' }}>
-                                    <ChevronLeft onClick={handlePrevMonth} style={{ cursor: 'pointer', opacity: 0.5, color: 'var(--text-primary)' }} size={20} />
-                                    <ChevronRight onClick={handleNextMonth} style={{ cursor: 'pointer', opacity: 0.5, color: 'var(--text-primary)' }} size={20} />
+                    {/* Operational Calendar */}
+                    <PortfolioCard style={{ padding: '35px', background: 'rgba(0,0,0,0.3)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '35px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ width: '40px', height: '40px', background: 'rgba(176,141,87,0.1)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <CalendarIcon size={18} color="var(--gold)" />
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>OPERATIONAL RHYTHM</div>
+                                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '300', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>Master Schedule</h3>
                                 </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', textAlign: 'center' }}>
-                                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                                    <div key={`day-${i}`} style={{ fontSize: '10px', fontWeight: '900', color: 'var(--text-muted)', marginBottom: '10px' }}>{d}</div>
-                                ))}
-                                {(() => {
-                                    const days = [];
-                                    const totalDays = daysInMonth(currentMonth, currentYear);
-                                    const startDay = firstDayOfMonth(currentMonth, currentYear);
-
-                                    for (let i = 0; i < startDay; i++) {
-                                        days.push(<div key={`empty-${i}`} style={{ width: '100%', aspectRatio: '1', opacity: 0.1 }} />);
-                                    }
-
-                                    for (let d = 1; d <= totalDays; d++) {
-                                        const isToday = d === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
-                                        const isSelected = d === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
-
-                                        days.push(
-                                            <div
-                                                key={d}
-                                                onClick={() => setSelectedDate(new Date(currentYear, currentMonth, d))}
-                                                style={{
-                                                    width: '100%',
-                                                    aspectRatio: '1',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    borderRadius: '12px',
-                                                    cursor: 'pointer',
-                                                    fontSize: '14px',
-                                                    fontWeight: isSelected ? '800' : '500',
-                                                    color: isSelected ? '#000' : 'var(--text-secondary)',
-                                                    background: isSelected ? 'var(--gold)' : isToday ? 'var(--bg-glass)' : 'transparent',
-                                                    border: isSelected ? '1px solid var(--gold-border)' : isToday ? '1px solid var(--border-color)' : '1px solid transparent',
-                                                    transition: 'all 0.2s'
-                                                }}
-                                                onMouseOver={(e) => !isSelected && (e.currentTarget.style.background = 'var(--bg-glass)')}
-                                                onMouseOut={(e) => !isSelected && (e.currentTarget.style.background = isToday ? 'var(--bg-glass)' : 'transparent')}
-                                            >
-                                                {d}
-                                            </div>
-                                        );
-                                    }
-                                    return days;
-                                })()}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                <div style={{ fontSize: '13px', fontWeight: '900', color: 'var(--gold)', letterSpacing: '2px' }}>{monthNames[currentMonth].toUpperCase()} {currentYear}</div>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button onClick={handlePrevMonth} style={navBtnStyle}><ChevronLeft size={18} /></button>
+                                    <button onClick={handleNextMonth} style={navBtnStyle}><ChevronRight size={18} /></button>
+                                </div>
                             </div>
                         </div>
-                    </BentoCard>
 
-                    {/* Financial Summary Bento */}
-                    <BentoCard
-                        label="Finance"
-                        title="Revenue Engine"
-                        description={stats.revenue}
-                        icon={BarChart}
-                    />
+                        <div className="telemetry-grid" style={{ height: '300px', marginBottom: '-300px', opacity: 0.1 }} />
 
-                    {/* Security Bento */}
-                    <BentoCard
-                        label="Security"
-                        title="Active Defense"
-                        description="JWT Encrypted"
-                        icon={Shield}
-                    />
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '12px', textAlign: 'center' }}>
+                            {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((d, i) => (
+                                <div key={`day-${i}`} style={{ fontSize: '9px', fontWeight: '900', color: 'var(--gold)', opacity: 0.4, marginBottom: '15px', letterSpacing: '1px' }}>{d}</div>
+                            ))}
+                            {(() => {
+                                const days = [];
+                                const totalDays = daysInMonth(currentMonth, currentYear);
+                                const startDay = firstDayOfMonth(currentMonth, currentYear);
 
-                    {/* Staffing Bento */}
-                    <BentoCard
-                        label="Active Jobs"
-                        title="Workshop Load"
-                        description={`${stats.activeJobs} Active`}
-                        icon={Users}
-                    />
+                                for (let i = 0; i < startDay; i++) {
+                                    days.push(<div key={`empty-${i}`} style={{ width: '100%', aspectRatio: '1.2' }} />);
+                                }
+
+                                for (let d = 1; d <= totalDays; d++) {
+                                    const isToday = d === new Date().getDate() && currentMonth === new Date().getMonth() && currentYear === new Date().getFullYear();
+                                    const isSelected = d === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear();
+
+                                    days.push(
+                                        <div
+                                            key={d}
+                                            onClick={() => setSelectedDate(new Date(currentYear, currentMonth, d))}
+                                            style={{
+                                                width: '100%', aspectRatio: '1.2', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                borderRadius: '12px', cursor: 'pointer', fontSize: '13px',
+                                                fontWeight: isSelected ? '900' : '300',
+                                                color: isSelected ? '#000' : 'var(--cream)',
+                                                background: isSelected ? 'var(--gold)' : isToday ? 'rgba(176,141,87,0.1)' : 'rgba(255,255,255,0.02)',
+                                                border: isSelected ? 'none' : isToday ? '1px solid rgba(176,141,87,0.3)' : '1px solid rgba(255,255,255,0.03)',
+                                                boxShadow: isSelected ? '0 10px 20px rgba(176,141,87,0.3)' : 'none',
+                                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                                            }}
+                                        >
+                                            {d < 10 ? `0${d}` : d}
+                                        </div>
+                                    );
+                                }
+                                return days;
+                            })()}
+                        </div>
+                    </PortfolioCard>
                 </div>
 
                 {/* Right Panel: Daily Operational Snapshot */}
-                <GlassCard style={{ padding: '30px', display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                <PortfolioCard style={{ display: 'flex', flexDirection: 'column', gap: '40px', padding: '40px', background: 'rgba(176, 141, 87, 0.02)' }}>
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                            <div className="pulse-dot" style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981' }} />
-                            <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>DAILY SNAPSHOT</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
+                            <div className="status-pulse" />
+                            <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>STRATEGIC SNAPSHOT</div>
                         </div>
-                        <h3 style={{ margin: 0, fontSize: '24px', fontWeight: '800', color: 'var(--text-primary)' }}>{selectedDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}</h3>
+                        <h3 style={{ margin: 0, fontSize: '24px', fontWeight: '300', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
+                            {selectedDate.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase()}
+                        </h3>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                        <SnapshotItem icon={CalendarIcon} label="Active Jobs" value={stats.activeJobs} color="#3b82f6" />
-                        <SnapshotItem icon={Clock} label="Bookings" value={stats.bookings} color="#f59e0b" />
-                        <SnapshotItem icon={Truck} label="Deliveries" value={stats.deliveries} color="#10b981" />
-                        <SnapshotItem icon={CreditCard} label="Revenue" value={stats.payments} color="#ec4899" />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                        <SnapshotItem icon={Target} label="Active Units" value={stats.activeJobs} color="var(--gold)" />
+                        <SnapshotItem icon={Clock} label="Reservations" value={stats.bookings} color="#f59e0b" />
+                        <SnapshotItem icon={Truck} label="Logistics" value={stats.deliveries} color="#10b981" />
+                        <SnapshotItem icon={CreditCard} label="Revenue" value={stats.payments} color="#3b82f6" />
                     </div>
 
-                    <div style={{ flex: 1, marginTop: '10px', overflow: 'hidden' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h4 style={{ fontSize: '13px', fontWeight: '800', color: 'var(--text-secondary)', margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Live Workshop View</h4>
-                            <div style={{ fontSize: '10px', color: '#10b981', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                <div className="pulse-dot" style={{ width: '6px', height: '6px', background: '#10b981', borderRadius: '50%' }} /> REAL-TIME
-                            </div>
+                    <div style={{ flex: 1, marginTop: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                            <h4 style={{ fontSize: '9px', fontWeight: '900', color: 'var(--gold)', margin: 0, textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.6 }}>Operational Feed</h4>
+                            <Activity size={14} color="#10b981" className="pulse" />
                         </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 100px', padding: '10px 15px', fontSize: '10px', fontWeight: '900', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                <span>Time</span>
-                                <span>Unit / Customer</span>
-                                <span style={{ textAlign: 'right' }}>Status</span>
-                            </div>
-                            {recentJobs.length > 0 ? recentJobs.map(s => {
-                                const [jc, cust, statusRaw] = s.activity.split(' - ');
-                                const status = statusRaw?.replace(/[()]/g, '') || 'ACTIVE';
-
-                                return (
-                                    <div key={s.id} style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: '80px 1fr 100px',
-                                        alignItems: 'center',
-                                        padding: '14px 15px',
-                                        background: 'var(--bg-glass)',
-                                        borderRadius: '12px',
-                                        border: '1px solid var(--border-color)',
-                                        transition: 'all 0.3s'
-                                    }}>
-                                        <div style={{ fontSize: '11px', fontWeight: '800', color: 'var(--text-secondary)' }}>{s.time}</div>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)' }}>{jc}</div>
-                                            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{cust}</div>
-                                        </div>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <span style={{
-                                                fontSize: '10px',
-                                                fontWeight: '900',
-                                                padding: '4px 8px',
-                                                borderRadius: '6px',
-                                                background: status === 'CLOSED' ? 'var(--bg-glass)' : 'var(--gold-glow)',
-                                                color: status === 'CLOSED' ? 'var(--text-secondary)' : 'var(--gold)',
-                                                border: `1px solid ${status === 'CLOSED' ? 'var(--border-color)' : 'var(--gold-border)'}`
-                                            }}>
-                                                {status}
-                                            </span>
-                                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            {recentJobs.length > 0 ? recentJobs.map(s => (
+                                <div key={s.id} style={{
+                                    display: 'grid', gridTemplateColumns: '70px 1fr auto', alignItems: 'center',
+                                    padding: '15px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px',
+                                    border: '1px solid rgba(255,255,255,0.05)',
+                                    transition: 'transform 0.2s'
+                                }}>
+                                    <div style={{ fontSize: '10px', fontWeight: '900', color: 'var(--gold)', opacity: 0.5 }}>{s.time}</div>
+                                    <div style={{ fontSize: '13px', color: 'var(--cream)', fontWeight: '300', paddingRight: '15px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{s.activity}</div>
+                                    <div>
+                                        <span style={{
+                                            fontSize: '8px', fontWeight: '900', padding: '4px 10px', borderRadius: '30px',
+                                            background: s.status === 'CLOSED' ? 'rgba(255,255,255,0.05)' : 'rgba(176,141,87,0.1)',
+                                            color: s.status === 'CLOSED' ? 'rgba(255,255,255,0.4)' : 'var(--gold)',
+                                            border: '1px solid rgba(176,141,87,0.2)'
+                                        }}>
+                                            {s.status}
+                                        </span>
                                     </div>
-                                );
-                            }) : (
-                                <div style={{ padding: '40px 20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '13px' }}>
-                                    No units currently in shop
+                                </div>
+                            )) : (
+                                <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(232, 230, 227, 0.2)', fontSize: '11px', letterSpacing: '1px' }}>
+                                    NO LIVE TELEMETRY FOUND
                                 </div>
                             )}
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => navigate('/')}
-                        style={{
-                            background: 'transparent',
-                            border: '1px solid var(--border-color)',
-                            color: 'var(--text-primary)',
-                            padding: '12px',
-                            borderRadius: '12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '10px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            transition: 'all 0.3s'
-                        }}
-                    >
-                        Back to Core Dashboard <ArrowRight size={16} />
-                    </button>
-                </GlassCard>
-            </div>
-        </div>
+                    <PortfolioButton variant="outline" onClick={() => navigate('/')} style={{ marginTop: '20px' }}>
+                        CORE DASHBOARD <ArrowRight size={14} style={{ marginLeft: '10px' }} />
+                    </PortfolioButton>
+                </PortfolioCard>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
 };
 
+const BentoBox = ({ title, subtitle, value, icon: Icon, trend }) => (
+    <PortfolioCard style={{ padding: '30px', position: 'relative', overflow: 'hidden' }}>
+        <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.1 }} />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px' }}>
+                <div style={{ width: '45px', height: '45px', background: 'rgba(176,141,87,0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={20} color="var(--gold)" />
+                </div>
+                {trend && (
+                    <div style={{ fontSize: '9px', fontWeight: '900', color: trend.includes('+') ? '#10b981' : 'var(--gold)', letterSpacing: '1px', background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '20px' }}>
+                        {trend}
+                    </div>
+                )}
+            </div>
+            <div>
+                <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px', opacity: 0.6 }}>{subtitle}</div>
+                <div style={{ fontSize: '16px', color: 'var(--cream)', fontWeight: '600', marginBottom: '15px' }}>{title}</div>
+                <div style={{ fontSize: '28px', fontWeight: '300', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>{value}</div>
+            </div>
+        </div>
+    </PortfolioCard>
+);
+
 const SnapshotItem = ({ icon: Icon, label, value, color }) => (
-    <div style={{ padding: '20px', background: 'var(--bg-glass)', borderRadius: '16px', border: '1px solid var(--border-color)', transition: 'all 0.3s' }}>
-        <Icon size={18} color={color} style={{ marginBottom: '10px' }} />
-        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: '700', textTransform: 'uppercase' }}>{label}</div>
-        <div style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '4px' }}>{value}</div>
+    <div style={{
+        padding: '20px',
+        background: 'rgba(255,255,255,0.02)',
+        borderRadius: '15px',
+        border: '1px solid rgba(255,255,255,0.05)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px'
+    }}>
+        <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon size={14} color={color} />
+        </div>
+        <div>
+            <div style={{ fontSize: '8px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase', opacity: 0.5 }}>{label}</div>
+            <div style={{ fontSize: '18px', fontWeight: '300', color: 'var(--cream)', marginTop: '4px', fontFamily: 'var(--font-serif)' }}>{value}</div>
+        </div>
     </div>
 );
+
+const navBtnStyle = {
+    background: 'none', border: 'none', color: '#fff', cursor: 'pointer', opacity: 0.7, padding: '5px'
+};
 
 export default MissionControl;

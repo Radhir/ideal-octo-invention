@@ -109,7 +109,7 @@ class AuditLog(models.Model):
         related_name='audit_logs_v2'
     )
     ip_address = models.GenericIPAddressField(null=True, blank=True)
-    user_agent = models.TextField(blank=True)
+    user_agent = models.TextField(null=True, blank=True)
     
     # What (Generic Foreign Key)
     content_type = models.ForeignKey(
@@ -132,8 +132,8 @@ class AuditLog(models.Model):
     )
     
     # Request Info
-    endpoint = models.CharField(max_length=500, blank=True)
-    method = models.CharField(max_length=10, blank=True)
+    endpoint = models.CharField(max_length=500, null=True, blank=True)
+    method = models.CharField(max_length=10, null=True, blank=True)
     
     class Meta:
         ordering = ['-timestamp']

@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useLocation } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Save, ArrowLeft, Clock, Calendar, User, Truck, Award, DollarSign, PenTool } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioGrid,
+    PortfolioCard,
+    PortfolioInput,
+    PortfolioSelect,
+    PortfolioButton,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
+import { Clock, Calendar, User, Truck, Award, DollarSign, PenTool, CheckCircle, ArrowLeft } from 'lucide-react';
 import SignaturePad from '../../components/SignaturePad';
 import { CAR_BRANDS, CAR_MODELS, CAR_COLORS } from '../../constants/vehicle_data';
 
@@ -74,8 +83,7 @@ const BookingForm = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
             const submissionData = {
                 ...formData,
@@ -84,9 +92,6 @@ const BookingForm = () => {
                 vehicle_details: `${formData.brand} ${formData.model} - ${formData.color}`
             };
             await api.post('/forms/bookings/api/list/', submissionData);
-
-            // If it came from a lead, mark the lead as negotiated or converted if needed
-            // For now, just confirming the booking
             alert('Executive Appointment Scheduled Successfully');
             navigate('/bookings');
         } catch (err) {
@@ -96,257 +101,256 @@ const BookingForm = () => {
     };
 
     return (
-        <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
-            <header style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                <button
-                    onClick={() => navigate('/bookings')}
-                    style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '10px', borderRadius: '12px', cursor: 'pointer', color: '#fff' }}
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Reservation Engine</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: '900', margin: 0, color: '#fff' }}>Schedule Appointment</h1>
+        <PortfolioPage>
+            <div style={{ marginBottom: '80px', paddingTop: '40px' }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '20px',
+                    marginBottom: '40px',
+                    color: 'var(--cream)',
+                    fontSize: '13px',
+                    letterSpacing: '1px',
+                    cursor: 'pointer'
+                }} onClick={() => navigate('/bookings')}>
+                    <ArrowLeft size={16} /> BACK TO CALENDAR
                 </div>
-            </header>
 
-            <form onSubmit={handleSubmit} style={{ maxWidth: '900px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <GlassCard style={{ padding: '35px' }}>
-                            <h3 style={sectionTitleStyle}><User size={18} color="#b08d57" /> Customer & Vehicle</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Customer Full Name</label>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <select
-                                            name="salutation"
-                                            className="form-control"
-                                            value={formData.salutation}
-                                            onChange={handleChange}
-                                            style={{ width: '80px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px' }}
-                                        >
-                                            <option value="Mr.">Mr.</option>
-                                            <option value="Mrs.">Mrs.</option>
-                                            <option value="Ms.">Ms.</option>
-                                        </select>
-                                        <input name="customer_name" className="form-control" value={formData.customer_name} onChange={handleChange} required style={{ flex: 1 }} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Contact Number</label>
-                                    <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-                                        <span style={{ color: '#94a3b8', fontSize: '13px', whiteSpace: 'nowrap' }}>+971 5</span>
-                                        <select
-                                            name="phone_suffix_code"
-                                            className="form-control"
-                                            value={formData.phone_suffix_code}
-                                            onChange={handleChange}
-                                            style={{ width: '60px', height: '100%', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', borderRadius: '8px', padding: '0 5px' }}
-                                        >
-                                            {['0', '1', '2', '3', '4', '5', '6', '7', '8'].map(num => (
-                                                <option key={num} value={num}>{num}</option>
-                                            ))}
-                                        </select>
-                                        <input name="phone" className="form-control" value={formData.phone} onChange={handleChange} required
-                                            placeholder="1234567" maxLength="7" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>License Plate #</label>
-                                    <input name="v_registration_no" className="form-control" placeholder="DUBAI A 12345" onChange={handleChange} required />
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Vehicle Brand</label>
-                                    <select
-                                        name="brand"
-                                        className="form-control"
-                                        value={formData.brand || 'Toyota'}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        {CAR_BRANDS.map(b => <option key={b} value={b}>{b}</option>)}
-                                    </select>
-                                </div>
-                            </div>
+                <PortfolioTitle
+                    title="SCHEDULE ASSIGNMENT"
+                    subtitle="RESERVATION ENGINE // EXECUTIVE APPOINTMENT"
+                />
+            </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Model</label>
-                                    <input
-                                        name="model"
-                                        className="form-control"
-                                        value={formData.model || ''}
-                                        onChange={handleChange}
-                                        required
-                                        list="booking-car-models"
-                                        placeholder="Type model..."
-                                    />
-                                    <datalist id="booking-car-models">
-                                        {CAR_MODELS[formData.brand || 'Toyota']?.map(m => (
-                                            <option key={m} value={m} />
-                                        ))}
-                                    </datalist>
-                                </div>
-                                <div>
-                                    <label style={labelStyle}>Color</label>
-                                    <input
-                                        name="color"
-                                        className="form-control"
-                                        value={formData.color || ''}
-                                        onChange={handleChange}
-                                        required
-                                        list="booking-car-colors"
-                                        placeholder="Pick color..."
-                                    />
-                                    <datalist id="booking-car-colors">
-                                        {CAR_COLORS.map(c => (
-                                            <option key={c} value={c} />
-                                        ))}
-                                    </datalist>
-                                </div>
-                            </div>
-                        </GlassCard>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '60px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
 
-                        <GlassCard style={{ padding: '35px' }}>
-                            <h3 style={sectionTitleStyle}><Award size={18} color="#b08d57" /> Service Configuration</h3>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                <div>
-                                    <label style={labelStyle}>Core Service Type</label>
-                                    <select name="service_category" className="form-control" onChange={handleChange} required value={formData.service_category}>
-                                        <option value="">Select Category...</option>
-                                        {categories.map(cat => (
-                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {formData.service_category && (
-                                    <div style={{ marginTop: '10px' }}>
-                                        <label style={labelStyle}>Specific Service</label>
-                                        <select
-                                            name="service"
-                                            className="form-control"
-                                            onChange={(e) => {
-                                                const sId = e.target.value;
-                                                const selectedSvc = services.find(s => s.id === parseInt(sId));
-                                                setFormData({
-                                                    ...formData,
-                                                    service: sId,
-                                                    estimated_total: selectedSvc ? parseFloat(selectedSvc.price) : parseFloat(formData.estimated_total || 0)
-                                                });
-                                            }}
-                                            required
-                                            value={formData.service}
-                                        >
-                                            <option value="">Select Specific Service...</option>
-                                            {services.filter(s => s.category === parseInt(formData.service_category)).map(svc => (
-                                                <option key={svc.id} value={svc.id}>{svc.name} - AED {svc.price}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                )}
-                                <div>
-                                    <label style={labelStyle}>Estimated Quotation (AED)</label>
-                                    <div style={{ position: 'relative' }}>
-                                        <DollarSign style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#b08d57' }} size={16} />
-                                        <input name="estimated_total" type="number" className="form-control" style={{ paddingLeft: '35px' }} value={formData.estimated_total} onChange={handleChange} />
-                                    </div>
-                                    {formData.estimated_total > 0 && (
-                                        <div style={{ marginTop: '10px', padding: '12px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#94a3b8' }}>
-                                                <span>Subtotal (Net)</span>
-                                                <span>AED {parseFloat(formData.estimated_total).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#b08d57', margin: '4px 0' }}>
-                                                <span>VAT (5%)</span>
-                                                <span>AED {(formData.estimated_total * 0.05).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '900', color: '#fff', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '4px' }}>
-                                                <span>Grand Total</span>
-                                                <span>AED {(formData.estimated_total * 1.05).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </GlassCard>
+                    {/* Customer & Vehicle Section */}
+                    <PortfolioCard>
+                        <PortfolioSectionTitle title="CLIENT & MACHINE" />
 
-                        <GlassCard style={{ padding: '35px' }}>
-                            <label style={labelStyle}>Special Instructions / Notes</label>
-                            <textarea name="notes" className="form-control" rows="4" value={formData.notes} onChange={handleChange} placeholder="Detail any specific arrival time constraints or valet requests..."></textarea>
-                        </GlassCard>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '30px', marginBottom: '30px' }}>
+                            <PortfolioInput
+                                label="SALUTATION"
+                                name="salutation"
+                                type="select"
+                                value={formData.salutation}
+                                onChange={handleChange}
+                                options={[
+                                    { value: 'Mr.', label: 'Mr.' },
+                                    { value: 'Mrs.', label: 'Mrs.' },
+                                    { value: 'Ms.', label: 'Ms.' }
+                                ]}
+                            />
+                            <PortfolioInput
+                                label="CLIENT FULL NAME"
+                                name="customer_name"
+                                value={formData.customer_name}
+                                onChange={handleChange}
+                            />
+                        </div>
 
-                        <GlassCard style={{ padding: '35px', border: '1px solid rgba(176, 141, 87, 0.2)' }}>
-                            <h3 style={sectionTitleStyle}><PenTool size={18} color="#b08d57" /> Pre-Check-in Signature</h3>
-                            <p style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '15px' }}>
-                                Customer signature for arrival authorization and initial service acceptance.
-                            </p>
-                            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <SignaturePad
-                                    title="Customer Acceptance"
-                                    onSave={(data) => setFormData({ ...formData, signature_data: data })}
-                                />
-                            </div>
-                        </GlassCard>
-                    </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '20px', marginBottom: '40px' }}>
+                            <PortfolioInput
+                                label="PREFIX"
+                                name="phone_suffix_code"
+                                type="select"
+                                value={formData.phone_suffix_code}
+                                onChange={handleChange}
+                                options={['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(n => ({ value: n, label: `05${n}` }))}
+                            />
+                            <PortfolioInput
+                                label="CONTACT NUMBER"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder="1234567"
+                            />
+                        </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                        <GlassCard style={{ padding: '30px' }}>
-                            <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}><Clock size={16} color="#b08d57" /> Time-slot</h3>
-                            <div style={{ marginBottom: '20px' }}>
-                                <label style={labelStyle}>Date of Arrival</label>
-                                <input name="booking_date" type="date" className="form-control" onChange={handleChange} value={formData.booking_date} required />
-                            </div>
-                            <div>
-                                <label style={labelStyle}>Estimated Time</label>
-                                <input name="booking_time" type="time" className="form-control" onChange={handleChange} value={formData.booking_time} required />
-                            </div>
-                        </GlassCard>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
+                            <PortfolioInput
+                                label="LICENSE PLATE"
+                                name="v_registration_no"
+                                value={formData.v_registration_no}
+                                onChange={handleChange}
+                                placeholder="DUBAI A 12345"
+                            />
+                            <PortfolioInput
+                                label="VEHICLE BRAND"
+                                name="brand"
+                                type="select"
+                                value={formData.brand || 'Toyota'}
+                                onChange={handleChange}
+                                options={CAR_BRANDS.map(b => ({ value: b, label: b }))}
+                            />
+                        </div>
 
-                        <GlassCard style={{ padding: '30px' }}>
-                            <h3 style={{ ...sectionTitleStyle, fontSize: '15px' }}><Award size={16} color="#b08d57" /> Representative</h3>
-                            <label style={labelStyle}>Assign Service Advisor</label>
-                            <select name="advisor" className="form-control" onChange={handleChange}>
-                                <option value="">Select Advisor...</option>
-                                {employees.map(emp => (
-                                    <option key={emp.id} value={emp.id}>{emp.full_name}</option>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                            <PortfolioInput
+                                label="MODEL"
+                                name="model"
+                                value={formData.model || ''}
+                                onChange={handleChange}
+                                placeholder="Select or type..."
+                                list="booking-car-models"
+                            />
+                            <datalist id="booking-car-models">
+                                {CAR_MODELS[formData.brand || 'Toyota']?.map(m => (
+                                    <option key={m} value={m} />
                                 ))}
-                            </select>
-                            <p style={{ fontSize: '11px', color: '#64748b', marginTop: '15px' }}>
-                                The advisor will be notified of this arrival and responsible for the Initial Inspection.
-                            </p>
-                        </GlassCard>
+                            </datalist>
 
-                        <button type="submit" className="btn-primary" style={{ width: '100%', padding: '20px', fontSize: '16px', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', borderRadius: '15px' }}>
-                            <Save size={20} /> SYNC APPOINTMENT
-                        </button>
-                    </div>
+                            <PortfolioInput
+                                label="COLOR"
+                                name="color"
+                                value={formData.color || ''}
+                                onChange={handleChange}
+                                placeholder="Select or type..."
+                                list="booking-car-colors"
+                            />
+                            <datalist id="booking-car-colors">
+                                {CAR_COLORS.map(c => (
+                                    <option key={c} value={c} />
+                                ))}
+                            </datalist>
+                        </div>
+                    </PortfolioCard>
+
+                    {/* Service Config */}
+                    <PortfolioCard>
+                        <PortfolioSectionTitle title="SERVICE CONFIGURATION" />
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '30px' }}>
+                            <PortfolioInput
+                                label="SERVICE CATEGORY"
+                                name="service_category"
+                                type="select"
+                                value={formData.service_category}
+                                onChange={handleChange}
+                                options={categories.map(c => ({ value: c.id, label: c.name }))}
+                            />
+                            {formData.service_category && (
+                                <PortfolioInput
+                                    label="SPECIFIC PACKAGE"
+                                    name="service"
+                                    type="select"
+                                    value={formData.service}
+                                    onChange={(e) => {
+                                        const sId = e.target.value;
+                                        const selectedSvc = services.find(s => s.id === parseInt(sId));
+                                        setFormData({
+                                            ...formData,
+                                            service: sId,
+                                            estimated_total: selectedSvc ? parseFloat(selectedSvc.price) : parseFloat(formData.estimated_total || 0)
+                                        });
+                                    }}
+                                    options={services
+                                        .filter(s => s.category === parseInt(formData.service_category))
+                                        .map(s => ({ value: s.id, label: `${s.name} - AED ${s.price}` }))
+                                    }
+                                />
+                            )}
+                        </div>
+
+                        <div style={{ marginBottom: '30px' }}>
+                            <PortfolioInput
+                                label="ESTIMATED TOTAL (AED)"
+                                name="estimated_total"
+                                type="number"
+                                value={formData.estimated_total}
+                                onChange={handleChange}
+                            />
+                            <div style={{
+                                marginTop: '15px',
+                                padding: '20px',
+                                background: 'rgba(232, 230, 227, 0.05)',
+                                border: '1px solid rgba(232, 230, 227, 0.1)',
+                                borderRadius: '10px'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '10px' }}>
+                                    <span>SUBTOTAL</span>
+                                    <span>AED {parseFloat(formData.estimated_total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: 'rgba(232, 230, 227, 0.6)', marginBottom: '15px' }}>
+                                    <span>VAT (5%)</span>
+                                    <span>AED {(formData.estimated_total * 0.05).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: '500', color: 'var(--cream)', paddingTop: '15px', borderTop: '1px solid rgba(232, 230, 227, 0.1)' }}>
+                                    <span>TOTAL QUOTATION</span>
+                                    <span>AED {(formData.estimated_total * 1.05).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={{ marginTop: '40px' }}>
+                            <PortfolioInput
+                                label="SPECIAL NOTES / INSTRUCTIONS"
+                                name="notes"
+                                type="textarea"
+                                value={formData.notes}
+                                onChange={handleChange}
+                                rows={4}
+                            />
+                        </div>
+                    </PortfolioCard>
                 </div>
-            </form>
-        </div>
+
+                {/* Sidebar */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                    <PortfolioCard>
+                        <PortfolioSectionTitle title="SCHEDULING" />
+
+                        <div style={{ marginBottom: '30px' }}>
+                            <PortfolioInput
+                                label="DATE OF ARRIVAL"
+                                name="booking_date"
+                                type="date"
+                                value={formData.booking_date}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div style={{ marginBottom: '30px' }}>
+                            <PortfolioInput
+                                label="TIME SLOT"
+                                name="booking_time"
+                                type="time"
+                                value={formData.booking_time}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <PortfolioInput
+                            label="ASSIGNED ADVISOR"
+                            name="advisor"
+                            type="select"
+                            value={formData.advisor}
+                            onChange={handleChange}
+                            options={employees.map(e => ({ value: e.id, label: e.full_name }))}
+                        />
+                    </PortfolioCard>
+
+                    <PortfolioCard>
+                        <PortfolioSectionTitle title="AUTHORIZATION" />
+                        <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <SignaturePad
+                                title="CLIENT SIGNATURE"
+                                onSave={(data) => setFormData({ ...formData, signature_data: data })}
+                            />
+                        </div>
+                    </PortfolioCard>
+
+                    <PortfolioButton
+                        onClick={handleSubmit}
+                        primary
+                        style={{ height: '70px', fontSize: '1.2rem' }}
+                    >
+                        CONFIRM RESERVATION
+                    </PortfolioButton>
+                </div>
+            </div>
+        </PortfolioPage>
     );
-};
-
-const labelStyle = {
-    display: 'block',
-    fontSize: '11px',
-    color: '#94a3b8',
-    marginBottom: '8px',
-    textTransform: 'uppercase',
-    fontWeight: '800',
-    letterSpacing: '1px'
-};
-
-const sectionTitleStyle = {
-    margin: '0 0 25px 0',
-    fontSize: '18px',
-    fontWeight: '900',
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px'
 };
 
 export default BookingForm;

@@ -1,8 +1,14 @@
 import React from 'react';
-import GlassCard from '../components/GlassCard';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioGrid,
+    PortfolioButton
+} from '../components/PortfolioComponents';
 import {
     Activity, Calculator, Package, Settings, Globe, UserCircle, UserPlus,
-    BarChart3, Clock, CheckCircle2, AlertCircle, MessageSquare
+    BarChart3, Clock, CheckCircle2, AlertCircle, MessageSquare, ArrowRight
 } from 'lucide-react';
 import QuickNotes from '../components/QuickNotes';
 import MeetingRoomWidget from '../components/MeetingRoomWidget';
@@ -17,182 +23,70 @@ const HomePage = () => {
     }
 
     return (
-        <div className="home-page-container">
-            <style>{`
-                .home-page-container {
-                    padding: 40px;
-                    max-width: 1400px;
-                    margin: 0 auto;
-                }
-                
-                .editorial-grid {
-                    display: grid;
-                    grid-template-columns: repeat(12, 1fr);
-                    grid-auto-rows: minmax(100px, auto);
-                    gap: 30px;
-                }
-                
-                .editorial-card {
-                    background: var(--bg-secondary);
-                    border: 1px solid var(--border-color);
-                    padding: 30px;
-                    display: flex;
-                    flex-direction: column;
-                    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
-
-                .editorial-card:hover {
-                    border-color: var(--gold-mute);
-                    transform: translateY(-5px);
-                }
-
-                .hero-section {
-                    grid-column: span 8;
-                    grid-row: span 4;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: flex-end;
-                    background: var(--editorial-gradient);
-                    padding: 60px;
-                    position: relative;
-                    overflow: hidden;
-                }
-
-                .hero-section::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    width: 40%;
-                    height: 100%;
-                    background: url('/elite_shine_hero.jpg') center/cover;
-                    opacity: 0.15;
-                    mix-blend-mode: overlay;
-                }
-
-                .philosophy-card {
-                    grid-column: span 4;
-                    grid-row: span 4;
-                    background: var(--cream);
-                    color: var(--umber);
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between;
-                }
-
-                .stat-card {
-                    grid-column: span 3;
-                    grid-row: span 2;
-                }
-
-                .wide-card {
-                    grid-column: span 6;
-                    grid-row: span 2;
-                }
-
-                .tall-card {
-                    grid-column: span 3;
-                    grid-row: span 4;
-                }
-
-                @media (max-width: 1024px) {
-                    .hero-section, .philosophy-card, .stat-card, .wide-card, .tall-card {
-                        grid-column: span 6;
-                    }
-                }
-
-                @media (max-width: 768px) {
-                    .editorial-grid {
-                        grid-template-columns: 1fr;
-                    }
-                    .hero-section, .philosophy-card, .stat-card, .wide-card, .tall-card {
-                        grid-column: span 1;
-                        grid-row: span 1;
-                    }
-                }
-
-                .value-serif {
-                    font-family: var(--font-serif);
-                    font-size: 4rem;
-                    line-height: 1;
-                    font-weight: 300;
-                }
-            `}</style>
-
-            <div className="editorial-grid">
-                {/* Hero Section */}
-                <div className="editorial-card hero-section">
-                    <div className="editorial-label" style={{ marginBottom: '20px' }}>ESTABLISHED 2024</div>
-                    <h1 className="serif-display">The Art of <br /> Engineering</h1>
-                    <p className="editorial-text" style={{ maxWidth: '500px', marginTop: '30px', fontSize: '1.2rem' }}>
-                        Precision mechanics meeting high-fidelity design. We redefine the automotive workshop experience through meticulous attention to detail.
-                    </p>
-                    <div style={{ marginTop: 'auto', display: 'flex', gap: '20px' }}>
-                        <button className="btn-primary" style={{ background: 'var(--gold)', color: '#fff' }}>SYSTEMS</button>
-                        <button className="btn-secondary">EXPLORE MISSION</button>
-                    </div>
-                </div>
-
-                {/* Side Philosophy Card */}
-                <div className="editorial-card philosophy-card">
-                    <div>
-                        <div className="editorial-label" style={{ color: 'var(--umber)', opacity: 0.6 }}>CORE STRATEGY</div>
-                        <h2 className="editorial-title" style={{ color: 'var(--umber)', fontSize: '2.5rem', marginTop: '15px' }}>
-                            Precision<br />Through<br />Purpose
-                        </h2>
-                    </div>
-                    <div className="editorial-text" style={{ color: 'var(--umber)', fontSize: '15px', opacity: 0.9 }}>
-                        "Every movement in the workshop is a deliberate step toward perfection."
-                    </div>
-                </div>
-
-                {/* Stats */}
-                <div className="editorial-card stat-card">
-                    <div className="editorial-label">PRODUCTION</div>
-                    <div className="value-serif">24</div>
-                    <div className="editorial-text" style={{ fontSize: '13px', marginTop: 'auto' }}>
-                        Active vehicles in detailing bays.
-                    </div>
-                </div>
-
-                <div className="editorial-card stat-card">
-                    <div className="editorial-label">COMPLIANCE</div>
-                    <div className="value-serif">92%</div>
-                    <div className="editorial-text" style={{ fontSize: '13px', marginTop: 'auto' }}>
-                        Live SLA compliance rating.
-                    </div>
-                </div>
-
-                {/* Meeting/War Room */}
-                <div className="editorial-card wide-card" style={{ padding: 0, overflow: 'hidden' }}>
-                    <MeetingRoomWidget />
-                </div>
-
-                {/* Quick Access / Notes */}
-                <div className="editorial-card tall-card">
-                    <div className="editorial-label">MEMENTO</div>
-                    <div style={{ marginTop: '20px', flex: 1 }}>
-                        <QuickNotes />
-                    </div>
-                </div>
-
-                <div className="editorial-card stat-card">
-                    <div className="editorial-label">NETWORK</div>
-                    <div className="value-serif">04</div>
-                    <div className="editorial-text" style={{ fontSize: '13px', marginTop: 'auto' }}>
-                        Relay nodes active across Dubai.
-                    </div>
-                </div>
-
-                <div className="editorial-card stat-card">
-                    <button className="btn-secondary" style={{ height: '100%', width: '100%', borderRadius: 0, borderStyle: 'dashed' }}>
-                        ADD MODULE
-                    </button>
+        <PortfolioPage>
+            <div style={{ marginBottom: '30px' }}>
+                <div style={{ fontSize: '11px', color: 'var(--gold, #b08d57)', fontWeight: '800', letterSpacing: '2px', marginBottom: '10px', textTransform: 'uppercase' }}>Established 2024</div>
+                <h1 style={{ fontSize: '3.5rem', fontWeight: '300', fontFamily: 'var(--font-serif, serif)', color: '#fff', margin: 0, lineHeight: 1.1 }}>
+                    The Art of <br /> Engineering
+                </h1>
+                <p style={{ maxWidth: '600px', fontSize: '1.1rem', color: 'rgba(255,255,255,0.6)', marginTop: '20px', lineHeight: 1.6 }}>
+                    Precision mechanics meeting high-fidelity design. We redefine the automotive workshop experience through meticulous attention to detail.
+                </p>
+                <div style={{ display: 'flex', gap: '15px', marginTop: '30px' }}>
+                    <PortfolioButton variant="gold">EXPLORE MISSION</PortfolioButton>
+                    <PortfolioButton variant="outline">SYSTEMS</PortfolioButton>
                 </div>
             </div>
-        </div>
+
+            <PortfolioGrid columns="repeat(12, 1fr)" gap="20px">
+                {/* Philosophy Card - Span 4 */}
+                <PortfolioCard style={{ gridColumn: 'span 4', gridRow: 'span 2', background: '#e8e6e3', color: '#1c1917' }}>
+                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                            <div style={{ fontSize: '10px', color: '#1c1917', opacity: 0.6, fontWeight: '700', letterSpacing: '1px' }}>CORE STRATEGY</div>
+                            <h2 style={{ fontSize: '2rem', fontWeight: '300', fontFamily: 'var(--font-serif)', margin: '15px 0 0 0', lineHeight: 1.2 }}>
+                                Precision<br />Through<br />Purpose
+                            </h2>
+                        </div>
+                        <div style={{ fontSize: '14px', lineHeight: 1.6, marginTop: '20px', opacity: 0.8, fontStyle: 'italic' }}>
+                            "Every movement in the workshop is a deliberate step toward perfection."
+                        </div>
+                    </div>
+                </PortfolioCard>
+
+                {/* Stat Cards - Span 3 */}
+                <PortfolioCard style={{ gridColumn: 'span 3' }}>
+                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: '700', letterSpacing: '1px' }}>PRODUCTION</div>
+                    <div style={{ fontSize: '3rem', fontWeight: '300', fontFamily: 'var(--font-serif)', color: 'var(--gold)', margin: '10px 0' }}>24</div>
+                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Active vehicles in detailing bays.</div>
+                </PortfolioCard>
+
+                <PortfolioCard style={{ gridColumn: 'span 3' }}>
+                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: '700', letterSpacing: '1px' }}>COMPLIANCE</div>
+                    <div style={{ fontSize: '3rem', fontWeight: '300', fontFamily: 'var(--font-serif)', color: '#fff', margin: '10px 0' }}>92%</div>
+                    <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Live SLA compliance rating.</div>
+                </PortfolioCard>
+
+                <PortfolioCard style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: '700', letterSpacing: '1px', marginBottom: '5px' }}>NETWORK</div>
+                        <div style={{ fontSize: '2rem', fontWeight: '900', color: '#fff' }}>04</div>
+                    </div>
+                </PortfolioCard>
+
+                {/* Wide Widget - Span 8 */}
+                <PortfolioCard style={{ gridColumn: 'span 8', padding: 0, overflow: 'hidden' }}>
+                    <MeetingRoomWidget />
+                </PortfolioCard>
+
+                {/* Note Widget - Span 4 */}
+                <PortfolioCard style={{ gridColumn: 'span 4' }}>
+                    <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', fontWeight: '700', letterSpacing: '1px', marginBottom: '15px' }}>MEMENTO</div>
+                    <QuickNotes />
+                </PortfolioCard>
+            </PortfolioGrid>
+        </PortfolioPage>
     );
 };
 
 export default HomePage;
-

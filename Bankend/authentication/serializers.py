@@ -20,13 +20,18 @@ class UserSerializer(serializers.ModelSerializer):
     emergency_contact_1 = serializers.SerializerMethodField()
     emergency_contact_2 = serializers.SerializerMethodField()
     
+    # Identification Metadata
+    passport_no = serializers.SerializerMethodField()
+    visa_uid = serializers.SerializerMethodField()
+    nationality = serializers.SerializerMethodField()
+
     # Financials (Protected)
     net_earnings = serializers.SerializerMethodField()
     mistakes_this_month = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'full_name', 'role', 'hr_profile', 'bio', 'profile_image', 'accent_color', 'basic_salary', 'net_earnings', 'mistakes_this_month', 'medical_history', 'family_members_count', 'visa_start_date', 'experience_summary', 'emergency_contact_1', 'emergency_contact_2')
+        fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'full_name', 'role', 'hr_profile', 'bio', 'profile_image', 'accent_color', 'basic_salary', 'net_earnings', 'mistakes_this_month', 'medical_history', 'family_members_count', 'visa_start_date', 'experience_summary', 'emergency_contact_1', 'emergency_contact_2', 'passport_no', 'visa_uid', 'nationality')
 
     def get_hr_profile(self, obj):
         """Return basic hr_profile data without causing circular import"""
@@ -142,6 +147,18 @@ class UserSerializer(serializers.ModelSerializer):
     
     def get_experience_summary(self, obj):
         try: return obj.hr_profile.experience_summary
+        except: return None
+
+    def get_passport_no(self, obj):
+        try: return obj.hr_profile.passport_no
+        except: return None
+    
+    def get_visa_uid(self, obj):
+        try: return obj.hr_profile.visa_uid
+        except: return None
+
+    def get_nationality(self, obj):
+        try: return obj.hr_profile.nationality
         except: return None
 
     def get_emergency_contact_1(self, obj):

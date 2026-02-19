@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Link, useNavigate } from 'react-router-dom';
-import GlassCard from '../../components/GlassCard';
-import { Plus, Search, User, Zap, Mail, Phone, Printer, Target, Calendar, Award, AlertCircle } from 'lucide-react';
-import PrintHeader from '../../components/PrintHeader';
+import { useNavigate } from 'react-router-dom';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioCard,
+    PortfolioButton,
+    PortfolioGrid,
+    PortfolioStats,
+    PortfolioSectionTitle
+} from '../../components/PortfolioComponents';
+import {
+    Plus, Search, User, Mail, Phone, Printer, Target,
+    ArrowRightCircle, Flame, Clock, Calendar, TrendingUp,
+    MessageSquare
+} from 'lucide-react';
 
 const LeadList = () => {
     const navigate = useNavigate();
     const [leads, setLeads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-
     const [users, setUsers] = useState([]);
     const [transferModal, setTransferModal] = useState({ open: false, lead: null });
     const [selectedUser, setSelectedUser] = useState('');
@@ -18,22 +28,11 @@ const LeadList = () => {
     useEffect(() => {
         fetchLeads();
         fetchUsers();
-
-        // Handle direct print request from Reports Dashboard
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('print_confirm') === 'true') {
-            setTimeout(() => {
-                if (window.confirm("Perform bulk print of current CRMOpportunities?")) {
-                    window.print();
-                }
-            }, 1500);
-        }
     }, []);
 
     const fetchLeads = async () => {
         try {
             const res = await api.get('/forms/leads/api/list/');
-            // Handle both array and paginated response
             const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setLeads(data);
         } catch (err) {
@@ -46,7 +45,6 @@ const LeadList = () => {
     const fetchUsers = async () => {
         try {
             const res = await api.get('/api/auth/users/');
-            // Handle both array and paginated response
             const data = Array.isArray(res.data) ? res.data : (res.data.results || []);
             setUsers(data);
         } catch (err) {
@@ -66,246 +64,207 @@ const LeadList = () => {
             fetchLeads();
         } catch (err) {
             console.error('Error transferring lead', err);
-            const msg = err.response?.data?.detail || 'Failed to transfer lead. Check permissions.';
+            const msg = err.response?.data?.detail || 'Failed to transfer lead.';
             alert(msg);
         }
     };
 
     const filteredLeads = leads.filter(l =>
         l.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        l.interested_service.toLowerCase().includes(searchTerm.toLowerCase())
+        l.interested_service.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        l.status.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const getPriorityStyle = (priority) => {
-        switch (priority) {
-            case 'HOT': return { color: '#f43f5e', bg: 'rgba(244, 63, 94, 0.1)', label: 'Hot Opportunity', pulse: true };
-            case 'HIGH': return { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)', label: 'High Priority' };
-            case 'MEDIUM': return { color: '#3b82f6', bg: 'rgba(59, 130, 246, 0.1)', label: 'Standard' };
-            default: return { color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.1)', label: 'Low' };
-        }
-    };
+    const stats = [
+        { label: 'Active Opportunities', value: leads.length, subvalue: 'PIPELINE VOLUME', icon: Target, color: 'var(--gold)' },
+        { label: 'Pipeline Value', value: `AED ${leads.reduce((sum, l) => sum + parseFloat(l.estimated_value || 0), 0).toLocaleString()}`, subvalue: 'CUMULATIVE ESTIMATE', icon: TrendingUp, color: '#10b981' },
+        { label: 'Hot Leads', value: leads.filter(l => l.priority === 'HOT').length, subvalue: 'IMMEDIATE FOCUS', icon: Flame, color: '#f43f5e' },
+        { label: 'Ghost Inbox', value: '4 NEW', subvalue: 'LIVE TRAFFIC', icon: MessageSquare, color: '#3b82f6' }
+    ];
 
-    const getStatusStyle = (status) => {
+    const getStatusColor = (status) => {
         switch (status) {
-            case 'CONVERTED': return { color: '#10b981', label: 'Converted' };
-            case 'QUOTED': return { color: '#8400ff', label: 'Quote Sent' };
-            case 'NEGOTIATION': return { color: '#b08d57', label: 'In Negotiation' };
-            default: return { color: '#3b82f6', label: 'New Lead' };
+            case 'CONVERTED': return '#10b981';
+            case 'LOST': return '#ef4444';
+            case 'QUOTED':
+            case 'NEGOTIATION': return '#f59e0b';
+            default: return '#3b82f6';
         }
     };
 
     return (
-        <div style={{ padding: '30px 20px', animation: 'fadeIn 0.5s ease-out' }}>
-            <PrintHeader title="CRM Leads Registry" />
-            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
-                <div>
-                    <div style={{ fontSize: '10px', color: '#b08d57', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Sales Pipeline</div>
-                    <h1 style={{ fontFamily: 'Outfit, sans-serif', color: '#fff', fontSize: '2.5rem', fontWeight: '900', margin: 0 }}>Opportunities</h1>
-                </div>
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <Link to="/leads/inbox" className="glass-card" style={{ ...actionButtonStyle, textDecoration: 'none', border: '1px solid #b08d57' }}>
-                        <Mail size={18} color="#b08d57" /> Ghost Inbox
-                    </Link>
-                    <button onClick={() => window.print()} className="glass-card" style={actionButtonStyle}>
-                        <Printer size={18} /> Print
-                    </button>
-                    <Link to="/leads/create" className="btn-primary" style={{ ...actionButtonStyle, textDecoration: 'none', background: '#b08d57' }}>
-                        <Plus size={18} /> New Lead
-                    </Link>
-                </div>
-            </header>
+        <PortfolioPage breadcrumb="CRM / Growth / Lead Registry">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="A strategic overview of incoming opportunities and sales trajectory.">
+                    Opportunities Board
+                </PortfolioTitle>
 
-            <div style={{ marginBottom: '30px', position: 'relative' }}>
-                <Search style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', color: '#b08d57' }} size={20} />
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search leads, services, or representatives..."
-                    style={{ padding: '18px 20px 18px 55px', fontSize: '16px', borderRadius: '15px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', width: '100%' }}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <PortfolioButton onClick={() => navigate('/leads/inbox')} variant="secondary">
+                        <Mail size={18} style={{ marginRight: '10px' }} /> GHOST INBOX
+                    </PortfolioButton>
+                    <PortfolioButton onClick={() => navigate('/leads/create')} variant="primary">
+                        <Plus size={18} style={{ marginRight: '10px' }} /> NEW PROSPECT
+                    </PortfolioButton>
+                </div>
             </div>
 
-            <GlassCard style={{ padding: '0', overflow: 'hidden', borderRadius: '20px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                        <tr style={{ background: 'rgba(176, 141, 87, 0.05)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                            <th style={thStyle}>Opportunity / Contact</th>
-                            <th style={thStyle}>Sales Interest</th>
-                            <th style={thStyle}>Priority</th>
-                            <th style={thStyle}>Est. Value</th>
-                            <th style={thStyle}>Assigned To</th>
-                            <th style={thStyle}>Status</th>
-                            <th style={{ ...thStyle, textAlign: 'right' }}>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <tr><td colSpan="7" style={{ padding: '100px', textAlign: 'center', color: '#94a3b8' }}>Synthesizing Sales Data...</td></tr>
-                        ) : filteredLeads.length === 0 ? (
-                            <tr><td colSpan="7" style={{ padding: '100px', textAlign: 'center', color: '#94a3b8' }}>No leads found.</td></tr>
-                        ) : filteredLeads.map((l) => {
-                            const pStyle = getPriorityStyle(l.priority);
-                            const sStyle = getStatusStyle(l.status);
-                            return (
-                                <tr key={l.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: 'background 0.3s' }}>
-                                    <td style={{ padding: '25px 20px' }}>
-                                        <div style={{ fontWeight: '900', fontSize: '16px', color: '#fff', marginBottom: '4px' }}>{l.customer_name}</div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', color: '#94a3b8' }}>
-                                            <Phone size={12} /> {l.phone}
+            <PortfolioStats stats={stats} />
+
+            <div style={{ marginBottom: '60px', position: 'relative', width: '100%' }}>
+                <div style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', padding: '10px 25px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <Search color="var(--gold)" size={20} opacity={0.5} />
+                    <input
+                        type="text"
+                        placeholder="Search pipeline vectors (Client, Service, Status)..."
+                        style={{
+                            padding: '15px 0',
+                            fontSize: '15px',
+                            background: 'transparent',
+                            border: 'none',
+                            color: 'var(--cream)',
+                            width: '100%',
+                            outline: 'none',
+                            letterSpacing: '0.5px',
+                            fontWeight: '300'
+                        }}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', opacity: 0.4 }}>SEARCH.engine</div>
+                </div>
+            </div>
+
+            <PortfolioSectionTitle>Live Opportunities</PortfolioSectionTitle>
+
+            <PortfolioGrid columns="repeat(auto-fill, minmax(420px, 1fr))">
+                {loading ? (
+                    <div style={{ gridColumn: '1/-1', padding: '150px', textAlign: 'center' }}>
+                        <div className="portfolio-spinner" style={{ margin: '0 auto 25px' }} />
+                        <div style={{ color: 'var(--gold)', letterSpacing: '3px', fontWeight: '900', fontSize: '11px' }}>SYNCHRONIZING REPOSITORY...</div>
+                    </div>
+                ) : filteredLeads.length === 0 ? (
+                    <div style={{ gridColumn: '1/-1', padding: '150px', textAlign: 'center', color: 'rgba(232, 230, 227, 0.15)', fontFamily: 'var(--font-serif)', fontSize: '28px' }}>
+                        No opportunities detected in current filter.
+                    </div>
+                ) : filteredLeads.map((lead) => (
+                    <PortfolioCard key={lead.id} style={{ padding: '40px', position: 'relative', background: 'rgba(0,0,0,0.3)' }}>
+                        <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.05 }} />
+                        <div style={{ position: 'relative', zIndex: 1 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+                                <div style={{
+                                    padding: '6px 16px', borderRadius: '30px',
+                                    background: 'rgba(176, 141, 87, 0.08)', border: '1px solid rgba(176, 141, 87, 0.15)',
+                                    color: 'var(--gold)', fontSize: '9px', fontWeight: '900', letterSpacing: '2px'
+                                }}>
+                                    {lead.source?.toUpperCase() || 'UNKNOWN'}
+                                </div>
+                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                    {lead.priority === 'HOT' && <Flame size={16} color="#f43f5e" className="pulse" />}
+                                    <span style={{
+                                        fontSize: '9px', fontWeight: '900', padding: '5px 15px', borderRadius: '30px',
+                                        background: `${getStatusColor(lead.status)}15`,
+                                        color: getStatusColor(lead.status),
+                                        border: `1px solid ${getStatusColor(lead.status)}30`,
+                                        letterSpacing: '1px'
+                                    }}>
+                                        {lead.status.replace('_', ' ')}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div style={{ marginBottom: '35px' }}>
+                                <h3 style={{ fontSize: '28px', fontWeight: '300', color: 'var(--cream)', margin: '0 0 8px 0', fontFamily: 'var(--font-serif)' }}>
+                                    {lead.customer_name}
+                                </h3>
+                                <div style={{ fontSize: '15px', color: 'var(--gold)', fontFamily: 'var(--font-serif)', fontWeight: '300', opacity: 0.7 }}>
+                                    {lead.interested_service}
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '40px', padding: '25px 0', borderTop: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div>
+                                    <div style={{ fontSize: '8px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '8px', opacity: 0.5 }}>OPERATIVE</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--cream)', fontSize: '14px', fontWeight: '300' }}>
+                                        <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(176,141,87,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <User size={12} color="var(--gold)" />
                                         </div>
-                                    </td>
-                                    <td style={{ padding: '25px 20px' }}>
-                                        <div style={{ color: '#fff', fontSize: '14px', fontWeight: '600' }}>{l.interested_service}</div>
-                                        <div style={{ fontSize: '11px', color: '#b08d57', textTransform: 'uppercase', fontWeight: '800' }}>{l.source}</div>
-                                    </td>
-                                    <td style={{ padding: '25px 20px' }}>
-                                        <span style={{
-                                            background: pStyle.bg, color: pStyle.color,
-                                            padding: '6px 12px', borderRadius: '8px',
-                                            fontSize: '10px', fontWeight: '900', textTransform: 'uppercase',
-                                            display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                            animation: pStyle.pulse ? 'pulseGlow 2s infinite' : 'none'
-                                        }}>
-                                            {pStyle.pulse && <Zap size={10} fill={pStyle.color} />} {pStyle.label}
-                                        </span>
-                                    </td>
-                                    <td style={{ padding: '25px 20px', fontWeight: '900', color: '#fff', fontSize: '15px' }}>
-                                        AED {parseFloat(l.estimated_value).toLocaleString()}
-                                    </td>
-                                    <td style={{ padding: '25px 20px' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <User size={14} color="#b08d57" />
-                                            </div>
-                                            <div style={{ fontSize: '13px', color: '#fff' }}>{l.assigned_to_name || 'Unassigned'}</div>
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '25px 20px' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: sStyle.color }}></div>
-                                            <span style={{ fontSize: '13px', color: '#fff', fontWeight: '600' }}>{sStyle.label}</span>
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '25px 20px', textAlign: 'right' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                                            <button
-                                                onClick={() => setTransferModal({ open: true, lead: l })}
-                                                style={{
-                                                    background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6',
-                                                    border: '1px solid rgba(59, 130, 246, 0.3)', padding: '10px',
-                                                    borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center'
-                                                }}
-                                                title="Transfer Lead"
-                                            >
-                                                <User size={16} />
-                                            </button>
-                                            <button
-                                                onClick={() => navigate('/bookings/create', { state: { lead: l } })}
-                                                style={{
-                                                    background: 'rgba(176, 141, 87, 0.1)', color: '#b08d57',
-                                                    border: '1px solid rgba(176, 141, 87, 0.3)', padding: '10px 18px',
-                                                    borderRadius: '10px', fontSize: '11px', fontWeight: '900',
-                                                    cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '8px'
-                                                }}
-                                            >
-                                                <Target size={14} /> BOOK
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </GlassCard>
+                                        {lead.assigned_to?.toUpperCase() || 'UNASSIGNED'}
+                                    </div>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                    <div style={{ fontSize: '8px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '8px', opacity: 0.5 }}>VALUATION</div>
+                                    <div style={{ fontSize: '20px', fontWeight: '300', color: 'var(--cream)', fontFamily: 'var(--font-serif)' }}>
+                                        <span style={{ fontSize: '12px', verticalAlign: 'middle', marginRight: '5px', opacity: 0.5 }}>AED</span>
+                                        {parseFloat(lead.estimated_value || 0).toLocaleString()}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '20px' }}>
+                                <PortfolioButton
+                                    variant="glass"
+                                    style={{ flex: 1, fontSize: '10px' }}
+                                    onClick={() => setTransferModal({ open: true, lead: lead })}
+                                >
+                                    REASSIGN
+                                </PortfolioButton>
+                                <PortfolioButton
+                                    variant="gold"
+                                    style={{ flex: 1, fontSize: '10px' }}
+                                    onClick={() => navigate(`/leads/${lead.id}`)}
+                                >
+                                    PIPELINE.details <ArrowRightCircle size={14} style={{ marginLeft: '10px' }} />
+                                </PortfolioButton>
+                            </div>
+                        </div>
+                    </PortfolioCard>
+                ))}
+            </PortfolioGrid>
 
             {/* Transfer Modal */}
             {transferModal.open && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-                    background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(5px)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 3000
+                    background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999
                 }}>
-                    <GlassCard style={{ padding: '30px', width: '400px', border: '1px solid #b08d57' }}>
-                        <h3 style={{ color: '#fff', margin: '0 0 20px 0' }}>Transfer Lead</h3>
-                        <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '20px' }}>
-                            Assign <strong>{transferModal.lead.customer_name}</strong> to a new sales representative.
+                    <PortfolioCard style={{ width: '450px', padding: '40px', border: '1px solid var(--gold)' }}>
+                        <PortfolioSectionTitle style={{ marginBottom: '15px' }}>Transfer Opportunity</PortfolioSectionTitle>
+                        <p style={{ color: 'rgba(232, 230, 227, 0.5)', fontSize: '14px', marginBottom: '30px', lineHeight: '1.6' }}>
+                            Reassigning <strong>{transferModal.lead.customer_name}</strong> to a new representative will synchronize all CRM notifications.
                         </p>
-                        <select
-                            value={selectedUser}
-                            onChange={(e) => setSelectedUser(e.target.value)}
-                            style={{
-                                width: '100%', padding: '12px', borderRadius: '10px',
-                                background: '#1e293b', border: '1px solid rgba(255,255,255,0.1)',
-                                color: '#fff', marginBottom: '20px', outline: 'none'
-                            }}
-                        >
-                            <option value="">Select Representative...</option>
-                            {users.map(u => (
-                                <option key={u.id} value={u.id}>{u.username}</option>
-                            ))}
-                        </select>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                            <button
-                                onClick={() => setTransferModal({ open: false, lead: null })}
+
+                        <div style={{ marginBottom: '40px' }}>
+                            <label style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', display: 'block', marginBottom: '12px' }}>SELECT NEW OPERATIVE</label>
+                            <select
+                                value={selectedUser}
+                                onChange={(e) => setSelectedUser(e.target.value)}
                                 style={{
-                                    padding: '10px 20px', borderRadius: '8px',
-                                    background: 'transparent', border: '1px solid rgba(255,255,255,0.2)',
-                                    color: '#fff', cursor: 'pointer'
+                                    width: '100%',
+                                    background: 'rgba(232, 230, 227, 0.02)',
+                                    border: '1px solid rgba(232, 230, 227, 0.1)',
+                                    borderRadius: '12px',
+                                    padding: '15px',
+                                    color: 'var(--cream)',
+                                    outline: 'none',
+                                    fontSize: '14px'
                                 }}
                             >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleTransfer}
-                                style={{
-                                    padding: '10px 20px', borderRadius: '8px',
-                                    background: '#b08d57', border: 'none',
-                                    color: '#fff', fontWeight: 'bold', cursor: 'pointer'
-                                }}
-                            >
-                                Transfer
-                            </button>
+                                <option value="">Select individual...</option>
+                                {users.map(u => <option key={u.id} value={u.username}>{u.username}</option>)}
+                            </select>
                         </div>
-                    </GlassCard>
+
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                            <PortfolioButton onClick={() => setTransferModal({ open: false, lead: null })} variant="secondary" style={{ flex: 1 }}>CANCEL</PortfolioButton>
+                            <PortfolioButton onClick={handleTransfer} variant="primary" style={{ flex: 1 }}>CONFIRM TRANSFER</PortfolioButton>
+                        </div>
+                    </PortfolioCard>
                 </div>
             )}
-
-            <style>{`
-                @keyframes pulseGlow {
-                    0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.4); }
-                    70% { box-shadow: 0 0 0 10px rgba(244, 63, 94, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
-                }
-            `}</style>
-        </div>
+        </PortfolioPage>
     );
-};
-
-const thStyle = {
-    padding: '20px',
-    textAlign: 'left',
-    fontSize: '11px',
-    textTransform: 'uppercase',
-    color: '#b08d57',
-    fontWeight: '900',
-    letterSpacing: '1px'
-};
-
-const actionButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-    padding: '12px 25px',
-    borderRadius: '12px',
-    fontSize: '14px',
-    fontWeight: '900',
-    cursor: 'pointer',
-    background: 'rgba(255,255,255,0.05)',
-    border: '1px solid rgba(255,255,255,0.1)',
-    color: '#fff'
 };
 
 export default LeadList;

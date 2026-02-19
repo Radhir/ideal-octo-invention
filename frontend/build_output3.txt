@@ -1,0 +1,199 @@
+[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+src/pages/MissionControl.jsx (14:62): "Global" is not exported by "node_modules/lucide-react/dist/esm/lucide-react.js", imported by "src/pages/MissionControl.jsx".
+[32mΓ£ô[39m 3918 modules transformed.
+rendering chunks...
+[esbuild css minify]
+Γû▓ [WARNING] "flexDirection" is not a known CSS property [unsupported-css-property]
+
+    <stdin>:1299:142:
+      1299 Γöé ...g: 24px; display: flex; flexDirection: column; gap: 32px; ove...
+           Γöé                            ~~~~~~~~~~~~~
+           Γò╡                            flex-direction
+
+  Did you mean "flex-direction" instead?
+
+
+computing gzip size...
+[2mdist/[22m[32mindex.html                                [39m[1m[2m  0.68 kB[22m[1m[22m[2m Γöé gzip:   0.39 kB[22m
+[2mdist/[22m[35massets/InvoicePrint-DDNjRXVA.css          [39m[1m[2m  2.90 kB[22m[1m[22m[2m Γöé gzip:   1.00 kB[22m
+[2mdist/[22m[35massets/WarrantyPortalView-DMPC0BhY.css    [39m[1m[2m  2.93 kB[22m[1m[22m[2m Γöé gzip:   1.04 kB[22m
+[2mdist/[22m[35massets/JobCardPrint-D916brSP.css          [39m[1m[2m  3.32 kB[22m[1m[22m[2m Γöé gzip:   1.05 kB[22m
+[2mdist/[22m[35massets/PPFWarrantyPrint-Dj-l5m5F.css      [39m[1m[2m  3.93 kB[22m[1m[22m[2m Γöé gzip:   1.22 kB[22m
+[2mdist/[22m[35massets/EliteProDashboard-BOevQhtI.css     [39m[1m[2m  4.16 kB[22m[1m[22m[2m Γöé gzip:   1.23 kB[22m
+[2mdist/[22m[35massets/Portfolio-DUsMIe7S.css             [39m[1m[2m  4.45 kB[22m[1m[22m[2m Γöé gzip:   1.42 kB[22m
+[2mdist/[22m[35massets/PickDropTrackingPage-CIGW-MKW.css  [39m[1m[2m 15.61 kB[22m[1m[22m[2m Γöé gzip:   6.46 kB[22m
+[2mdist/[22m[35massets/index-HLLYt1rG.css                 [39m[1m[2m 31.90 kB[22m[1m[22m[2m Γöé gzip:   6.18 kB[22m
+[2mdist/[22m[36massets/check-D86Nge8w.js                  [39m[1m[2m  0.13 kB[22m[1m[22m[2m Γöé gzip:   0.14 kB[22m
+[2mdist/[22m[36massets/chevron-left-Bk5bX7yn.js           [39m[1m[2m  0.13 kB[22m[1m[22m[2m Γöé gzip:   0.14 kB[22m
+[2mdist/[22m[36massets/navigation-CPjqmqcQ.js             [39m[1m[2m  0.15 kB[22m[1m[22m[2m Γöé gzip:   0.15 kB[22m
+[2mdist/[22m[36massets/plus-Bqc7ACg4.js                   [39m[1m[2m  0.15 kB[22m[1m[22m[2m Γöé gzip:   0.15 kB[22m
+[2mdist/[22m[36massets/arrow-up-right-CDNDCSdE.js         [39m[1m[2m  0.17 kB[22m[1m[22m[2m Γöé gzip:   0.16 kB[22m
+[2mdist/[22m[36massets/clock-vtMG77o7.js                  [39m[1m[2m  0.17 kB[22m[1m[22m[2m Γöé gzip:   0.16 kB[22m
+[2mdist/[22m[36massets/search-Bj8SKIQP.js                 [39m[1m[2m  0.18 kB[22m[1m[22m[2m Γöé gzip:   0.17 kB[22m
+[2mdist/[22m[36massets/trending-up-V6crByG1.js            [39m[1m[2m  0.18 kB[22m[1m[22m[2m Γöé gzip:   0.17 kB[22m
+[2mdist/[22m[36massets/play-Dh4UxAiN.js                   [39m[1m[2m  0.19 kB[22m[1m[22m[2m Γöé gzip:   0.18 kB[22m
+[2mdist/[22m[36massets/circle-check-big-CqZPfE41.js       [39m[1m[2m  0.20 kB[22m[1m[22m[2m Γöé gzip:   0.18 kB[22m
+[2mdist/[22m[36massets/rotate-ccw-AElasNSp.js             [39m[1m[2m  0.20 kB[22m[1m[22m[2m Γöé gzip:   0.18 kB[22m
+[2mdist/[22m[36massets/GlassCard-VmBW0nfQ.js              [39m[1m[2m  0.20 kB[22m[1m[22m[2m Γöé gzip:   0.17 kB[22m
+[2mdist/[22m[36massets/dollar-sign-CbteXS0V.js            [39m[1m[2m  0.22 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/circle-arrow-right-CVvPn65N.js     [39m[1m[2m  0.22 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/target-UR0A7djR.js                 [39m[1m[2m  0.23 kB[22m[1m[22m[2m Γöé gzip:   0.16 kB[22m
+[2mdist/[22m[36massets/download-CEuqrSXW.js               [39m[1m[2m  0.23 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/message-square-BuWLmy2I.js         [39m[1m[2m  0.23 kB[22m[1m[22m[2m Γöé gzip:   0.20 kB[22m
+[2mdist/[22m[36massets/history-4Ip-wc2i.js                [39m[1m[2m  0.24 kB[22m[1m[22m[2m Γöé gzip:   0.20 kB[22m
+[2mdist/[22m[36massets/globe-C7-KEbXk.js                  [39m[1m[2m  0.24 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/user-check-DnIS7NKI.js             [39m[1m[2m  0.24 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m
+[2mdist/[22m[36massets/circle-alert-BLNxc2qu.js           [39m[1m[2m  0.25 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/funnel-Dta1AA_r.js                 [39m[1m[2m  0.26 kB[22m[1m[22m[2m Γöé gzip:   0.22 kB[22m
+[2mdist/[22m[36massets/map-pin-Bxc9rZ0G.js                [39m[1m[2m  0.26 kB[22m[1m[22m[2m Γöé gzip:   0.22 kB[22m
+[2mdist/[22m[36massets/triangle-alert-XTh6e9j_.js         [39m[1m[2m  0.27 kB[22m[1m[22m[2m Γöé gzip:   0.22 kB[22m
+[2mdist/[22m[36massets/shield-DW-iapL-.js                 [39m[1m[2m  0.27 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/chart-pie-DJLTsq8x.js              [39m[1m[2m  0.27 kB[22m[1m[22m[2m Γöé gzip:   0.22 kB[22m
+[2mdist/[22m[36massets/award-B9kznoAz.js                  [39m[1m[2m  0.28 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/wallet-C399m9KN.js                 [39m[1m[2m  0.29 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m
+[2mdist/[22m[36massets/send-BExmG-HA.js                   [39m[1m[2m  0.29 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/shopping-cart-BKrBTu8V.js          [39m[1m[2m  0.29 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/hash-BQwvs8qa.js                   [39m[1m[2m  0.30 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/wrench-CSmnn-te.js                 [39m[1m[2m  0.30 kB[22m[1m[22m[2m Γöé gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/plane-DSs-aFdy.js                  [39m[1m[2m  0.31 kB[22m[1m[22m[2m Γöé gzip:   0.25 kB[22m
+[2mdist/[22m[36massets/box-C5yXEXGW.js                    [39m[1m[2m  0.31 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/user-plus-06XbYg3X.js              [39m[1m[2m  0.31 kB[22m[1m[22m[2m Γöé gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/badge-check-DxP3Yp2h.js            [39m[1m[2m  0.32 kB[22m[1m[22m[2m Γöé gzip:   0.21 kB[22m
+[2mdist/[22m[36massets/printer-DsukvWhp.js                [39m[1m[2m  0.32 kB[22m[1m[22m[2m Γöé gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/refresh-cw-CItm2u7O.js             [39m[1m[2m  0.32 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/phone-6HxHXFnr.js                  [39m[1m[2m  0.32 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/save-DHTSudP5.js                   [39m[1m[2m  0.33 kB[22m[1m[22m[2m Γöé gzip:   0.23 kB[22m
+[2mdist/[22m[36massets/trash-2-CKKUuZT7.js                [39m[1m[2m  0.33 kB[22m[1m[22m[2m Γöé gzip:   0.22 kB[22m
+[2mdist/[22m[36massets/camera-JWm6-JoL.js                 [39m[1m[2m  0.34 kB[22m[1m[22m[2m Γöé gzip:   0.25 kB[22m
+[2mdist/[22m[36massets/layout-grid-BMe9Sg5k.js            [39m[1m[2m  0.35 kB[22m[1m[22m[2m Γöé gzip:   0.19 kB[22m
+[2mdist/[22m[36massets/shield-alert-BBnz1862.js           [39m[1m[2m  0.35 kB[22m[1m[22m[2m Γöé gzip:   0.26 kB[22m
+[2mdist/[22m[36massets/building-2-BRBNCKA1.js             [39m[1m[2m  0.38 kB[22m[1m[22m[2m Γöé gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/circle-arrow-up--1yYw9Ci.js        [39m[1m[2m  0.39 kB[22m[1m[22m[2m Γöé gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/truck-v-him8WZ.js                  [39m[1m[2m  0.41 kB[22m[1m[22m[2m Γöé gzip:   0.27 kB[22m
+[2mdist/[22m[36massets/clipboard-list-Cdj9q-Ck.js         [39m[1m[2m  0.41 kB[22m[1m[22m[2m Γöé gzip:   0.26 kB[22m
+[2mdist/[22m[36massets/layers-HfOxE6ri.js                 [39m[1m[2m  0.42 kB[22m[1m[22m[2m Γöé gzip:   0.24 kB[22m
+[2mdist/[22m[36massets/pen-tool-n8VRBqoK.js               [39m[1m[2m  0.47 kB[22m[1m[22m[2m Γöé gzip:   0.30 kB[22m
+[2mdist/[22m[36massets/star-BXk506WX.js                   [39m[1m[2m  0.47 kB[22m[1m[22m[2m Γöé gzip:   0.29 kB[22m
+[2mdist/[22m[36massets/ship-Ch1_H5Ha.js                   [39m[1m[2m  0.48 kB[22m[1m[22m[2m Γöé gzip:   0.28 kB[22m
+[2mdist/[22m[36massets/PrintHeader-FhhmZeV_.js            [39m[1m[2m  1.07 kB[22m[1m[22m[2m Γöé gzip:   0.56 kB[22m
+[2mdist/[22m[36massets/DateRangePicker-DVXMwUA2.js        [39m[1m[2m  1.31 kB[22m[1m[22m[2m Γöé gzip:   0.57 kB[22m
+[2mdist/[22m[36massets/UnderConstruction-DbkQBdIk.js      [39m[1m[2m  1.58 kB[22m[1m[22m[2m Γöé gzip:   0.83 kB[22m
+[2mdist/[22m[36massets/SignaturePad-DNpFn9xP.js           [39m[1m[2m  2.20 kB[22m[1m[22m[2m Γöé gzip:   1.05 kB[22m
+[2mdist/[22m[36massets/ScannerLanding-C3-ifY9J.js         [39m[1m[2m  2.20 kB[22m[1m[22m[2m Γöé gzip:   1.06 kB[22m
+[2mdist/[22m[36massets/LeaveForm-DkgWnw8j.js              [39m[1m[2m  2.49 kB[22m[1m[22m[2m Γöé gzip:   1.15 kB[22m
+[2mdist/[22m[36massets/index-CLYYiDev.js                  [39m[1m[2m  2.63 kB[22m[1m[22m[2m Γöé gzip:   0.93 kB[22m
+[2mdist/[22m[36massets/WorkshopRegistry-CHxbVqju.js       [39m[1m[2m  2.78 kB[22m[1m[22m[2m Γöé gzip:   1.25 kB[22m
+[2mdist/[22m[36massets/RequestForm-VjUiwW3U.js            [39m[1m[2m  3.14 kB[22m[1m[22m[2m Γöé gzip:   1.10 kB[22m
+[2mdist/[22m[36massets/FormsHub-DOLH60N9.js               [39m[1m[2m  3.36 kB[22m[1m[22m[2m Γöé gzip:   1.52 kB[22m
+[2mdist/[22m[36massets/InvoicePrint-HntdduXQ.js           [39m[1m[2m  3.36 kB[22m[1m[22m[2m Γöé gzip:   1.25 kB[22m
+[2mdist/[22m[36massets/ChecklistForm-CrDd_IEr.js          [39m[1m[2m  3.58 kB[22m[1m[22m[2m Γöé gzip:   1.23 kB[22m
+[2mdist/[22m[36massets/StockForm-D_4voKfq.js              [39m[1m[2m  3.59 kB[22m[1m[22m[2m Γöé gzip:   1.54 kB[22m
+[2mdist/[22m[36massets/TeamSettings-BFbK7qsj.js           [39m[1m[2m  4.04 kB[22m[1m[22m[2m Γöé gzip:   1.44 kB[22m
+[2mdist/[22m[36massets/PayrollConsole-CKHejvBq.js         [39m[1m[2m  4.04 kB[22m[1m[22m[2m Γöé gzip:   1.60 kB[22m
+[2mdist/[22m[36massets/InvoiceBook-BgXm18Qw.js            [39m[1m[2m  4.11 kB[22m[1m[22m[2m Γöé gzip:   1.65 kB[22m
+[2mdist/[22m[36massets/HRRoster-COAJHtUk.js               [39m[1m[2m  4.24 kB[22m[1m[22m[2m Γöé gzip:   1.63 kB[22m
+[2mdist/[22m[36massets/EliteProDashboard-DviGN34d.js      [39m[1m[2m  4.35 kB[22m[1m[22m[2m Γöé gzip:   1.52 kB[22m
+[2mdist/[22m[36massets/WorkshopDiary-CqyxfI5N.js          [39m[1m[2m  4.54 kB[22m[1m[22m[2m Γöé gzip:   1.81 kB[22m
+[2mdist/[22m[36massets/RequestList-CxB-mGB2.js            [39m[1m[2m  4.62 kB[22m[1m[22m[2m Γöé gzip:   1.54 kB[22m
+[2mdist/[22m[36massets/BudgetManager-DF4KOoHA.js          [39m[1m[2m  4.64 kB[22m[1m[22m[2m Γöé gzip:   1.77 kB[22m
+[2mdist/[22m[36massets/WorkshopDelayForm-CgOlmdur.js      [39m[1m[2m  4.70 kB[22m[1m[22m[2m Γöé gzip:   1.78 kB[22m
+[2mdist/[22m[36massets/ProcurementManager-Dd838oYJ.js     [39m[1m[2m  4.71 kB[22m[1m[22m[2m Γöé gzip:   1.89 kB[22m
+[2mdist/[22m[36massets/ManagementDashboard-BgV1aH_f.js    [39m[1m[2m  4.73 kB[22m[1m[22m[2m Γöé gzip:   1.77 kB[22m
+[2mdist/[22m[36massets/StockMovement-CGnhl02b.js          [39m[1m[2m  4.75 kB[22m[1m[22m[2m Γöé gzip:   1.99 kB[22m
+[2mdist/[22m[36massets/SupplierList-CKcKE2g_.js           [39m[1m[2m  4.76 kB[22m[1m[22m[2m Γöé gzip:   1.81 kB[22m
+[2mdist/[22m[36massets/HRRules-BCHYbu6L.js                [39m[1m[2m  4.78 kB[22m[1m[22m[2m Γöé gzip:   2.03 kB[22m
+[2mdist/[22m[36massets/AttendanceBoard-DPZDsZFZ.js        [39m[1m[2m  4.85 kB[22m[1m[22m[2m Γöé gzip:   1.86 kB[22m
+[2mdist/[22m[36massets/VehicleForm-Bf6zzBEA.js            [39m[1m[2m  4.93 kB[22m[1m[22m[2m Γöé gzip:   1.72 kB[22m
+[2mdist/[22m[36massets/TechnicianAnalytics-DcvIDx_t.js    [39m[1m[2m  4.95 kB[22m[1m[22m[2m Γöé gzip:   1.82 kB[22m
+[2mdist/[22m[36massets/LeaveList-CZMONquv.js              [39m[1m[2m  4.99 kB[22m[1m[22m[2m Γöé gzip:   1.60 kB[22m
+[2mdist/[22m[36massets/WarrantyPortalView-CxsF9xV2.js     [39m[1m[2m  5.01 kB[22m[1m[22m[2m Γöé gzip:   1.23 kB[22m
+[2mdist/[22m[36massets/MediaLibrary-tqGxfagR.js           [39m[1m[2m  5.09 kB[22m[1m[22m[2m Γöé gzip:   1.80 kB[22m
+[2mdist/[22m[36massets/OrderConfirmation-CVuxi7dI.js      [39m[1m[2m  5.10 kB[22m[1m[22m[2m Γöé gzip:   1.65 kB[22m
+[2mdist/[22m[36massets/Portfolio-DXN2DX-X.js              [39m[1m[2m  5.10 kB[22m[1m[22m[2m Γöé gzip:   2.01 kB[22m
+[2mdist/[22m[36massets/WorkshopIncidentForm-B6NUReNa.js   [39m[1m[2m  5.15 kB[22m[1m[22m[2m Γöé gzip:   1.87 kB[22m
+[2mdist/[22m[36massets/PPFList-sFxNDWKw.js                [39m[1m[2m  5.15 kB[22m[1m[22m[2m Γöé gzip:   1.84 kB[22m
+[2mdist/[22m[36massets/CommissionDashboard-D1fQXSjP.js    [39m[1m[2m  5.19 kB[22m[1m[22m[2m Γöé gzip:   1.88 kB[22m
+[2mdist/[22m[36massets/BookingCalendar-CeVG0xzo.js        [39m[1m[2m  5.27 kB[22m[1m[22m[2m Γöé gzip:   2.10 kB[22m
+[2mdist/[22m[36massets/CeramicList-Zuve4hYi.js            [39m[1m[2m  5.29 kB[22m[1m[22m[2m Γöé gzip:   1.84 kB[22m
+[2mdist/[22m[36massets/JobList-BGPII6H_.js                [39m[1m[2m  5.45 kB[22m[1m[22m[2m Γöé gzip:   2.11 kB[22m
+[2mdist/[22m[36massets/PortfolioComponents-DX1so9j-.js    [39m[1m[2m  5.60 kB[22m[1m[22m[2m Γöé gzip:   1.85 kB[22m
+[2mdist/[22m[36massets/WarrantyClaims-CIJIYrA-.js         [39m[1m[2m  5.65 kB[22m[1m[22m[2m Γöé gzip:   2.05 kB[22m
+[2mdist/[22m[36massets/InvoiceList-DqgN13F-.js            [39m[1m[2m  5.72 kB[22m[1m[22m[2m Γöé gzip:   1.96 kB[22m
+[2mdist/[22m[36massets/InvoiceBook-CLduHiPZ.js            [39m[1m[2m  5.85 kB[22m[1m[22m[2m Γöé gzip:   2.12 kB[22m
+[2mdist/[22m[36massets/CustomerDetail-CjJ97eHc.js         [39m[1m[2m  5.96 kB[22m[1m[22m[2m Γöé gzip:   2.17 kB[22m
+[2mdist/[22m[36massets/LogisticsDashboard-eAjxmgfC.js     [39m[1m[2m  5.97 kB[22m[1m[22m[2m Γöé gzip:   1.97 kB[22m
+[2mdist/[22m[36massets/OperationForm-CiXTO4KD.js          [39m[1m[2m  6.01 kB[22m[1m[22m[2m Γöé gzip:   2.11 kB[22m
+[2mdist/[22m[36massets/FinancialReport-Dj2wp99h.js        [39m[1m[2m  6.09 kB[22m[1m[22m[2m Γöé gzip:   2.22 kB[22m
+[2mdist/[22m[36massets/FinanceOverview-D9Hb1pEn.js        [39m[1m[2m  6.14 kB[22m[1m[22m[2m Γöé gzip:   2.14 kB[22m
+[2mdist/[22m[36massets/DriverDashboard-D2QO3Pme.js        [39m[1m[2m  6.22 kB[22m[1m[22m[2m Γöé gzip:   2.17 kB[22m
+[2mdist/[22m[36massets/VehicleMaster-CSXReIZF.js          [39m[1m[2m  6.22 kB[22m[1m[22m[2m Γöé gzip:   2.18 kB[22m
+[2mdist/[22m[36massets/CustomerLiveTracker-bSRem8F9.js    [39m[1m[2m  6.31 kB[22m[1m[22m[2m Γöé gzip:   2.14 kB[22m
+[2mdist/[22m[36massets/JobCardPrint-DHzaP7GS.js           [39m[1m[2m  6.34 kB[22m[1m[22m[2m Γöé gzip:   1.72 kB[22m
+[2mdist/[22m[36massets/TradingDashboard-D6cPOBIk.js       [39m[1m[2m  6.41 kB[22m[1m[22m[2m Γöé gzip:   2.01 kB[22m
+[2mdist/[22m[36massets/CeramicForm-vWXRTujE.js            [39m[1m[2m  6.44 kB[22m[1m[22m[2m Γöé gzip:   2.06 kB[22m
+[2mdist/[22m[36massets/PPFForm-RTZeNJR4.js                [39m[1m[2m  6.54 kB[22m[1m[22m[2m Γöé gzip:   2.13 kB[22m
+[2mdist/[22m[36massets/PPFDetail-DVH7a5m5.js              [39m[1m[2m  6.56 kB[22m[1m[22m[2m Γöé gzip:   2.18 kB[22m
+[2mdist/[22m[36massets/OperationList-Cmyh10xk.js          [39m[1m[2m  6.63 kB[22m[1m[22m[2m Γöé gzip:   2.40 kB[22m
+[2mdist/[22m[36massets/HRHub-EmdLTtqh.js                  [39m[1m[2m  6.66 kB[22m[1m[22m[2m Γöé gzip:   2.38 kB[22m
+[2mdist/[22m[36massets/SLAOverview-BzoSNLmf.js            [39m[1m[2m  6.69 kB[22m[1m[22m[2m Γöé gzip:   2.17 kB[22m
+[2mdist/[22m[36massets/SchedulingPortal-DRP53Gjd.js       [39m[1m[2m  6.76 kB[22m[1m[22m[2m Γöé gzip:   2.31 kB[22m
+[2mdist/[22m[36massets/JobReport-BxWcT6bG.js              [39m[1m[2m  6.86 kB[22m[1m[22m[2m Γöé gzip:   2.49 kB[22m
+[2mdist/[22m[36massets/PurchaseEntry-B5EVFq0m.js          [39m[1m[2m  6.87 kB[22m[1m[22m[2m Γöé gzip:   2.23 kB[22m
+[2mdist/[22m[36massets/JobBoard-Cbnn3w5j.js               [39m[1m[2m  6.88 kB[22m[1m[22m[2m Γöé gzip:   2.55 kB[22m
+[2mdist/[22m[36massets/AdvisorDailyReport-uoxpy6J-.js     [39m[1m[2m  6.90 kB[22m[1m[22m[2m Γöé gzip:   2.54 kB[22m
+[2mdist/[22m[36massets/InventoryReport-DiNrNQze.js        [39m[1m[2m  6.93 kB[22m[1m[22m[2m Γöé gzip:   2.40 kB[22m
+[2mdist/[22m[36massets/TransactionEntry-C0vAuoGM.js       [39m[1m[2m  7.10 kB[22m[1m[22m[2m Γöé gzip:   2.87 kB[22m
+[2mdist/[22m[36massets/CeramicDetail-CNJQAQ3j.js          [39m[1m[2m  7.20 kB[22m[1m[22m[2m Γöé gzip:   2.31 kB[22m
+[2mdist/[22m[36massets/ProjectsPage-oS6jsp5P.js           [39m[1m[2m  7.20 kB[22m[1m[22m[2m Γöé gzip:   2.46 kB[22m
+[2mdist/[22m[36massets/RiskAuditPage-CnogusfG.js          [39m[1m[2m  7.38 kB[22m[1m[22m[2m Γöé gzip:   2.54 kB[22m
+[2mdist/[22m[36massets/InvoiceDetail-CJCi6FGf.js          [39m[1m[2m  7.43 kB[22m[1m[22m[2m Γöé gzip:   2.26 kB[22m
+[2mdist/[22m[36massets/UserProfilePage-BmQwm_87.js        [39m[1m[2m  7.63 kB[22m[1m[22m[2m Γöé gzip:   2.90 kB[22m
+[2mdist/[22m[36massets/Chat-eep_i1ib.js                   [39m[1m[2m  7.67 kB[22m[1m[22m[2m Γöé gzip:   2.48 kB[22m
+[2mdist/[22m[36massets/WorkshopPortal-XUkU4euX.js         [39m[1m[2m  7.78 kB[22m[1m[22m[2m Γöé gzip:   2.31 kB[22m
+[2mdist/[22m[36massets/JobCardHub-DsBesz0I.js             [39m[1m[2m  7.81 kB[22m[1m[22m[2m Γöé gzip:   2.72 kB[22m
+[2mdist/[22m[36massets/EstimateDetail-CV9251oq.js         [39m[1m[2m  7.87 kB[22m[1m[22m[2m Γöé gzip:   2.37 kB[22m
+[2mdist/[22m[36massets/ChartOfAccounts-CmQSqR-s.js        [39m[1m[2m  8.02 kB[22m[1m[22m[2m Γöé gzip:   2.71 kB[22m
+[2mdist/[22m[36massets/PPFWarrantyPrint-Dhrot7h1.js       [39m[1m[2m  8.10 kB[22m[1m[22m[2m Γöé gzip:   2.25 kB[22m
+[2mdist/[22m[36massets/AdvisorDashboard-C3QiAL2m.js       [39m[1m[2m  8.54 kB[22m[1m[22m[2m Γöé gzip:   2.36 kB[22m
+[2mdist/[22m[36massets/OperationsDashboard-9BrBd64F.js    [39m[1m[2m  8.62 kB[22m[1m[22m[2m Γöé gzip:   2.40 kB[22m
+[2mdist/[22m[36massets/LeadList-CaiPZbVs.js               [39m[1m[2m  8.75 kB[22m[1m[22m[2m Γöé gzip:   3.05 kB[22m
+[2mdist/[22m[36massets/LeadDetail-D7ZRqzG0.js             [39m[1m[2m  8.82 kB[22m[1m[22m[2m Γöé gzip:   2.57 kB[22m
+[2mdist/[22m[36massets/ServiceAdvisorForm-BXHE7N0z.js     [39m[1m[2m  8.85 kB[22m[1m[22m[2m Γöé gzip:   2.82 kB[22m
+[2mdist/[22m[36massets/IDCardGenerator-B27ijCTM.js        [39m[1m[2m  8.90 kB[22m[1m[22m[2m Γöé gzip:   3.01 kB[22m
+[2mdist/[22m[36massets/StockList-C2Q6agcS.js              [39m[1m[2m  9.03 kB[22m[1m[22m[2m Γöé gzip:   3.05 kB[22m
+[2mdist/[22m[36massets/PPFWarrantyForm-B8Dlr0xu.js        [39m[1m[2m  9.04 kB[22m[1m[22m[2m Γöé gzip:   2.61 kB[22m
+[2mdist/[22m[36massets/EmployeeRegistration-nchbQXnE.js   [39m[1m[2m  9.20 kB[22m[1m[22m[2m Γöé gzip:   2.77 kB[22m
+[2mdist/[22m[36massets/AccessManagement-Bc2OiMQj.js       [39m[1m[2m  9.33 kB[22m[1m[22m[2m Γöé gzip:   3.28 kB[22m
+[2mdist/[22m[36massets/SalesPortal-DXRt-POr.js            [39m[1m[2m  9.59 kB[22m[1m[22m[2m Γöé gzip:   3.25 kB[22m
+[2mdist/[22m[36massets/EmployeeEdit-VVobYUTk.js           [39m[1m[2m  9.80 kB[22m[1m[22m[2m Γöé gzip:   2.88 kB[22m
+[2mdist/[22m[36massets/AttendanceList-6A_M_NE9.js         [39m[1m[2m  9.84 kB[22m[1m[22m[2m Γöé gzip:   3.01 kB[22m
+[2mdist/[22m[36massets/BookingForm-BuCcsIJy.js            [39m[1m[2m 10.00 kB[22m[1m[22m[2m Γöé gzip:   3.88 kB[22m
+[2mdist/[22m[36massets/SLADetail-uup-vIyc.js              [39m[1m[2m 10.19 kB[22m[1m[22m[2m Γöé gzip:   2.98 kB[22m
+[2mdist/[22m[36massets/MockInbox-CvOryxa3.js              [39m[1m[2m 10.47 kB[22m[1m[22m[2m Γöé gzip:   4.17 kB[22m
+[2mdist/[22m[36massets/MissionControl-BjYBCByr.js         [39m[1m[2m 10.53 kB[22m[1m[22m[2m Γöé gzip:   3.33 kB[22m
+[2mdist/[22m[36massets/BookingList-DVktoWMB.js            [39m[1m[2m 10.53 kB[22m[1m[22m[2m Γöé gzip:   3.44 kB[22m
+[2mdist/[22m[36massets/EmployeeDirectory-CBzmXkzN.js      [39m[1m[2m 10.61 kB[22m[1m[22m[2m Γöé gzip:   3.00 kB[22m
+[2mdist/[22m[36massets/LogisticsPortal-BwtxSrvW.js        [39m[1m[2m 10.93 kB[22m[1m[22m[2m Γöé gzip:   3.36 kB[22m
+[2mdist/[22m[36massets/TeamManagement-CappyKY4.js         [39m[1m[2m 11.07 kB[22m[1m[22m[2m Γöé gzip:   2.73 kB[22m
+[2mdist/[22m[36massets/InventoryManagement-BUyWezwB.js    [39m[1m[2m 11.25 kB[22m[1m[22m[2m Γöé gzip:   2.71 kB[22m
+[2mdist/[22m[36massets/ManagementPortal-CDDmMqP9.js       [39m[1m[2m 12.33 kB[22m[1m[22m[2m Γöé gzip:   4.03 kB[22m
+[2mdist/[22m[36massets/FinancePortal-DtYZ01bd.js          [39m[1m[2m 13.00 kB[22m[1m[22m[2m Γöé gzip:   3.60 kB[22m
+[2mdist/[22m[36massets/FinancialReports-o8OiDjyX.js       [39m[1m[2m 13.08 kB[22m[1m[22m[2m Γöé gzip:   3.74 kB[22m
+[2mdist/[22m[36massets/BranchManagementPage-B3qlQnOE.js   [39m[1m[2m 13.88 kB[22m[1m[22m[2m Γöé gzip:   3.31 kB[22m
+[2mdist/[22m[36massets/ShipmentManagement-I8ImqJ4S.js     [39m[1m[2m 14.69 kB[22m[1m[22m[2m Γöé gzip:   3.34 kB[22m
+[2mdist/[22m[36massets/LeadForm-xhZ7y-KW.js               [39m[1m[2m 15.19 kB[22m[1m[22m[2m Γöé gzip:   4.74 kB[22m
+[2mdist/[22m[36massets/PaintDashboard-PhXaXvxR.js         [39m[1m[2m 15.97 kB[22m[1m[22m[2m Γöé gzip:   4.41 kB[22m
+[2mdist/[22m[36massets/CustomerPortal-pJ-Vb5tI.js         [39m[1m[2m 16.01 kB[22m[1m[22m[2m Γöé gzip:   4.54 kB[22m
+[2mdist/[22m[36massets/BarChart-CWUbaj0F.js               [39m[1m[2m 16.58 kB[22m[1m[22m[2m Γöé gzip:   5.76 kB[22m
+[2mdist/[22m[36massets/ReportsPage-BmGBtq1D.js            [39m[1m[2m 17.57 kB[22m[1m[22m[2m Γöé gzip:   6.67 kB[22m
+[2mdist/[22m[36massets/AnalyticsDashboard-DdKPlfMX.js     [39m[1m[2m 18.05 kB[22m[1m[22m[2m Γöé gzip:   6.31 kB[22m
+[2mdist/[22m[36massets/JobDetail-COTKEMwy.js              [39m[1m[2m 23.83 kB[22m[1m[22m[2m Γöé gzip:   6.47 kB[22m
+[2mdist/[22m[36massets/JobCardBuilder-YFdEo6Bf.js         [39m[1m[2m 30.48 kB[22m[1m[22m[2m Γöé gzip:   9.84 kB[22m
+[2mdist/[22m[36massets/PieChart-B6UugxwZ.js               [39m[1m[2m 37.88 kB[22m[1m[22m[2m Γöé gzip:  10.15 kB[22m
+[2mdist/[22m[36massets/PaymentPage-B6y2UMJT.js            [39m[1m[2m129.78 kB[22m[1m[22m[2m Γöé gzip:  43.68 kB[22m
+[2mdist/[22m[36massets/PickDropTrackingPage-Fh26Jb5h.js   [39m[1m[2m165.01 kB[22m[1m[22m[2m Γöé gzip:  50.26 kB[22m
+[2mdist/[22m[36massets/CartesianChart-BLBExKXm.js         [39m[1m[2m320.24 kB[22m[1m[22m[2m Γöé gzip:  97.71 kB[22m
+[2mdist/[22m[36massets/StockScanner-BrI1c1KH.js           [39m[1m[2m379.96 kB[22m[1m[22m[2m Γöé gzip: 112.41 kB[22m
+[2mdist/[22m[36massets/index-CLiVhYre.js                  [39m[1m[2m469.21 kB[22m[1m[22m[2m Γöé gzip: 152.03 kB[22m
+[32mΓ£ô built in 14.42s[39m

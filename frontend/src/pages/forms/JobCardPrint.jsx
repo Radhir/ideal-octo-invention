@@ -67,7 +67,7 @@ const JobCardPrint = ({ jobCardData: propData }) => {
     };
 
     return (
-        <div className="job-card-print-container">
+        <div className="job-card-print-container" style={{ maxWidth: '210mm', margin: '0 auto', background: 'white', color: 'black' }}>
             <div className="print-controls no-print">
                 <button onClick={() => window.print()} className="print-btn">
                     <Printer size={16} /> Print Job Card
@@ -76,15 +76,15 @@ const JobCardPrint = ({ jobCardData: propData }) => {
 
             <div className="job-card-document">
                 {/* Header */}
-                <div className="job-card-header">
+                <div className="job-card-header" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000', paddingBottom: '20px', marginBottom: '30px' }}>
                     <div>
-                        <h1>Elite SHINE</h1>
-                        <p className="subtitle">CAR POLISH SERVICES LLC</p>
+                        <h1 style={{ margin: 0, fontSize: '28px', textTransform: 'uppercase' }}>Elite SHINE</h1>
+                        <p style={{ margin: 0, fontSize: '10px', letterSpacing: '4px', textTransform: 'uppercase' }}>CAR POLISH SERVICES LLC</p>
                     </div>
-                    <div className="header-right">
-                        <h2>Workshop Job Card</h2>
-                        <p className="job-id">#{displayData.id}</p>
-                        <p className="date">{displayData.date}</p>
+                    <div style={{ textAlign: 'right' }}>
+                        <h2 style={{ margin: 0, fontSize: '18px', textTransform: 'uppercase' }}>Job Card</h2>
+                        <p style={{ margin: 0, fontSize: '14px', fontWeight: 'bold' }}>#{displayData.id}</p>
+                        <p style={{ margin: 0, fontSize: '12px' }}>{displayData.date}</p>
                     </div>
                 </div>
 

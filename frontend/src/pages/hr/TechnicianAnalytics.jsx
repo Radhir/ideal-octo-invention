@@ -2,27 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../api/axios';
 import {
     Trophy, Activity,
-    TrendingUp, CheckCircle
+    TrendingUp, CheckCircle, AlertCircle
 } from 'lucide-react';
-import '../../layouts/AppLayout.css';
-
-const StatCard = ({ title, value, icon: Icon, color }) => (
-    <div className="glass-card p-6" style={{
-        background: 'var(--input-bg)',
-        border: '1.5px solid var(--gold-border)',
-        borderRadius: '20px'
-    }}>
-        <div className="flex justify-between items-start mb-4">
-            <div>
-                <p style={{ color: 'var(--gold)', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>{title}</p>
-                <h3 style={{ fontSize: '2rem', fontWeight: '900', color: 'var(--text-primary)' }}>{value}</h3>
-            </div>
-            <div style={{ padding: '12px', borderRadius: '12px', background: 'var(--gold-glow)', border: '1px solid var(--gold-border)' }}>
-                <Icon size={24} style={{ color: 'var(--gold)' }} />
-            </div>
-        </div>
-    </div>
-);
+import { PortfolioPage, PortfolioTitle, PortfolioStats, PortfolioGrid, PortfolioCard } from '../../components/PortfolioComponents';
 
 const TechnicianAnalytics = () => {
     const [leaderboard, setLeaderboard] = useState([]);
@@ -32,9 +14,9 @@ const TechnicianAnalytics = () => {
         try {
             const response = await api.get('/hr/api/employees/technician_leaderboard/');
             setLeaderboard(response.data);
-            setLoading(false);
         } catch (err) {
             console.error('Leaderboard fetch failed', err);
+        } finally {
             setLoading(false);
         }
     }, []);
@@ -44,102 +26,134 @@ const TechnicianAnalytics = () => {
     }, [fetchData]);
 
     const totals = leaderboard.reduce((acc, curr) => ({
-        jobs: acc.jobs + curr.jobs_closed,
-        revenue: acc.revenue + curr.revenue_generated
+        jobs: acc.jobs + (curr.jobs_closed || 0),
+        revenue: acc.revenue + (curr.revenue_generated || 0)
     }), { jobs: 0, revenue: 0 });
 
-    if (loading) return <div className="p-12" style={{ color: 'var(--text-primary)', fontWeight: '900' }}>CALCULATING PERFORMANCE...</div>;
+    const avgQcPass = leaderboard.length
+        ? (leaderboard.reduce((a, c) => a + (c.qc_pass_rate || 0), 0) / leaderboard.length).toFixed(1)
+        : 0;
+
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>CALCULATING PERFORMANCE...</div></PortfolioPage>;
 
     return (
-        <div className="p-8" style={{ background: 'var(--bg-primary)', minHeight: '100vh' }}>
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
-                <div>
-                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '800', letterSpacing: '2px', textTransform: 'uppercase' }}>Performance Intelligence</div>
-                    <h1 style={{ fontSize: '3rem', fontWeight: '900', color: 'var(--text-primary)', fontFamily: 'Outfit, sans-serif', margin: 0 }}>ROI ANALYTICS</h1>
-                    <p style={{ color: 'var(--gold)', fontWeight: '800', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '0.5rem' }}>Workshop throughput & elite detailing metrics</p>
+        <PortfolioPage breadcrumb="HUMAN RESOURCES // PERFORMANCE TELEMETRY">
+            <PortfolioTitle subtitle="Workshop throughput, realization vectors, and quality control precision.">
+                Intelligence<br />Dashboard
+            </PortfolioTitle>
+
+            <PortfolioStats stats={[
+                { value: totals.jobs, label: 'TOTAL THROUGHPUT', color: 'var(--gold)' },
+                { value: `AED ${totals.revenue.toLocaleString()}`, label: 'REALIZED REVENUE', color: '#10b981' },
+                { value: `${avgQcPass}%`, label: 'QC CAPABILITY', color: 'var(--gold)' }
+            ]} />
+
+            <div style={{ marginTop: '100px' }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '20px',
+                    marginBottom: '40px'
+                }}>
+                    <Trophy size={20} color="var(--gold)" opacity={0.5} />
+                    <h2 style={{
+                        fontSize: '11px',
+                        fontWeight: '900',
+                        color: 'var(--gold)',
+                        margin: 0,
+                        textTransform: 'uppercase',
+                        letterSpacing: '3px'
+                    }}>
+                        Technician Performance Grid
+                    </h2>
                 </div>
-            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <StatCard
-                    title="Total Detailing Jobs"
-                    value={totals.jobs}
-                    icon={Activity}
-                    color="blue"
-                />
-                <StatCard
-                    title="Realized Revenue"
-                    value={`AED ${totals.revenue.toLocaleString()}`}
-                    icon={TrendingUp}
-                    color="green"
-                />
-                <StatCard
-                    title="Avg. QC Pass"
-                    value={`${(leaderboard.reduce((a, c) => a + c.qc_pass_rate, 0) / (leaderboard.length || 1)).toFixed(1)}%`}
-                    icon={CheckCircle}
-                    color="amber"
-                />
-            </div>
+                <div style={{ overflow: 'hidden', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)', position: 'relative' }}>
+                    <div className="telemetry-grid" style={{ zIndex: 0, opacity: 0.03 }} />
+                    <div style={{ position: 'relative', zIndex: 1 }}>
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: '2fr 1fr 1.5fr 1fr',
+                            padding: '30px 40px',
+                            background: 'rgba(255,255,255,0.02)',
+                            borderBottom: '1px solid rgba(255,255,255,0.05)',
+                            color: 'var(--gold)',
+                            fontSize: '9px',
+                            fontWeight: '900',
+                            textTransform: 'uppercase',
+                            letterSpacing: '2px',
+                            opacity: 0.5
+                        }}>
+                            <div>Technician Dossier</div>
+                            <div style={{ textAlign: 'center' }}>Throughput</div>
+                            <div style={{ textAlign: 'center' }}>Value Manifest</div>
+                            <div style={{ textAlign: 'right' }}>Precision</div>
+                        </div>
 
-            <div className="glass-card overflow-hidden" style={{
-                background: 'var(--input-bg)',
-                border: '1.5px solid var(--gold-border)',
-                borderRadius: '24px'
-            }}>
-                <div className="p-8 border-b border-gold-border flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Trophy size={24} style={{ color: 'var(--gold)' }} />
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: '900', color: 'var(--text-primary)', margin: 0 }}>ELITE TECHNICIAN LEADERBOARD</h2>
+                        {leaderboard.length === 0 ? (
+                            <div style={{ padding: '100px', textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontWeight: '900', fontSize: '10px', letterSpacing: '2px' }}>
+                                NO PERFORMANCE VECTORS DETECTED
+                            </div>
+                        ) : leaderboard.map((tech, index) => (
+                            <div key={tech.id} className="table-row-hover" style={{
+                                display: 'grid',
+                                gridTemplateColumns: '2fr 1fr 1.5fr 1fr',
+                                padding: '35px 40px',
+                                borderBottom: index === leaderboard.length - 1 ? 'none' : '1px solid rgba(255,255,255,0.03)',
+                                alignItems: 'center'
+                            }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                    <div style={{
+                                        width: '44px',
+                                        height: '44px',
+                                        borderRadius: '15px',
+                                        background: index < 3 ? 'rgba(176, 141, 87, 0.15)' : 'rgba(255,255,255,0.02)',
+                                        border: index < 3 ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.05)',
+                                        color: index < 3 ? 'var(--gold)' : 'rgba(255,255,255,0.3)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontWeight: '900',
+                                        fontSize: '14px',
+                                        fontFamily: 'var(--font-serif)'
+                                    }}>
+                                        {String(index + 1).padStart(2, '0')}
+                                    </div>
+                                    <div>
+                                        <div style={{ color: 'var(--cream)', fontWeight: '300', fontSize: '18px', fontFamily: 'var(--font-serif)' }}>{tech.full_name}</div>
+                                        <div style={{ color: 'var(--gold)', fontSize: '9px', fontWeight: '900', letterSpacing: '1px', opacity: 0.4, textTransform: 'uppercase' }}>{tech.role || 'SPECIALIST'}</div>
+                                    </div>
+                                </div>
+
+                                <div style={{ textAlign: 'center', color: 'var(--cream)', fontWeight: '300', fontSize: '18px', fontFamily: 'var(--font-serif)' }}>
+                                    {tech.jobs_closed}
+                                </div>
+
+                                <div style={{ textAlign: 'center', color: 'var(--gold)', fontWeight: '300', fontSize: '18px', fontFamily: 'var(--font-serif)' }}>
+                                    <span style={{ fontSize: '10px', fontWeight: '900', marginRight: '5px' }}>AED</span>
+                                    {(tech.revenue_generated || 0).toLocaleString()}
+                                </div>
+
+                                <div style={{ textAlign: 'right' }}>
+                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                                        <div style={{
+                                            width: '8px',
+                                            height: '8px',
+                                            borderRadius: '50%',
+                                            background: (tech.qc_pass_rate || 0) >= 90 ? '#10b981' : '#f59e0b',
+                                            boxShadow: `0 0 10px ${(tech.qc_pass_rate || 0) >= 90 ? '#10b981' : '#f59e0b'}40`
+                                        }} />
+                                        <div style={{ fontSize: '18px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)' }}>
+                                            {(tech.qc_pass_rate || 0)}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr style={{ background: 'var(--gold-glow)', borderBottom: '1.5px solid var(--gold-border)' }}>
-                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Technician</th>
-                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Jobs Closed</th>
-                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Revenue Contribution</th>
-                                <th className="p-6 text-center" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>QC Precision</th>
-                                <th className="p-6" style={{ fontSize: '11px', fontWeight: '900', color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gold-border text-text-primary">
-                            {leaderboard.map((tech, i) => (
-                                <tr key={i} className="hover:bg-gold-glow transition-colors group">
-                                    <td className="p-6">
-                                        <div className="flex items-center gap-4">
-                                            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'var(--input-bg)', border: '1.5px solid var(--gold-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', color: 'var(--gold)' }}>
-                                                {tech.technician.charAt(0)}
-                                            </div>
-                                            <span style={{ fontWeight: '900', color: 'var(--text-primary)', fontSize: '15px' }}>
-                                                {tech.technician}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="p-6" style={{ fontWeight: '900', color: 'var(--text-primary)' }}>{tech.jobs_closed}</td>
-                                    <td className="p-6" style={{ fontWeight: '900', color: 'var(--gold)' }}>AED {tech.revenue_generated.toLocaleString()}</td>
-                                    <td className="p-6">
-                                        <div className="flex flex-col items-center gap-2">
-                                            <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--text-primary)' }}>{tech.qc_pass_rate}%</span>
-                                            <div style={{ width: '100px', height: '6px', background: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden', border: '1px solid var(--gold-border)' }}>
-                                                <div
-                                                    style={{ width: `${tech.qc_pass_rate}%`, height: '100%', background: 'var(--gold)', transition: 'all 1s ease' }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="p-6">
-                                        {i === 0 && (
-                                            <span style={{ px: '12px', py: '4px', borderRadius: '4px', background: 'var(--gold)', color: '#000', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Top Performer</span>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </div>
+        </PortfolioPage>
     );
 };
 

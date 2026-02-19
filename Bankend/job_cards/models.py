@@ -1,19 +1,20 @@
 from django.db import models
 from customers.models import Customer
 from locations.models import Branch
+from decimal import Decimal
 import uuid
 
 class JobCard(models.Model):
     STATUS_CHOICES = [
-        ('RECEPTION', 'Reception'),
-        ('ESTIMATION_ASSIGNMENT', 'Estimation & Assignment'),
-        ('WIP_QC', 'Work In Progress & QC'),
-        ('INVOICING_DELIVERY', 'Invoicing & Delivery'),
-        ('CLOSED', 'Closed'),
+        ('RECEIVED', 'Received (Reception)'),
+        ('IN_PROGRESS', 'In Process (Workshop)'),
+        ('READY', 'Ready for Quality Control'),
+        ('INVOICED', 'Invoiced (Accounted)'),
+        ('CLOSED', 'Closed & Delivered'),
     ]
 
     job_card_number = models.CharField(max_length=50, unique=True)
-    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='RECEPTION')
+    status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='RECEIVED')
     date = models.DateField()
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     
@@ -23,6 +24,7 @@ class JobCard(models.Model):
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_lead = models.ForeignKey('leads.Lead', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     related_booking = models.ForeignKey('bookings.Booking', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
+    vehicle_node = models.ForeignKey('masters.Vehicle', on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
     phone = models.CharField(max_length=20)
     address = models.TextField(blank=True)
     
@@ -84,6 +86,21 @@ class JobCard(models.Model):
     
     portal_token = models.UUIDField(default=uuid.uuid4, null=True, blank=True)
     is_released = models.BooleanField(default=False, help_text="Released by manager for scheduling/workshop")
+    
+    # Paint Specific Fields
+    paint_stage = models.CharField(max_length=50, choices=[
+        ('NONE', 'Not Required'),
+        ('PENDING_MIX', 'Pending Paint Mixing'),
+        ('STRIPPING', 'Stripping/Prep'),
+        ('PRIMER', 'Primer Application'),
+        ('BASE_COAT', 'Base Coat'),
+        ('CLEAR_COAT', 'Clear Coat'),
+        ('BAKING', 'Baking'),
+        ('QC', 'Paint Quality Control'),
+        ('COMPLETED', 'Paint Work Completed'),
+    ], default='NONE')
+    current_booth = models.ForeignKey('workshop.Booth', on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_jobs')
+    
     sla_clock_start = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -157,7 +174,7 @@ class JobCard(models.Model):
             
             # Technician Commission (Standard 2% if not specified, or use advisor rate as proxy for now)
             if self.assigned_technician:
-                tech_comm = (self.total_amount * 2) / 100 # Default 2% for tech
+                tech_comm = (self.total_amount * Decimal('2')) / Decimal('100') # Default 2% for tech
                 self.technician_commission = tech_comm
                 Commission.objects.create(
                     employee=self.assigned_technician,
@@ -203,3 +220,48 @@ class Service(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.price}"
+
+class WarrantyClaim(models.Model):
+    WARRANTY_TYPES = [
+        ('PPF', 'Paint Protection Film'),
+        ('WRAP', 'Vinyl Wrap'),
+        ('TINT', 'Window Tinting'),
+        ('PAINT', 'Body Paint'),
+        ('CERAMIC', 'Ceramic Coating'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Inspection'),
+        ('APPROVED', 'Approved for Re-work'),
+        ('REJECTED', 'Rejected'),
+        ('COMPLETED', 'Claim Resolved'),
+    ]
+
+    claim_number = models.CharField(max_length=50, unique=True)
+    job_card = models.ForeignKey(JobCard, on_delete=models.CASCADE, related_name='warranty_claims')
+    customer = models.ForeignKey('customers.Customer', on_delete=models.CASCADE, related_name='warranty_claims')
+    type = models.CharField(max_length=20, choices=WARRANTY_TYPES)
+    
+    issue_description = models.TextField()
+    inspection_date = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    
+    findings = models.TextField(blank=True)
+    resolution_notes = models.TextField(blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.claim_number:
+            # Simple serial for now
+            last_claim = WarrantyClaim.objects.order_by('-id').first()
+            if last_claim:
+                new_id = int(last_claim.claim_number.split('-')[-1]) + 1
+            else:
+                new_id = 1
+            self.claim_number = f"WRN-{new_id:04d}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.claim_number} - {self.customer.full_name} ({self.type})"
