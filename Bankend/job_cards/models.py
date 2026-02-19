@@ -32,12 +32,12 @@ class JobCard(models.Model):
     plate_emirate = models.CharField(max_length=50, blank=True, null=True) # Unified with 'emirate' in UI
     plate_category = models.CharField(max_length=10, blank=True, null=True) # e.g. 'A', 'B', 'C'
     plate_code = models.CharField(max_length=10, blank=True, null=True)
-    vin = models.CharField(max_length=50)
-    brand = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
-    year = models.IntegerField()
-    color = models.CharField(max_length=50)
-    kilometers = models.PositiveIntegerField()
+    vin = models.CharField(max_length=50, blank=True, default='')
+    brand = models.CharField(max_length=100, blank=True, default='')
+    model = models.CharField(max_length=100, blank=True, default='')
+    year = models.IntegerField(default=2025)
+    color = models.CharField(max_length=50, blank=True, default='')
+    kilometers = models.PositiveIntegerField(default=0)
     
     service_advisor_legacy = models.CharField(max_length=255, blank=True, null=True)
     service_advisor = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='advised_jobs')
@@ -50,7 +50,7 @@ class JobCard(models.Model):
     estimated_timeline = models.DateTimeField(null=True, blank=True)
 
     # Description
-    job_description = models.TextField()
+    job_description = models.TextField(blank=True, default='')
     
     # Financial Summary
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)

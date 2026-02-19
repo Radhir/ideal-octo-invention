@@ -259,8 +259,8 @@ const JobCardBuilder = () => {
 
     const handleSubmit = async () => {
         // Validation
-        if (!formData.customer_name || !formData.phone || !formData.vin || !formData.brand || !formData.model) {
-            alert('CRITICAL DATA MISSING: Please ensure Client Name, Phone, VIN, Brand, and Model are populated.');
+        if (!formData.customer_name || !formData.phone) {
+            alert('CRITICAL DATA MISSING: Please ensure Client Name and Phone Number are populated.');
             return;
         }
 
