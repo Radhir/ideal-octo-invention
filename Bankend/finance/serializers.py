@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Account, AccountCategory, Budget, Transaction, Commission
+from .models import Account, AccountCategory, Budget, Voucher, VoucherDetail, Commission, AccountGroup, FixedAsset
 
 class AccountCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,9 +16,33 @@ class BudgetSerializer(serializers.ModelSerializer):
         model = Budget
         fields = '__all__'
 
-class TransactionSerializer(serializers.ModelSerializer):
+class VoucherDetailSerializer(serializers.ModelSerializer):
+    account_name = serializers.CharField(source='account.name', read_only=True)
+    
     class Meta:
-        model = Transaction
+        model = VoucherDetail
+        fields = ['id', 'account', 'account_name', 'debit', 'credit', 'description']
+
+class VoucherSerializer(serializers.ModelSerializer):
+    details = VoucherDetailSerializer(many=True)
+    created_by_name = serializers.CharField(source='created_by.full_name', read_only=True)
+    
+    class Meta:
+        model = Voucher
+        fields = ['id', 'voucher_number', 'voucher_type', 'date', 'reference_number', 
+                 'narration', 'payment_mode', 'cheque_number', 'cheque_date', 
+                 'payee_name', 'status', 'created_by_name', 'total_amount', 'details']
+
+    def create(self, validated_data):
+        details_data = validated_data.pop('details')
+        voucher = Voucher.objects.create(**validated_data)
+        for detail_data in details_data:
+            VoucherDetail.objects.create(voucher=voucher, **detail_data)
+        return voucher
+
+class AccountGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccountGroup
         fields = '__all__'
 
 class CommissionSerializer(serializers.ModelSerializer):
@@ -27,4 +51,12 @@ class CommissionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Commission
+        fields = '__all__'
+class FixedAssetSerializer(serializers.ModelSerializer):
+    current_book_value = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    monthly_depreciation = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    branch_name = serializers.CharField(source='branch.name', read_only=True)
+
+    class Meta:
+        model = FixedAsset
         fields = '__all__'

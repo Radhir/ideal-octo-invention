@@ -6,6 +6,7 @@ from .views_sales import get_sales_dashboard_stats
 from .views_management import get_management_stats
 from .views_logistics import get_logistics_stats
 from .views_chat import ChatMessageViewSet
+from .views_ceo import get_ceo_analytics
 
 router = DefaultRouter()
 router.register(r'workshop-diary', WorkshopDiaryViewSet, basename='workshop-diary')
@@ -19,4 +20,5 @@ urlpatterns = [
     path('api/sales/', get_sales_dashboard_stats, name='sales_dashboard_stats'),
     path('api/management/stats/', get_management_stats, name='management_stats'),
     path('api/logistics/stats/', get_logistics_stats, name='logistics_stats'),
+    path('api/ceo/analytics/', get_ceo_analytics, name='ceo_analytics'),
 ]

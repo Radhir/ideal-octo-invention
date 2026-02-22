@@ -3,8 +3,9 @@ import api from '../../api/axios';
 import {
     Users, Phone, Mail, Plus,
     Search, Truck, ShieldCheck, ExternalLink,
-    ChevronRight
+    ChevronRight, Edit3
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
     PortfolioPage,
     PortfolioTitle,
@@ -14,6 +15,7 @@ import {
 } from '../../components/PortfolioComponents';
 
 const SupplierList = () => {
+    const navigate = useNavigate();
     const [suppliers, setSuppliers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -52,6 +54,7 @@ const SupplierList = () => {
                 <PortfolioButton
                     variant="primary"
                     style={{ height: '60px', padding: '0 30px' }}
+                    onClick={() => navigate('/stock/suppliers/create')}
                 >
                     <Plus size={18} /> REGISTER NEW PARTNER
                 </PortfolioButton>
@@ -148,8 +151,12 @@ const SupplierList = () => {
                         </div>
 
                         <div style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
-                            <PortfolioButton variant="secondary" style={{ flex: 1, height: '45px', fontSize: '11px' }}>
-                                VIEW HISTORY
+                            <PortfolioButton
+                                variant="secondary"
+                                style={{ flex: 1, height: '45px', fontSize: '11px' }}
+                                onClick={() => navigate(`/stock/suppliers/${supplier.id}/edit`)}
+                            >
+                                <Edit3 size={14} style={{ marginRight: '8px' }} /> REFINE DOSSIER
                             </PortfolioButton>
                             <PortfolioButton variant="secondary" style={{ height: '45px', width: '45px', padding: 0 }}>
                                 <ChevronRight size={16} />

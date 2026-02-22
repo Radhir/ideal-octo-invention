@@ -150,6 +150,24 @@ const InvoiceBook = () => {
                                             <ChevronRight size={16} />
                                         </button>
                                         <button
+                                            onClick={() => navigate('/warranty/new', {
+                                                state: {
+                                                    jobData: {
+                                                        customer_name: inv.customer_name,
+                                                        customer_phone: inv.phone,
+                                                        vehicle_brand: inv.brand,
+                                                        vehicle_model: inv.model,
+                                                        plate_number: inv.registration_number,
+                                                        vin: inv.vin
+                                                    }
+                                                }
+                                            })}
+                                            style={{ ...actionBtnStyle, color: '#10b981' }}
+                                            title="Register Warranty"
+                                        >
+                                            <Shield size={16} />
+                                        </button>
+                                        <button
                                             onClick={() => inv.invoice && navigate(`/invoices/${inv.invoice.id}`)}
                                             style={{ ...actionBtnStyle, color: '#b08d57' }}
                                             title="View Official Invoice"

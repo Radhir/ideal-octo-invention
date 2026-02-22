@@ -7,11 +7,13 @@ import {
     PortfolioButton,
     PortfolioCard,
     PortfolioBackButton,
-    PortfolioSectionTitle
+    PortfolioSectionTitle,
+    PortfolioSelect,
+    PortfolioInput
 } from '../../components/PortfolioComponents';
 import {
     Calendar, ClipboardList, TrendingUp,
-    CheckCircle, Clock, AlertCircle
+    CheckCircle, Clock, AlertCircle, Filter
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DateRangePicker from '../../components/finance/DateRangePicker';
@@ -21,13 +23,68 @@ const WorkshopDiary = () => {
     const [entries, setEntries] = useState([]);
     const [summary, setSummary] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [startDate, setStartDate] = useState(new Date(new Date().setDate(1)).toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+
+    // Filters
+    const [filters, setFilters] = useState({
+        startDate: new Date(new Date().setDate(1)).toISOString().split('T')[0],
+        endDate: new Date().toISOString().split('T')[0],
+        advisor: 'ALL',
+        status: 'ALL',
+        branch: 'ALL',
+        plateNo: '',
+        search: ''
+    });
+
+    // Options
+    const [options, setOptions] = useState({
+        advisors: [],
+        branches: []
+    });
+
+    // Fetch Options
+    useEffect(() => {
+        const fetchOptions = async () => {
+            try {
+                const [usersRes, branchesRes] = await Promise.all([
+                    api.get('/api/auth/users/').catch(() => ({ data: [] })),
+                    api.get('/api/locations/branches/').catch(() => ({ data: [] })) // Ensure this endpoint is active
+                ]);
+
+                const users = Array.isArray(usersRes.data) ? usersRes.data : (usersRes.data.results || []);
+                const branches = Array.isArray(branchesRes.data) ? branchesRes.data : (branchesRes.data.results || []);
+
+                // Filter for advisors or show all users
+                const advisors = users.map(u => ({
+                    id: u.id,
+                    name: u.first_name ? `${u.first_name} ${u.last_name}` : u.username
+                }));
+
+                setOptions({
+                    advisors,
+                    branches: branches.map(b => ({ id: b.id, name: b.name }))
+                });
+
+            } catch (err) {
+                console.error("Failed to load filter options", err);
+            }
+        };
+        fetchOptions();
+    }, []);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/reports/api/workshop-diary/?start_date=${startDate}&end_date=${endDate}`);
+            const query = new URLSearchParams({
+                start_date: filters.startDate,
+                end_date: filters.endDate,
+                advisor: filters.advisor,
+                status: filters.status,
+                branch: filters.branch,
+                plate_no: filters.plateNo,
+                search: filters.search
+            }).toString();
+
+            const res = await api.get(`/reports/api/workshop-diary/?${query}`);
             setEntries(res.data.entries);
             setSummary(res.data.summary);
         } catch (err) {
@@ -35,7 +92,7 @@ const WorkshopDiary = () => {
         } finally {
             setLoading(false);
         }
-    }, [startDate, endDate]);
+    }, [filters]);
 
     useEffect(() => {
         fetchData();
@@ -43,24 +100,76 @@ const WorkshopDiary = () => {
 
     return (
         <PortfolioPage breadcrumb="FINANCE // WORKSHOP DIARY">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '80px' }}>
-                <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-end' }}>
-                    <PortfolioBackButton onClick={() => navigate('/finance')} />
-                    <PortfolioTitle subtitle="A comprehensive operational chronicle of all workshop activities and asset yields.">
-                        WORKSHOP DIARY
-                    </PortfolioTitle>
+            <div style={{ marginBottom: '40px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '30px' }}>
+                    <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-end' }}>
+                        <PortfolioBackButton onClick={() => navigate('/finance')} />
+                        <PortfolioTitle subtitle="A comprehensive operational chronicle of all workshop activities and asset yields.">
+                            WORKSHOP DIARY
+                        </PortfolioTitle>
+                    </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '15px' }}>
-                    <DateRangePicker
-                        startDate={startDate}
-                        endDate={endDate}
-                        onStartChange={setStartDate}
-                        onEndChange={setEndDate}
-                        onApply={fetchData}
-                        styled
-                    />
-                </div>
+                {/* Filter Command Center */}
+                <PortfolioCard style={{ padding: '25px', marginBottom: '30px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', color: 'var(--gold)' }}>
+                        <Filter size={16} />
+                        <span style={{ fontSize: '10px', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Operational Filters</span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', alignItems: 'end' }}>
+                        <PortfolioSelect
+                            label="Service Advisor"
+                            value={filters.advisor}
+                            onChange={(e) => setFilters(prev => ({ ...prev, advisor: e.target.value }))}
+                            style={{ margin: 0 }}
+                        >
+                            <option value="ALL">ALL ADVISORS</option>
+                            {options.advisors.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
+                        </PortfolioSelect>
+
+                        <PortfolioSelect
+                            label="Branch Location"
+                            value={filters.branch}
+                            onChange={(e) => setFilters(prev => ({ ...prev, branch: e.target.value }))}
+                            style={{ margin: 0 }}
+                        >
+                            <option value="ALL">ALL BRANCHES</option>
+                            {options.branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+                        </PortfolioSelect>
+
+                        <PortfolioSelect
+                            label="Job Status"
+                            value={filters.status}
+                            onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+                            style={{ margin: 0 }}
+                        >
+                            <option value="ALL">ALL STATUSES</option>
+                            <option value="WIP">WORK IN PROGRESS</option>
+                            <option value="QC">QUALITY CONTROL</option>
+                            <option value="READY">READY FOR DELIVERY</option>
+                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="CLOSED">CLOSED</option>
+                        </PortfolioSelect>
+
+                        <PortfolioInput
+                            label="Plate No / Vin"
+                            placeholder="Enter Number..."
+                            value={filters.plateNo}
+                            onChange={(e) => setFilters(prev => ({ ...prev, plateNo: e.target.value }))}
+                            style={{ margin: 0 }}
+                        />
+
+                        <DateRangePicker
+                            startDate={filters.startDate}
+                            endDate={filters.endDate}
+                            onStartChange={(d) => setFilters(prev => ({ ...prev, startDate: d }))}
+                            onEndChange={(d) => setFilters(prev => ({ ...prev, endDate: d }))}
+                            onApply={fetchData}
+                            styled
+                        />
+                    </div>
+                </PortfolioCard>
             </div>
 
             {loading ? (

@@ -141,6 +141,43 @@
     font-family: monospace;
 }
 
+/* --- Nested Sidebar Styles --- */
+.sub-menu {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.nav-item.collapsible {
+    justify-content: flex-start;
+}
+
+.chevron-icon {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.chevron-icon.rotated {
+    transform: rotate(90deg);
+}
+
+.nav-item.depth-1 {
+    font-size: 11px;
+    padding-left: 16px;
+    opacity: 0.8;
+}
+
+.nav-item.depth-1 .nav-icon {
+    display: none; /* Hide icons for deep nesting to save space */
+}
+
+.nav-item-container {
+    display: flex;
+    flex-direction: column;
+}
+
 /* --- Content Area --- */
 .app-content {
     flex: 1;

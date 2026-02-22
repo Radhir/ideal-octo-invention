@@ -131,21 +131,33 @@ const PickDropList = () => {
                                         </div>
                                     </div>
 
-                                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '16px', marginBottom: '35px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '6px 0' }}>
-                                                <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: 'var(--gold)' }}></div>
-                                                <div style={{ width: '0.5px', height: '40px', background: 'rgba(176, 141, 87, 0.2)', margin: '4px 0' }}></div>
-                                                <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: '#3b82f6', opacity: 0.5 }}></div>
+                                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '16px', marginBottom: '35px', border: '1px solid rgba(255,255,255,0.03)', position: 'relative' }}>
+                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '5px' }}>
+                                                <div style={{
+                                                    width: '24px', height: '24px', borderRadius: '6px',
+                                                    background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.2)',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                }}>
+                                                    <ArrowDownCircle size={12} color="#10b981" />
+                                                </div>
+                                                <div style={{ width: '1px', height: '30px', background: 'linear-gradient(to bottom, #10b98130, #3b82f630)', margin: '4px 0' }}></div>
+                                                <div style={{
+                                                    width: '24px', height: '24px', borderRadius: '6px',
+                                                    background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                }}>
+                                                    <ArrowUpCircle size={12} color="#3b82f6" />
+                                                </div>
                                             </div>
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ marginBottom: '15px' }}>
-                                                    <div style={{ color: 'var(--gold)', fontSize: '8px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', opacity: 0.6 }}>PICKUP.vector</div>
-                                                    <div style={{ fontWeight: '300', color: 'var(--cream)', fontSize: '13px' }}>{trip.pickup_location}</div>
+                                                    <div style={{ color: '#10b981', fontSize: '8px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px', opacity: 0.8 }}>VECTOR // INBOUND_ORIGIN</div>
+                                                    <div style={{ fontWeight: '300', color: 'var(--cream)', fontSize: '13px', fontFamily: 'var(--font-serif)' }}>{trip.pickup_location}</div>
                                                 </div>
                                                 <div>
-                                                    <div style={{ color: '#3b82f6', fontSize: '8px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px', opacity: 0.6 }}>DESTINATION.trace</div>
-                                                    <div style={{ fontWeight: '300', color: 'var(--cream)', fontSize: '13px' }}>{trip.drop_off_location}</div>
+                                                    <div style={{ color: '#3b82f6', fontSize: '8px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px', opacity: 0.8 }}>VECTOR // OUTBOUND_DEST</div>
+                                                    <div style={{ fontWeight: '300', color: 'var(--cream)', fontSize: '13px', fontFamily: 'var(--font-serif)' }}>{trip.drop_off_location}</div>
                                                 </div>
                                             </div>
                                         </div>

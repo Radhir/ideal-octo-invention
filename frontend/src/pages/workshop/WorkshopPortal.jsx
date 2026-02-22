@@ -178,7 +178,7 @@ const WorkshopPortal = () => {
                                                 background: getStatusColor(job.status)
                                             }} />
                                             <span style={{ fontSize: '12px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
-                                                {job.status_display || job.status}
+                                                {typeof job.status_display === 'object' ? JSON.stringify(job.status_display) : (job.status_display || job.status)}
                                             </span>
                                         </div>
                                     </PortfolioCard>

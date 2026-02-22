@@ -1,13 +1,15 @@
 
-R:\webplot\frontend\src\components\AccordionMenu.jsx
-  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+> frontend@0.0.0 lint
+> eslint .
 
-R:\webplot\frontend\src\components\BranchSwitcher.jsx
-  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\components\EliteCommandTerminal.jsx
-    3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
-  229:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+    7:13  error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     no-unused-vars
+   48:23  error  'mtd' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      no-unused-vars
+   50:22  error  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+   58:22  error  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+   66:22  error  'e' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  143:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -15,29 +17,21 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  227 |     const [mounted, setMounted] = useState(false);
-  228 |     useEffect(() => {
-> 229 |         setMounted(true);
+  141 |     const [mounted, setMounted] = useState(false);
+  142 |     useEffect(() => {
+> 143 |         setMounted(true);
       |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
-  230 |         return () => setMounted(false);
-  231 |     }, []);
-  232 |  react-hooks/set-state-in-effect
-
-R:\webplot\frontend\src\components\FloatingDock.jsx
-  2:27  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  144 |         return () => setMounted(false);
+  145 |     }, []);
+  146 |  react-hooks/set-state-in-effect
 
 R:\webplot\frontend\src\components\GlassCard.jsx
-  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-
-R:\webplot\frontend\src\components\MagneticButton.jsx
-  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-
-R:\webplot\frontend\src\components\MeetingRoomWidget.jsx
-    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
-  182:35  error  'isMe' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  9:32  error  'className' is assigned a value but never used  no-unused-vars
 
 R:\webplot\frontend\src\components\QuickAccessHub.jsx
-  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  13:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                  no-unused-vars
+  19:13  error  'hasPermission' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  24:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
 
 R:\webplot\frontend\src\components\QuickNotes.jsx
   10:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
@@ -56,187 +50,254 @@ Calling setState synchronously within an effect body causes cascading renders th
   12 |     }, []);
   13 |  react-hooks/set-state-in-effect
 
+R:\webplot\frontend\src\components\Sidebar.jsx
+  9:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
 R:\webplot\frontend\src\components\SignaturePad.jsx
-  4:32  error  'onSave' is defined but never used  no-unused-vars
+  4:40  error  '_onSave' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\components\UniversalBottomNav.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\components\UserDropdown.jsx
-   14:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  158:27  error  'Icon' is defined but never used                                               no-unused-vars
+    1:27  error  'useRef' is defined but never used. Allowed unused vars must match /^[A-Z_]/u           no-unused-vars
+    1:35  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u        no-unused-vars
+   16:19  error  'logout' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   29:75  error  'dropdownRef' is not defined                                                            no-undef
+   31:32  error  'setIsOpen' is not defined                                                              no-undef
+   31:43  error  'isOpen' is not defined                                                                 no-undef
+   45:37  error  'isOpen' is not defined                                                                 no-undef
+   74:14  error  'isOpen' is not defined                                                                 no-undef
+  141:89  error  'handleLogout' is not defined                                                           no-undef
+  150:27  error  'Icon' is defined but never used                                                        no-unused-vars
+
+R:\webplot\frontend\src\components\logistics\TripChat.jsx
+  20:8  warning  React Hook useEffect has a missing dependency: 'fetchMessages'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\context\AuthContext.jsx
   80:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
 
 R:\webplot\frontend\src\context\BranchContext.jsx
-  63:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  94:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+R:\webplot\frontend\src\context\BrandContext.jsx
+   5:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-refresh/only-export-components
+  40:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  38 |         const savedBrand = localStorage.getItem('active_brand');
+  39 |         if (savedBrand && BRAND_TYPES[savedBrand]) {
+> 40 |             setCurrentBrand(BRAND_TYPES[savedBrand]);
+     |             ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  41 |         }
+  42 |     }, []);
+  43 |  react-hooks/set-state-in-effect
+  51:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-refresh/only-export-components
 
 R:\webplot\frontend\src\context\NotificationContext.jsx
   70:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
 
 R:\webplot\frontend\src\context\PermissionContext.jsx
-  132:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
-  141:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  153:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+  162:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
 
 R:\webplot\frontend\src\context\ThemeContext.jsx
   29:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
 
+R:\webplot\frontend\src\hooks\useWebSocket.js
+  8:13  error  'token' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
 R:\webplot\frontend\src\layouts\AppLayout.jsx
-  16:13  error  'logout' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  16:21  error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+   1:17  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u               no-unused-vars
+   4:37  error  'useLocation' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  25:13  error  'currentBrand' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  56:11  error  'sidebarItems' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  73:11  error  'isActive' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u      no-unused-vars
+
+R:\webplot\frontend\src\pages\BookingCalendar.jsx
+   3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  22:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\ForecastPage.jsx
-   38:11  error  'totalRevenue' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  193:45  error  'Icon' is defined but never used                                                              no-unused-vars
-
-R:\webplot\frontend\src\pages\HomePage.jsx
-  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  193:45  error  'Icon' is defined but never used  no-unused-vars
 
 R:\webplot\frontend\src\pages\LoginPage.jsx
-  1:27  error  'useEffect' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  4:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   4:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  15:12  error    'videoEnded' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+  15:24  error    'setVideoEnded' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  24:17  error    Error: Cannot access variable before it is declared
+
+`handleLogin` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  22 |             setIsScanning(true);
+  23 |             const timer = setTimeout(() => {
+> 24 |                 handleLogin();
+     |                 ^^^^^^^^^^^ `handleLogin` accessed before it is declared
+  25 |                 lastAttempt.current = { u: username, p: password };
+  26 |                 setIsScanning(false);
+  27 |             }, 3000);
+
+  33 |     }, [username, password]);
+  34 |
+> 35 |     const handleLogin = async (e) => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 36 |         if (e) e.preventDefault();
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |         if (!username || !password || isAuthenticating) return;
+     ΓÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 53 |         }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 54 |     };
+     | ^^^^^^^ `handleLogin` is declared here
+  55 |
+  56 |     const containerStyle = {
+  57 |         height: '100vh',  react-hooks/immutability
+  33:8   warning  React Hook useEffect has a missing dependency: 'handleLogin'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           react-hooks/exhaustive-deps
+  50:18  error    'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
 
 R:\webplot\frontend\src\pages\MissionControl.jsx
-   73:11  error  'renderCalendar' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  360:31  error  'Icon' is defined but never used                                                                no-unused-vars
+  230:51  error  'Icon' is defined but never used  no-unused-vars
+  253:31  error  'Icon' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\pages\PasswordResetConfirmPage.jsx
+  28:18  error  'error' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\pages\PasswordResetRequestPage.jsx
+  17:18  error  'error' is defined but never used  no-unused-vars
 
 R:\webplot\frontend\src\pages\Portfolio.jsx
-   3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
-  41:13  error  Error: Cannot access variable before it is declared
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
-`fetchAttendance` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
-
-  39 |     useEffect(() => {
-  40 |         if (user) {
-> 41 |             fetchAttendance();
-     |             ^^^^^^^^^^^^^^^ `fetchAttendance` accessed before it is declared
-  42 |             fetchEmployees();
-  43 |         }
-  44 |     }, [user]);
-
-  44 |     }, [user]);
-  45 |
-> 46 |     const fetchAttendance = async () => {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 47 |         try {
-     | ^^^^^^^^^^^^^
-> 48 |             const res = await api.get('/forms/attendance/api/records/');
-     ΓÇª
-     | ^^^^^^^^^^^^^
-> 55 |         }
-     | ^^^^^^^^^^^^^
-> 56 |     };
-     | ^^^^^^^ `fetchAttendance` is declared here
-  57 |
-  58 |     const fetchEmployees = async () => {
-  59 |         try {                                                                                                                                                      react-hooks/immutability
-  42:13  error  Error: Cannot access variable before it is declared
-
-`fetchEmployees` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
-
-  40 |         if (user) {
-  41 |             fetchAttendance();
-> 42 |             fetchEmployees();
-     |             ^^^^^^^^^^^^^^ `fetchEmployees` accessed before it is declared
-  43 |         }
-  44 |     }, [user]);
-  45 |
-
-  56 |     };
-  57 |
-> 58 |     const fetchEmployees = async () => {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 59 |         try {
-     | ^^^^^^^^^^^^^
-> 60 |             const res = await api.get('/hr/api/employees/');
-     | ^^^^^^^^^^^^^
-> 61 |             setEmployees(res.data);
-     | ^^^^^^^^^^^^^
-> 62 |         } catch (err) {
-     | ^^^^^^^^^^^^^
-> 63 |             console.error('Failed to fetch employees', err);
-     | ^^^^^^^^^^^^^
-> 64 |         }
-     | ^^^^^^^^^^^^^
-> 65 |     };
-     | ^^^^^^^ `fetchEmployees` is declared here
-  66 |
-  67 |     const handleClockIn = async () => {
-  68 |         try {  react-hooks/immutability
-
-R:\webplot\frontend\src\pages\RegisterPage.jsx
-   99:21  error  'confirmPassword' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-   99:56  error  'userData' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u         no-unused-vars
-  100:19  error  'userResponse' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
-
-R:\webplot\frontend\src\pages\ReportsPage.jsx
-   29:12  error  'invoices' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  254:26  error  'Icon' is defined but never used                                                          no-unused-vars
-  266:42  error  'Icon' is defined but never used                                                          no-unused-vars
+R:\webplot\frontend\src\pages\ProjectsPage.jsx
+  18:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\RiskAuditPage.jsx
-  198:41  error  'Icon' is defined but never used  no-unused-vars
+  18:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\TeamSettings.jsx
+   2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+  15:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\UserProfilePage.jsx
+  205:79  error  'setActiveTab' is not defined  no-undef
+
+R:\webplot\frontend\src\pages\WorkshopRegistry.jsx
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\admin\BranchManagementPage.jsx
+  8:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\admin\DepartmentMaster.jsx
+    7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                   no-unused-vars
+  114:11  error  'getAccountName' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\attendance\AttendanceList.jsx
-  270:29  error  'Icon' is defined but never used  no-unused-vars
+   27:8   warning  React Hook useEffect has a missing dependency: 'fetchInitialData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  290:29  error    'Icon' is defined but never used                                                                                     no-unused-vars
 
 R:\webplot\frontend\src\pages\bookings\BookingCalendar.jsx
-  1:17  error  'useMemo' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  13:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\ceramic\CeramicDetail.jsx
+  23:8  warning  React Hook useEffect has a missing dependency: 'fetchWarranty'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\customers\CustomerForm.jsx
+   8:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                    no-unused-vars
+  42:8   warning  React Hook useEffect has missing dependencies: 'fetchCustomer' and 'isEdit'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\dashboard\AdvisorDailyReport.jsx
-  118:40  error  'Icon' is defined but never used  no-unused-vars
-  128:49  error  'Icon' is defined but never used  no-unused-vars
+  181:51  error  'Icon' is defined but never used  no-unused-vars
 
 R:\webplot\frontend\src\pages\dashboard\AdvisorDashboard.jsx
-  167:71  error  'axios' is not defined            no-undef
-  169:58  error  'err' is defined but never used   no-unused-vars
-  219:29  error  'Icon' is defined but never used  no-unused-vars
+  166:62  error  'err' is defined but never used   no-unused-vars
+  218:29  error  'Icon' is defined but never used  no-unused-vars
 
-R:\webplot\frontend\src\pages\dashboard\AnalyticsDashboard.jsx
-  205:47  error  'Icon' is defined but never used  no-unused-vars
+R:\webplot\frontend\src\pages\dashboard\BranchComparison.jsx
+   2:8   error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-unused-vars
+  21:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  37:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  35 |             { name: 'Retention', DXB: 65, AUH: 70, SHJ: 58 },
+  36 |         ];
+> 37 |         setData(mockData);
+     |         ^^^^^^^ Avoid calling setState() directly within an effect
+  38 |         setLoading(false);
+  39 |     }, []);
+  40 |  react-hooks/set-state-in-effect
 
 R:\webplot\frontend\src\pages\dashboard\EmployeeDashboard.jsx
-   2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
-  21:9   error  Error: Cannot access variable before it is declared
+  20:9   error  Error: Cannot access variable before it is declared
 
 `fetchTodayAttendance` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
 
-  19 |
-  20 |     useEffect(() => {
-> 21 |         fetchTodayAttendance();
+  18 |
+  19 |     useEffect(() => {
+> 20 |         fetchTodayAttendance();
      |         ^^^^^^^^^^^^^^^^^^^^ `fetchTodayAttendance` accessed before it is declared
-  22 |         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-  23 |         return () => clearInterval(timer);
-  24 |     }, []);
+  21 |         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+  22 |         return () => clearInterval(timer);
+  23 |     }, []);
 
-  24 |     }, []);
-  25 |
-> 26 |     const fetchTodayAttendance = async () => {
+  23 |     }, []);
+  24 |
+> 25 |     const fetchTodayAttendance = async () => {
      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 27 |         try {
+> 26 |         try {
      | ^^^^^^^^^^^^^
-> 28 |             const res = await api.get('/forms/attendance/api/today/');
+> 27 |             const res = await api.get('/forms/attendance/api/today/');
      | ^^^^^^^^^^^^^
-> 29 |             setAttendance(res.data);
+> 28 |             setAttendance(res.data);
      | ^^^^^^^^^^^^^
-> 30 |         } catch (err) {
+> 29 |         } catch (err) {
      | ^^^^^^^^^^^^^
-> 31 |             // No record for today - that's fine
+> 30 |             // No record for today - that's fine
      | ^^^^^^^^^^^^^
-> 32 |             setAttendance(null);
+> 31 |             setAttendance(null);
      | ^^^^^^^^^^^^^
-> 33 |         }
+> 32 |         }
      | ^^^^^^^^^^^^^
-> 34 |     };
+> 33 |     };
      | ^^^^^^^ `fetchTodayAttendance` is declared here
-  35 |
-  36 |     const handleClockIn = async () => {
-  37 |         setLoading(true);  react-hooks/immutability
-  30:18  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      no-unused-vars
+  34 |
+  35 |     const handleClockIn = async () => {
+  36 |         setLoading(true);  react-hooks/immutability
+  29:18  error  'err' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      no-unused-vars
+
+R:\webplot\frontend\src\pages\dashboard\LogisticsDashboard.jsx
+  166:26  error  'Icon' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\pages\dashboard\ManagementDashboard.jsx
+  124:29  error  'Icon' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\pages\dashboard\OperationsDashboard.jsx
+  238:26  error  'Icon' is defined but never used  no-unused-vars
 
 R:\webplot\frontend\src\pages\dashboard\SalesDashboard.jsx
-  180:27  error  'Icon' is defined but never used  no-unused-vars
+   21:12  error  'activeTab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   21:23  error  'setActiveTab' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  233:27  error  'Icon' is defined but never used                                                              no-unused-vars
 
-R:\webplot\frontend\src\pages\dashboard\WorkshopDiary.jsx
-  132:43  error  'Icon' is defined but never used  no-unused-vars
+R:\webplot\frontend\src\pages\dashboard\TradingDashboard.jsx
+    2:8   error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                  no-unused-vars
+   20:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+   20:21  error  'setLoading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   21:19  error  'setStats' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u    no-unused-vars
+  154:26  error  'Icon' is defined but never used                                                            no-unused-vars
+
+R:\webplot\frontend\src\pages\documents\DocumentManager.jsx
+  8:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\elitepro\EliteProDashboard.jsx
   20:9   error  Error: Cannot access variable before it is declared
@@ -260,38 +321,148 @@ R:\webplot\frontend\src\pages\elitepro\EliteProDashboard.jsx
 > 25 |             const [shipmentsRes, productsRes, ordersRes] = await Promise.all([
      ΓÇª
      | ^^^^^^^^^^^^^
-> 44 |         }
+> 48 |         }
      | ^^^^^^^^^^^^^
-> 45 |     };
+> 49 |     };
      | ^^^^^^^ `fetchDashboardData` is declared here
-  46 |
-  47 |     const StatCard = ({ icon: Icon, label, value, color, trend }) => (
-  48 |         <div className="stat-card">  react-hooks/immutability
-  47:31  error  'Icon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+  50 |
+  51 |     const StatCard = ({ icon: Icon, label, value, color, trend }) => (
+  52 |         <div className="stat-card">  react-hooks/immutability
+  51:31  error  'Icon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+
+R:\webplot\frontend\src\pages\elitepro\InventoryManagement.jsx
+  40:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  38 |
+  39 |     useEffect(() => {
+> 40 |         fetchProducts();
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  41 |     }, [fetchProducts]);
+  42 |
+  43 |     const openAddModal = () => {  react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\pages\elitepro\ShipmentManagement.jsx
+  41:9  error  Error: Cannot access variable before it is declared
+
+`fetchShipments` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  39 |
+  40 |     useEffect(() => {
+> 41 |         fetchShipments();
+     |         ^^^^^^^^^^^^^^ `fetchShipments` accessed before it is declared
+  42 |     }, []);
+  43 |
+  44 |     const fetchShipments = async () => {
+
+  42 |     }, []);
+  43 |
+> 44 |     const fetchShipments = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 45 |         try {
+     | ^^^^^^^^^^^^^
+> 46 |             const response = await api.get('/logistics/api/shipments/');
+     | ^^^^^^^^^^^^^
+> 47 |             setShipments(response.data);
+     | ^^^^^^^^^^^^^
+> 48 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 49 |         } catch (error) {
+     | ^^^^^^^^^^^^^
+> 50 |             console.error('Error fetching shipments:', error);
+     | ^^^^^^^^^^^^^
+> 51 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 52 |         }
+     | ^^^^^^^^^^^^^
+> 53 |     };
+     | ^^^^^^^ `fetchShipments` is declared here
+  54 |
+  55 |     const generateShipmentNumber = () => {
+  56 |         const prefix = 'SHP';  react-hooks/immutability
 
 R:\webplot\frontend\src\pages\estimates\EstimateDetail.jsx
-  170:54  error  'err' is defined but never used  no-unused-vars
+   23:8   warning  React Hook useEffect has a missing dependency: 'fetchEstimate'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  184:54  error    'err' is defined but never used                                                                                   no-unused-vars
 
-R:\webplot\frontend\src\pages\finance\AccountingPage.jsx
-   23:35  error  'summaryRes' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  189:43  error  'Icon' is defined but never used                                                            no-unused-vars
-  189:49  error  'color' is defined but never used                                                           no-unused-vars
+R:\webplot\frontend\src\pages\finance\AssetConsole.jsx
+  14:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
-R:\webplot\frontend\src\pages\finance\BillingPage.jsx
-  164:44  error  'Icon' is defined but never used   no-unused-vars
-  164:50  error  'color' is defined but never used  no-unused-vars
+R:\webplot\frontend\src\pages\finance\AuditorDossier.jsx
+  18:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      no-unused-vars
+  23:9   error  Error: Cannot access variable before it is declared
+
+`fetchAuditData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  21 |
+  22 |     useEffect(() => {
+> 23 |         fetchAuditData();
+     |         ^^^^^^^^^^^^^^ `fetchAuditData` accessed before it is declared
+  24 |     }, []);
+  25 |
+  26 |     const fetchAuditData = async () => {
+
+  24 |     }, []);
+  25 |
+> 26 |     const fetchAuditData = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 27 |         try {
+     | ^^^^^^^^^^^^^
+> 28 |             const res = await api.get('/finance/api/vouchers/');
+     ΓÇª
+     | ^^^^^^^^^^^^^
+> 39 |         }
+     | ^^^^^^^^^^^^^
+> 40 |     };
+     | ^^^^^^^ `fetchAuditData` is declared here
+  41 |
+  42 |     return (
+  43 |         <PortfolioPage breadcrumb="Strategic Hub / Governance / Auditor Dossier">  react-hooks/immutability
 
 R:\webplot\frontend\src\pages\finance\BudgetManager.jsx
-  2:8  error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  37:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
-R:\webplot\frontend\src\pages\finance\CommissionDashboard.jsx
-  137:27  error  'Icon' is defined but never used  no-unused-vars
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
 
-R:\webplot\frontend\src\pages\finance\FinancialReports.jsx
-  67:9  error  Parsing error: Expected corresponding JSX closing tag for <div>
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  35 |
+  36 |     useEffect(() => {
+> 37 |         fetchData();
+     |         ^^^^^^^^^ Avoid calling setState() directly within an effect
+  38 |     }, []);
+  39 |
+  40 |     const handleSubmit = async (e) => {  react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\pages\finance\ChartOfAccounts.jsx
+    8:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u            no-unused-vars
+   23:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  104:61  error  'idx' is defined but never used                                                          no-unused-vars
+
+R:\webplot\frontend\src\pages\finance\FinancePortal.jsx
+    1:38  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+   24:23  error  'summary' is defined but never used                                                 no-unused-vars
+  127:32  error  'navigate' is defined but never used                                                no-unused-vars
+
+R:\webplot\frontend\src\pages\finance\LinkingAccount.jsx
+  48:18  error  'err' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\pages\forms\InvoicePrint.jsx
+  16:8  warning  React Hook useEffect has a missing dependency: 'fetchInvoice'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\forms\JobCardPrint.jsx
+  16:8  warning  React Hook useEffect has a missing dependency: 'fetchJobCard'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\forms\PPFWarrantyForm.jsx
-  1:17  error  'useState' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  328:7  error  'miniInputStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\forms\ServiceAdvisorForm.jsx
   33:24  error  Unexpected constant truthiness on the left-hand side of a `||` expression  no-constant-binary-expression
@@ -301,106 +472,157 @@ R:\webplot\frontend\src\pages\forms\UniversalChecklist.jsx
   124:14  error  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
 
 R:\webplot\frontend\src\pages\hr\AccessManagement.jsx
-  8:19  error  'currentUser' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  12:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\hr\ApprovalsHub.jsx
+  13:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  76:18  error  'err' is defined but never used                                                no-unused-vars
 
 R:\webplot\frontend\src\pages\hr\AttendanceBoard.jsx
-  247:43  error  'Icon' is defined but never used   no-unused-vars
-  247:49  error  'color' is defined but never used  no-unused-vars
+  19:8  warning  React Hook useEffect has a missing dependency: 'fetchAttendance'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\hr\EmployeeDirectory.jsx
+  9:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\hr\EmployeeReports.jsx
+  11:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                 no-unused-vars
+  31:8   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\hr\HRHub.jsx
-  9:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  36:11  error  'totalSalary' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\hr\HRMasters.jsx
+  50:8   warning  React Hook useEffect has a missing dependency: 'fetchData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  58:18  error    'err' is defined but never used                                                                               no-unused-vars
+  68:18  error    'err' is defined but never used                                                                               no-unused-vars
+
+R:\webplot\frontend\src\pages\hr\HRReports.jsx
+  26:8  warning  React Hook useEffect has a missing dependency: 'fetchReport'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\hr\HRRoster.jsx
-  14:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  25:8  warning  React Hook useEffect has a missing dependency: 'fetchRoster'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
-R:\webplot\frontend\src\pages\hr\HRRules.jsx
-  13:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+R:\webplot\frontend\src\pages\hr\IDCardGenerator.jsx
+  33:11  error  'cardRef' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
+  36:9   error  Error: Cannot access variable before it is declared
 
-R:\webplot\frontend\src\pages\hr\TeamManagement.jsx
-  227:21  error  Parsing error: Expected corresponding JSX closing tag for <div>
+`fetchEmployees` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
 
-R:\webplot\frontend\src\pages\hr\TechnicianAnalytics.jsx
-   9:41  error  'Icon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  no-unused-vars
-   9:47  error  'color' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
-  43:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  34 |
+  35 |     useEffect(() => {
+> 36 |         fetchEmployees();
+     |         ^^^^^^^^^^^^^^ `fetchEmployees` accessed before it is declared
+  37 |     }, []);
+  38 |
+  39 |     const fetchEmployees = async () => {
 
-Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
-* Update external systems with the latest state from React.
-* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+  37 |     }, []);
+  38 |
+> 39 |     const fetchEmployees = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 40 |         try {
+     | ^^^^^^^^^^^^^
+> 41 |             const res = await api.get('/hr/api/employees/');
+     | ^^^^^^^^^^^^^
+> 42 |             setEmployees(res.data);
+     | ^^^^^^^^^^^^^
+> 43 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 44 |         } catch (err) {
+     | ^^^^^^^^^^^^^
+> 45 |             console.error('Error fetching employees', err);
+     | ^^^^^^^^^^^^^
+> 46 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 47 |         }
+     | ^^^^^^^^^^^^^
+> 48 |     };
+     | ^^^^^^^ `fetchEmployees` is declared here
+  49 |
+  50 |     const handleEmployeeSelect = (emp) => {
+  51 |         setSelectedEmployee(emp);  react-hooks/immutability
 
-Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
-
-  41 |
-  42 |     useEffect(() => {
-> 43 |         fetchData();
-     |         ^^^^^^^^^ Avoid calling setState() directly within an effect
-  44 |     }, [fetchData]);
-  45 |
-  46 |     const totals = leaderboard.reduce((acc, curr) => ({  react-hooks/set-state-in-effect
+R:\webplot\frontend\src\pages\hr\PayrollConsole.jsx
+  92:8  warning  React Hook useEffect has a missing dependency: 'fetchSlips'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\invoices\InvoiceDetail.jsx
-   35:18  error  'err' is defined but never used  no-unused-vars
-  189:54  error  'err' is defined but never used  no-unused-vars
+  18:8   warning  React Hook useEffect has a missing dependency: 'fetchInvoice'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  36:18  error    'err' is defined but never used                                                                                  no-unused-vars
+
+R:\webplot\frontend\src\pages\jobs\InvoiceBook.jsx
+  24:8  warning  React Hook useEffect has a missing dependency: 'fetchInvoicedJobs'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\jobs\JobBoard.jsx
-  32:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  50:38  error  'currentStatus' is defined but never used                                                no-unused-vars
+  39:23  error    'setStartDate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                  no-unused-vars
+  40:21  error    'setEndDate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                    no-unused-vars
+  45:8   warning  React Hook useEffect has a missing dependency: 'fetchJobs'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\jobs\JobCardBuilder.jsx
+  116:46  error  'idx' is defined but never used                                                                    no-unused-vars
+  784:7   error  'dropdownItemStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\jobs\JobCardHub.jsx
+  20:12  error  'filter' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+  20:20  error  'setFilter' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\jobs\JobCreate.jsx
-  15:50  error  Error: Cannot call impure function during render
+  22:50  error  Error: Cannot call impure function during render
 
 `Math.random` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
 
-  13 |
-  14 |     const [formData, setFormData] = useState({
-> 15 |         job_card_number: `JC-${Math.floor(1000 + Math.random() * 9000)}`,
+  20 |
+  21 |     const [formData, setFormData] = useState({
+> 22 |         job_card_number: `JC-${Math.floor(1000 + Math.random() * 9000)}`,
      |                                                  ^^^^^^^^^^^^^ Cannot call impure function
-  16 |         date: new Date().toISOString().split('T')[0],
-  17 |         customer_name: '',
-  18 |         phone_number: '',                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/purity
-  44:9   error  Error: Cannot access variable before it is declared
+  23 |         date: new Date().toISOString().split('T')[0],
+  24 |         salutation: 'Mr.',
+  25 |         customer_name: '',                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/purity
+  74:9   error  Error: Cannot access variable before it is declared
 
 `fetchUsers` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
 
-  42 |
-  43 |     useEffect(() => {
-> 44 |         fetchUsers();
+  72 |
+  73 |     useEffect(() => {
+> 74 |         fetchUsers();
      |         ^^^^^^^^^^ `fetchUsers` accessed before it is declared
-  45 |         if (location.state && location.state.lead) {
-  46 |             const lead = location.state.lead;
-  47 |             setFormData(prev => ({
+  75 |         if (location.state && (location.state.lead || location.state.booking)) {
+  76 |             const data = location.state.lead || location.state.booking;
+  77 |             const { salutation, cleanName, phoneSuffix, cleanPhone } = parseCustomerData(data.customer_name, data.phone || data.phone_number);
 
-  67 |     }, [location.state]);
-  68 |
-> 69 |     const fetchUsers = async () => {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 70 |         try {
-     | ^^^^^^^^^^^^^
-> 71 |             const res = await api.get('/api/auth/users/');
-     | ^^^^^^^^^^^^^
-> 72 |             setUsers(res.data);
-     | ^^^^^^^^^^^^^
-> 73 |         } catch (err) {
-     | ^^^^^^^^^^^^^
-> 74 |             console.error('Error fetching users', err);
-     | ^^^^^^^^^^^^^
-> 75 |         }
-     | ^^^^^^^^^^^^^
-> 76 |     };
-     | ^^^^^^^ `fetchUsers` is declared here
-  77 |
-  78 |     const addService = (service) => {
-  79 |         if (formData.selected_services.find(s => s.name === service.name)) return;  react-hooks/immutability
+   95 |     }, [location.state]);
+   96 |
+>  97 |     const fetchUsers = async () => {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  98 |         try {
+      | ^^^^^^^^^^^^^
+>  99 |             const res = await api.get('/api/auth/users/');
+      | ^^^^^^^^^^^^^
+> 100 |             setUsers(res.data);
+      | ^^^^^^^^^^^^^
+> 101 |         } catch (err) {
+      | ^^^^^^^^^^^^^
+> 102 |             console.error('Error fetching users', err);
+      | ^^^^^^^^^^^^^
+> 103 |         }
+      | ^^^^^^^^^^^^^
+> 104 |     };
+      | ^^^^^^^ `fetchUsers` is declared here
+  105 |
+  106 |     const addService = (service) => {
+  107 |         if (formData.selected_services.find(s => s.name === service.name)) return;  react-hooks/immutability
 
 R:\webplot\frontend\src\pages\jobs\JobDetail.jsx
-   81:11  error  'currentStepIndex' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  184:50  error  'err' is defined but never used                                                                   no-unused-vars
+   34:8   warning  React Hook useEffect has a missing dependency: 'fetchJob'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   59:19  error    'res' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                          no-unused-vars
+  313:50  error    'err' is defined but never used                                                                              no-unused-vars
 
 R:\webplot\frontend\src\pages\leads\LeadDetail.jsx
-  44:22  error  'err' is defined but never used  no-unused-vars
+  25:8   warning  React Hook useEffect has a missing dependency: 'fetchLead'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  53:22  error    'err' is defined but never used                                                                               no-unused-vars
 
 R:\webplot\frontend\src\pages\leads\LeadForm.jsx
-  150:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+   88:12  error  'employees' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       no-unused-vars
+  131:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -408,18 +630,17 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  148 |
-  149 |     useEffect(() => {
-> 150 |         fetchEmployees();
+  129 |
+  130 |     useEffect(() => {
+> 131 |         fetchEmployees();
       |         ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
-  151 |     }, [fetchEmployees]);
-  152 |
-  153 |     const handleChange = (e) => {  react-hooks/set-state-in-effect
-  200:36  error  'idx' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-unused-vars
+  132 |     }, [fetchEmployees]);
+  133 |
+  134 |     // Handlers  react-hooks/set-state-in-effect
+  181:54  error  'index' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
 
 R:\webplot\frontend\src\pages\leads\MockInbox.jsx
-   12:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
-  125:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  129:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -427,14 +648,14 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  123 |     // Initial Fetch
-  124 |     useEffect(() => {
-> 125 |         fetchData();
-      |         ^^^^^^^^^ Avoid calling setState() directly within an effect
-  126 |     }, [fetchData]);
   127 |
-  128 |     // Polling Fetch                                                                                              react-hooks/set-state-in-effect
-  131:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  128 |     useEffect(() => {
+> 129 |         fetchData();
+      |         ^^^^^^^^^ Avoid calling setState() directly within an effect
+  130 |     }, [fetchData]);
+  131 |
+  132 |     useEffect(() => {                                                                                                                  react-hooks/set-state-in-effect
+  134:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -442,23 +663,72 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  129 |     useEffect(() => {
-  130 |         if (filter === 'SENT' || filter === 'ALL') {
-> 131 |             fetchData();
+  132 |     useEffect(() => {
+  133 |         if (filter === 'SENT' || filter === 'ALL') {
+> 134 |             fetchData();
       |             ^^^^^^^^^ Avoid calling setState() directly within an effect
-  132 |             pollRef.current = setInterval(fetchData, 15000);
-  133 |         }
-  134 |         return () => {  react-hooks/set-state-in-effect
+  135 |             pollRef.current = setInterval(fetchData, 15000);
+  136 |         }
+  137 |         return () => {  react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\pages\logistics\LogisticsPortal.jsx
+  1:38  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u       no-unused-vars
+
+R:\webplot\frontend\src\pages\logistics\OrderConfirmation.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\logistics\PurchaseEntry.jsx
+   17:34  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  15 |     const navigate = useNavigate();
+  16 |     const [formData, setFormData] = useState({
+> 17 |         purchase_number: `PRCH-${Date.now().toString().slice(-6)}`,
+     |                                  ^^^^^^^^^^ Cannot call impure function
+  18 |         date: new Date().toISOString().split('T')[0],
+  19 |         vendor_name: '',
+  20 |         items: [{ detail: '', qty: 1, price: 0 }],  react-hooks/purity
+  264:7   error  'labelStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+  265:7   error  'sectionTitleStyle' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
+
+R:\webplot\frontend\src\pages\management\ManagementPortal.jsx
+    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+   95:26  error  'slaStats' is defined but never used                                           no-unused-vars
+  175:19  error  'PieChart' is not defined                                                      no-undef
+  356:96  error  'emp' is defined but never used                                                no-unused-vars
+
+R:\webplot\frontend\src\pages\masters\InsuranceMaster.jsx
+  7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\masters\ServiceMaster.jsx
+  7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+R:\webplot\frontend\src\pages\masters\VehicleConfigMaster.jsx
+    7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  274:30  error  'onEdit' is defined but never used                                             no-unused-vars
+
+R:\webplot\frontend\src\pages\masters\VehicleMaster.jsx
+  7:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
 
 R:\webplot\frontend\src\pages\operations\OperationList.jsx
-  129:54  error  'err' is defined but never used  no-unused-vars
-  146:58  error  'err' is defined but never used  no-unused-vars
+  161:50  error  'err' is defined but never used  no-unused-vars
+  175:54  error  'err' is defined but never used  no-unused-vars
+
+R:\webplot\frontend\src\pages\paint\PaintDashboard.jsx
+    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u             no-unused-vars
+   27:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  106:18  error  'err' is defined but never used                                                           no-unused-vars
+  126:18  error  'err' is defined but never used                                                           no-unused-vars
+  151:18  error  'err' is defined but never used                                                           no-unused-vars
+
+R:\webplot\frontend\src\pages\payments\PaymentPage.jsx
+  29:8  warning  React Hook useEffect has a missing dependency: 'fetchInvoiceAndIntent'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\pick_drop\DriverDashboard.jsx
-   2:8   error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            no-unused-vars
-  11:12  error  'stats' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 no-unused-vars
-  11:19  error  'setStats' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
-  26:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  18:19  error  'setStats' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              no-unused-vars
+  33:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -466,25 +736,232 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  24 |             { id: 4, name: 'Bonanza Rd', status: 'TRANSIT', city: 'Las Vegas', lat: 36.1767, lng: -115.1350, util: '90%', energy: '60' },
-  25 |         ];
-> 26 |         setTrips(mockTrips);
+  31 |             { id: 4, name: 'Bonanza Rd', status: 'TRANSIT', city: 'Las Vegas', lat: 36.1767, lng: -115.1350, util: '90%', energy: '60' },
+  32 |         ];
+> 33 |         setTrips(mockTrips);
      |         ^^^^^^^^ Avoid calling setState() directly within an effect
-  27 |
-  28 |         const interval = setInterval(() => {
-  29 |             setTrips(currentTrips => currentTrips.map(t => ({  react-hooks/set-state-in-effect
+  34 |
+  35 |         const interval = setInterval(() => {
+  36 |             setTrips(currentTrips => currentTrips.map(t => ({  react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\pages\pick_drop\PickDropForm.jsx
+  17:7  error  Fast refresh only works when a file has exports. Move your component(s) to a separate file  react-refresh/only-export-components
+
+R:\webplot\frontend\src\pages\pick_drop\PickDropList.jsx
+  15:7  error  Fast refresh only works when a file has exports. Move your component(s) to a separate file  react-refresh/only-export-components
+
+R:\webplot\frontend\src\pages\pick_drop\PickDropTrackingPage.jsx
+  25:8  warning  React Hook useEffect has a missing dependency: 'fetchTrip'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\portal\CustomerPortal.jsx
-  41:18  error  'err' is defined but never used  no-unused-vars
+  38:8   warning  React Hook useEffect has a missing dependency: 'verifyToken'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  47:18  error    'err' is defined but never used                                                                                 no-unused-vars
 
 R:\webplot\frontend\src\pages\portal\JobDetail.jsx
-  61:22  error  'err' is defined but never used  no-unused-vars
+   32:8   warning  React Hook useEffect has a missing dependency: 'loadJobDetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   55:22  error    'err' is defined but never used                                                                                    no-unused-vars
+  129:31  error    'isPending' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                          no-unused-vars
+  130:31  error    'statusColor' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                        no-unused-vars
+  219:52  error    'activeTab' is not defined                                                                                         no-undef
+
+R:\webplot\frontend\src\pages\ppf\PPFDetail.jsx
+  23:8  warning  React Hook useEffect has a missing dependency: 'fetchWarranty'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\public\CustomerLiveTracker.jsx
   35:22  error  'err' is defined but never used  no-unused-vars
 
+R:\webplot\frontend\src\pages\reports\FinancialReport.jsx
+  29:9  error    Error: Cannot access variable before it is declared
+
+`fetchData` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  27 |
+  28 |     useEffect(() => {
+> 29 |         fetchData();
+     |         ^^^^^^^^^ `fetchData` accessed before it is declared
+  30 |     }, []);
+  31 |
+  32 |     useEffect(() => {
+
+  34 |     }, [filters, invoices]);
+  35 |
+> 36 |     const fetchData = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |         try {
+     | ^^^^^^^^^^^^^
+> 38 |             const res = await api.get('/forms/invoices/api/list/');
+     ΓÇª
+     | ^^^^^^^^^^^^^
+> 45 |         }
+     | ^^^^^^^^^^^^^
+> 46 |     };
+     | ^^^^^^^ `fetchData` is declared here
+  47 |
+  48 |     const applyFilters = () => {
+  49 |         let result = [...invoices];                                                                                                                                                                                                                  react-hooks/immutability
+  33:9  error    Error: Cannot access variable before it is declared
+
+`applyFilters` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  31 |
+  32 |     useEffect(() => {
+> 33 |         applyFilters();
+     |         ^^^^^^^^^^^^ `applyFilters` accessed before it is declared
+  34 |     }, [filters, invoices]);
+  35 |
+  36 |     const fetchData = async () => {
+
+  46 |     };
+  47 |
+> 48 |     const applyFilters = () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 49 |         let result = [...invoices];
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 50 |
+     ΓÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 63 |         setFilteredInvoices(result);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 64 |     };
+     | ^^^^^^^ `applyFilters` is declared here
+  65 |
+  66 |     const totalRevenue = filteredInvoices.reduce((sum, inv) => sum + (parseFloat(inv.grand_total) || 0), 0);
+  67 |     const taxTotal = filteredInvoices.reduce((sum, inv) => sum + (parseFloat(inv.tax_total) || 0), 0);  react-hooks/immutability
+  34:8  warning  React Hook useEffect has a missing dependency: 'applyFilters'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\reports\InventoryReport.jsx
+  29:9  error    Error: Cannot access variable before it is declared
+
+`fetchStock` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  27 |
+  28 |     useEffect(() => {
+> 29 |         fetchStock();
+     |         ^^^^^^^^^^ `fetchStock` accessed before it is declared
+  30 |     }, []);
+  31 |
+  32 |     useEffect(() => {
+
+  34 |     }, [filters, items]);
+  35 |
+> 36 |     const fetchStock = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 37 |         try {
+     | ^^^^^^^^^^^^^
+> 38 |             const res = await api.get('/inventory/api/products/');
+     ΓÇª
+     | ^^^^^^^^^^^^^
+> 45 |         }
+     | ^^^^^^^^^^^^^
+> 46 |     };
+     | ^^^^^^^ `fetchStock` is declared here
+  47 |
+  48 |     const applyFilters = () => {
+  49 |         let result = [...items];                                                                                                                                                                                                                 react-hooks/immutability
+  33:9  error    Error: Cannot access variable before it is declared
+
+`applyFilters` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  31 |
+  32 |     useEffect(() => {
+> 33 |         applyFilters();
+     |         ^^^^^^^^^^^^ `applyFilters` accessed before it is declared
+  34 |     }, [filters, items]);
+  35 |
+  36 |     const fetchStock = async () => {
+
+  46 |     };
+  47 |
+> 48 |     const applyFilters = () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 49 |         let result = [...items];
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 50 |
+     ΓÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 66 |         setFilteredItems(result);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 67 |     };
+     | ^^^^^^^ `applyFilters` is declared here
+  68 |
+  69 |     const totalValue = filteredItems.reduce((sum, i) => sum + ((parseFloat(i.cost_price) || 0) * (i.quantity || 0)), 0);
+  70 |     const lowStockCount = items.filter(i => i.quantity <= i.low_stock_threshold && i.quantity > 0).length;  react-hooks/immutability
+  34:8  warning  React Hook useEffect has a missing dependency: 'applyFilters'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\reports\JobReport.jsx
+  30:9  error    Error: Cannot access variable before it is declared
+
+`fetchJobs` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  28 |
+  29 |     useEffect(() => {
+> 30 |         fetchJobs();
+     |         ^^^^^^^^^ `fetchJobs` accessed before it is declared
+  31 |     }, []);
+  32 |
+  33 |     useEffect(() => {
+
+  35 |     }, [filters, jobs]);
+  36 |
+> 37 |     const fetchJobs = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 38 |         try {
+     | ^^^^^^^^^^^^^
+> 39 |             const res = await api.get('/forms/job-cards/api/jobs/');
+     | ^^^^^^^^^^^^^
+> 40 |             setJobs(Array.isArray(res.data) ? res.data : res.data.results || []);
+     | ^^^^^^^^^^^^^
+> 41 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 42 |         } catch (err) {
+     | ^^^^^^^^^^^^^
+> 43 |             console.error("Failed to load jobs", err);
+     | ^^^^^^^^^^^^^
+> 44 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 45 |         }
+     | ^^^^^^^^^^^^^
+> 46 |     };
+     | ^^^^^^^ `fetchJobs` is declared here
+  47 |
+  48 |     const applyFilters = () => {
+  49 |         let result = [...jobs];  react-hooks/immutability
+  34:9  error    Error: Cannot access variable before it is declared
+
+`applyFilters` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  32 |
+  33 |     useEffect(() => {
+> 34 |         applyFilters();
+     |         ^^^^^^^^^^^^ `applyFilters` accessed before it is declared
+  35 |     }, [filters, jobs]);
+  36 |
+  37 |     const fetchJobs = async () => {
+
+  46 |     };
+  47 |
+> 48 |     const applyFilters = () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 49 |         let result = [...jobs];
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 50 |
+     ΓÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 73 |         setFilteredJobs(result);
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 74 |     };
+     | ^^^^^^^ `applyFilters` is declared here
+  75 |
+  76 |     const handlePrint = () => {
+  77 |         window.print();                                                                                                                                                                                                                                                                                                                                   react-hooks/immutability
+  35:8  warning  React Hook useEffect has a missing dependency: 'applyFilters'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+R:\webplot\frontend\src\pages\sales\SalesPortal.jsx
+    2:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  122:25  error  'stats' is defined but never used                                              no-unused-vars
+
 R:\webplot\frontend\src\pages\scheduling\SchedulePage.jsx
-   28:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+   29:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -492,14 +969,14 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  26 |
-  27 |     useEffect(() => {
-> 28 |         fetchTeams();
+  27 |
+  28 |     useEffect(() => {
+> 29 |         fetchTeams();
      |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
-  29 |     }, [fetchTeams]);
-  30 |
-  31 |     const navItems = [                                                                                         react-hooks/set-state-in-effect
-   95:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  30 |     }, [fetchTeams]);
+  31 |
+  32 |     const navItems = [                                                                                         react-hooks/set-state-in-effect
+   96:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -507,14 +984,14 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  93 |     useEffect(() => {
-  94 |         // In a real app, we would fetch these from an API
-> 95 |         setStats({ active: 24, completed: 12, pending: 8, urgent: 4 });
+  94 |     useEffect(() => {
+  95 |         // In a real app, we would fetch these from an API
+> 96 |         setStats({ active: 24, completed: 12, pending: 8, urgent: 4 });
      |         ^^^^^^^^ Avoid calling setState() directly within an effect
-  96 |     }, []);
-  97 |
-  98 |     return (  react-hooks/set-state-in-effect
-  172:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  97 |     }, []);
+  98 |
+  99 |     return (  react-hooks/set-state-in-effect
+  176:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -522,14 +999,14 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  170 |
-  171 |     useEffect(() => {
-> 172 |         fetchEntries();
-      |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
-  173 |     }, [fetchEntries]);
   174 |
-  175 |     const handleAdd = async () => {                                                               react-hooks/set-state-in-effect
-  258:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  175 |     useEffect(() => {
+> 176 |         fetchEntries();
+      |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  177 |     }, [fetchEntries]);
+  178 |
+  179 |     const handleAdd = async () => {                                                               react-hooks/set-state-in-effect
+  262:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -537,15 +1014,15 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  256 |
-  257 |     useEffect(() => {
-> 258 |         fetchAssignments();
-      |         ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
-  259 |     }, [fetchAssignments]);
   260 |
-  261 |     const assignSlot = async (teamId, slotNum, isOvertime = false) => {               react-hooks/set-state-in-effect
-  275:18  error  'error' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
-  419:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+  261 |     useEffect(() => {
+> 262 |         fetchAssignments();
+      |         ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  263 |     }, [fetchAssignments]);
+  264 |
+  265 |     const assignSlot = async (teamId, slotNum, isOvertime = false) => {               react-hooks/set-state-in-effect
+  279:18  error  '_unused' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+  423:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
 Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
 * Update external systems with the latest state from React.
@@ -553,88 +1030,218 @@ Effects are intended to synchronize state between React and external systems suc
 
 Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
 
-  417 |
-  418 |     useEffect(() => {
-> 419 |         fetchReport();
-      |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
-  420 |     }, [fetchReport]);
   421 |
-  422 |     return (                                                                                         react-hooks/set-state-in-effect
-  496:22  error  'useAuth' is not defined                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   no-undef
+  422 |     useEffect(() => {
+> 423 |         fetchReport();
+      |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  424 |     }, [fetchReport]);
+  425 |
+  426 |     return (                                                                                         react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\pages\scheduling\SchedulingPortal.jsx
+    3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               no-unused-vars
+   19:11  error  'navigate' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    no-unused-vars
+   20:13  error  'user' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        no-unused-vars
+   37:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  35 |
+  36 |     useEffect(() => {
+> 37 |         fetchTeams();
+     |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  38 |     }, [fetchTeams]);
+  39 |
+  40 |     const stats = [                                                                                                                                                                                                             react-hooks/set-state-in-effect
+  135:23  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  133 |     }, []);
+  134 |
+> 135 |     useEffect(() => { fetchAssignments(); }, [fetchAssignments]);
+      |                       ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  136 |
+  137 |     const filteredTeams = teams.filter(t => {
+  138 |         if (activeSection === 'MEDIA_DIGITAL') return ['SOCIAL MEDIA TEAM', 'SEO & DIGITAL MARKETING', 'VIDEOGRAPHERS'].includes(t.name);  react-hooks/set-state-in-effect
+
+R:\webplot\frontend\src\pages\sla\SLADetail.jsx
+  28:8  warning  React Hook useEffect has a missing dependency: 'fetchSLADetails'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\stock\ProcurementManager.jsx
-  16:9  error  Error: Cannot access variable before it is declared
+  23:9  error  Error: Cannot access variable before it is declared
 
 `fetchOrders` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
 
-  14 |
-  15 |     useEffect(() => {
-> 16 |         fetchOrders();
+  21 |
+  22 |     useEffect(() => {
+> 23 |         fetchOrders();
      |         ^^^^^^^^^^^ `fetchOrders` accessed before it is declared
-  17 |     }, []);
-  18 |
-  19 |     const fetchOrders = async () => {
+  24 |         fetchForecasts();
+  25 |     }, []);
+  26 |
 
-  17 |     }, []);
-  18 |
-> 19 |     const fetchOrders = async () => {
+  25 |     }, []);
+  26 |
+> 27 |     const fetchOrders = async () => {
      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 20 |         try {
+> 28 |         try {
      | ^^^^^^^^^^^^^
-> 21 |             const res = await api.get('/forms/stock/api/purchase-orders/');
+> 29 |             const res = await api.get('/forms/stock/api/purchase-orders/');
      ΓÇª
      | ^^^^^^^^^^^^^
-> 33 |         }
+> 37 |         }
      | ^^^^^^^^^^^^^
-> 34 |     };
+> 38 |     };
      | ^^^^^^^ `fetchOrders` is declared here
-  35 |
-  36 |     const getStatusStyle = (status) => {
-  37 |         switch (status) {  react-hooks/immutability
+  39 |
+  40 |     const fetchForecasts = async () => {
+  41 |         try {                                                                                                                                                                                                                                                                                                                                                                                                                                    react-hooks/immutability
+  24:9  error  Error: Cannot access variable before it is declared
+
+`fetchForecasts` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  22 |     useEffect(() => {
+  23 |         fetchOrders();
+> 24 |         fetchForecasts();
+     |         ^^^^^^^^^^^^^^ `fetchForecasts` accessed before it is declared
+  25 |     }, []);
+  26 |
+  27 |     const fetchOrders = async () => {
+
+  38 |     };
+  39 |
+> 40 |     const fetchForecasts = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 41 |         try {
+     | ^^^^^^^^^^^^^
+> 42 |             const res = await api.get('/stock/api/items/forecast_stock/');
+     | ^^^^^^^^^^^^^
+> 43 |             setForecasts(res.data.forecasts.filter(f => f.status !== 'OK'));
+     | ^^^^^^^^^^^^^
+> 44 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 45 |         } catch (err) {
+     | ^^^^^^^^^^^^^
+> 46 |             console.error("Error fetching forecasts", err);
+     | ^^^^^^^^^^^^^
+> 47 |             setLoading(false);
+     | ^^^^^^^^^^^^^
+> 48 |         }
+     | ^^^^^^^^^^^^^
+> 49 |     };
+     | ^^^^^^^ `fetchForecasts` is declared here
+  50 |
+  51 |     const getStatusStyle = (status) => {
+  52 |         switch (status) {  react-hooks/immutability
+
+R:\webplot\frontend\src\pages\stock\StockList.jsx
+  59:18  error  'err' is defined but never used  no-unused-vars
 
 R:\webplot\frontend\src\pages\stock\StockScanner.jsx
-   8:12  error  'scannedResult' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
-  41:28  error  'error' is defined but never used                                                              no-unused-vars
+  37:8   warning  React Hook useEffect has a missing dependency: 'onScanSuccess'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  45:28  error    'error' is defined but never used                                                                                 no-unused-vars
+
+R:\webplot\frontend\src\pages\stock\SupplierForm.jsx
+   8:10  error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                    no-unused-vars
+  44:8   warning  React Hook useEffect has missing dependencies: 'fetchSupplier' and 'isEdit'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
 
 R:\webplot\frontend\src\pages\stock\SupplierList.jsx
-  12:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          no-unused-vars
-  17:9   error  Error: Cannot access variable before it is declared
+  25:9  error  Error: Cannot access variable before it is declared
 
 `fetchSuppliers` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
 
-  15 |
-  16 |     useEffect(() => {
-> 17 |         fetchSuppliers();
+  23 |
+  24 |     useEffect(() => {
+> 25 |         fetchSuppliers();
      |         ^^^^^^^^^^^^^^ `fetchSuppliers` accessed before it is declared
-  18 |     }, []);
-  19 |
-  20 |     const fetchSuppliers = async () => {
+  26 |     }, []);
+  27 |
+  28 |     const fetchSuppliers = async () => {
 
-  18 |     }, []);
-  19 |
-> 20 |     const fetchSuppliers = async () => {
+  26 |     }, []);
+  27 |
+> 28 |     const fetchSuppliers = async () => {
      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 21 |         try {
+> 29 |         try {
      | ^^^^^^^^^^^^^
-> 22 |             const res = await api.get('/forms/stock/api/suppliers/');
+> 30 |             const res = await api.get('/forms/stock/api/suppliers/');
      | ^^^^^^^^^^^^^
-> 23 |             setSuppliers(res.data);
+> 31 |             setSuppliers(res.data);
      | ^^^^^^^^^^^^^
-> 24 |             setLoading(false);
+> 32 |             setLoading(false);
      | ^^^^^^^^^^^^^
-> 25 |         } catch (err) {
+> 33 |         } catch (err) {
      | ^^^^^^^^^^^^^
-> 26 |             console.error("Error fetching suppliers", err);
+> 34 |             console.error("Error fetching suppliers", err);
      | ^^^^^^^^^^^^^
-> 27 |             setLoading(false);
+> 35 |             setLoading(false);
      | ^^^^^^^^^^^^^
-> 28 |         }
+> 36 |         }
      | ^^^^^^^^^^^^^
-> 29 |     };
+> 37 |     };
      | ^^^^^^^ `fetchSuppliers` is declared here
-  30 |
-  31 |     const categories = ['ALL', 'PPF', 'CERAMIC', 'CHEMICALS', 'TOOLS', 'GENERAL'];
-  32 |  react-hooks/immutability
+  38 |
+  39 |     const categories = ['ALL', 'PPF', 'CERAMIC', 'CHEMICALS', 'TOOLS', 'GENERAL'];
+  40 |  react-hooks/immutability
 
-Γ£û 112 problems (112 errors, 0 warnings)
+R:\webplot\frontend\src\pages\warranty\WarrantyBook.jsx
+   8:10   error    'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      no-unused-vars
+  38:9    error    Error: Cannot access variable before it is declared
+
+`fetchRegistrations` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  36 |
+  37 |     useEffect(() => {
+> 38 |         fetchRegistrations();
+     |         ^^^^^^^^^^^^^^^^^^ `fetchRegistrations` accessed before it is declared
+  39 |     }, [activeCategory]);
+  40 |
+  41 |     const fetchRegistrations = async () => {
+
+  39 |     }, [activeCategory]);
+  40 |
+> 41 |     const fetchRegistrations = async () => {
+     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 42 |         try {
+     | ^^^^^^^^^^^^^
+> 43 |             setLoading(true);
+     ΓÇª
+     | ^^^^^^^^^^^^^
+> 51 |         }
+     | ^^^^^^^^^^^^^
+> 52 |     };
+     | ^^^^^^^ `fetchRegistrations` is declared here
+  53 |
+  54 |     const filteredRecords = registrations.filter(r =>
+  55 |         r.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||                                                            react-hooks/immutability
+  39:8    warning  React Hook useEffect has a missing dependency: 'fetchRegistrations'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/exhaustive-deps
+  62:128  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+  60 |     const stats = [
+  61 |         { label: 'ACTIVE CLEARANCE', value: registrations.filter(r => r.status === 'ACTIVE').length, icon: Shield, color: '#10b981' },
+> 62 |         { label: 'EXPIRING SOON', value: registrations.filter(r => r.status === 'ACTIVE' && new Date(r.expiry_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)).length, icon: Clock, color: 'var(--gold)' },
+     |                                                                                                                                ^^^^^^^^^^ Cannot call impure function
+  63 |         { label: 'TOTAL ISSUED', value: registrations.length, icon: FileText, color: 'var(--cream)' }
+  64 |     ];
+  65 |  react-hooks/purity
+
+R:\webplot\frontend\src\pages\warranty\WarrantyForm.jsx
+  2:23  error  'useParams' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+  9:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u     no-unused-vars
+
+R:\webplot\frontend\src\pages\workshop\WorkshopPortal.jsx
+  3:10  error  'motion' is defined but never used. Allowed unused vars must match /^[A-Z_]/u  no-unused-vars
+
+Γ£û 226 problems (195 errors, 31 warnings)
 

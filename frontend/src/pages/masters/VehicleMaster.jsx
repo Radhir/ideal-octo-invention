@@ -137,6 +137,27 @@ const VehicleMaster = () => {
                 </PortfolioSelect>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <button
+                        onClick={() => navigate('/masters/vehicles/config')}
+                        style={{
+                            flex: 1,
+                            background: 'rgba(232, 230, 227, 0.05)',
+                            color: 'var(--gold)',
+                            border: '1px solid rgba(232, 230, 227, 0.1)',
+                            borderRadius: '10px',
+                            fontWeight: '700',
+                            fontSize: '11px',
+                            letterSpacing: '1px',
+                            textTransform: 'uppercase',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <Layers size={14} /> Config Registry
+                    </button>
+                    <button
                         onClick={() => navigate('/masters/vehicles/create')}
                         style={{
                             flex: 1,
@@ -145,7 +166,7 @@ const VehicleMaster = () => {
                             border: 'none',
                             borderRadius: '10px',
                             fontWeight: '700',
-                            fontSize: '12px',
+                            fontSize: '11px',
                             letterSpacing: '1px',
                             textTransform: 'uppercase',
                             display: 'flex',

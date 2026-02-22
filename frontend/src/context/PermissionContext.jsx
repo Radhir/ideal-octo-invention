@@ -88,7 +88,28 @@ export const PermissionProvider = ({ children }) => {
         return ROLES.EMPLOYEE;
     }, [user]);
 
-    const permissions = useMemo(() => ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS[ROLES.EMPLOYEE], [role]);
+    const permissions = useMemo(() => {
+        // 1. Role-based defaults
+        let perms = [...(ROLE_PERMISSIONS[role] || ROLE_PERMISSIONS[ROLES.EMPLOYEE])];
+
+        // 2. Elite user bypass
+        if (perms.includes('all')) return perms;
+
+        // 3. Dynamic Module Permissions from Backend
+        if (user?.hr_profile?.permissions) {
+            user.hr_profile.permissions.forEach(p => {
+                const moduleName = p.module_name.toLowerCase().replace(' ', '_');
+                if (p.can_view) {
+                    if (!perms.includes(moduleName)) perms.push(moduleName);
+                } else {
+                    // Explicitly remove if denied (strict enforcement)
+                    perms = perms.filter(item => item !== moduleName);
+                }
+            });
+        }
+
+        return perms;
+    }, [role, user]);
 
     // Check if user has a specific permission
     const hasPermission = useMemo(() => (permission) => {

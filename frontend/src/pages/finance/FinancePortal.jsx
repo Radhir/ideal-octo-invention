@@ -236,13 +236,16 @@ const FinancePortal = () => {
                     <PortfolioButton variant="glass" onClick={() => navigate('/finance/transaction')}>
                         <Plus size={16} /> NEW ENTRY
                     </PortfolioButton>
+                    <PortfolioButton variant="gold" onClick={() => navigate('/finance/receipt-voucher')}>
+                        <Receipt size={16} /> RECEIPT
+                    </PortfolioButton>
                 </div>
             </div>
 
             <PortfolioStats stats={kpis} />
 
             <div style={{ display: 'flex', gap: '40px', marginBottom: '50px', borderBottom: '1px solid rgba(232, 230, 227, 0.1)' }}>
-                {['CONSOLE', 'LEDGER', 'INVOICES', 'BUDGETS'].map(tab => (
+                {['CONSOLE', 'LEDGER', 'INVOICES', 'BUDGETS', 'MASTERS'].map(tab => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
@@ -281,6 +284,7 @@ const FinancePortal = () => {
                 {activeTab === 'CONSOLE' && <ConsoleTab key="console" summary={stats.summary} budgets={stats.budgets} navigate={navigate} />}
                 {activeTab === 'LEDGER' && <LedgerTab key="ledger" accounts={accounts} navigate={navigate} />}
                 {activeTab === 'INVOICES' && <InvoiceTab key="invoices" entries={invoices} navigate={navigate} />}
+                {activeTab === 'MASTERS' && <MastersTab key="masters" navigate={navigate} />}
                 {activeTab === 'BUDGETS' && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <div style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -312,6 +316,36 @@ const FinancePortal = () => {
                 )}
             </AnimatePresence>
         </PortfolioPage>
+    );
+};
+
+const MastersTab = ({ navigate }) => {
+    return (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <div style={{ marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ color: 'var(--gold)', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>System Configuration</h3>
+            </div>
+            <PortfolioGrid columns="repeat(auto-fill, minmax(350px, 1fr))" gap="25px">
+                <PortfolioCard style={{ padding: '35px' }} onClick={() => navigate('/masters/services')}>
+                    <div style={{ width: '50px', height: '50px', borderRadius: '15px', background: 'rgba(234, 179, 8, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                        <Wallet size={24} color="#eab308" />
+                    </div>
+                    <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', color: 'var(--cream)', fontWeight: '600' }}>SERVICE CATALOG</h3>
+                    <p style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)', lineHeight: '1.6' }}>
+                        Manage standard service offerings, pricing, and cost estimates.
+                    </p>
+                </PortfolioCard>
+                <PortfolioCard style={{ padding: '35px' }} onClick={() => navigate('/masters/insurance')}>
+                    <div style={{ width: '50px', height: '50px', borderRadius: '15px', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                        <Shield size={24} color="#3b82f6" />
+                    </div>
+                    <h3 style={{ margin: '0 0 10px 0', fontSize: '18px', color: 'var(--cream)', fontWeight: '600' }}>INSURANCE PARTNERS</h3>
+                    <p style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)', lineHeight: '1.6' }}>
+                        Register insurance companies, TRN details, and payment terms.
+                    </p>
+                </PortfolioCard>
+            </PortfolioGrid>
+        </motion.div>
     );
 };
 

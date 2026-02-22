@@ -78,12 +78,31 @@ class PasswordResetConfirmView(APIView):
 
 class UserProfileView(APIView):
     def get(self, request):
-        serializer = UserSerializer(request.user, context={'request': request})
+        try:
+            # Use prefetch_related for all relationships to be safe (avoids Inner Join issues on reverse relations)
+            user = User.objects.prefetch_related(
+                'hr_profile',
+                'hr_profile__department',
+                'hr_profile__company',
+                'hr_profile__branch',
+                'hr_profile__module_permissions'
+            ).get(id=request.user.id)
+        except User.DoesNotExist:
+            user = request.user
+
+        serializer = UserSerializer(user, context={'request': request})
         return Response(serializer.data)
 
 class UserListView(APIView):
     def get(self, request):
-        users = User.objects.all().order_by('username')
+        users = User.objects.all().select_related(
+            'hr_profile', 
+            'hr_profile__department', 
+            'hr_profile__branch', 
+            'hr_profile__company'
+        ).prefetch_related(
+            'hr_profile__module_permissions'
+        ).order_by('username')
         serializer = UserSerializer(users, many=True, context={'request': request})
         return Response(serializer.data)
 

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { Users, Phone, Mail, MapPin, Plus } from 'lucide-react';
+import { Users, Phone, Mail, MapPin, Plus, Edit3 } from 'lucide-react';
 import { PortfolioPage, PortfolioTitle, PortfolioButton, PortfolioGrid, PortfolioCard, PortfolioStats } from '../../components/PortfolioComponents';
+import { useNavigate } from 'react-router-dom';
 
 const CustomerList = () => {
+    const navigate = useNavigate();
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCustomer, setSelectedCustomer] = useState(null);
@@ -35,7 +37,7 @@ const CustomerList = () => {
                         { value: customers.length, label: 'TOTAL CUSTOMERS' }
                     ]} />
 
-                    <PortfolioButton onClick={() => window.location.href = '/customers/create'} style={{ marginBottom: '60px' }}>
+                    <PortfolioButton onClick={() => navigate('/customers/create')} style={{ marginBottom: '60px' }}>
                         <Plus size={18} style={{ display: 'inline', marginRight: '10px', marginBottom: '-3px' }} />
                         New Customer
                     </PortfolioButton>
@@ -120,6 +122,13 @@ const CustomerList = () => {
                                 <div style={{ fontSize: '16px', color: 'var(--cream)', lineHeight: '1.6' }}>{selectedCustomer.address}</div>
                             </div>
                         )}
+                    </div>
+
+                    <div style={{ marginTop: '60px', borderTop: '1px solid rgba(232, 230, 227, 0.1)', paddingTop: '40px' }}>
+                        <PortfolioButton onClick={() => navigate(`/customers/${selectedCustomer.id}/edit`)}>
+                            <Edit3 size={18} style={{ display: 'inline', marginRight: '10px', marginBottom: '-3px' }} />
+                            Edit Profile
+                        </PortfolioButton>
                     </div>
                 </>
             )}

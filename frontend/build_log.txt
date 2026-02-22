@@ -4,55 +4,12 @@
 
 [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
 transforming...
-[32mΓ£ô[39m 37 modules transformed.
-Γ£ù Build failed in 779ms
+[32mΓ£ô[39m 196 modules transformed.
+Γ£ù Build failed in 1.63s
 error during build:
-[vite:esbuild] Transform failed with 4 errors:
-R:/webplot/frontend/src/pages/leads/LeadDetail.jsx:121:22: ERROR: Unexpected closing "PortfolioCard" tag does not match opening "div" tag
-R:/webplot/frontend/src/pages/leads/LeadDetail.jsx:172:18: ERROR: Unexpected closing "div" tag does not match opening "PortfolioGrid" tag
-R:/webplot/frontend/src/pages/leads/LeadDetail.jsx:216:14: ERROR: Unexpected closing "PortfolioGrid" tag does not match opening "PortfolioPage" tag
-R:/webplot/frontend/src/pages/leads/LeadDetail.jsx:218:20: ERROR: Expected identifier but found "`\n                @media print {\n                    body { background: #fff !important; color: #000 !important; }\n                    .glass-card { border: 1px solid #eee !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }\n                    button, header > div:last-child { display: none !important; }\n                    h1 { color: #b08d57 !important; }\n                }\n            `"
-file: R:/webplot/frontend/src/pages/leads/LeadDetail.jsx:121:22
-
-Unexpected closing "PortfolioCard" tag does not match opening "div" tag
-119 |                      </PortfolioCard>
-120 |  
-121 |                      </PortfolioCard>
-    |                        ^
-122 |  
-123 |                      <PortfolioCard>
-
-Unexpected closing "div" tag does not match opening "PortfolioGrid" tag
-170 |                          </PortfolioCard>
-171 |                      )}
-172 |                  </div>
-    |                    ^
-173 |  
-174 |                  <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-
-Unexpected closing "PortfolioGrid" tag does not match opening "PortfolioPage" tag
-214 |                      </PortfolioCard>
-215 |                  </div>
-216 |              </PortfolioGrid>
-    |                ^
-217 |  
-218 |              <style>{`
-
-Expected identifier but found "`\n                @media print {\n                    body { background: #fff !important; color: #000 !important; }\n                    .glass-card { border: 1px solid #eee !important; box-shadow: none !important; background: #fff !important; color: #000 !important; }\n                    button, header > div:last-child { display: none !important; }\n                    h1 { color: #b08d57 !important; }\n                }\n            `"
-216 |              </PortfolioGrid>
-217 |  
-218 |              <style>{`
-    |                      ^
-219 |                  @media print {
-220 |                      body { background: #fff !important; color: #000 !important; }
-
-    at failureErrorWithLog (R:\webplot\frontend\node_modules\esbuild\lib\main.js:1467:15)
-    at R:\webplot\frontend\node_modules\esbuild\lib\main.js:736:50
-    at responseCallbacks.<computed> (R:\webplot\frontend\node_modules\esbuild\lib\main.js:603:9)
-    at handleIncomingPacket (R:\webplot\frontend\node_modules\esbuild\lib\main.js:658:12)
-    at Socket.readFromStdout (R:\webplot\frontend\node_modules\esbuild\lib\main.js:581:7)
-    at Socket.emit (node:events:508:28)
-    at addChunk (node:internal/streams/readable:559:12)
-    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
-    at Readable.push (node:internal/streams/readable:390:5)
-    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+Could not resolve "../../api/api" from "src/pages/finance/LinkingAccount.jsx"
+file: R:/webplot/frontend/src/pages/finance/LinkingAccount.jsx
+    at getRollupError (file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/parseAst.js:400:41)
+    at error (file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/parseAst.js:396:42)
+    at ModuleLoader.handleInvalidResolvedId (file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/node-entry.js:21666:24)
+    at file:///R:/webplot/frontend/node_modules/rollup/dist/es/shared/node-entry.js:21626:26

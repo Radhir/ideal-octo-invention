@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { FileText, Download, AlertCircle, CheckCircle, DollarSign, IdCard, Users } from 'lucide-react';
+import { FileText, Download, AlertCircle, CheckCircle, DollarSign, IdCard, Users, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PortfolioPage, PortfolioTitle, PortfolioStats, PortfolioGrid, PortfolioCard, PortfolioSectionTitle } from '../../components/PortfolioComponents';
 
@@ -52,10 +52,30 @@ const HRHub = () => {
                     onClick={() => navigate('/hr/id-cards')}
                 />
                 <PortfolioCard
-                    title="REGISTER NEW EMPLOYEE"
-                    subtitle="Add a new member to the EliteShine workforce."
-                    icon={Users}
-                    onClick={() => navigate('/hr/register')}
+                    title="ACCESS MANAGEMENT"
+                    subtitle="Module permissions & roles"
+                    icon={<ShieldCheck size={24} />}
+                    onClick={() => navigate('/hr/access')}
+                />
+
+                <PortfolioCard
+                    title="EMPLOYEE DATA CENTER"
+                    subtitle="comprehensive record registry"
+                    icon={<FileText size={24} />}
+                    onClick={() => navigate('/hr/reports/employees')}
+                    variant="glass"
+                />
+                <PortfolioCard
+                    title="HR REPORTS & ANALYTICS"
+                    subtitle="Comprehensive payroll and attendance intelligence."
+                    icon={FileText}
+                    onClick={() => navigate('/hr/reports')}
+                />
+                <PortfolioCard
+                    title="DEPARTMENT MASTERS"
+                    subtitle="Structure operational units and cost centers."
+                    icon={Users} // Reusing Users icon or import another if needed
+                    onClick={() => navigate('/admin/departments')}
                 />
             </div>
 

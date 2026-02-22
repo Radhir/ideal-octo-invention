@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronLeft, ChevronRight, Search, Plus,
@@ -14,6 +15,7 @@ import {
 } from '../components/PortfolioComponents';
 
 const BookingCalendar = () => {
+    const navigate = useNavigate();
     const [viewMode, setViewMode] = useState('WEEK'); // 'DAY', 'WEEK', 'MONTH'
     const [currentDate, setCurrentDate] = useState(new Date());
     const [bookings, setBookings] = useState([]);
@@ -188,7 +190,7 @@ const BookingCalendar = () => {
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '20px' }}>
-                    <PortfolioButton variant="gold" onClick={() => console.log('Create Booking')}>
+                    <PortfolioButton variant="gold" onClick={() => navigate('/bookings/create')}>
                         <Plus size={18} /> INITIALIZE APPOINTMENT
                     </PortfolioButton>
                     <div className="view-switcher">

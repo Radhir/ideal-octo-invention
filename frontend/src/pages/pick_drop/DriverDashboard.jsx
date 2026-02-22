@@ -1,15 +1,17 @@
+import React, { useState, useEffect } from 'react';
 import {
     MapPin, Truck, Phone, Clock, AlertCircle,
-    Activity, ShieldCheck, ChevronRight, Search, Zap, Compass, Navigation
+    Activity, ShieldCheck, ChevronRight, Search, Zap, Compass, Navigation,
+    ArrowRight, Globe, Satellite, Wifi
 } from 'lucide-react';
 import {
     PortfolioPage,
     PortfolioTitle,
     PortfolioCard,
     PortfolioGrid,
-    PortfolioStats
+    PortfolioStats,
+    PortfolioButton
 } from '../../components/PortfolioComponents';
-import React from 'react';
 
 const DriverDashboard = () => {
     const [trips, setTrips] = useState([]);
@@ -42,19 +44,33 @@ const DriverDashboard = () => {
 
 
     return (
-        <div style={{ display: 'flex', height: 'calc(100vh - 100px)', background: 'var(--bg-black)', overflow: 'hidden' }}>
+        <div style={{ display: 'flex', height: 'calc(100vh - 100px)', background: '#000', overflow: 'hidden' }}>
             {/* Left: Map Preview Area */}
-            <div style={{ flex: 1, position: 'relative', background: '#080808', overflow: 'hidden' }}>
+            <div style={{ flex: 1, position: 'relative', background: '#050505', overflow: 'hidden' }}>
                 <div style={{
                     position: 'absolute',
                     inset: 0,
                     backgroundImage: 'url(https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2074&auto=format&fit=crop)',
                     backgroundSize: 'cover',
-                    opacity: 0.2,
-                    filter: 'grayscale(100%) contrast(150%) brightness(0.5)'
+                    opacity: 0.15,
+                    filter: 'grayscale(100%) contrast(150%) brightness(0.3)'
                 }}></div>
 
-                <div className="telemetry-grid" />
+                <div className="telemetry-grid" style={{ opacity: 0.1 }} />
+
+                <div style={{
+                    position: 'absolute', top: '40px', left: '40px', zIndex: 10,
+                    padding: '20px 30px', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(255,255,255,0.05)', borderRadius: '15px'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--gold)', fontSize: '10px', fontWeight: '900', letterSpacing: '2px' }}>
+                        <Globe size={16} /> LIVE_TELEMETRY.link
+                        <div className="status-pulse active" style={{ background: '#10b981' }} />
+                    </div>
+                    <div style={{ fontSize: '13px', color: 'rgba(232, 230, 227, 0.4)', marginTop: '8px', letterSpacing: '0.5px' }}>
+                        ENCRYPTION_LAYER: SHA-512 // SATELLITE_FIX: 0.04ms
+                    </div>
+                </div>
 
                 {/* Dynamic Map Markers */}
                 {trips.map(trip => (
@@ -69,26 +85,26 @@ const DriverDashboard = () => {
             </div>
 
             {/* Right: Operational Dashboard */}
-            <div style={{ width: '640px', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(40px)', borderLeft: '1px solid rgba(255,255,255,0.05)', padding: '60px 50px', overflowY: 'auto' }}>
+            <div style={{ width: '640px', background: 'rgba(0,0,0,0.9)', backdropFilter: 'blur(50px)', borderLeft: '1px solid rgba(255,255,255,0.08)', padding: '60px 50px', overflowY: 'auto' }}>
                 <header style={{ marginBottom: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                        <div style={{ color: 'var(--gold)', fontSize: '9px', fontWeight: '900', letterSpacing: '2px', marginBottom: '10px' }}>LOGISTICS COMMAND</div>
-                        <h2 style={{ fontSize: '3.5rem', fontWeight: '100', color: 'var(--cream)', margin: 0, fontFamily: 'var(--font-serif)', lineHeight: 1 }}>Logistics<br />Terminal</h2>
+                        <div style={{ color: 'var(--gold)', fontSize: '10px', fontWeight: '900', letterSpacing: '3px', marginBottom: '12px', opacity: 0.8 }}>05 // FLEET ORIENTATION</div>
+                        <h2 style={{ fontSize: '4.5rem', fontWeight: '100', color: 'var(--cream)', margin: 0, fontFamily: 'var(--font-serif)', lineHeight: 0.9 }}>Logistics<br />Terminal</h2>
                     </div>
-                    <div style={{ textAlign: 'right', display: 'flex', gap: '25px', marginTop: '15px' }}>
+                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', gap: '15px', marginTop: '15px' }}>
                         <StatusDot color="#f43f5e" label="ERROR.trace" count="14" />
                         <StatusDot color="#f59e0b" label="WARN.pulse" count="23" />
-                        <StatusDot color="var(--gold)" label="TRANSIT.node" count="7" />
+                        <StatusDot color="var(--gold)" label="TRANSIT.node" count="07" />
                     </div>
                 </header>
 
                 <div style={{ marginBottom: '80px' }}>
                     <PortfolioGrid columns="1fr 1fr" gap="40px">
                         {stats.map((stat, i) => (
-                            <div key={i}>
-                                <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '12px', opacity: 0.6 }}>{stat.label}</div>
-                                <div style={{ fontSize: '36px', fontWeight: '100', color: 'var(--cream)', fontFamily: 'var(--font-serif)', marginBottom: '8px' }}>{stat.value}</div>
-                                <div style={{ fontSize: '12px', color: 'rgba(232, 230, 227, 0.4)', fontWeight: '300' }}>{stat.subvalue}</div>
+                            <div key={i} style={{ borderLeft: '1px solid rgba(176,141,87,0.1)', paddingLeft: '25px' }}>
+                                <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '14px', opacity: 0.6 }}>{stat.label}</div>
+                                <div style={{ fontSize: '42px', fontWeight: '100', color: 'var(--cream)', fontFamily: 'var(--font-serif)', marginBottom: '10px', letterSpacing: '-1px' }}>{stat.value}</div>
+                                <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.4)', fontWeight: '300', letterSpacing: '0.5px' }}>{stat.subvalue.toUpperCase()}</div>
                             </div>
                         ))}
                     </PortfolioGrid>

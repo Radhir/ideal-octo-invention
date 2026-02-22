@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'workshop',
     'channels',
     'masters',
+    'warranty_book',
 ]
 
 MIDDLEWARE = [

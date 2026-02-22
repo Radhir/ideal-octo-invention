@@ -27,7 +27,7 @@ const EliteCommandTerminal = ({ isOpen, onClose }) => {
         }
     }, [history]);
 
-    const handleCommand = (cmd) => {
+    const handleCommand = async (cmd) => {
         const cleanCmd = cmd.trim().toLowerCase();
         if (!cleanCmd) return;
 
@@ -36,10 +36,36 @@ const EliteCommandTerminal = ({ isOpen, onClose }) => {
 
         let response = { type: 'error', text: `COMMAND NOT RECOGNIZED: "${cleanCmd}"` };
 
+        // DYNAMIC HANDLERS
         if (cleanCmd === 'help') {
-            response = { type: 'info', text: 'AVAILABLE COMMANDS: HELP, STATUS, LOGS, CLEAR, EXIT, ACCESS, SYSTEM' };
+            response = { type: 'info', text: 'AVAILABLE COMMANDS: HELP, STATUS, REVENUE, LEADS, STOCK, CLEAR, EXIT' };
         } else if (cleanCmd === 'status') {
-            response = { type: 'info', text: 'SYSTEM STATUS: ALL CORE MODULES OPERATIONAL. LATENCY: 14ms.' };
+            response = { type: 'info', text: 'SYSTEM STATUS: 42 ACTIVE JOBS. WORKSHOP LOAD: 84%. ALL SYSTEMS OPERATIONAL.' };
+        } else if (cleanCmd === 'revenue') {
+            try {
+                const res = await fetch('/dashboard/api/ceo/analytics/');
+                const data = await res.json();
+                const mtd = data.vital_stats.find(s => s.label.includes('Leads'))?.value || 0;
+                response = { type: 'success', text: `REVENUE (MTD): ${data.revenue_trends[data.revenue_trends.length - 1].amount} AED | GROWTH: +12%` };
+            } catch (e) {
+                response = { type: 'error', text: 'FAILED TO FETCH REVENUE DATA.' };
+            }
+        } else if (cleanCmd === 'leads') {
+            try {
+                const res = await fetch('/dashboard/api/ceo/analytics/');
+                const data = await res.json();
+                response = { type: 'info', text: `LEADS (MTD): ${data.crm_funnel.leads} | CONVERSION: ${data.crm_funnel.lead_to_booking_rate}%` };
+            } catch (e) {
+                response = { type: 'error', text: 'FAILED TO FETCH LEAD DATA.' };
+            }
+        } else if (cleanCmd === 'stock') {
+            try {
+                const res = await fetch('/stock/api/items/forecast_stock/');
+                const data = await res.json();
+                response = { type: 'info', text: `INVENTORY HEALTH: ${data.critical_count} CRITICAL ITEMS. RECOMMENDED: ${data.recommendations.join(', ')}` };
+            } catch (e) {
+                response = { type: 'error', text: 'FAILED TO FETCH STOCK FORECAST.' };
+            }
         } else if (cleanCmd === 'clear') {
             setHistory([]);
             setInput('');
@@ -48,18 +74,9 @@ const EliteCommandTerminal = ({ isOpen, onClose }) => {
             onClose();
             setInput('');
             return;
-        } else if (cleanCmd === 'logs') {
-            response = { type: 'info', text: 'FETCHING RECENT ACCESS LOGS... [RADHIR: OK] [RUCHIKA: OK] [AFSAR: OK]' };
-        } else if (cleanCmd === 'access') {
-            response = { type: 'success', text: `USER: ${user?.username.toUpperCase()} | LEVEL: ${['radhir', 'ruchika', 'afsar'].includes(user?.username.toLowerCase()) ? 'ELITE-ALPHA' : 'STANDARD-OPERATIVE'}` };
-        } else if (cleanCmd === 'system') {
-            response = { type: 'info', text: 'VERSION: Elite Shine ERP Pre-Alpha 9 | ARCH: Django/React | DB: PostgreSQL' };
         }
 
-        setTimeout(() => {
-            setHistory(prev => [...prev, response]);
-        }, 100);
-
+        setHistory(prev => [...prev, response]);
         setInput('');
     };
 

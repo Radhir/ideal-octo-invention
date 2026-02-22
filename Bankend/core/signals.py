@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 from crum import get_current_request
 from .models import AuditLog, NoAudit
+from .tasks import log_audit_event
 import sys
 
 # Disable auditing during migrations to prevent transaction errors
@@ -52,23 +53,22 @@ def audit_post_save(sender, instance, created, **kwargs):
     changes = None if created else get_field_changes(instance, created)
 
     try:
-        # Only log if we have a user or if it's a critical model change
-        # We also need to handle cases where the DB might have strict constraints
-        AuditLog.objects.create(
-            user=meta.get('user'),
-            ip_address=meta.get('ip'),
-            user_agent=meta.get('ua', ''),
-            content_type=ContentType.objects.get_for_model(instance),
+        content_type = ContentType.objects.get_for_model(instance)
+        # Offload to Celery background task
+        log_audit_event.delay(
+            user_id=meta.get('user').id if meta.get('user') else None,
+            content_type_id=content_type.id,
             object_id=str(instance.pk),
             object_repr=str(instance)[:255],
             action=action,
             field_changes=changes,
+            ip_address=meta.get('ip'),
+            user_agent=meta.get('ua', ''),
             endpoint=meta.get('endpoint', ''),
             method=meta.get('method', ''),
         )
     except Exception as e:
-        # Log to stderr but don't crash the transaction
-        sys.stderr.write(f"Audit failed for {instance}: {e}\n")
+        sys.stderr.write(f"Audit triggering failed for {instance}: {e}\n")
 
 @receiver(post_delete)
 def audit_post_delete(sender, instance, **kwargs):
@@ -81,16 +81,18 @@ def audit_post_delete(sender, instance, **kwargs):
 
     meta = get_request_metadata()
     try:
-        AuditLog.objects.create(
-            user=meta.get('user'),
-            ip_address=meta.get('ip'),
-            user_agent=meta.get('ua'),
-            content_type=ContentType.objects.get_for_model(instance),
+        content_type = ContentType.objects.get_for_model(instance)
+        log_audit_event.delay(
+            user_id=meta.get('user').id if meta.get('user') else None,
+            content_type_id=content_type.id,
             object_id=str(instance.pk),
             object_repr=str(instance)[:255],
             action='DELETE',
+            field_changes=None,
+            ip_address=meta.get('ip'),
+            user_agent=meta.get('ua', ''),
             endpoint=meta.get('endpoint', ''),
             method=meta.get('method', ''),
         )
     except Exception as e:
-        print(f"Audit delete failed: {e}")
+        print(f"Audit delete triggering failed: {e}")

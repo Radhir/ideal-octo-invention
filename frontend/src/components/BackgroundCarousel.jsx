@@ -15,10 +15,13 @@ const BackgroundCarousel = () => {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        // Fetch dynamic backgrounds from ERP
+        // Fetch dynamic backgrounds from ERP with a slight delay to prioritize auth
         const fetchBackgrounds = async () => {
+            // Wait 1.5s to let critical auth/initialization finish
+            await new Promise(r => setTimeout(r, 1500));
             try {
-                const response = await fetch('/forms/job-cards/api/photos/random_backgrounds/?limit=8');
+                // Reduced limit from 8 to 3 for faster initial load
+                const response = await fetch('/forms/job-cards/api/photos/random_backgrounds/?limit=3');
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.length > 0) {
@@ -32,8 +35,7 @@ const BackgroundCarousel = () => {
                     }
                 }
             } catch (error) {
-                console.log('Using static backgrounds:', error);
-                // Keep staticAssets as fallback
+                console.log('Background loading deferred:', error);
             }
         };
 

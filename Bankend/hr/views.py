@@ -2,19 +2,28 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from locations.filters import BranchFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 from django.utils import timezone
 from core.permissions import IsAdminOrOwner, IsManager, IsEliteAdmin
 from .models import (
     Employee, HRRule, Payroll, Roster, HRAttendance, Team, Mistake, 
-    Department, Company, Branch, ModulePermission, SalarySlip, EmployeeDocument, WarningLetter, Notification
+    Department, Company, Branch, ModulePermission, SalarySlip, EmployeeDocument, WarningLetter, Notification, Bonus
 )
 from .serializers import (
     EmployeeSerializer, HRRuleSerializer, PayrollSerializer,
     RosterSerializer, HRAttendanceSerializer, TeamSerializer, MistakeSerializer, DepartmentSerializer,
     CompanySerializer, BranchSerializer, ModulePermissionSerializer,
-    SalarySlipSerializer, EmployeeDocumentSerializer, WarningLetterSerializer, NotificationSerializer
+    SalarySlipSerializer, EmployeeDocumentSerializer, WarningLetterSerializer, NotificationSerializer,
+    BonusSerializer
 )
 from .services import HRService
+
+class BonusViewSet(viewsets.ModelViewSet):
+    queryset = Bonus.objects.all().select_related('employee', 'employee__user')
+    serializer_class = BonusSerializer
+    permission_classes = [IsAdminOrOwner]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['employee', 'date']
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
@@ -30,6 +39,8 @@ class ModulePermissionViewSet(viewsets.ModelViewSet):
     queryset = ModulePermission.objects.all()
     serializer_class = ModulePermissionSerializer
     permission_classes = [IsEliteAdmin]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['employee']
 
 class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
@@ -37,7 +48,14 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     permission_classes = [IsEliteAdmin]
 
 class EmployeeViewSet(viewsets.ModelViewSet):
-    queryset = Employee.objects.all()
+    queryset = Employee.objects.all().select_related(
+        'user', 
+        'department', 
+        'branch', 
+        'company'
+    ).prefetch_related(
+        'module_permissions'
+    )
     serializer_class = EmployeeSerializer
     permission_classes = [IsEliteAdmin]
     filter_backends = [BranchFilterBackend]
@@ -135,8 +153,9 @@ class PayrollViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'])
     def generate_payroll_cycle(self, request):
+        month = request.data.get('month')
         try:
-            processed_count = HRService.generate_payroll_cycle()
+            processed_count = HRService.generate_payroll_cycle(month)
             return Response({
                 "message": f"Successfully processed payroll for {processed_count} employees.",
                 "processed": processed_count

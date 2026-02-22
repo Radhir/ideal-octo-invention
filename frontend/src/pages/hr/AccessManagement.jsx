@@ -3,7 +3,7 @@ import api from '../../api/axios';
 import {
     ArrowLeft, Check, ShieldCheck, User,
     ShieldAlert, BadgeCheck, Zap, MoreHorizontal,
-    Search as SearchIcon, X, CheckSquare
+    Search as SearchIcon, X, CheckSquare, ChevronRight
 } from 'lucide-react';
 import {
     PortfolioPage, PortfolioTitle, PortfolioCard,
@@ -16,6 +16,7 @@ const AccessManagement = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [permissions, setPermissions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingPermissions, setLoadingPermissions] = useState(false);
     const [saving, setSaving] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [message, setMessage] = useState({ type: '', text: '' });
@@ -24,7 +25,7 @@ const AccessManagement = () => {
         'Employees', 'HR Management', 'Job Cards', 'Bookings', 'Stock',
         'Payroll', 'Attendance', 'Invoices', 'Dashboard', 'Finance',
         'Leads', 'Projects', 'Ceramic/PPF', 'Pick & Drop', 'Masters', 'Reports',
-        'Paint Control'
+        'Paint Control', 'Workshop', 'Service Advisor'
     ];
 
     useEffect(() => {
@@ -34,6 +35,7 @@ const AccessManagement = () => {
     const fetchUsers = async () => {
         try {
             const res = await api.get('/api/auth/users/');
+            // Users endpoint returns users with nested hr_profile
             setUsers(res.data);
             setLoading(false);
         } catch (err) {
@@ -42,27 +44,40 @@ const AccessManagement = () => {
         }
     };
 
+    const fetchPermissions = async (employeeId) => {
+        setLoadingPermissions(true);
+        try {
+            const res = await api.get(`/hr/api/permissions/?employee=${employeeId}`);
+            const existingPermissions = res.data.results || res.data;
+
+            // Map standard modules to existing permissions or create default structure
+            const mapped = modules.map(mod => {
+                const existing = existingPermissions.find(p => p.module_name === mod);
+                return existing || {
+                    module_name: mod,
+                    can_view: false,
+                    can_create: false,
+                    can_edit: false,
+                    can_delete: false,
+                    // employee ID will be added during save
+                };
+            });
+            setPermissions(mapped);
+        } catch (err) {
+            console.error('Error fetching permissions:', err);
+            setMessage({ type: 'error', text: 'Failed to load permissions' });
+        } finally {
+            setLoadingPermissions(false);
+        }
+    };
+
     const handleUserSelect = (user) => {
         setSelectedUser(user);
-        // If user has no hr_profile, they can't have ModulePermissions in current schema
-        if (!user.hr_profile) {
+        if (user.hr_profile) {
+            fetchPermissions(user.hr_profile.id);
+        } else {
             setPermissions([]);
-            return;
         }
-
-        const existing = user.hr_profile.module_permissions || [];
-        const mapped = modules.map(mod => {
-            const perm = existing.find(p => p.module_name === mod);
-            return perm || {
-                module_name: mod,
-                can_view: false,
-                can_create: false,
-                can_edit: false,
-                can_delete: false,
-                employee: user.hr_profile.id
-            };
-        });
-        setPermissions(mapped);
     };
 
     const togglePermission = (index, field) => {
@@ -92,18 +107,26 @@ const AccessManagement = () => {
 
         setSaving(true);
         try {
-            for (const perm of permissions) {
+            const promises = permissions.map(perm => {
+                // If it has an ID, it's an existing record -> PUT
                 if (perm.id) {
-                    await api.put(`/hr/api/permissions/${perm.id}/`, perm);
-                } else {
-                    await api.post(`/hr/api/permissions/`, {
+                    return api.put(`/hr/api/permissions/${perm.id}/`, perm);
+                }
+                // If no ID, but has any true permission -> POST
+                // Optimization: Don't save if all false and new (optional, but cleaner db)
+                else if (perm.can_view || perm.can_create || perm.can_edit || perm.can_delete) {
+                    return api.post(`/hr/api/permissions/`, {
                         ...perm,
                         employee: selectedUser.hr_profile.id
                     });
                 }
-            }
+                return Promise.resolve(); // Skip empty new permissions
+            });
+
+            await Promise.all(promises);
+
             setMessage({ type: 'success', text: 'Permissions synced successfully' });
-            fetchUsers(); // Refresh to get updated permission list
+            fetchPermissions(selectedUser.hr_profile.id); // Refresh to get IDs
         } catch (err) {
             console.error('Save error:', err);
             setMessage({ type: 'error', text: 'Failed to sync permissions' });
@@ -240,9 +263,9 @@ const AccessManagement = () => {
                     {message.text && (
                         <div style={{
                             padding: '15px 25px', borderRadius: '12px', marginBottom: '40px',
-                            background: message.type === 'success' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                            border: `1px solid ${message.type === 'success' ? '#22c55e44' : '#ef444444'}`,
-                            color: message.type === 'success' ? '#22c55e' : '#ef4444',
+                            background: message.type === 'success' ? 'rgba(34, 197, 94, 0.1)' : message.type === 'info' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                            border: `1px solid ${message.type === 'success' ? '#22c55e44' : message.type === 'info' ? '#eab30844' : '#ef444444'}`,
+                            color: message.type === 'success' ? '#22c55e' : message.type === 'info' ? '#eab308' : '#ef4444',
                             fontSize: '14px',
                             display: 'flex', alignItems: 'center', gap: '10px'
                         }}>
@@ -257,9 +280,8 @@ const AccessManagement = () => {
                             <p style={{ color: 'rgba(255,255,255,0.4)', maxWidth: '400px', margin: '0 auto 30px' }}>
                                 This system user does not have an HR Profile linked. Activation is required before assigning module-level permissions.
                             </p>
-                            <PortfolioButton variant="gold" onClick={() => navigate('/hr/hub')}>
-                                INITIALIZE HR PROFILE
-                            </PortfolioButton>
+                            {/* Navigation to Employee Page or similar could go here */}
+                            <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>Please configure in Personnel Directory</div>
                         </div>
                     ) : (
                         <div style={{
@@ -271,54 +293,64 @@ const AccessManagement = () => {
                             border: '1px solid rgba(255,255,255,0.05)',
                             boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
                         }}>
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: '1fr repeat(4, 100px)',
-                                padding: '15px 30px',
-                                background: 'rgba(255,255,255,0.02)',
-                                borderRadius: '16px',
-                                fontSize: '9px',
-                                color: 'var(--gold)',
-                                fontWeight: '900',
-                                letterSpacing: '2px'
-                            }}>
-                                <span>SYSTEM MODULE</span>
-                                <span style={{ textAlign: 'center' }}>VIEW</span>
-                                <span style={{ textAlign: 'center' }}>CREATE</span>
-                                <span style={{ textAlign: 'center' }}>EDIT</span>
-                                <span style={{ textAlign: 'center' }}>DELETE</span>
-                            </div>
-                            {permissions.map((perm, idx) => (
-                                <div key={perm.module_name} style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: '1fr repeat(4, 100px)',
-                                    padding: '20px 30px',
-                                    background: 'rgba(255,255,255,0.01)',
-                                    borderRadius: '16px',
-                                    border: '1px solid rgba(255,255,255,0.02)',
-                                    alignItems: 'center',
-                                    transition: 'all 0.3s'
-                                }} className="permission-row-hover">
-                                    <span style={{ color: 'var(--cream)', fontFamily: 'var(--font-serif)', fontSize: '16px', letterSpacing: '0.5px' }}>{perm.module_name.toUpperCase()}</span>
-                                    {['can_view', 'can_create', 'can_edit', 'can_delete'].map(key => (
-                                        <div key={key} style={{ display: 'flex', justifyContent: 'center' }}>
-                                            <button
-                                                onClick={() => togglePermission(idx, key)}
-                                                style={{
-                                                    width: '28px', height: '28px', borderRadius: '8px',
-                                                    background: perm[key] ? 'var(--gold)' : 'rgba(255,255,255,0.03)',
-                                                    border: `1.5px solid ${perm[key] ? 'var(--gold)' : 'rgba(255,255,255,0.07)'}`,
-                                                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
-                                                    boxShadow: perm[key] ? '0 5px 15px rgba(176,141,87,0.3)' : 'none'
-                                                }}
-                                            >
-                                                {perm[key] && <Check size={16} color="#000" strokeWidth={3} />}
-                                            </button>
+                            {loadingPermissions && (
+                                <div style={{ padding: '20px', textAlign: 'center', color: 'var(--gold)' }}>
+                                    Retrieving Security Protocols...
+                                </div>
+                            )}
+
+                            {!loadingPermissions && (
+                                <>
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: '1fr repeat(4, 100px)',
+                                        padding: '15px 30px',
+                                        background: 'rgba(255,255,255,0.02)',
+                                        borderRadius: '16px',
+                                        fontSize: '9px',
+                                        color: 'var(--gold)',
+                                        fontWeight: '900',
+                                        letterSpacing: '2px'
+                                    }}>
+                                        <span>SYSTEM MODULE</span>
+                                        <span style={{ textAlign: 'center' }}>VIEW</span>
+                                        <span style={{ textAlign: 'center' }}>CREATE</span>
+                                        <span style={{ textAlign: 'center' }}>EDIT</span>
+                                        <span style={{ textAlign: 'center' }}>DELETE</span>
+                                    </div>
+                                    {permissions.map((perm, idx) => (
+                                        <div key={perm.module_name} style={{
+                                            display: 'grid',
+                                            gridTemplateColumns: '1fr repeat(4, 100px)',
+                                            padding: '20px 30px',
+                                            background: 'rgba(255,255,255,0.01)',
+                                            borderRadius: '16px',
+                                            border: '1px solid rgba(255,255,255,0.02)',
+                                            alignItems: 'center',
+                                            transition: 'all 0.3s'
+                                        }} className="permission-row-hover">
+                                            <span style={{ color: 'var(--cream)', fontFamily: 'var(--font-serif)', fontSize: '16px', letterSpacing: '0.5px' }}>{perm.module_name.toUpperCase()}</span>
+                                            {['can_view', 'can_create', 'can_edit', 'can_delete'].map(key => (
+                                                <div key={key} style={{ display: 'flex', justifyContent: 'center' }}>
+                                                    <button
+                                                        onClick={() => togglePermission(idx, key)}
+                                                        style={{
+                                                            width: '28px', height: '28px', borderRadius: '8px',
+                                                            background: perm[key] ? 'var(--gold)' : 'rgba(255,255,255,0.03)',
+                                                            border: `1.5px solid ${perm[key] ? 'var(--gold)' : 'rgba(255,255,255,0.07)'}`,
+                                                            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                            transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
+                                                            boxShadow: perm[key] ? '0 5px 15px rgba(176,141,87,0.3)' : 'none'
+                                                        }}
+                                                    >
+                                                        {perm[key] && <Check size={16} color="#000" strokeWidth={3} />}
+                                                    </button>
+                                                </div>
+                                            ))}
                                         </div>
                                     ))}
-                                </div>
-                            ))}
+                                </>
+                            )}
                         </div>
                     )}
                 </motion.div>

@@ -48,8 +48,8 @@ class Invoice(models.Model):
     ], default='OPERATIONS') # Legacy
     
     # Financial Link
-    finance_transaction = models.OneToOneField(
-        'finance.Transaction', 
+    finance_voucher = models.OneToOneField(
+        'finance.Voucher', 
         on_delete=models.SET_NULL, 
         null=True, 
         blank=True, 
@@ -88,29 +88,58 @@ class Invoice(models.Model):
         super().save(*args, **kwargs)
 
     def record_revenue_transaction(self):
-        from finance.models import Account, Transaction
+        from finance.models import Account, Voucher, VoucherDetail
+        from django.utils import timezone
+        
         # Find or create a default Revenue account (4000)
         revenue_acc, _ = Account.objects.get_or_create(
             code='4000', 
             defaults={'name': 'Sales Revenue', 'category': 'REVENUE'}
         )
         
-        # Create the transaction
-        if not self.finance_transaction:
-            tx = Transaction.objects.create(
-                account=revenue_acc,
-                department=self.department,
-                amount=self.grand_total,
-                transaction_type='CREDIT', # Revenue is Credit
-                description=f"Revenue from Invoice {self.invoice_number} - {self.customer_name}",
-                reference=self.invoice_number
+        # Find or create Receivables (1200)
+        receivable_acc, _ = Account.objects.get_or_create(
+            code='1200',
+            defaults={'name': 'Accounts Receivable', 'category': 'ASSET'}
+        )
+        
+        # Create the voucher
+        if not self.finance_voucher:
+            v_num = f"INV-REV-{self.invoice_number}"
+            voucher = Voucher.objects.create(
+                voucher_number=v_num,
+                voucher_type='JOURNAL', # Or SALES
+                date=timezone.now().date(),
+                reference_number=self.invoice_number,
+                narration=f"Revenue from Invoice {self.invoice_number} - {self.customer_name}",
+                status='POSTED'
             )
-            self.finance_transaction = tx
+            
+            # Credit Revenue
+            VoucherDetail.objects.create(
+                voucher=voucher,
+                account=revenue_acc,
+                debit=0,
+                credit=self.grand_total,
+                description=f"Revenue: {self.invoice_number}"
+            )
+            
+            # Debit Receivable
+            VoucherDetail.objects.create(
+                voucher=voucher,
+                account=receivable_acc,
+                debit=self.grand_total,
+                credit=0,
+                description=f"Receivable: {self.invoice_number}"
+            )
+            
+            self.finance_voucher = voucher
+            self.save()
 
     def update_workshop_diary(self):
         """Auto-complete the Workshop Diary entry when Invoice is Paid"""
         if self.job_card:
-            from workshop.models import WorkshopDiary
+            from dashboard.models import WorkshopDiary
             # Find diary entry linked to this job card
             diary_entries = WorkshopDiary.objects.filter(job_card=self.job_card)
             diary_entries.update(status='COMPLETED')

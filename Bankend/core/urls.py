@@ -56,6 +56,7 @@ urlpatterns = [
     path('workshop/', include('workshop.urls')),
     path('risk-management/', include('risk_management.urls')),
     path('reports/', include('reports.urls')),
+    path('api/warranty-book/', include('warranty_book.urls')),
     
     
     # API Documentation

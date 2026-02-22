@@ -50,3 +50,28 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f"{self.brand} {self.model} ({self.registration_number})"
+
+class InsuranceCompany(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    address = models.TextField(blank=True)
+    contact_person = models.CharField(max_length=255, blank=True)
+    phone = models.CharField(max_length=50, blank=True)
+    email = models.EmailField(blank=True)
+    trn = models.CharField(max_length=50, blank=True, verbose_name="TRN / Tax ID")
+    payment_terms = models.CharField(max_length=100, blank=True, help_text="e.g. 30 Days Credit")
+    
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Insurance Companies"
+
+    def __str__(self):
+        return self.name
+
+class VehicleColor(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    hex_code = models.CharField(max_length=7, default="#000000", help_text="Hex color code (e.g. #FF0000)")
+    
+    def __str__(self):
+        return self.name

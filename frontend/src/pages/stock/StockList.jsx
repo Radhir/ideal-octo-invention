@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     Plus, Search, Box, User, CreditCard,
     Printer, AlertTriangle, TrendingUp, Package,
-    ArrowUpCircle, ArrowDownCircle, Settings, ChevronRight
+    ArrowUpCircle, ArrowDownCircle, Settings, ChevronRight, Filter
 } from 'lucide-react';
 import {
     PortfolioPage, PortfolioTitle, PortfolioButton,
@@ -137,80 +137,86 @@ const StockList = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <PortfolioButton variant="secondary" style={{ padding: '0 20px', height: '48px' }}>
-                            <Printer size={18} />
-                        </PortfolioButton>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <PortfolioButton variant="secondary" style={{ padding: '0 20px', height: '48px' }}>
+                                <Filter size={18} />
+                            </PortfolioButton>
+                            <PortfolioButton variant="secondary" style={{ padding: '0 20px', height: '48px' }}>
+                                <Printer size={18} />
+                            </PortfolioButton>
+                        </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                        {loading ? (
-                            <div style={{ color: 'var(--cream)', padding: '100px', textAlign: 'center', letterSpacing: '2px', fontWeight: '800' }}>RECOVERING INDUSTRIAL LEDGER...</div>
-                        ) : filteredItems.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '120px', color: 'rgba(232, 230, 227, 0.2)', background: 'rgba(232, 230, 227, 0.01)', borderRadius: '32px', border: '1px dashed rgba(232, 230, 227, 0.05)', fontFamily: 'var(--font-serif)' }}>
-                                NO ASSETS RECORDED IN THE CURRENT PARAMETERS.
-                            </div>
-                        ) : (
-                            <PortfolioGrid columns="repeat(auto-fill, minmax(420px, 1fr))">
-                                {filteredItems.map(item => (
-                                    <PortfolioCard
-                                        key={item.id}
-                                        style={{
-                                            padding: '40px',
-                                            background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
-                                        }}
-                                        className="workflow-card"
-                                    >
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+                    <div style={ledgerWrapperStyle}>
+                        <table style={ledgerTableStyle}>
+                            <thead>
+                                <tr>
+                                    <th style={thStyle}>SKU / IDENTIFIER</th>
+                                    <th style={thStyle}>ASSET NAME</th>
+                                    <th style={thStyle}>CATEGORY</th>
+                                    <th style={thStyle}>BALANCE</th>
+                                    <th style={thStyle}>STATUS</th>
+                                    <th style={{ ...thStyle, textAlign: 'right' }}>ACTIONS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '100px', color: 'rgba(232, 230, 227, 0.3)' }}>
+                                            RECOVERING INDUSTRIAL LEDGER...
+                                        </td>
+                                    </tr>
+                                ) : filteredItems.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="6" style={{ textAlign: 'center', padding: '100px', color: 'rgba(232, 230, 227, 0.2)' }}>
+                                            NO ASSETS RECORDED IN THE CURRENT PARAMETERS.
+                                        </td>
+                                    </tr>
+                                ) : filteredItems.map(item => (
+                                    <tr key={item.id} style={ledgerRowStyle} className="ledger-row">
+                                        <td style={tdStyle}>
                                             <div style={skuBadgeStyle}>
-                                                <Package size={14} color="var(--gold)" />
-                                                <span>{item.sku || 'NO SKU'}</span>
+                                                <Package size={12} style={{ opacity: 0.5 }} />
+                                                {item.sku || 'N/A'}
                                             </div>
+                                        </td>
+                                        <td style={{ ...tdStyle, color: 'var(--cream)', fontWeight: '600' }}>
+                                            {item.name}
+                                        </td>
+                                        <td style={tdStyle}>
+                                            <span style={categoryPillStyle}>{item.category?.toUpperCase()}</span>
+                                        </td>
+                                        <td style={tdStyle}>
+                                            <div style={{ color: 'var(--cream)', fontSize: '15px', fontWeight: '700' }}>
+                                                {parseFloat(item.current_stock).toLocaleString()}
+                                                <span style={{ fontSize: '10px', opacity: 0.4, marginLeft: '6px' }}>{item.unit.toUpperCase()}</span>
+                                            </div>
+                                        </td>
+                                        <td style={tdStyle}>
                                             <StockStatusIndicator current={parseFloat(item.current_stock)} safety={parseFloat(item.safety_level)} />
-                                        </div>
-                                        -
-                                        <div style={{ marginBottom: '30px' }}>
-                                            <h3 style={assetNameStyle}>{item.name}</h3>
-                                            <div style={{ ...categoryStyle, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold)' }} />
-                                                {item.category.toUpperCase()}
+                                        </td>
+                                        <td style={{ ...tdStyle, textAlign: 'right' }}>
+                                            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                                                <button
+                                                    onClick={() => navigate('/stock/movement', { state: { itemId: item.id } })}
+                                                    style={ledgerBtnStyle}
+                                                    title="Adjust Stock"
+                                                >
+                                                    <Activity size={14} />
+                                                </button>
+                                                <button
+                                                    onClick={() => navigate(`/stock/items/${item.id}`)}
+                                                    style={{ ...ledgerBtnStyle, color: 'var(--gold)' }}
+                                                    title="View Details"
+                                                >
+                                                    <ChevronRight size={16} />
+                                                </button>
                                             </div>
-                                        </div>
-                                        -
-                                        <div style={balanceBox}>
-                                            <div style={{ textAlign: 'left' }}>
-                                                <div style={labelTag}>CURRENT BALANCE</div>
-                                                <div style={balanceValue}>
-                                                    {parseFloat(item.current_stock).toLocaleString()} <span style={{ fontSize: '14px', fontWeight: '400', color: 'rgba(232, 230, 227, 0.2)', marginLeft: '4px' }}>{item.unit.toUpperCase()}</span>
-                                                </div>
-                                            </div>
-                                            <div style={{ textAlign: 'right' }}>
-                                                <div style={labelTag}>SAFETY LIMIT</div>
-                                                <div style={{ fontSize: '18px', fontWeight: '700', color: 'rgba(232, 230, 227, 0.4)', marginTop: '8px', fontFamily: 'var(--font-serif)' }}>
-                                                    {item.safety_level} <span style={{ fontSize: '10px' }}>{item.unit.toUpperCase()}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        -
-                                        <div style={{ display: 'flex', gap: '15px', marginTop: '35px' }}>
-                                            <PortfolioButton
-                                                onClick={() => navigate('/stock/movement', { state: { itemId: item.id } })}
-                                                variant="secondary"
-                                                style={{ flex: 1, fontSize: '10px', height: '52px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}
-                                            >
-                                                ADJUST QUANTITY
-                                            </PortfolioButton>
-                                            <PortfolioButton
-                                                variant="gold"
-                                                style={{ height: '52px', width: '52px', padding: 0, borderRadius: '12px' }}
-                                                onClick={() => navigate(`/stock/items/${item.id}`)}
-                                            >
-                                                <ChevronRight size={20} />
-                                            </PortfolioButton>
-                                        </div>
-                                    </PortfolioCard>
+                                        </td>
+                                    </tr>
                                 ))}
-                            </PortfolioGrid>
-                        )}
+                            </tbody>
+                        </table>
                     </div>
                 </>
             )}
@@ -256,6 +262,67 @@ const StockList = () => {
     );
 };
 
+const ledgerWrapperStyle = {
+    background: 'rgba(232, 230, 227, 0.02)',
+    border: '1px solid rgba(232, 230, 227, 0.08)',
+    borderRadius: '24px',
+    overflow: 'hidden',
+    boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+};
+
+const ledgerTableStyle = {
+    width: '100%',
+    borderCollapse: 'collapse',
+    textAlign: 'left'
+};
+
+const thStyle = {
+    padding: '25px 30px',
+    fontSize: '10px',
+    fontWeight: '900',
+    color: 'var(--gold)',
+    letterSpacing: '2px',
+    textTransform: 'uppercase',
+    background: 'rgba(232, 230, 227, 0.03)',
+    borderBottom: '1px solid rgba(232, 230, 227, 0.08)'
+};
+
+const tdStyle = {
+    padding: '25px 30px',
+    fontSize: '13px',
+    color: 'rgba(232, 230, 227, 0.5)',
+    borderBottom: '1px solid rgba(232, 230, 227, 0.03)'
+};
+
+const ledgerRowStyle = {
+    transition: 'all 0.3s ease',
+    cursor: 'default'
+};
+
+const categoryPillStyle = {
+    fontSize: '9px',
+    fontWeight: '800',
+    color: 'var(--gold)',
+    background: 'rgba(176, 141, 87, 0.1)',
+    padding: '4px 12px',
+    borderRadius: '20px',
+    letterSpacing: '1px'
+};
+
+const ledgerBtnStyle = {
+    background: 'rgba(255,255,255,0.03)',
+    border: '1px solid rgba(255,255,255,0.05)',
+    color: 'var(--cream)',
+    width: '36px',
+    height: '36px',
+    borderRadius: '10px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.3s'
+};
+
 const skuBadgeStyle = {
     display: 'flex',
     alignItems: 'center',
@@ -268,48 +335,6 @@ const skuBadgeStyle = {
     fontWeight: '900',
     border: '1px solid rgba(232, 230, 227, 0.05)',
     letterSpacing: '1px'
-};
-
-const assetNameStyle = {
-    fontSize: '26px',
-    fontWeight: '300',
-    color: 'var(--cream)',
-    marginBottom: '8px',
-    fontFamily: 'var(--font-serif)',
-    letterSpacing: '0.5px'
-};
-
-const categoryStyle = {
-    fontSize: '10px',
-    fontWeight: '800',
-    color: 'var(--gold)',
-    letterSpacing: '2px',
-    opacity: 0.6
-};
-
-const balanceBox = {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '20px 0',
-    borderTop: '1px solid rgba(232, 230, 227, 0.03)',
-    borderBottom: '1px solid rgba(232, 230, 227, 0.03)'
-};
-
-const labelTag = {
-    fontSize: '9px',
-    fontWeight: '900',
-    color: 'rgba(232, 230, 227, 0.3)',
-    letterSpacing: '1.5px',
-    textTransform: 'uppercase'
-};
-
-const balanceValue = {
-    fontSize: '32px',
-    fontWeight: '100',
-    color: 'var(--cream)',
-    fontFamily: 'var(--font-serif)',
-    marginTop: '5px'
 };
 
 const searchContainerStyle = {

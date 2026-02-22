@@ -28,6 +28,16 @@ class NavigationTreeView(APIView):
                     {"name": "Bookings", "path": "/crm/bookings"},
                     {"name": "Reception", "path": "/crm/reception"}
                 ]
+            },
+            {
+                "title": "STRATEGIC HUB",
+                "icon": "ShieldCheck",
+                "modules": [
+                    {"name": "CEO Command Center", "path": "/ceo/command"},
+                    {"name": "Financial Reports", "path": "/finance/reports"},
+                    {"name": "Asset Management", "path": "/finance/assets"},
+                    {"name": "Payroll Console", "path": "/hr/payroll"}
+                ]
             }
         ]
         return Response(navigation_structure)

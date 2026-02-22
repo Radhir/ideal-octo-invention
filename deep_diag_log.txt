@@ -1,0 +1,71 @@
+Audit triggering failed for Ankit Dhamija Narinder Dhamija (ES-0039): 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+Audit triggering failed for ankit - Verified: False: 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+Audit triggering failed for ankit - Verified: True: 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+Audit triggering failed for suraj.upadhya - Verified: True: 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+Audit triggering failed for anish - Verified: True: 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+Audit triggering failed for tamer - Verified: True: 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+Audit triggering failed for tariq - Verified: True: 
+Retry limit exceeded while trying to reconnect to the Celery redis result store backend. The Celery application must be restarted.
+
+============================================================
+ELITE SHINE ERP - DEEP RELATIONSHIP AUDIT
+============================================================
+Global Defaults: Company=Elite Shine Group, Branch=Main HQ (), Dept=Front Office
+
+User: ankit
+  - User ID: 39
+  - Employee ID: ES-0039
+  - Emp Branch: None
+  - Emp Company: Elite Shine Group
+  - Emp Dept: Front Office
+    [FIXED] Assigned missing Branch/Company to Employee.
+  - UserProfile created for ankit
+  - UserProfile verified: True
+
+User: suraj.upadhya
+  - User ID: 45
+  - Employee ID: ES-0045
+  - Emp Branch: Main HQ ()
+  - Emp Company: Elite Shine Group
+  - Emp Dept: Front Office
+  - UserProfile verified: True
+
+User: anish
+  - User ID: 38
+  - Employee ID: ES-0038
+  - Emp Branch: Main HQ ()
+  - Emp Company: Elite Shine Group
+  - Emp Dept: Front Office
+  - UserProfile verified: True
+
+User: tamer
+  - User ID: 46
+  - Employee ID: ES-0046
+  - Emp Branch: Main HQ ()
+  - Emp Company: Elite Shine Group
+  - Emp Dept: Front Office
+  - UserProfile verified: True
+
+User: tariq
+  - User ID: 92
+  - Employee ID: ES-0047
+  - Emp Branch: Main HQ ()
+  - Emp Company: Elite Shine Group
+  - Emp Dept: Front Office
+  - UserProfile verified: True
+
+============================================================
+AUDIT AND AUTO-FIX COMPLETE
+============================================================

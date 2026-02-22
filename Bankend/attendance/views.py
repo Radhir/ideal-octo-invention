@@ -13,9 +13,11 @@ class AttendanceViewSet(viewsets.ModelViewSet):
     Attendance API ViewSet.
     Provides list, retrieve, and custom check_in/check_out actions.
     """
+    module_name = 'Attendance'
     queryset = Attendance.objects.all()
     serializer_class = AttendanceSerializer
-    permission_classes = [IsAuthenticated]
+    from core.permissions import HasModulePermission
+    permission_classes = [IsAuthenticated, HasModulePermission]
     
     def get_queryset(self):
         user = self.request.user

@@ -11,7 +11,7 @@ import {
     Shield, BarChart, Users,
     ArrowRight, Calendar as CalendarIcon,
     PlusCircle, Clock, CreditCard, Truck,
-    UserCheck, ChevronLeft, ChevronRight, Activity, Zap, Cpu, Global, Target
+    UserCheck, ChevronLeft, ChevronRight, Activity, Zap, Cpu, Globe, Target
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

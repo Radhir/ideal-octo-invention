@@ -1,0 +1,35 @@
+============================================================
+DJANGO AUTHENTICATION DIAGNOSTIC
+============================================================
+
+User: ankit
+  - Active: True
+  - Staff: True
+  - Last Login: None
+  - Authentication: SUCCESS
+
+User: suraj.upadhya
+  - Active: True
+  - Staff: True
+  - Last Login: None
+  - Authentication: SUCCESS
+
+User: anish
+  - Active: True
+  - Staff: True
+  - Last Login: None
+  - Authentication: SUCCESS
+
+User: tamer
+  - Active: True
+  - Staff: True
+  - Last Login: None
+  - Authentication: SUCCESS
+
+User: tariq
+  - Active: True
+  - Staff: True
+  - Last Login: None
+  - Authentication: SUCCESS
+
+============================================================

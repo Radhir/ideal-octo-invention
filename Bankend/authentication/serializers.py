@@ -33,46 +33,45 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'username', 'email', 'password', 'first_name', 'last_name', 'full_name', 'role', 'hr_profile', 'bio', 'profile_image', 'accent_color', 'basic_salary', 'net_earnings', 'mistakes_this_month', 'medical_history', 'family_members_count', 'visa_start_date', 'experience_summary', 'emergency_contact_1', 'emergency_contact_2', 'passport_no', 'visa_uid', 'nationality')
 
+    def _get_profile(self, obj):
+        if not hasattr(self, '_cached_profile'):
+            try:
+                self._cached_profile = obj.hr_profile
+            except:
+                self._cached_profile = None
+        return self._cached_profile
+
     def get_hr_profile(self, obj):
-        """Return basic hr_profile data without causing circular import"""
-        try:
-            profile = obj.hr_profile
-            return {
-                'id': profile.id,
-                'employee_id': profile.employee_id,
-                'role': profile.role,
-                'department': profile.department.name if profile.department else None,
-                'company': profile.company.name if profile.company else None,
-                'branch': profile.branch.name if profile.branch else None,
-            }
-        except:
-            return None
+        profile = self._get_profile(obj)
+        if not profile: return None
+        
+        from hr.serializers import ModulePermissionSerializer
+        return {
+            'id': profile.id,
+            'employee_id': profile.employee_id,
+            'role': profile.role,
+            'department': profile.department.name if profile.department else None,
+            'company': profile.company.name if profile.company else None,
+            'branch': profile.branch.name if profile.branch else None,
+            'permissions': ModulePermissionSerializer(profile.module_permissions.all(), many=True).data,
+            'config': profile.permissions_config
+        }
 
     def get_role(self, obj):
-        try:
-            return obj.hr_profile.role
-        except:
-            return "Elite Member"
+        profile = self._get_profile(obj)
+        return profile.role if profile else "Elite Member"
 
     def get_bio(self, obj):
-        try:
-            return obj.hr_profile.bio
-        except:
-            return None
+        profile = self._get_profile(obj)
+        return profile.bio if profile else None
 
     def get_profile_image(self, obj):
-        try:
-            if obj.hr_profile.profile_image:
-                return obj.hr_profile.profile_image.url
-            return None
-        except:
-            return None
+        profile = self._get_profile(obj)
+        return profile.profile_image.url if profile and profile.profile_image else None
 
     def get_accent_color(self, obj):
-        try:
-            return obj.hr_profile.accent_color
-        except:
-            return "#b08d57"
+        profile = self._get_profile(obj)
+        return profile.accent_color if profile else "#b08d57"
 
     def _can_view_financials(self, obj):
         request = self.context.get('request')
@@ -94,27 +93,22 @@ class UserSerializer(serializers.ModelSerializer):
     def get_basic_salary(self, obj):
         if not self._can_view_financials(obj):
             return 0
-        try:
-            return obj.hr_profile.basic_salary
-        except:
-            return 0
+        profile = self._get_profile(obj)
+        return profile.basic_salary if profile else 0
 
     def get_net_earnings(self, obj):
         if not self._can_view_financials(obj):
             return 0
+        profile = self._get_profile(obj)
+        if not profile: return 0
         try:
             from django.utils import timezone
             from django.db.models import Sum
             current_month = timezone.now().month
             current_year = timezone.now().year
             
-            basic = obj.hr_profile.basic_salary
-            mistakes = obj.hr_profile.mistakes.filter(date__month=current_month, date__year=current_year).aggregate(total=Sum('amount'))['total'] or 0
-            
-            # Simple assumption: Net = Basic - Mistakes (ignoring attendance for this specific "Est. Earnings" display for now, or we can make it more complex later)
-            # The prompt asked to calculate based on Hours * Rate - Mistakes, but basic salary implies a fixed rate.
-            # Let's stick to Basic - Mistakes for the "Projected" value as per standard salary, OR we can use the hourly logic if specific.
-            # Using Basic - Mistakes is safer for now as a base.
+            basic = profile.basic_salary
+            mistakes = profile.mistakes.filter(date__month=current_month, date__year=current_year).aggregate(total=Sum('amount'))['total'] or 0
             return basic - mistakes
         except:
             return 0
@@ -122,13 +116,14 @@ class UserSerializer(serializers.ModelSerializer):
     def get_mistakes_this_month(self, obj):
         if not self._can_view_financials(obj):
             return []
+        profile = self._get_profile(obj)
+        if not profile: return []
         try:
             from django.utils import timezone
-            # Import locally to avoid circular dependency
             from hr.serializers import MistakeSerializer 
             current_month = timezone.now().month
             current_year = timezone.now().year
-            mistakes = obj.hr_profile.mistakes.filter(date__month=current_month, date__year=current_year)
+            mistakes = profile.mistakes.filter(date__month=current_month, date__year=current_year)
             return MistakeSerializer(mistakes, many=True).data
         except:
             return []
@@ -138,46 +133,50 @@ class UserSerializer(serializers.ModelSerializer):
         except: return None
 
     def get_family_members_count(self, obj):
-        try: return obj.hr_profile.family_members_count
-        except: return 0
+        profile = self._get_profile(obj)
+        return profile.family_members_count if profile else 0
 
     def get_visa_start_date(self, obj):
-        try: return obj.hr_profile.visa_start_date
-        except: return None
+        profile = self._get_profile(obj)
+        return profile.visa_start_date if profile else None
     
     def get_experience_summary(self, obj):
-        try: return obj.hr_profile.experience_summary
-        except: return None
+        profile = self._get_profile(obj)
+        return profile.experience_summary if profile else None
 
     def get_passport_no(self, obj):
-        try: return obj.hr_profile.passport_no
-        except: return None
+        profile = self._get_profile(obj)
+        return profile.passport_no if profile else None
     
     def get_visa_uid(self, obj):
-        try: return obj.hr_profile.visa_uid
-        except: return None
+        profile = self._get_profile(obj)
+        return profile.visa_uid if profile else None
 
     def get_nationality(self, obj):
-        try: return obj.hr_profile.nationality
-        except: return None
+        profile = self._get_profile(obj)
+        return profile.nationality if profile else None
 
     def get_emergency_contact_1(self, obj):
+        profile = self._get_profile(obj)
+        if not profile: return None
         try:
             return {
-                'name': obj.hr_profile.emergency_contact_1_name,
-                'phone': obj.hr_profile.emergency_contact_1_phone,
-                'relation': obj.hr_profile.emergency_contact_1_relation,
-                'photo': obj.hr_profile.emergency_contact_1_photo.url if obj.hr_profile.emergency_contact_1_photo else None
+                'name': profile.emergency_contact_1_name,
+                'phone': profile.emergency_contact_1_phone,
+                'relation': profile.emergency_contact_1_relation,
+                'photo': profile.emergency_contact_1_photo.url if profile.emergency_contact_1_photo else None
             }
         except: return None
 
     def get_emergency_contact_2(self, obj):
+        profile = self._get_profile(obj)
+        if not profile: return None
         try:
             return {
-                'name': obj.hr_profile.emergency_contact_2_name,
-                'phone': obj.hr_profile.emergency_contact_2_phone,
-                'relation': obj.hr_profile.emergency_contact_2_relation,
-                'photo': obj.hr_profile.emergency_contact_2_photo.url if obj.hr_profile.emergency_contact_2_photo else None
+                'name': profile.emergency_contact_2_name,
+                'phone': profile.emergency_contact_2_phone,
+                'relation': profile.emergency_contact_2_relation,
+                'photo': profile.emergency_contact_2_photo.url if profile.emergency_contact_2_photo else None
             }
         except: return None
 

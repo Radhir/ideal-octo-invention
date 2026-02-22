@@ -146,33 +146,45 @@ const PurchaseEntry = () => {
                                 {formData.items.map((item, idx) => (
                                     <div key={idx} style={{
                                         display: 'grid',
-                                        gridTemplateColumns: '1fr 100px 140px 50px',
-                                        gap: '20px',
-                                        marginBottom: '20px',
+                                        gridTemplateColumns: 'minmax(200px, 1fr) 100px 140px 140px 50px',
+                                        gap: '15px',
+                                        marginBottom: '15px',
                                         alignItems: 'flex-end',
                                         padding: '20px',
-                                        background: 'rgba(255,255,255,0.01)',
-                                        borderRadius: '12px',
-                                        border: '1px solid rgba(255,255,255,0.03)'
+                                        background: 'rgba(232, 230, 227, 0.02)',
+                                        borderRadius: '16px',
+                                        border: '1px solid rgba(232, 230, 227, 0.05)',
+                                        transition: 'all 0.3s ease'
                                     }}>
                                         <PortfolioInput
-                                            label={idx === 0 ? "DESCRIPTION" : ""}
+                                            label={idx === 0 ? "ASSET.detail" : ""}
                                             value={item.detail}
                                             onChange={(e) => handleItemChange(idx, 'detail', e.target.value)}
-                                            placeholder="Part Name / Service"
+                                            placeholder="Part ID or Service Name..."
                                         />
                                         <PortfolioInput
-                                            label={idx === 0 ? "QTY" : ""}
+                                            label={idx === 0 ? "QUANTITY" : ""}
                                             type="number"
                                             value={item.qty}
-                                            onChange={(e) => handleItemChange(idx, 'qty', parseInt(e.target.value))}
+                                            onChange={(e) => handleItemChange(idx, 'qty', parseInt(e.target.value) || 0)}
                                         />
                                         <PortfolioInput
-                                            label={idx === 0 ? "UNIT PRICE" : ""}
+                                            label={idx === 0 ? "UNIT_PRICE" : ""}
                                             type="number"
                                             value={item.price}
-                                            onChange={(e) => handleItemChange(idx, 'price', parseFloat(e.target.value))}
+                                            onChange={(e) => handleItemChange(idx, 'price', parseFloat(e.target.value) || 0)}
+                                            placeholder="0.00"
                                         />
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            {idx === 0 && <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.3)', fontWeight: '900', letterSpacing: '1px' }}>LINE.total</div>}
+                                            <div style={{
+                                                height: '52px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px',
+                                                display: 'flex', alignItems: 'center', padding: '0 20px', color: 'var(--cream)',
+                                                fontSize: '14px', fontWeight: '700', border: '1px solid rgba(255,255,255,0.03)'
+                                            }}>
+                                                {(item.qty * item.price).toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.4, marginLeft: '6px' }}>AED</span>
+                                            </div>
+                                        </div>
                                         <button
                                             type="button"
                                             onClick={() => removeItem(idx)}
@@ -183,13 +195,14 @@ const PurchaseEntry = () => {
                                                 justifyContent: 'center',
                                                 background: 'transparent',
                                                 border: 'none',
-                                                color: '#ef4444',
+                                                color: '#f43f5e',
                                                 cursor: 'pointer',
-                                                opacity: formData.items.length > 1 ? 1 : 0.3
+                                                opacity: formData.items.length > 1 ? 0.6 : 0.2,
+                                                transition: 'all 0.3s'
                                             }}
                                             disabled={formData.items.length <= 1}
                                         >
-                                            <Trash2 size={20} />
+                                            <Trash2 size={18} />
                                         </button>
                                     </div>
                                 ))}

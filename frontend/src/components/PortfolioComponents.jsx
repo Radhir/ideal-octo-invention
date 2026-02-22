@@ -184,6 +184,25 @@ export const PortfolioCard = ({ children, onClick, borderColor = 'rgba(232, 230,
 };
 
 /**
+ * Glass Card
+ * A premium glassmorphic container
+ */
+export const GlassCard = ({ children, style = {} }) => {
+    return (
+        <div style={{
+            background: 'rgba(255, 255, 255, 0.03)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '24px',
+            border: '1.5px solid rgba(255, 255, 255, 0.1)',
+            transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
+            ...style
+        }}>
+            {children}
+        </div>
+    );
+};
+
+/**
  * Portfolio Grid
  * Responsive grid for cards
  */
@@ -402,5 +421,6 @@ export default {
     PortfolioInput,
     PortfolioSelect,
     PortfolioTextarea,
-    PortfolioDetailBox
+    PortfolioDetailBox,
+    GlassCard
 };

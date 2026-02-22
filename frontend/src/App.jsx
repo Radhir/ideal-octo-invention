@@ -43,6 +43,7 @@ const TradingDashboard = lazy(() => import('./pages/dashboard/TradingDashboard')
 const LogisticsDashboard = lazy(() => import('./pages/dashboard/LogisticsDashboard')); // NEW
 const AdvisorDailyReport = lazy(() => import('./pages/dashboard/AdvisorDailyReport'));
 const AnalyticsDashboard = lazy(() => import('./pages/dashboard/AnalyticsDashboard'));
+const CEOConsole = lazy(() => import('./pages/dashboard/CEOConsole'));
 const MissionControl = lazy(() => import('./pages/MissionControl'));
 const RiskAuditPage = lazy(() => import('./pages/RiskAuditPage'));
 
@@ -93,9 +94,14 @@ const AttendanceBoard = lazy(() => import('./pages/hr/AttendanceBoard'));
 const TeamManagement = lazy(() => import('./pages/hr/TeamManagement'));
 const AccessManagement = lazy(() => import('./pages/hr/AccessManagement'));
 const HRHub = lazy(() => import('./pages/hr/HRHub'));
+const HRReports = lazy(() => import('./pages/hr/HRReports'));
 const TechnicianAnalytics = lazy(() => import('./pages/hr/TechnicianAnalytics'));
 const CustomerLiveTracker = lazy(() => import('./pages/public/CustomerLiveTracker'));
 const WarrantyPortalView = lazy(() => import('./pages/public/WarrantyPortalView'));
+
+const WarrantyBook = lazy(() => import('./pages/warranty/WarrantyBook'));
+const WarrantyForm = lazy(() => import('./pages/warranty/WarrantyForm'));
+const WarrantyVerify = lazy(() => import('./pages/warranty/WarrantyVerify'));
 
 // High Fidelity UI Overhaul Pages
 const WorkshopRegistry = lazy(() => import('./pages/WorkshopRegistry'));
@@ -107,11 +113,16 @@ const BudgetManager = lazy(() => import('./pages/finance/BudgetManager'));
 const TransactionEntry = lazy(() => import('./pages/finance/TransactionEntry'));
 const ChartOfAccounts = lazy(() => import('./pages/finance/ChartOfAccounts'));
 const FinancialReports = lazy(() => import('./pages/finance/FinancialReports'));
+const AssetConsole = lazy(() => import('./pages/finance/AssetConsole'));
+const ReceiptVoucher = lazy(() => import('./pages/finance/ReceiptVoucher'));
+const PettyCashVoucher = lazy(() => import('./pages/finance/PettyCashVoucher'));
+const LinkingAccount = lazy(() => import('./pages/finance/LinkingAccount'));
 
 const LeaveList = lazy(() => import('./pages/leaves/LeaveList'));
 const LeaveForm = lazy(() => import('./pages/leaves/LeaveForm'));
 const RequestList = lazy(() => import('./pages/requests/RequestList'));
 const RequestForm = lazy(() => import('./pages/requests/RequestForm'));
+const ApprovalsHub = lazy(() => import('./pages/hr/ApprovalsHub'));
 
 const PickDropList = lazy(() => import('./pages/pick_drop/PickDropList'));
 const PickDropForm = lazy(() => import('./pages/pick_drop/PickDropForm'));
@@ -156,13 +167,24 @@ const ManagementPortal = lazy(() => import('./pages/management/ManagementPortal'
 const SalesPortal = lazy(() => import('./pages/sales/SalesPortal'));
 const FinancePortal = lazy(() => import('./pages/finance/FinancePortal'));
 const CustomerDetail = lazy(() => import('./pages/customers/CustomerDetail'));
+const CustomerForm = lazy(() => import('./pages/customers/CustomerForm'));
+const SupplierForm = lazy(() => import('./pages/stock/SupplierForm'));
 const SLADetail = lazy(() => import('./pages/sla/SLADetail'));
 const UserProfilePage = lazy(() => import('./pages/UserProfilePage'));
 const VehicleMaster = lazy(() => import('./pages/masters/VehicleMaster'));
 const VehicleForm = lazy(() => import('./pages/masters/VehicleForm'));
+const ServiceMaster = lazy(() => import('./pages/masters/ServiceMaster')); // NEW
+const InsuranceMaster = lazy(() => import('./pages/masters/InsuranceMaster'));
+const EmployeeReports = lazy(() => import('./pages/hr/EmployeeReports')); // NEW
+const DepartmentMaster = lazy(() => import('./pages/admin/DepartmentMaster')); // NEW
+const HRMasters = lazy(() => import('./pages/hr/HRMasters'));
+const EmployeeDocumentRegistry = lazy(() => import('./pages/hr/EmployeeDocumentRegistry'));
+const VehicleConfigMaster = lazy(() => import('./pages/masters/VehicleConfigMaster'));
 const PaintDashboard = lazy(() => import('./pages/paint/PaintDashboard'));
 const OrderConfirmation = lazy(() => import('./pages/logistics/OrderConfirmation'));
 const PurchaseEntry = lazy(() => import('./pages/logistics/PurchaseEntry'));
+const AuditorDossier = lazy(() => import('./pages/finance/AuditorDossier'));
+const BranchComparison = lazy(() => import('./pages/dashboard/BranchComparison'));
 
 
 const ProtectedRoute = ({ children }) => {
@@ -180,7 +202,8 @@ const AuthConditionalCarousel = () => {
   const isAuthPage = authRoutes.some(route => pathname.startsWith(route)) ||
     pathname.startsWith('/portal/') ||
     pathname.startsWith('/track/') ||
-    pathname.startsWith('/warranty/');
+    pathname.startsWith('/warranty/') ||
+    pathname.startsWith('/warranty-verify/');
 
   if (isAuthPage) return null;
   return <BackgroundCarousel />;
@@ -205,6 +228,7 @@ function App() {
                         <Route path="/portal/:token" element={<CustomerPortal />} />
                         <Route path="/track/:token" element={<CustomerLiveTracker />} />
                         <Route path="/warranty/:token" element={<WarrantyPortalView />} />
+                        <Route path="/warranty-verify/:token" element={<WarrantyVerify />} />
                         <Route path="/password-reset" element={<PasswordResetRequestPage />} />
                         <Route path="/reset-password/:uid/:token" element={<PasswordResetConfirmPage />} />
                       </Route>
@@ -216,6 +240,7 @@ function App() {
                         <Route path="/profile" element={<UserProfilePage />} />
                         <Route path="/mission-control" element={<MissionControl />} />
                         <Route path="/" element={<Portfolio />} />
+                        <Route path="/ceo/command" element={<CEOConsole />} />
                         <Route path="/ppf" element={<PPFList />} />
                         <Route path="/ppf/create" element={<PPFForm />} />
                         <Route path="/ppf/:id" element={<PPFDetail />} />
@@ -250,6 +275,8 @@ function App() {
                         <Route path="/stock" element={<StockList />} />
                         <Route path="/stock/create" element={<StockForm />} />
                         <Route path="/stock/movement" element={<StockMovement />} />
+                        <Route path="/warranty-book" element={<WarrantyBook />} />
+                        <Route path="/warranty/new" element={<WarrantyForm />} />
                         <Route path="/stock/suppliers" element={<SupplierList />} />
                         <Route path="/stock/procurement" element={<ProcurementManager />} />
                         <Route path="/stock/scanner" element={<ScannerLanding />} />
@@ -266,7 +293,12 @@ function App() {
                         <Route path="/finance/budget" element={<BudgetManager />} />
                         <Route path="/finance/transaction" element={<TransactionEntry />} />
                         <Route path="/finance/coa" element={<ChartOfAccounts />} />
+                        <Route path="/finance/coa" element={<ChartOfAccounts />} />
                         <Route path="/finance/reports" element={<FinancialReports />} />
+                        <Route path="/finance/assets" element={<AssetConsole />} />
+                        <Route path="/finance/linking" element={<LinkingAccount />} />
+                        <Route path="/finance/petty-cash" element={<PettyCashVoucher />} />
+                        <Route path="/finance/petty-cash/approve" element={<PettyCashVoucher />} />
                         <Route path="/workshop-diary" element={<WorkshopDiary />} />
                         <Route path="/analytics" element={<AnalyticsDashboard />} />
                         <Route path="/hr" element={<HRHub />} />
@@ -291,15 +323,26 @@ function App() {
                         <Route path="/elitepro" element={<LogisticsPortal />} />
                         <Route path="/elitepro/shipments" element={<ShipmentManagement />} />
                         <Route path="/elitepro/inventory" element={<InventoryManagement />} />
+                        <Route path="/finance/audit" element={<AuditorDossier />} />
+                        <Route path="/dashboard/comparison" element={<BranchComparison />} />
 
                         <Route path="/masters/vehicles" element={<VehicleMaster />} />
+                        <Route path="/masters/vehicles/config" element={<VehicleConfigMaster />} />
                         <Route path="/masters/vehicles/create" element={<VehicleForm />} />
                         <Route path="/masters/vehicles/:id/edit" element={<VehicleForm />} />
 
                         <Route path="/masters/users" element={<EmployeeDirectory />} />
                         <Route path="/masters/branches" element={<BranchManagementPage />} />
+                        <Route path="/masters/services" element={<ServiceMaster />} />
+                        <Route path="/masters/insurance" element={<InsuranceMaster />} />
+                        <Route path="/admin/departments" element={<DepartmentMaster />} />
 
                         <Route path="/hr/access" element={<AccessManagement />} />
+                        <Route path="/hr/approvals" element={<ApprovalsHub />} />
+                        <Route path="/hr/masters/:tab" element={<HRMasters />} />
+                        <Route path="/hr/documents" element={<EmployeeDocumentRegistry />} />
+                        <Route path="/hr/reports" element={<HRReports />} />
+                        <Route path="/hr/reports/employees" element={<EmployeeReports />} />
                         <Route path="/forms" element={<FormsHub />} />
                         <Route path="/media" element={<MediaLibrary />} />
                         <Route path="/service-advisor/form" element={<ServiceAdvisorForm />} />
@@ -319,6 +362,10 @@ function App() {
                         <Route path="/ppf/warranty" element={<PPFWarrantyForm />} />
 
                         <Route path="/customers/:id" element={<CustomerDetail />} />
+                        <Route path="/customers/create" element={<CustomerForm />} />
+                        <Route path="/customers/:id/edit" element={<CustomerForm />} />
+                        <Route path="/stock/suppliers/create" element={<SupplierForm />} />
+                        <Route path="/stock/suppliers/:id/edit" element={<SupplierForm />} />
 
                         <Route path="/reports" element={<ReportsPage />} />
                         <Route path="/reports/jobs" element={<JobReport />} />
@@ -331,6 +378,7 @@ function App() {
                         <Route path="/construction" element={<UnderConstruction />} />
 
                         <Route path="/admin/branches" element={<BranchManagementPage />} />
+                        <Route path="/finance/receipt-voucher" element={<ReceiptVoucher />} />
 
                         {/* High Fidelity UI Overhaul Routes */}
                         <Route path="/scheduling" element={<SchedulingPortal />} />

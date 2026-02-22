@@ -17,15 +17,25 @@ class StockItem(models.Model):
     safety_level = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
     unit_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     last_restock = models.DateField(null=True, blank=True)
+    
+    branch = models.ForeignKey('locations.Branch', on_delete=models.SET_NULL, null=True, blank=True, related_name='inventory')
+    
+    # Location
+    location = models.CharField(max_length=100, blank=True, help_text="e.g. Main Warehouse")
+    rack = models.CharField(max_length=50, blank=True)
+    bin = models.CharField(max_length=50, blank=True)
 
     def __str__(self):
-        return f"{self.name} ({self.category})"
+        branch_prefix = f"[{self.branch.code}] " if self.branch else ""
+        return f"{branch_prefix}{self.name} ({self.category})"
 
 class StockMovement(models.Model):
     TYPES = [
         ('IN', 'Restock (Purchase)'),
         ('OUT', 'Consumption (Job)'),
         ('ADJ', 'Adjustment (Audit)'),
+        ('ICT_OUT', 'ICT Transfer Out'),
+        ('ICT_IN', 'ICT Transfer In'),
     ]
     STATUS_CHOICES = [
         ('PENDING', 'Pending Approval'),
@@ -39,6 +49,7 @@ class StockMovement(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     job_card = models.ForeignKey('job_cards.JobCard', on_delete=models.SET_NULL, null=True, blank=True)
     purchase_order = models.ForeignKey('stock.PurchaseOrder', on_delete=models.SET_NULL, null=True, blank=True)
+    transfer = models.ForeignKey('stock.StockTransfer', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_movements')
     reason = models.TextField(blank=True)
     recorded_by = models.CharField(max_length=255, blank=True)
 
@@ -66,18 +77,39 @@ class StockMovement(models.Model):
             should_adjust = True
             
         if should_adjust:
-            if self.type == 'IN':
+            if self.type in ['IN', 'ICT_IN', 'ADJ']:
                 self.item.current_stock += self.quantity
-            elif self.type == 'OUT':
+            elif self.type in ['OUT', 'ICT_OUT']:
                 self.item.current_stock -= self.quantity
-            elif self.type == 'ADJ':
-                # ADJ is treated as a manual correction (can be positive or negative)
-                self.item.current_stock += self.quantity
             
             self.item.save()
 
     def __str__(self):
         return f"{self.type} - {self.quantity} {self.item.name}"
+
+class StockTransfer(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending Transfer'),
+        ('TRANSIT', 'In Transit'),
+        ('COMPLETED', 'Completed'),
+        ('CANCELLED', 'Cancelled'),
+    ]
+    transfer_number = models.CharField(max_length=50, unique=True)
+    from_branch = models.ForeignKey('locations.Branch', on_delete=models.CASCADE, related_name='transfers_out')
+    to_branch = models.ForeignKey('locations.Branch', on_delete=models.CASCADE, related_name='transfers_in')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    date = models.DateField()
+    notes = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transfer_number} ({self.from_branch.code} -> {self.to_branch.code})"
+
+class StockTransferItem(models.Model):
+    transfer = models.ForeignKey(StockTransfer, on_delete=models.CASCADE, related_name='items')
+    item = models.ForeignKey(StockItem, on_delete=models.CASCADE) # Source branch item
+    quantity = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 class Supplier(models.Model):
     name = models.CharField(max_length=255)
@@ -87,6 +119,13 @@ class Supplier(models.Model):
     address = models.TextField(blank=True)
     category = models.CharField(max_length=100, blank=True)
     trade_license = models.CharField(max_length=100, blank=True)
+    
+    # Financials
+    trn = models.CharField(max_length=50, blank=True, verbose_name="TRN / Tax ID")
+    payment_terms = models.CharField(max_length=100, blank=True, help_text="e.g. 30 Days Credit")
+    credit_limit = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    website = models.URLField(blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -137,3 +176,42 @@ class StockForm(models.Model):
 
     def __str__(self):
         return f"Stock Request - {self.department}"
+
+class PurchaseInvoice(models.Model):
+    purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.SET_NULL, null=True, blank=True, related_name='invoices')
+    invoice_number = models.CharField(max_length=50, unique=True)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='invoices')
+    branch = models.ForeignKey('locations.Branch', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    invoice_date = models.DateField()
+    due_date = models.DateField(null=True, blank=True)
+    supplier_invoice_no = models.CharField(max_length=100, blank=True)
+    
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    discount_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    tax_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    net_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    remarks = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"INV-{self.invoice_number} ({self.supplier.name})"
+
+class PurchaseReturn(models.Model):
+    voucher_no = models.CharField(max_length=50, unique=True)
+    invoice = models.ForeignKey(PurchaseInvoice, on_delete=models.CASCADE, related_name='returns')
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, related_name='returns')
+    branch = models.ForeignKey('locations.Branch', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    voucher_date = models.DateField()
+    reason = models.TextField(blank=True)
+    
+    total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    tax_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    net_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"RET-{self.voucher_no} ({self.supplier.name})"

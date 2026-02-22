@@ -263,7 +263,7 @@ const LogisticsPortal = () => {
         <PortfolioPage breadcrumb="OPERATIONS / LOGISTICS">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
                 <PortfolioTitle subtitle="Global supply chain visibility, strategic movement orchestration, and autonomous fleet intelligence.">
-                    Logistics<br />Command Center
+                    Logistics<br />Command Hub
                 </PortfolioTitle>
             </div>
 
@@ -280,8 +280,8 @@ const LogisticsPortal = () => {
                 border: '1px solid rgba(255,255,255,0.05)',
                 backdropFilter: 'blur(20px)'
             }}>
-                {['DASHBOARD', 'ASSET MATRIX', 'SHIPMENTS'].map(tab => {
-                    const mappedTab = tab === 'ASSET MATRIX' ? 'INVENTORY' : tab;
+                {['COMMAND CENTER', 'ASSET MATRIX', 'GLOBAL SHIPMENTS'].map(tab => {
+                    const mappedTab = tab === 'ASSET MATRIX' ? 'INVENTORY' : (tab === 'GLOBAL SHIPMENTS' ? 'SHIPMENTS' : 'DASHBOARD');
                     return (
                         <button
                             key={tab}

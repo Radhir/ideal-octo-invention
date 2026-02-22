@@ -11,6 +11,7 @@ class Booking(models.Model):
     ]
     
     customer_name = models.CharField(max_length=255)
+    appointment_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     customer_profile = models.ForeignKey('customers.Customer', on_delete=models.SET_NULL, null=True, blank=True, related_name='bookings')
     phone = models.CharField(max_length=20)

@@ -108,9 +108,11 @@ const BookingCalendar = ({ bookings = [] }) => {
                 {/* Calendar Grid Container */}
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: '100px repeat(7, 1fr)',
+                    gridTemplateColumns: 'minmax(80px, 100px) repeat(7, minmax(0, 1fr))',
                     background: 'rgba(232, 230, 227, 0.05)',
-                    gap: '1px'
+                    gap: '1px',
+                    width: '100%',
+                    overflowX: 'auto'
                 }}>
                     {/* Header: Timeslot label + Days */}
                     <div style={{ background: '#0a0a0a', padding: '20px' }}></div>

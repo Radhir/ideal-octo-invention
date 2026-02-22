@@ -15,7 +15,7 @@ const UniversalBottomNav = () => {
         { name: 'SCANNER', path: '/job-cards' },
         { name: 'REPORTS', path: '/finance/reports' },
         { name: 'CHAT', path: '/chat' },
-        { name: 'APPROVALS', path: '/hr/access' },
+        { name: 'APPROVALS', path: '/hr/approvals' },
     ];
 
     const styles = {

@@ -96,23 +96,36 @@ const CustomerPortal = () => {
     }
 
     const kpiData = [
-        { label: 'Active Jobs', value: stats.active_jobs || 0, subvalue: 'WORKSHOP QUEUE', icon: CarRepair, color: 'var(--gold)' },
-        { label: 'Total Services', value: stats.total_jobs || 0, subvalue: 'LIFETIME HISTORY', icon: HistoryIcon, color: '#3b82f6' },
-        { label: 'Total Value', value: `$${(stats.total_spent || 0).toLocaleString()}`, subvalue: 'CUMULATIVE INVESTMENT', icon: Receipt, color: '#10b981' },
-        { label: 'Warranties', value: stats.warranties_active || 0, subvalue: 'ACTIVE PROTECTION', icon: StarIcon, color: '#c084fc' }
+        { label: 'ACTIVE.jobs', value: stats.active_jobs || 0, subvalue: 'WORKSHOP QUEUE', icon: CarRepair, color: 'var(--gold)' },
+        { label: 'TOTAL.services', value: stats.total_jobs || 0, subvalue: 'LIFETIME HISTORY', icon: HistoryIcon, color: '#3b82f6' },
+        { label: 'TOTAL.investment', value: `${(stats.total_spent || 0).toLocaleString()} AED`, subvalue: 'CUMULATIVE VALUE', icon: Receipt, color: '#10b981' },
+        { label: 'WARRANTY.active', value: stats.warranties_active || 0, subvalue: 'PROTECTION NODES', icon: StarIcon, color: '#c084fc' }
     ];
 
     return (
-        <PortfolioPage breadcrumb={`MEMBER ACCESS / ${customer?.name.toUpperCase()}`}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '60px' }}>
-                <PortfolioTitle subtitle={`Strategic partner since ${new Date(customer?.member_since).toLocaleDateString([], { month: 'long', year: 'numeric' })}`}>
-                    Welcome, {customer?.name}
+        <PortfolioPage breadcrumb={`MEMBER ACCESS // ${customer?.name?.toUpperCase()}`}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
+                <PortfolioTitle subtitle={`Strategic partner since ${new Date(customer?.member_since).toLocaleDateString([], { month: 'long', year: 'numeric' }).toUpperCase()}`}>
+                    Welcome,<br />{customer?.name}
                 </PortfolioTitle>
-                <div style={{ textAlign: 'right', padding: '15px 25px', background: 'rgba(176,141,87,0.05)', borderRadius: '16px', border: '1px solid rgba(176,141,87,0.1)' }}>
-                    <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '5px' }}>LOYALTY BALANCE</div>
-                    <div style={{ fontSize: '42px', fontWeight: '100', color: 'var(--cream)', fontFamily: 'var(--font-serif)', lineHeight: 1, display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                <div style={{
+                    textAlign: 'right',
+                    padding: '30px 40px',
+                    background: 'rgba(176,141,87,0.03)',
+                    borderRadius: '24px',
+                    border: '1px solid rgba(176,141,87,0.1)',
+                    backdropFilter: 'blur(20px)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+                }}>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '3px', marginBottom: '12px' }}>LOYALTY BALANCE</div>
+                    <div style={{
+                        fontSize: '56px', fontWeight: '100', color: 'var(--cream)',
+                        fontFamily: 'var(--font-serif)', lineHeight: 1, display: 'flex',
+                        alignItems: 'baseline', gap: '12px', justifyContent: 'flex-end',
+                        textShadow: '0 0 30px rgba(176,141,87,0.3)'
+                    }}>
                         {customer?.loyalty_points}
-                        <span style={{ fontSize: '10px', fontWeight: '900', color: 'var(--gold)', letterSpacing: '1px' }}>PTS</span>
+                        <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--gold)', letterSpacing: '2px' }}>PTS</span>
                     </div>
                 </div>
             </div>
@@ -121,13 +134,14 @@ const CustomerPortal = () => {
 
             <div style={{
                 display: 'flex',
-                gap: '10px',
+                gap: '8px',
                 marginBottom: '60px',
-                padding: '10px',
+                padding: '8px',
                 background: 'rgba(255,255,255,0.02)',
-                borderRadius: '12px',
+                borderRadius: '16px',
                 width: 'fit-content',
-                border: '1px solid rgba(255,255,255,0.05)'
+                border: '1px solid rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(20px)'
             }}>
                 {[
                     { id: 'jobs', label: 'SERVICES', icon: CarRepair },
@@ -139,7 +153,7 @@ const CustomerPortal = () => {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         style={{
-                            padding: '12px 30px',
+                            padding: '14px 28px',
                             background: activeTab === tab.id ? 'var(--gold)' : 'transparent',
                             border: 'none',
                             color: activeTab === tab.id ? '#000' : 'rgba(232, 230, 227, 0.4)',
@@ -147,15 +161,15 @@ const CustomerPortal = () => {
                             fontWeight: '900',
                             letterSpacing: '2px',
                             cursor: 'pointer',
-                            borderRadius: '8px',
+                            borderRadius: '12px',
                             transition: 'all 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '10px',
-                            boxShadow: activeTab === tab.id ? '0 10px 20px rgba(176,141,87,0.2)' : 'none'
+                            gap: '12px',
+                            boxShadow: activeTab === tab.id ? '0 10px 30px rgba(176,141,87,0.3)' : 'none'
                         }}
                     >
-                        <tab.icon size={14} strokeWidth={activeTab === tab.id ? 2.5 : 1.5} />
+                        <tab.icon size={16} strokeWidth={activeTab === tab.id ? 2.5 : 1.5} />
                         {tab.label}
                     </button>
                 ))}
@@ -166,24 +180,24 @@ const CustomerPortal = () => {
                 {activeTab === 'invoices' && <InvoiceList invoices={invoices} navigate={navigate} />}
                 {activeTab === 'booking' && (
                     <div style={{
-                        padding: '100px',
+                        padding: '120px 60px',
                         textAlign: 'center',
-                        background: 'rgba(255,255,255,0.02)',
-                        borderRadius: '32px',
+                        background: 'rgba(255,255,255,0.01)',
+                        borderRadius: '40px',
                         border: '1px solid rgba(176,141,87,0.1)',
                         position: 'relative',
                         overflow: 'hidden'
                     }}>
-                        <div className="telemetry-grid" />
+                        <div className="telemetry-grid" style={{ opacity: 0.1 }} />
                         <div style={{ position: 'relative', zIndex: 1 }}>
-                            <Schedule size={48} strokeWidth={1} style={{ marginBottom: '20px', color: 'var(--gold)', opacity: 0.5 }} />
-                            <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: '300', fontSize: '28px', color: 'var(--cream)', marginBottom: '10px' }}>Advanced Reservation</h3>
-                            <p style={{ color: 'rgba(232, 230, 227, 0.4)', fontSize: '14px', maxWidth: '400px', margin: '0 auto' }}>
+                            <Schedule size={48} strokeWidth={1} style={{ marginBottom: '30px', color: 'var(--gold)', opacity: 0.4 }} />
+                            <h3 style={{ fontFamily: 'var(--font-serif)', fontWeight: '300', fontSize: '32px', color: 'var(--cream)', marginBottom: '15px' }}>Advanced Reservation</h3>
+                            <p style={{ color: 'rgba(232, 230, 227, 0.4)', fontSize: '15px', maxWidth: '450px', margin: '0 auto', lineHeight: '1.6' }}>
                                 The online booking system is currently undergoing deep-cycle optimization for high-performance scheduling.
                             </p>
-                            <div style={{ marginTop: '30px', display: 'flex', justifyContent: 'center', gap: '8px', alignItems: 'center' }}>
+                            <div style={{ marginTop: '40px', display: 'flex', justifyContent: 'center', gap: '12px', alignItems: 'center' }}>
                                 <div className="status-pulse active" style={{ background: 'var(--gold)' }} />
-                                <span style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>CALIBRATING PARAMETERS</span>
+                                <span style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '3px' }}>CALIBRATING PARAMETERS</span>
                             </div>
                         </div>
                     </div>
@@ -194,149 +208,169 @@ const CustomerPortal = () => {
     );
 };
 
+const getStatusColor = (status) => {
+    const s = status?.toLowerCase();
+    if (s.includes('closed') || s.includes('paid')) return '#10b981';
+    if (s.includes('estimation') || s.includes('pending')) return '#f59e0b';
+    if (s.includes('wip') || s.includes('assignment')) return '#3b82f6';
+    return 'var(--gold)';
+};
+
 const JobList = ({ jobs, navigate }) => (
-    <PortfolioGrid columns="1fr">
+    <PortfolioGrid columns="1fr" gap="20px">
         {jobs.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '100px', color: 'rgba(232, 230, 227, 0.2)', background: 'rgba(232, 230, 227, 0.01)', borderRadius: '32px', border: '1px dashed rgba(232, 230, 227, 0.05)' }}>
+            <div style={{ textAlign: 'center', padding: '120px', color: 'rgba(232,230,227,0.2)', background: 'rgba(232,230,227,0.01)', borderRadius: '40px', border: '1px dashed rgba(232,230,227,0.05)', letterSpacing: '2px', fontSize: '11px', fontWeight: '900' }}>
                 NO ACTIVE SERVICE CYCLES DETECTED.
             </div>
         ) : (
-            jobs.map((job) => (
-                <PortfolioCard
-                    key={job.id}
-                    onClick={() => navigate(`/portal/jobs/${job.id}`)}
-                    style={{
-                        padding: '30px 40px',
-                        cursor: 'pointer',
-                        display: 'grid',
-                        gridTemplateColumns: '0.8fr 2fr 1.2fr 1fr 0.5fr',
-                        alignItems: 'center',
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
-                    }}
-                    className="workflow-card"
-                >
-                    <div style={{ fontSize: '14px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', fontFamily: 'monospace' }}>
-                        #{job.job_number}
-                    </div>
-                    <div>
-                        <div style={{ fontSize: '22px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>
-                            {job.vehicle_details?.make} {job.vehicle_details?.model}
+            jobs.map((job) => {
+                const statusColor = getStatusColor(job.status);
+                return (
+                    <PortfolioCard
+                        key={job.id}
+                        onClick={() => navigate(`/portal/jobs/${job.id}`)}
+                        style={{
+                            padding: '35px 45px',
+                            cursor: 'pointer',
+                            display: 'grid',
+                            gridTemplateColumns: '1.2fr 2.5fr 1.5fr 1.2fr 0.5fr',
+                            alignItems: 'center',
+                            background: 'rgba(255,255,255,0.02)',
+                            border: '1px solid rgba(255,255,255,0.04)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                        className="workflow-card"
+                    >
+                        <div style={{ fontSize: '14px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', fontFamily: 'monospace' }}>
+                            #{job.job_number}
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-                            <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--gold)', opacity: 0.5 }} />
-                            <div style={{ color: 'rgba(232, 230, 227, 0.3)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>
-                                REG // {job.registration_number?.toUpperCase()}
+                        <div>
+                            <div style={{ fontSize: '24px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>
+                                {job.vehicle_details?.make} {job.vehicle_details?.model}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
+                                <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--gold)', opacity: 0.4 }} />
+                                <div style={{ color: 'rgba(232, 230, 227, 0.3)', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800' }}>
+                                    PLATE // {job.registration_number?.toUpperCase()}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <span style={{
-                            fontSize: '9px', fontWeight: '900',
-                            color: '#3b82f6',
-                            background: 'rgba(59, 130, 246, 0.1)',
-                            padding: '8px 16px', borderRadius: '20px',
-                            border: '1px solid rgba(59, 130, 246, 0.2)',
-                            letterSpacing: '2px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            width: 'fit-content'
-                        }}>
-                            <div className="status-pulse active" style={{ background: '#3b82f6', width: '6px', height: '6px' }} />
-                            {job.current_status_display.toUpperCase()}
-                        </span>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '22px', color: 'var(--cream)', fontWeight: '100', fontFamily: 'var(--font-serif)' }}>
-                            <span style={{ fontSize: '11px', color: 'var(--gold)', marginRight: '6px', fontWeight: '900' }}>AED</span>
-                            {parseFloat(job.total_estimated_cost || 0).toLocaleString()}
+                        <div>
+                            <span style={{
+                                fontSize: '10px', fontWeight: '900',
+                                color: statusColor,
+                                background: `${statusColor}11`,
+                                padding: '10px 20px', borderRadius: '30px',
+                                border: `1px solid ${statusColor}33`,
+                                letterSpacing: '2px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                width: 'fit-content'
+                            }}>
+                                <div className="status-pulse active" style={{ background: statusColor, width: '6px', height: '6px' }} />
+                                {job.current_status_display?.toUpperCase()}
+                            </span>
                         </div>
-                        <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.2)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800', marginTop: '4px' }}>VALUATION</div>
-                    </div>
-                    <div style={{ textAlign: 'right', display: 'flex', justifyContent: 'flex-end' }}>
-                        <ArrowRightCircle size={22} color="var(--gold)" style={{ opacity: 0.3 }} />
-                    </div>
-                </PortfolioCard>
-            ))
+                        <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '24px', color: 'var(--cream)', fontWeight: '100', fontFamily: 'var(--font-serif)' }}>
+                                <span style={{ fontSize: '12px', color: 'var(--gold)', marginRight: '8px', fontWeight: '900' }}>AED</span>
+                                {parseFloat(job.total_estimated_cost || 0).toLocaleString()}
+                            </div>
+                            <div style={{ fontSize: '10px', color: 'rgba(232, 230, 227, 0.2)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '900', marginTop: '6px' }}>ESTIMATED TOTAL</div>
+                        </div>
+                        <div style={{ textAlign: 'right', display: 'flex', justifyContent: 'flex-end' }}>
+                            <ArrowRightCircle size={24} color="var(--gold)" style={{ opacity: 0.2 }} />
+                        </div>
+                    </PortfolioCard>
+                );
+            })
         )}
     </PortfolioGrid>
 );
 
 const InvoiceList = ({ invoices, navigate }) => (
-    <PortfolioGrid columns="1fr">
+    <PortfolioGrid columns="1fr" gap="20px">
         {invoices.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '100px', color: 'rgba(232, 230, 227, 0.2)', background: 'rgba(232, 230, 227, 0.01)', borderRadius: '32px', border: '1px dashed rgba(232, 230, 227, 0.05)' }}>
+            <div style={{ textAlign: 'center', padding: '120px', color: 'rgba(232,230,227,0.2)', background: 'rgba(232,230,227,0.01)', borderRadius: '40px', border: '1px dashed rgba(232,230,227,0.05)', letterSpacing: '2px', fontSize: '11px', fontWeight: '900' }}>
                 NO FINANCIAL RECORDS FOUND.
             </div>
         ) : (
-            invoices.map((invoice) => (
-                <PortfolioCard
-                    key={invoice.id}
-                    style={{
-                        padding: '30px 40px',
-                        display: 'grid',
-                        gridTemplateColumns: '1fr 2fr 1fr 1.2fr 1fr',
-                        alignItems: 'center',
-                        background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)'
-                    }}
-                    className="workflow-card"
-                >
-                    <div style={{ fontSize: '14px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '1px', fontFamily: 'monospace' }}>
-                        #{invoice.invoice_number}
-                    </div>
-                    <div>
-                        <div style={{ fontSize: '22px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>
-                            {new Date(invoice.date).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
-                        </div>
-                        <div style={{ color: 'rgba(232, 230, 227, 0.3)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800', marginTop: '6px' }}>
-                            TRANSACTION LOGGED
-                        </div>
-                    </div>
-                    <div>
-                        <span style={{
-                            fontSize: '9px', fontWeight: '900',
-                            color: invoice.payment_status === 'PAID' ? '#10b981' : '#f59e0b',
-                            background: invoice.payment_status === 'PAID' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                            padding: '8px 16px', borderRadius: '20px',
-                            border: `1px solid ${invoice.payment_status === 'PAID' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`,
-                            letterSpacing: '2px',
-                            display: 'flex',
+            invoices.map((invoice) => {
+                const isPaid = invoice.payment_status?.toUpperCase() === 'PAID';
+                const statusColor = isPaid ? '#10b981' : '#f59e0b';
+
+                return (
+                    <PortfolioCard
+                        key={invoice.id}
+                        style={{
+                            padding: '35px 45px',
+                            display: 'grid',
+                            gridTemplateColumns: '1.2fr 2fr 1.5fr 1.5fr 1.2fr',
                             alignItems: 'center',
-                            gap: '8px',
-                            width: 'fit-content'
-                        }}>
-                            <div className={`status-pulse ${invoice.payment_status !== 'PAID' ? 'active' : ''}`} style={{ background: invoice.payment_status === 'PAID' ? '#10b981' : '#f59e0b', width: '6px', height: '6px' }} />
-                            {invoice.payment_status}
-                        </span>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '22px', color: 'var(--cream)', fontWeight: '100', fontFamily: 'var(--font-serif)' }}>
-                            <span style={{ fontSize: '11px', color: 'var(--gold)', marginRight: '6px', fontWeight: '900' }}>AED</span>
-                            {parseFloat(invoice.total_amount).toLocaleString()}
+                            background: 'rgba(255,255,255,0.02)',
+                            border: '1px solid rgba(255,255,255,0.04)',
+                            transition: 'all 0.3s ease'
+                        }}
+                        className="workflow-card"
+                    >
+                        <div style={{ fontSize: '14px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', fontFamily: 'monospace' }}>
+                            #{invoice.invoice_number}
                         </div>
-                        <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.2)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '800', marginTop: '4px' }}>SETTLEMENT VALUE</div>
-                    </div>
-                    <div style={{ textAlign: 'right', display: 'flex', justifyContent: 'flex-end' }}>
-                        {invoice.payment_status === 'PENDING' ? (
-                            <PortfolioButton
-                                variant="gold"
-                                onClick={() => navigate(`/payment/${invoice.id}`)}
-                                style={{ height: '48px', fontSize: '10px', padding: '0 20px', borderRadius: '12px' }}
-                            >
-                                <CreditCard size={16} style={{ marginRight: '10px' }} /> SETTLE NOW
-                            </PortfolioButton>
-                        ) : (
-                            <PortfolioButton
-                                variant="secondary"
-                                onClick={() => navigate(`/portal/invoices/${invoice.id}`)}
-                                style={{ height: '48px', width: '48px', padding: 0, borderRadius: '12px' }}
-                            >
-                                <ArrowRightCircle size={20} color="var(--gold)" style={{ opacity: 0.5 }} />
-                            </PortfolioButton>
-                        )}
-                    </div>
-                </PortfolioCard>
-            ))
+                        <div>
+                            <div style={{ fontSize: '24px', color: 'var(--cream)', fontWeight: '300', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>
+                                {new Date(invoice.date).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}
+                            </div>
+                            <div style={{ color: 'rgba(232, 230, 227, 0.3)', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '900', marginTop: '6px' }}>
+                                SETTLEMENT REGISTERED
+                            </div>
+                        </div>
+                        <div>
+                            <span style={{
+                                fontSize: '10px', fontWeight: '900',
+                                color: statusColor,
+                                background: `${statusColor}11`,
+                                padding: '10px 20px', borderRadius: '30px',
+                                border: `1px solid ${statusColor}33`,
+                                letterSpacing: '2px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                width: 'fit-content'
+                            }}>
+                                <div className={`status-pulse ${!isPaid ? 'active' : ''}`} style={{ background: statusColor, width: '6px', height: '6px' }} />
+                                {invoice.payment_status?.toUpperCase()}
+                            </span>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            <div style={{ fontSize: '26px', color: 'var(--cream)', fontWeight: '100', fontFamily: 'var(--font-serif)' }}>
+                                <span style={{ fontSize: '12px', color: 'var(--gold)', marginRight: '8px', fontWeight: '900' }}>AED</span>
+                                {parseFloat(invoice.total_amount).toLocaleString()}
+                            </div>
+                            <div style={{ fontSize: '10px', color: 'rgba(232, 230, 227, 0.2)', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: '900', marginTop: '6px' }}>SETTLEMENT VALUE</div>
+                        </div>
+                        <div style={{ textAlign: 'right', display: 'flex', justifyContent: 'flex-end' }}>
+                            {!isPaid ? (
+                                <PortfolioButton
+                                    variant="gold"
+                                    onClick={() => navigate(`/payment/${invoice.id}`)}
+                                    style={{ height: '54px', fontSize: '11px', padding: '0 25px', borderRadius: '14px', fontWeight: '900' }}
+                                >
+                                    <CreditCard size={18} style={{ marginRight: '12px' }} /> SETTLE NOW
+                                </PortfolioButton>
+                            ) : (
+                                <PortfolioButton
+                                    variant="secondary"
+                                    onClick={() => navigate(`/portal/invoices/${invoice.id}`)}
+                                    style={{ height: '54px', width: '54px', padding: 0, borderRadius: '14px', border: '1px solid rgba(176,141,87,0.2)' }}
+                                >
+                                    <ArrowRightCircle size={22} color="var(--gold)" style={{ opacity: 0.5 }} />
+                                </PortfolioButton>
+                            )}
+                        </div>
+                    </PortfolioCard>
+                );
+            })
         )}
     </PortfolioGrid>
 );

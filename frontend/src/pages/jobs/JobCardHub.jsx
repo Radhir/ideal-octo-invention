@@ -117,7 +117,7 @@ const JobCardHub = () => {
                     {[
                         { label: 'DIARY', path: '/job-cards/board', icon: LayoutDashboard },
                         { label: 'INVOICES', path: '/job-cards/invoice-book', icon: BookOpen },
-                        { label: 'WARRANTY', path: '/job-cards/warranty', icon: ShieldAlert }
+                        { label: 'WARRANTY', path: '/warranty-book', icon: ShieldAlert }
                     ].map(btn => (
                         <button
                             key={btn.label}

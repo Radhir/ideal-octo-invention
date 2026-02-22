@@ -28,25 +28,66 @@ const StockForm = () => {
         item_description: ''
     });
 
+    const [options, setOptions] = useState({
+        departments: [],
+        employees: [],
+        vehicles: []
+    });
+
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
-        if (location.state) {
-            setFormData(prev => ({
-                ...prev,
-                plate_number: location.state.plate_number || '',
-                car_type: location.state.car_type || '',
-                request_by: location.state.request_by || ''
-            }));
-        }
+        const fetchOptions = async () => {
+            try {
+                const [deptRes, empRes, vehRes] = await Promise.all([
+                    api.get('/hr/api/departments/'),
+                    api.get('/hr/api/employees/'),
+                    api.get('/forms/masters/api/vehicles/')
+                ]);
+
+                setOptions({
+                    departments: deptRes.data.map(d => ({ value: d.name, label: d.name })),
+                    employees: empRes.data.map(e => ({ value: e.full_name, label: e.full_name })),
+                    vehicles: vehRes.data.map(v => ({
+                        value: v.registration_number,
+                        label: `${v.registration_number} (${v.vehicle_brand} ${v.vehicle_model})`,
+                        brand_model: `${v.vehicle_brand} ${v.vehicle_model}`
+                    }))
+                });
+
+                if (location.state) {
+                    setFormData(prev => ({
+                        ...prev,
+                        plate_number: location.state.plate_number || '',
+                        car_type: location.state.car_type || '',
+                        request_by: location.state.request_by || ''
+                    }));
+                }
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching procurement options', err);
+                setLoading(false);
+            }
+        };
+
+        fetchOptions();
     }, [location.state]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        if (name === 'plate_number' && value) {
+            const vehicle = options.vehicles.find(v => v.value === value);
+            if (vehicle) {
+                setFormData({ ...formData, plate_number: value, car_type: vehicle.brand_model });
+                return;
+            }
+        }
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         if (e) e.preventDefault();
         try {
-            // Corrected endpoint to match StockForm model in backend
             await api.post('/forms/stock/api/requests/', formData);
             alert('Logistics Request Registered Successfully');
             navigate('/stock');
@@ -55,6 +96,8 @@ const StockForm = () => {
             alert('Failed to sync with industrial database.');
         }
     };
+
+    if (loading) return <div style={{ color: 'var(--gold)', textAlign: 'center', padding: '100px' }}>INITIALIZING LEDGER...</div>;
 
     return (
         <PortfolioPage breadcrumb="Operations / Logistics / Registration">
@@ -69,51 +112,50 @@ const StockForm = () => {
                 <form onSubmit={handleSubmit}>
                     <PortfolioCard style={{ padding: '60px' }}>
                         <div style={{ marginBottom: '50px' }}>
-                            <div style={sectionHeader}>1. OPERATIONAL CONTEXT</div>
+                            <div style={sectionHeader}>01 // OPERATIONAL CONTEXT</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-                                <PortfolioInput
+                                <PortfolioSelect
                                     label="DEPARTMENT"
                                     name="department"
                                     value={formData.department}
                                     onChange={handleChange}
                                     required
-                                    placeholder="e.g. Ceramic Lab"
+                                    options={options.departments}
                                 />
-                                <PortfolioInput
+                                <PortfolioSelect
                                     label="REQUESTED BY"
                                     name="request_by"
                                     value={formData.request_by}
                                     onChange={handleChange}
                                     required
-                                    placeholder="Officer Name"
+                                    options={options.employees}
                                 />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '50px' }}>
-                            <div style={sectionHeader}>2. ASSET IDENTIFICATION</div>
+                            <div style={sectionHeader}>02 // ASSET IDENTIFICATION</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
-                                <PortfolioInput
-                                    label="CAR MODEL"
-                                    name="car_type"
-                                    value={formData.car_type}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g. Porsche 911 GT3"
-                                />
-                                <PortfolioInput
+                                <PortfolioSelect
                                     label="PLATE NUMBER"
                                     name="plate_number"
                                     value={formData.plate_number}
                                     onChange={handleChange}
                                     required
-                                    placeholder="Dubai A-00000"
+                                    options={options.vehicles}
+                                />
+                                <PortfolioInput
+                                    label="CAR MODEL (AUTO-FILLED)"
+                                    name="car_type"
+                                    value={formData.car_type}
+                                    readOnly
+                                    placeholder="Porsche 911 GT3"
                                 />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '50px' }}>
-                            <div style={sectionHeader}>3. FISCAL PARAMETERS</div>
+                            <div style={sectionHeader}>03 // FISCAL PARAMETERS</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '30px' }}>
                                 <PortfolioInput
                                     label="AMOUNT (AED)"
@@ -147,7 +189,7 @@ const StockForm = () => {
                         </div>
 
                         <div style={{ marginBottom: '60px' }}>
-                            <div style={sectionHeader}>4. TECHNICAL DESCRIPTION</div>
+                            <div style={sectionHeader}>04 // TECHNICAL DESCRIPTION</div>
                             <PortfolioTextarea
                                 label="ITEMIZED SPECIFICATIONS"
                                 name="item_description"
@@ -164,7 +206,7 @@ const StockForm = () => {
                             variant="primary"
                             style={{ width: '100%', height: '70px', fontSize: '14px' }}
                         >
-                            <Save size={20} /> SYNC WITH INDUSTRIAL DATABASE
+                            <Save size={20} /> INITIALIZE PROCUREMENT PROTOCOL
                         </PortfolioButton>
                     </PortfolioCard>
                 </form>

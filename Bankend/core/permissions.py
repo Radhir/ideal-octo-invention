@@ -20,9 +20,26 @@ class IsAdminOrOwner(permissions.BasePermission):
         try:
             profile = user.hr_profile
             
-            # 1. Dynamic Override Check (MongoDB-style)
-            # Example: permissions_config = {"Inventory": {"can_view": True, "can_edit": False}}
+            # 0. Check ModulePermission (Relational RBAC)
             module_name = getattr(view, 'module_name', None)
+            if module_name:
+                perm = profile.module_permissions.filter(module_name=module_name).first()
+                if perm:
+                    if request.method in permissions.SAFE_METHODS:
+                        if not perm.can_view: return False
+                    elif request.method == 'POST':
+                        if not perm.can_create: return False
+                    elif request.method in ['PUT', 'PATCH']:
+                        if not perm.can_edit: return False
+                    elif request.method == 'DELETE':
+                        if not perm.can_delete: return False
+                    # If specific permission is granted (or not denied above), we permit. 
+                    # Actually, if record exists, we should probably return True if check passed.
+                    # But the logic above only returns False on failure. 
+                    # Let's trust the granular permission:
+                    return True
+
+            # 1. Dynamic Override Check (Legacy JSON Config)
             if module_name and profile.permissions_config:
                 module_cfg = profile.permissions_config.get(module_name)
                 if module_cfg:

@@ -14,6 +14,8 @@ class JobCard(models.Model):
     ]
 
     job_card_number = models.CharField(max_length=50, unique=True)
+    estimation_number = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    appointment_number = models.CharField(max_length=50, blank=True, null=True, unique=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default='RECEIVED')
     date = models.DateField()
     branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True, related_name='job_cards')
@@ -59,6 +61,29 @@ class JobCard(models.Model):
     net_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     advance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     balance_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    # Estimation & Inspection Details
+    inspection_number = models.CharField(max_length=50, blank=True, null=True, unique=True)
+    cylinder_type = models.CharField(max_length=50, blank=True, null=True, help_text="e.g. 4, 6, 8, 12 Cylinder")
+    no_of_days = models.IntegerField(default=0, help_text="Estimated days for completion")
+    actual_days = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, help_text="Actual days taken")
+    efficiency_score = models.DecimalField(max_digits=5, decimal_places=2, default=0.00, help_text="Calculated efficiency score")
+    customer_approval_status = models.CharField(max_length=20, choices=[('WAITING', 'Waiting'), ('APPROVED', 'Approved'), ('REJECTED', 'Rejected')], default='WAITING')
+    customer_estimated_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    checklist_remarks = models.TextField(blank=True)
+    job_category = models.CharField(max_length=50, default='Regular', choices=[('Regular', 'Regular'), ('Campaign', 'Campaign'), ('Warranty', 'Warranty'), ('Internal', 'Internal')])
+    attendee = models.CharField(max_length=255, blank=True) # Or ForeignKey to Employee
+    
+    # Delivery & Tech Details
+    supervisor = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='supervised_jobs')
+    driver = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='driven_jobs')
+    salesman = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='sold_jobs', verbose_name="Sales Man")
+    brought_by_name = models.CharField(max_length=255, blank=True)
+    mulkiya_number = models.CharField(max_length=100, blank=True)
+    delivery_date = models.DateTimeField(null=True, blank=True)
+    revise_date = models.DateField(null=True, blank=True)
+    committed_date = models.DateField(null=True, blank=True)
+    order_type = models.CharField(max_length=50, blank=True, choices=[('Normal', 'Normal'), ('Urgent', 'Urgent'), ('VVIP', 'VVIP')])
     
     # Commission Tracking
     commission_applied = models.BooleanField(default=False)
@@ -123,8 +148,14 @@ class JobCard(models.Model):
         
         super().save(*args, **kwargs)
         
-        # Trigger Financial Transaction on Completion
         if self.status == 'CLOSED' and old_status != 'CLOSED':
+            # Performance Tracking
+            if self.date and self.delivery_date:
+                delta = self.delivery_date.date() - self.date
+                self.actual_days = Decimal(str(max(delta.days, 1))) # Minimum 1 day
+                if self.no_of_days > 0:
+                    self.efficiency_score = (Decimal(str(self.no_of_days)) / self.actual_days) * Decimal('100')
+            
             self.sync_to_finance()
 
     def sync_to_finance(self):
@@ -210,13 +241,26 @@ class JobCardTask(models.Model):
 
 class ServiceCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    image = models.ImageField(upload_to='service_icons/', null=True, blank=True)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        verbose_name_plural = "Service Categories"
+
     def __str__(self):
         return self.name
 
 class Service(models.Model):
     category = models.ForeignKey(ServiceCategory, related_name='services', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    cost_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Estimated cost to company")
+    
+    # Accounting & Segmentation
+    income_account = models.ForeignKey('finance.Account', on_delete=models.SET_NULL, null=True, blank=True, related_name='services')
+    department = models.ForeignKey('hr.Department', on_delete=models.SET_NULL, null=True, blank=True, related_name='services')
+    
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.name} - {self.price}"
@@ -265,3 +309,23 @@ class WarrantyClaim(models.Model):
 
     def __str__(self):
         return f"{self.claim_number} - {self.customer.full_name} ({self.type})"
+
+class JobCardStatusHistory(models.Model):
+    job_card = models.ForeignKey(JobCard, on_delete=models.CASCADE, related_name='status_history')
+    old_status = models.CharField(max_length=50, blank=True, null=True)
+    new_status = models.CharField(max_length=50)
+    changed_by = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.job_card.job_card_number}: {self.old_status} -> {self.new_status}"
+
+class JobCardRemark(models.Model):
+    job_card = models.ForeignKey(JobCard, on_delete=models.CASCADE, related_name='remarks_list')
+    remark = models.TextField()
+    added_by = models.ForeignKey('hr.Employee', on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Remark on {self.job_card.job_card_number} by {self.added_by}"

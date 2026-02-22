@@ -3,8 +3,14 @@ from django.contrib.auth.models import User
 from .models import (
     Employee, HRRule, Payroll, Roster, HRAttendance, 
     Team, Mistake, Department, Company, Branch, ModulePermission,
-    SalarySlip, EmployeeDocument, WarningLetter, Notification
+    SalarySlip, EmployeeDocument, WarningLetter, Notification, Bonus
 )
+
+class BonusSerializer(serializers.ModelSerializer):
+    employee_name = serializers.CharField(source='employee.full_name', read_only=True)
+    class Meta:
+        model = Bonus
+        fields = '__all__'
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:

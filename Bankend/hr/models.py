@@ -4,6 +4,16 @@ from django.db.models.functions import Now
 from django.contrib.auth.models import User
 from locations.models import Branch
 
+class MaritalStatus(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+    def __str__(self): return self.name
+
+class DeductionType(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True)
+    def __str__(self): return self.name
+
 class Company(models.Model):
     name = models.CharField(max_length=100, unique=True)
     legal_name = models.CharField(max_length=255, blank=True)
@@ -21,6 +31,7 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
 
 # Refactored: Branch moved to locations app
 # class Branch(models.Model):
@@ -59,7 +70,8 @@ class Employee(models.Model):
     nationality = models.CharField(max_length=100, blank=True, null=True)
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')], default='Male')
     dob = models.DateField(null=True, blank=True)
-    marital_status = models.CharField(max_length=20, default='Single')
+    marital_status_ref = models.ForeignKey(MaritalStatus, on_delete=models.SET_NULL, null=True, blank=True)
+    marital_status = models.CharField(max_length=20, default='Single') # Kept for migration stability
     salary_type = models.CharField(max_length=50, choices=[
         ('MONTHLY', 'Monthly'),
         ('DAILY', 'Daily (Attendance Based)'),
@@ -178,6 +190,10 @@ class Department(models.Model):
     monthly_sales_target = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, default=0.00)
     monthly_expense_budget = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, default=0.00)
     
+    # Accounting Integration
+    income_account = models.ForeignKey('finance.Account', on_delete=models.SET_NULL, null=True, blank=True, related_name='revenue_departments', help_text="Default Income/Revenue Account for this department")
+    expense_account = models.ForeignKey('finance.Account', on_delete=models.SET_NULL, null=True, blank=True, related_name='expense_departments', help_text="Default Expense Account for this department")
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -263,7 +279,7 @@ class SalarySlip(models.Model):
             basic_earned = (total_hours - total_ot) * hourly_rate
             ot_earned = total_ot * ot_rate
             
-            earnings = basic_earned + ot_earned + float(self.allowances) + float(self.bonuses)
+            earnings = basic_earned + ot_earned + float(self.allowances) + float(self.bonuses) + float(self.commissions_earned)
         else:
             # Monthly Standard
             per_day_rate = float(self.basic_salary) / 30
@@ -271,17 +287,17 @@ class SalarySlip(models.Model):
             ot_rate = hourly_rate * 1.25
             
             ot_earned = total_ot * ot_rate
-            earnings = float(self.basic_salary) + float(self.allowances) + ot_earned + float(self.bonuses)
+            earnings = float(self.basic_salary) + float(self.allowances) + ot_earned + float(self.bonuses) + float(self.commissions_earned)
         
         # 4. Final Totals
-        deductions = float(self.deductions) + float(self.late_deductions)
+        deductions_total = float(self.deductions) + float(self.late_deductions)
         self.overtime_hours = total_ot
         self.overtime_amount = ot_earned
         
         self.total_additions = self.overtime_amount + float(self.bonuses) + float(self.commissions_earned)
-        self.total_deductions = deductions
+        self.total_deductions = deductions_total
         
-        self.net_salary = earnings - deductions
+        self.net_salary = earnings - deductions_total
         self.save()
 
     def save(self, *args, **kwargs):
@@ -301,21 +317,51 @@ class SalarySlip(models.Model):
         super().save(*args, **kwargs)
 
     def record_expense_transaction(self):
-        from finance.models import Account, Transaction
+        from finance.models import Account, Voucher, VoucherDetail
+        from django.utils import timezone
+        import uuid
+
         # Find or create a default Expense account (5000)
         expense_acc, _ = Account.objects.get_or_create(
             code='5000', 
             defaults={'name': 'Payroll Expenses', 'category': 'EXPENSE'}
         )
         
-        # Create DEBIT transaction (Expense increases with Debit)
-        Transaction.objects.create(
+        # Find or create a Liability account (2100) for balancing
+        payable_acc, _ = Account.objects.get_or_create(
+             code='2100',
+             defaults={'name': 'Salaries Payable', 'category': 'LIABILITY'}
+        )
+        
+        # Create Voucher
+        # voucher_number unique generation
+        v_num = f"PAYROLL-{self.id}-{uuid.uuid4().hex[:4].upper()}"
+        
+        voucher = Voucher.objects.create(
+            voucher_number=v_num,
+            voucher_type='JOURNAL',
+            date=timezone.now().date(),
+            reference_number=f"SLIP-{self.id}",
+            narration=f"Payroll Payout - {self.employee.full_name} ({self.month})",
+            status='POSTED'
+        )
+
+        # Debit Expense
+        VoucherDetail.objects.create(
+            voucher=voucher,
             account=expense_acc,
-            department_ref=self.employee.department,
-            amount=self.net_salary,
-            transaction_type='DEBIT',
-            description=f"Payroll Payout - {self.employee.full_name} ({self.month})",
-            reference=f"SLIP-{self.id}"
+            debit=self.net_salary,
+            credit=0,
+            description=f"Salary Expense: {self.employee.full_name}"
+        )
+        
+        # Credit Payable
+        VoucherDetail.objects.create(
+            voucher=voucher,
+            account=payable_acc,
+            debit=0,
+            credit=self.net_salary,
+            description=f"Salary Payable: {self.employee.full_name}"
         )
 
     def delete(self, *args, **kwargs):
@@ -375,3 +421,57 @@ class Notification(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+class EmployeeBankDetails(models.Model):
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, related_name='bank_details')
+    bank_name = models.CharField(max_length=100)
+    branch_name = models.CharField(max_length=100, blank=True)
+    account_number = models.CharField(max_length=50)
+    iban = models.CharField(max_length=50, blank=True)
+    swift_code = models.CharField(max_length=20, blank=True)
+    
+    def __str__(self):
+        return f"{self.employee.full_name} - {self.bank_name}"
+
+class EmployeeFamilyDetails(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='family_members')
+    name = models.CharField(max_length=100)
+    relationship = models.CharField(max_length=50) # Spouse, Child, Parent
+    dob = models.DateField(null=True, blank=True)
+    contact_number = models.CharField(max_length=20, blank=True)
+    
+    def __str__(self):
+        return f"{self.name} ({self.relationship}) - {self.employee.full_name}"
+
+class Loan(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='loans')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    issued_date = models.DateField()
+    deduction_start_date = models.DateField()
+    monthly_deduction = models.DecimalField(max_digits=10, decimal_places=2)
+    # Status
+    is_active = models.BooleanField(default=True)
+    remarks = models.TextField(blank=True)
+    
+    def __str__(self):
+        return f"Loan {self.amount} - {self.employee.full_name}"
+
+class EmployeeDeduction(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='deductions')
+    deduction_type_ref = models.ForeignKey(DeductionType, on_delete=models.SET_NULL, null=True, blank=True)
+    deduction_type = models.CharField(max_length=50) # Legacy
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    reason = models.TextField()
+    
+    def __str__(self):
+        return f"{self.deduction_type} - {self.amount}"
+
+class Bonus(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='bonuses')
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField()
+    reason = models.TextField()
+    
+    def __str__(self):
+        return f"Bonus {self.amount} - {self.employee.full_name}"

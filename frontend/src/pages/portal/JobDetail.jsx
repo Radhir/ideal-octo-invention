@@ -77,68 +77,91 @@ const JobDetail = () => {
     const currentStageIndex = STAGES.indexOf(job.status);
 
     return (
-        <PortfolioPage>
+        <PortfolioPage breadcrumb={`SERVICE TRACKING // ${job.job_number}`}>
             <PortfolioBackButton onClick={() => navigate(-1)} />
 
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '60px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
                 <PortfolioTitle
-                    subtitle={`${job.vehicle_details?.make} ${job.vehicle_details?.model} // ${job.vehicle_details?.license_plate}`}
+                    subtitle={`${job.vehicle_details?.make} ${job.vehicle_details?.model} // ${job.vehicle_details?.license_plate?.toUpperCase()}`}
                 >
-                    Job #{job.job_number}
+                    Diagnostic<br />Archive
                 </PortfolioTitle>
-                <div style={{ textAlign: 'right', padding: '15px 25px', background: 'rgba(176,141,87,0.05)', borderRadius: '16px', border: '1px solid rgba(176,141,87,0.1)' }}>
-                    <div style={{ fontSize: '9px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '5px' }}>VALUATION ESTIMATE</div>
-                    <div style={{ fontSize: '42px', fontWeight: '100', color: 'var(--cream)', fontFamily: 'var(--font-serif)', lineHeight: 1, display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                        <span style={{ fontSize: '12px', fontWeight: '900', color: 'var(--gold)', letterSpacing: '1px' }}>AED</span>
+                <div style={{
+                    textAlign: 'right',
+                    padding: '25px 35px',
+                    background: 'rgba(176,141,87,0.03)',
+                    borderRadius: '24px',
+                    border: '1px solid rgba(176,141,87,0.1)',
+                    backdropFilter: 'blur(20px)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+                }}>
+                    <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '3px', marginBottom: '8px' }}>VALUATION ESTIMATE</div>
+                    <div style={{
+                        fontSize: '56px', fontWeight: '100', color: 'var(--cream)',
+                        fontFamily: 'var(--font-serif)', lineHeight: 1, display: 'flex',
+                        alignItems: 'baseline', gap: '12px', justifyContent: 'flex-end',
+                        textShadow: '0 0 30px rgba(176,141,87,0.3)'
+                    }}>
+                        <span style={{ fontSize: '14px', fontWeight: '900', color: 'var(--gold)', letterSpacing: '2px' }}>AED</span>
                         {parseFloat(job.total_estimated_cost || 0).toLocaleString()}
                     </div>
                 </div>
             </div>
 
-            {/* Custom Stepper */}
-            <PortfolioCard style={{ padding: '60px 40px', marginBottom: '60px', overflowX: 'auto', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minWidth: '900px', position: 'relative' }}>
-                    {/* Connecting Line Background */}
-                    <div style={{ position: 'absolute', top: '24px', left: '20px', right: '20px', height: '1px', background: 'rgba(255,255,255,0.05)', zIndex: 0 }}></div>
+            {/* Custom Holographic Stepper */}
+            <PortfolioCard style={{ padding: '70px 50px', marginBottom: '60px', overflowX: 'auto', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(176,141,87,0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minWidth: '1000px', position: 'relative' }}>
+                    {/* Background Trace Line */}
+                    <div style={{ position: 'absolute', top: '24px', left: '25px', right: '25px', height: '1px', background: 'rgba(255,255,255,0.05)', zIndex: 0 }}></div>
 
-                    {/* Completed Line Progress */}
+                    {/* Active Progress Vector */}
                     <div style={{
-                        position: 'absolute', top: '24px', left: '20px',
-                        width: `calc(${(currentStageIndex / (STAGES.length - 1)) * 100}% - 40px)`,
-                        height: '1px', background: 'var(--gold)', zIndex: 0, transition: 'width 0.8s cubic-bezier(0.23, 1, 0.32, 1)',
-                        boxShadow: '0 0 10px var(--gold-border)'
+                        position: 'absolute', top: '24px', left: '25px',
+                        width: `calc(${(currentStageIndex / (STAGES.length - 1)) * 100}% - 50px)`,
+                        height: '2px', background: 'var(--gold)', zIndex: 0, transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 0 20px rgba(176,141,87,0.5)'
                     }}></div>
 
                     {STAGES.map((stage, index) => {
                         const isCompleted = index < currentStageIndex;
                         const isActive = index === currentStageIndex;
                         const isPending = index > currentStageIndex;
+                        const statusColor = isCompleted ? '#10b981' : (isActive ? 'var(--gold)' : 'rgba(255,255,255,0.05)');
 
                         return (
-                            <div key={stage} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1, position: 'relative', width: '100px' }}>
+                            <div key={stage} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', zIndex: 1, position: 'relative', width: '120px' }}>
                                 <div style={{
-                                    width: '48px', height: '48px', borderRadius: '14px',
-                                    background: isActive ? 'var(--gold)' : (isCompleted ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.03)'),
+                                    width: '54px', height: '54px', borderRadius: '16px',
+                                    background: isActive ? 'var(--gold)' : (isCompleted ? 'rgba(16, 185, 129, 0.05)' : 'rgba(255,255,255,0.02)'),
                                     border: `1px solid ${isActive ? 'var(--gold)' : (isCompleted ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.08)')}`,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    boxShadow: isActive ? '0 10px 20px rgba(176,141,87,0.3)' : 'none',
-                                    transition: 'all 0.5s ease',
-                                    marginBottom: '20px'
+                                    boxShadow: isActive ? '0 15px 30px rgba(176,141,87,0.3)' : 'none',
+                                    transition: 'all 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+                                    marginBottom: '20px',
+                                    cursor: 'default'
                                 }}>
-                                    {isCompleted ? <Check size={20} color="#10b981" strokeWidth={3} /> :
-                                        isActive ? <Clock size={20} color="#000" strokeWidth={2.5} /> :
-                                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }}></div>}
+                                    {isCompleted ? <Check size={22} color="#10b981" strokeWidth={3} /> :
+                                        isActive ? <Clock size={22} color="#000" strokeWidth={2.5} /> :
+                                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)' }}></div>}
                                 </div>
                                 <div style={{
-                                    fontSize: '9px', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase',
+                                    fontSize: '10px', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase',
                                     color: isActive ? 'var(--gold)' : (isCompleted ? '#10b981' : 'rgba(232, 230, 227, 0.2)'),
                                     textAlign: 'center', transition: 'all 0.5s ease'
                                 }}>
                                     {stage.replace('_', ' ')}
                                 </div>
                                 {isActive && (
-                                    <div className="status-pulse active" style={{ background: 'var(--gold)', position: 'absolute', top: '-5px', right: '20px' }} />
+                                    <div className="status-pulse active" style={{
+                                        background: 'var(--gold)',
+                                        position: 'absolute',
+                                        top: '-8px',
+                                        right: '25px',
+                                        width: '10px',
+                                        height: '10px',
+                                        boxShadow: '0 0 15px var(--gold)'
+                                    }} />
                                 )}
                             </div>
                         );
@@ -146,49 +169,56 @@ const JobDetail = () => {
                 </div>
             </PortfolioCard>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '30px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.2fr', gap: '40px' }}>
                 {/* Left Column */}
                 <div>
                     {/* Services */}
-                    <div style={{ marginBottom: '50px' }}>
-                        <h3 style={{ fontSize: '10px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '20px', fontWeight: '900' }}>REQUESTED SERVICES</h3>
-                        <PortfolioGrid columns={2} gap="20px">
+                    <div style={{ marginBottom: '60px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '25px' }}>
+                            <div style={{ width: '32px', height: '1px', background: 'var(--gold)', opacity: 0.5 }}></div>
+                            <h3 style={{ fontSize: '10px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900', margin: 0 }}>REQUESTED SERVICES</h3>
+                        </div>
+                        <PortfolioGrid columns={2} gap="25px">
                             {job.services?.map((service, index) => (
                                 <PortfolioCard
                                     key={index}
                                     style={{
-                                        padding: '25px',
-                                        border: '1px solid rgba(255,255,255,0.05)',
-                                        background: 'rgba(255,255,255,0.01)'
+                                        padding: '30px',
+                                        border: '1px solid rgba(255,255,255,0.04)',
+                                        background: 'rgba(255,255,255,0.01)',
+                                        transition: 'transform 0.3s'
                                     }}
                                     className="workflow-card"
                                 >
-                                    <div style={{ fontSize: '18px', fontWeight: '400', color: 'var(--cream)', marginBottom: '8px', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>{service.name}</div>
-                                    <div style={{ color: 'var(--gold)', fontSize: '13px', fontWeight: '900', letterSpacing: '1px' }}>
-                                        <span style={{ fontSize: '10px', opacity: 0.5, marginRight: '4px' }}>AED</span>
+                                    <div style={{ fontSize: '20px', fontWeight: '400', color: 'var(--cream)', marginBottom: '12px', fontFamily: 'var(--font-serif)', letterSpacing: '0.5px' }}>{service.name}</div>
+                                    <div style={{ color: 'var(--gold)', fontSize: '14px', fontWeight: '900', letterSpacing: '1px' }}>
+                                        <span style={{ fontSize: '11px', opacity: 0.5, marginRight: '6px' }}>AED</span>
                                         {parseFloat(service.price).toLocaleString()}
                                     </div>
                                 </PortfolioCard>
                             ))}
                         </PortfolioGrid>
-                        {!job.services?.length && <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '12px', letterSpacing: '1px' }}>No specific services listed.</div>}
+                        {!job.services?.length && <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '12px', letterSpacing: '1px', padding: '40px', background: 'rgba(0,0,0,0.1)', borderRadius: '20px', textAlign: 'center' }}>NO SPECIFIC SERVICES LISTED.</div>}
                     </div>
 
                     {/* Photos */}
                     <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h3 style={{ fontSize: '14px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '1px', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <Camera size={18} /> Progress Gallery
-                            </h3>
-                            <div style={{ display: 'flex', gap: '10px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <Camera size={20} color="var(--gold)" />
+                                <h3 style={{ fontSize: '16px', color: 'var(--cream)', fontWeight: '300', margin: 0, fontFamily: 'var(--font-serif)', letterSpacing: '1px' }}>Progress Gallery</h3>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', background: 'rgba(255,255,255,0.03)', padding: '5px', borderRadius: '20px' }}>
                                 {['All', 'Before', 'During', 'After'].map(tab => (
                                     <button
                                         key={tab}
                                         onClick={() => setActivePhotoTab(tab)}
                                         style={{
-                                            background: activePhotoTab === tab ? 'rgba(255,255,255,0.1)' : 'transparent',
-                                            border: 'none', color: activePhotoTab === tab ? '#fff' : 'rgba(255,255,255,0.4)',
-                                            padding: '5px 12px', borderRadius: '15px', fontSize: '11px', cursor: 'pointer', fontWeight: '700'
+                                            background: activePhotoTab === tab ? 'var(--gold)' : 'transparent',
+                                            border: 'none',
+                                            color: activeTab === tab ? '#000' : 'rgba(255,255,255,0.4)',
+                                            padding: '6px 16px', borderRadius: '15px', fontSize: '10px', cursor: 'pointer', fontWeight: '900', letterSpacing: '1px',
+                                            transition: 'all 0.3s'
                                         }}
                                     >
                                         {tab.toUpperCase()}
@@ -197,27 +227,32 @@ const JobDetail = () => {
                             </div>
                         </div>
 
-                        <PortfolioGrid columns={3} gap="15px">
+                        <PortfolioGrid columns={3} gap="20px">
                             {photos
                                 .filter(photo => activePhotoTab === 'All' || photo.stage?.toUpperCase() === activePhotoTab.toUpperCase())
                                 .map((photo) => (
-                                    <div key={photo.id} style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', aspectRatio: '4/3' }}>
+                                    <div key={photo.id} style={{
+                                        position: 'relative', borderRadius: '20px', overflow: 'hidden', aspectRatio: '4/3',
+                                        border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+                                    }}>
                                         <img
                                             src={photo.thumbnail_url || photo.image}
                                             alt={photo.description}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
+                                            className="hover-scale"
                                         />
                                         <div style={{
                                             position: 'absolute', bottom: 0, left: 0, right: 0,
-                                            background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
-                                            padding: '20px 10px 10px', color: '#fff', fontSize: '11px'
+                                            background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 100%)',
+                                            padding: '25px 20px 15px', color: 'var(--cream)', fontSize: '11px', fontWeight: '300',
+                                            letterSpacing: '0.5px'
                                         }}>
                                             {photo.description}
                                         </div>
                                     </div>
                                 ))}
                         </PortfolioGrid>
-                        {photos.length === 0 && <div style={{ padding: '30px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>No photos uploaded yet.</div>}
+                        {photos.length === 0 && <div style={{ padding: '60px', background: 'rgba(255,255,255,0.01)', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: '24px', textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontSize: '11px', letterSpacing: '2px', fontWeight: '900' }}>NO DIAGNOSTIC IMAGERY DETECTED.</div>}
                     </div>
                 </div>
 
