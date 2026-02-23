@@ -12,10 +12,12 @@ WORKDIR /app
 # Consolidated to a single RUN to reduce layers
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    python3-dev \
+    pkg-config \
     postgresql-client \
     libpq-dev \
     # For PDF Generation & Image Processing
-    libcairo2 \
+    libcairo2-dev \
     libffi-dev \
     libjpeg-dev \
     libwebp-dev \
