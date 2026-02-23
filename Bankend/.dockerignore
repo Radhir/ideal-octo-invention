@@ -9,14 +9,20 @@ __pycache__/
 venv/
 env/
 ENV/
+.venv/
 
 # Django
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-/staticfiles/
-/media/
+staticfiles/
+media/
+data/
+backups/
+dump.sql
+*.tar.gz
+*.zip
 
 # Environment variables
 .env

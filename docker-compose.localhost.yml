@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: eliteshine_user
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Elite123!}
     volumes:
-      - postgres_data_local:/var/lib/postgresql/data
+      - ./vps_restore_db:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
     container_name: eliteshine_backend_local
     command: >
-      sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py runserver 0.0.0.0:8000"
     environment:
       - DEBUG=True
       - USE_POSTGRES=True
@@ -35,7 +35,7 @@ services:
     volumes:
       - ./Bankend:/app
       - static_volume_local:/app/staticfiles
-      - media_volume_local:/app/media
+      - ./vps_restore_media:/app/media
     depends_on:
       - db
       - redis
