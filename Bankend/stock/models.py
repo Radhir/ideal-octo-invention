@@ -102,6 +102,59 @@ class StockTransfer(models.Model):
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        old_status = None
+        if not is_new:
+            old_status = StockTransfer.objects.get(pk=self.pk).status
+            
+        super().save(*args, **kwargs)
+        
+        # Automation Logic: Create StockMovements based on status change
+        if not is_new:
+            # 1. Status changed to TRANSIT -> Create ICT_OUT from source branch
+            if old_status != 'TRANSIT' and self.status == 'TRANSIT':
+                for detail in self.items.all():
+                    from .models import StockMovement
+                    StockMovement.objects.create(
+                        item=detail.item,
+                        type='ICT_OUT',
+                        status='APPROVED',
+                        quantity=detail.quantity,
+                        transfer=self,
+                        reason=f"Auto-generated from Transfer {self.transfer_number}"
+                    )
+            
+            # 2. Status changed to COMPLETED -> Create ICT_IN for destination branch
+            elif old_status != 'COMPLETED' and self.status == 'COMPLETED':
+                for detail in self.items.all():
+                    from .models import StockItem, StockMovement
+                    # Find or create equivalent item in destination branch
+                    dest_item = StockItem.objects.filter(
+                        branch=self.to_branch,
+                        sku=detail.item.sku
+                    ).first()
+                    
+                    if not dest_item:
+                        # Create new stock record in destination branch if missing
+                        dest_item = StockItem.objects.create(
+                            branch=self.to_branch,
+                            name=detail.item.name,
+                            sku=detail.item.sku,
+                            category=detail.item.category,
+                            unit=detail.item.unit,
+                            unit_cost=detail.item.unit_cost
+                        )
+                    
+                    StockMovement.objects.create(
+                        item=dest_item,
+                        type='ICT_IN',
+                        status='APPROVED',
+                        quantity=detail.quantity,
+                        transfer=self,
+                        reason=f"Auto-generated from Transfer {self.transfer_number}"
+                    )
+
     def __str__(self):
         return f"{self.transfer_number} ({self.from_branch.code} -> {self.to_branch.code})"
 

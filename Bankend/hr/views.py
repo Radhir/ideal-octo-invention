@@ -17,6 +17,30 @@ from .serializers import (
     BonusSerializer
 )
 from .services import HRService
+from .services_performance import PerformanceService
+
+class PerformanceViewSet(viewsets.ViewSet):
+    permission_classes = [IsEliteAdmin]
+
+    @action(detail=False, methods=['get'])
+    def technician_efficiency(self, request):
+        employee_id = request.query_params.get('employee_id')
+        month = request.query_params.get('month') # YYYY-MM
+        
+        if not employee_id:
+            return Response({"error": "employee_id is required"}, status=400)
+            
+        stats = PerformanceService.calculate_technician_efficiency(employee_id, month)
+        return Response(stats)
+
+    @action(detail=False, methods=['post'])
+    def accrue_bonuses(self, request):
+        month = request.data.get('month') # YYYY-MM
+        results = PerformanceService.accrue_monthly_bonuses(month)
+        return Response({
+            "message": f"Successfully processed bonuses for {len(results)} technicians.",
+            "details": results
+        })
 
 class BonusViewSet(viewsets.ModelViewSet):
     queryset = Bonus.objects.all().select_related('employee', 'employee__user')

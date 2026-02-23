@@ -750,6 +750,43 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pulse-glow {
+    0% { box-shadow: 0 0 5px rgba(176, 141, 87, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(176, 141, 87, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(176, 141, 87, 0.2); }
+}
+
+.pulse-glow {
+    animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes premium-gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.premium-gradient-card {
+    background: linear-gradient(-45deg, rgba(255,255,255,0.02), rgba(176,141,87,0.05), rgba(255,255,255,0.02));
+    background-size: 400% 400%;
+    animation: premium-gradient-shift 15s ease infinite;
+}
+
+@keyframes status-pulse-high {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(2.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 0; }
+}
+
+.status-pulse.active::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: inherit;
+    animation: status-pulse-high 1.5s infinite ease-out;
+}
+
 @keyframes slideInLeft {
     from { opacity: 0; transform: translateX(-50px); }
     to { opacity: 1; transform: translateX(0); }

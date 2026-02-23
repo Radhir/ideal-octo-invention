@@ -173,7 +173,7 @@ const StockList = () => {
                                         </td>
                                     </tr>
                                 ) : filteredItems.map(item => (
-                                    <tr key={item.id} style={ledgerRowStyle} className="ledger-row">
+                                    <tr key={item.id} style={ledgerRowStyle} className="ledger-row scale-hover">
                                         <td style={tdStyle}>
                                             <div style={skuBadgeStyle}>
                                                 <Package size={12} style={{ opacity: 0.5 }} />
@@ -376,13 +376,19 @@ const StockStatusIndicator = ({ current, safety }) => {
             borderRadius: '20px',
             fontSize: '9px',
             fontWeight: '900',
-            border: `1px solid ${color}20`,
+            border: `1px solid ${color}30`,
             letterSpacing: '2px',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '10px',
+            boxShadow: label !== 'OPTIMAL' ? `0 0 15px ${color}20` : 'none'
         }}>
-            <div className={`status-pulse ${label !== 'OPTIMAL' ? 'active' : ''}`} style={{ background: color, width: '6px', height: '6px' }} />
+            <div className={`status-pulse ${label !== 'OPTIMAL' ? 'active' : ''}`}
+                style={{
+                    background: color, width: '8px', height: '8px', borderRadius: '50%',
+                    position: 'relative'
+                }}
+            />
             {label}
         </span>
     );

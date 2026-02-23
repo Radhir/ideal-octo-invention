@@ -182,15 +182,16 @@ const PaintDashboard = () => {
                     </PortfolioTitle>
                 </div>
 
-                <div className="attendance-widget" style={{
+                <div className="attendance-widget pulse-glow" style={{
                     background: 'rgba(232, 230, 227, 0.02)',
                     padding: '25px',
                     borderRadius: '20px',
-                    border: '1px solid rgba(232, 230, 227, 0.05)',
-                    textAlign: 'right'
+                    border: '1px solid rgba(176, 141, 87, 0.2)',
+                    textAlign: 'right',
+                    backdropFilter: 'blur(10px)'
                 }}>
                     <div style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px', marginBottom: '10px' }}>BOOTH PULSE</div>
-                    <div style={{ fontSize: '42px', fontWeight: '300', color: 'var(--cream)', fontFamily: 'var(--font-serif)', lineHeight: 1 }}>
+                    <div style={{ fontSize: '42px', fontWeight: '300', color: 'var(--cream)', fontFamily: 'var(--font-serif)', lineHeight: 1, textShadow: '0 0 10px rgba(176,141,87,0.3)' }}>
                         {formatTime(currentTime)}
                     </div>
                     <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.4)', marginTop: '8px', letterSpacing: '1px' }}>{formatDate(currentTime)}</div>
@@ -214,33 +215,46 @@ const PaintDashboard = () => {
                         {booths.map(booth => (
                             <PortfolioCard
                                 key={booth.id}
-                                style={{ padding: '30px' }}
+                                style={{
+                                    padding: '30px',
+                                    border: booth.status === 'ACTIVE' ? '1.5px solid rgba(176,141,87,0.3)' : '1.5px solid rgba(232,230,227,0.1)',
+                                    background: booth.status === 'ACTIVE' ? 'rgba(176,141,87,0.02)' : 'transparent',
+                                    position: 'relative',
+                                    overflow: 'hidden'
+                                }}
                                 onClick={() => setBoothModal({ open: true, boothId: booth.id })}
                             >
+                                {booth.status === 'ACTIVE' && (
+                                    <div style={{
+                                        position: 'absolute', top: 0, left: 0, width: '100%', height: '2px',
+                                        background: 'linear-gradient(90deg, transparent, var(--gold), transparent)',
+                                        opacity: 0.5
+                                    }} />
+                                )}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                                     <span style={{ fontSize: '10px', color: 'var(--gold)', fontWeight: '900', letterSpacing: '2px' }}>{booth.paint_stage || 'STANDBY'}</span>
                                     <span style={{
                                         fontSize: '9px', fontWeight: '900', padding: '4px 10px', borderRadius: '4px',
-                                        background: booth.status === 'READY' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                                        color: booth.status === 'READY' ? '#10b981' : '#3b82f6',
-                                        border: booth.status === 'READY' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(59, 130, 246, 0.2)'
+                                        background: booth.status === 'READY' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(176, 141, 87, 0.1)',
+                                        color: booth.status === 'READY' ? '#10b981' : 'var(--gold)',
+                                        border: booth.status === 'READY' ? '1px solid rgba(16, 185, 129, 0.2)' : '1px solid rgba(176, 141, 87, 0.2)'
                                     }}>{booth.status.replace('_', ' ')}</span>
                                 </div>
-                                <h3 style={{ fontSize: '24px', fontWeight: '300', color: 'var(--cream)', marginBottom: '5px', fontFamily: 'var(--font-serif)' }}>{booth.name}</h3>
+                                <h3 style={{ fontSize: '32px', fontWeight: '300', color: 'var(--cream)', marginBottom: '5px', fontFamily: 'var(--font-serif)', letterSpacing: '-0.02em' }}>{booth.name}</h3>
                                 {booth.job_card_number ? (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                                         <div>
                                             <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.3)', fontWeight: '800' }}>ACTIVE JOB</div>
-                                            <div style={{ fontSize: '14px', color: 'var(--cream)', fontWeight: '600' }}>{booth.job_card_number}</div>
-                                            <div style={{ fontSize: '10px', color: 'var(--gold)', marginTop: '2px' }}>{booth.vehicle_name}</div>
+                                            <div style={{ fontSize: '16px', color: 'var(--cream)', fontWeight: '600', fontFamily: 'var(--font-serif)' }}>{booth.job_card_number}</div>
+                                            <div style={{ fontSize: '11px', color: 'var(--gold)', marginTop: '2px', letterSpacing: '0.5px' }}>{booth.vehicle_name}</div>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
                                             <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.3)', fontWeight: '800' }}>TELEMETRY</div>
-                                            <div style={{ fontSize: '14px', color: 'var(--gold)', fontWeight: '600' }}>{booth.temperature}°C</div>
+                                            <div style={{ fontSize: '18px', color: 'var(--gold)', fontWeight: '600', fontFamily: 'var(--font-serif)' }}>{booth.temperature}°C</div>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div style={{ color: 'rgba(232, 230, 227, 0.2)', fontSize: '13px', marginTop: '20px', fontStyle: 'italic' }}>Standing by for entry...</div>
+                                    <div style={{ color: 'rgba(232, 230, 227, 0.2)', fontSize: '13px', marginTop: '20px', fontStyle: 'italic', fontFamily: 'var(--font-serif)' }}>Standing by for entry...</div>
                                 )}
                             </PortfolioCard>
                         ))}

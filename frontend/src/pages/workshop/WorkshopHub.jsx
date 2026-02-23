@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
-import { AlertTriangle, Clock, ShieldAlert, CheckCircle, Plus } from 'lucide-react';
-import GlassCard from '../../components/GlassCard';
+import { AlertTriangle, Clock, ShieldAlert, CheckCircle, Plus, Info } from 'lucide-react';
+import {
+    PortfolioPage,
+    PortfolioTitle,
+    PortfolioSectionTitle,
+    PortfolioButton,
+    PortfolioCard,
+    GlassCard
+} from '../../components/PortfolioComponents';
 
 const WorkshopHub = () => {
     const navigate = useNavigate();
@@ -34,37 +41,26 @@ const WorkshopHub = () => {
     };
 
     return (
-        <div className="p-8 max-w-7xl mx-auto" style={{ color: 'white' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <PortfolioPage breadcrumb="OPERATIONS / WORKSHOP HUB">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '80px' }}>
                 <div>
-                    <h1 style={{ fontSize: '1.875rem', fontWeight: 800, margin: 0 }}>Workshop Operations</h1>
-                    <p style={{ color: '#94a3b8', marginTop: '0.5rem' }}>Manage service delays, incidents, and workshop performance</p>
+                    <PortfolioTitle subtitle="Central operational command for workshop agility and safety.">
+                        Workshop Hub
+                    </PortfolioTitle>
                 </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <PortfolioButton
                         onClick={() => navigate('/workshop/delay')}
-                        className="btn-primary"
-                        style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+                        variant="secondary"
                     >
-                        <Plus size={18} /> Report Delay
-                    </button>
-                    <button
+                        REPORT DELAY
+                    </PortfolioButton>
+                    <PortfolioButton
                         onClick={() => navigate('/workshop/incident')}
-                        style={{
-                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                            color: '#f87171',
-                            border: '1px solid rgba(239, 68, 68, 0.2)',
-                            padding: '0.5rem 1.5rem',
-                            borderRadius: '9999px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                        }}
+                        variant="gold"
                     >
-                        <AlertTriangle size={18} /> Report Incident
-                    </button>
+                        REPORT INCIDENT
+                    </PortfolioButton>
                 </div>
             </div>
 

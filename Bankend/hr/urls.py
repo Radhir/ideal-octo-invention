@@ -4,7 +4,8 @@ from .views import (
     EmployeeViewSet, HRRuleViewSet, PayrollViewSet,
     RosterViewSet, HRAttendanceViewSet, TeamViewSet, MistakeViewSet, DepartmentViewSet,
     CompanyViewSet, BranchViewSet, ModulePermissionViewSet,
-    SalarySlipViewSet, EmployeeDocumentViewSet, WarningLetterViewSet, NotificationViewSet
+    SalarySlipViewSet, EmployeeDocumentViewSet, WarningLetterViewSet, NotificationViewSet,
+    PerformanceViewSet
 )
 
 router = DefaultRouter()
@@ -23,6 +24,7 @@ router.register(r'salary-slips', SalarySlipViewSet)
 router.register(r'employee-documents', EmployeeDocumentViewSet)
 router.register(r'warning-letters', WarningLetterViewSet)
 router.register(r'notifications', NotificationViewSet)
+router.register(r'performance', PerformanceViewSet, basename='performance')
 
 urlpatterns = [
     path('api/', include(router.urls)),
