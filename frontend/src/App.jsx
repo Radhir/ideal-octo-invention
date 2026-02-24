@@ -60,6 +60,7 @@ const WarrantyClaims = lazy(() => import('./pages/jobs/WarrantyClaims')); // New
 const PPFList = lazy(() => import('./pages/ppf/PPFList'));
 const PPFForm = lazy(() => import('./pages/ppf/PPFForm'));
 const PPFDetail = lazy(() => import('./pages/ppf/PPFDetail'));
+const CustomerList = lazy(() => import('./pages/customers/CustomerList')); // Added
 const CeramicList = lazy(() => import('./pages/ceramic/CeramicList'));
 const CeramicForm = lazy(() => import('./pages/ceramic/CeramicForm'));
 const CeramicDetail = lazy(() => import('./pages/ceramic/CeramicDetail'));
@@ -248,8 +249,9 @@ function App() {
                         <Route path="/ceramic/create" element={<CeramicForm />} />
                         <Route path="/ceramic/:id" element={<CeramicDetail />} />
                         <Route path="/hr/id-cards" element={<IDCardGenerator />} />
-                        <Route path="/job-cards" element={<JobCardHub />} />
+                        <Route path="/job-cards" element={<JobList />} />
                         <Route path="/job-cards/list" element={<JobList />} />
+                        <Route path="/job-cards/media" element={<MediaLibrary />} />
                         <Route path="/job-board" element={<JobBoard />} />
                         <Route path="/job-cards/create" element={<JobCardBuilder />} />
                         <Route path="/job-cards/board" element={<JobBoard />} />
@@ -259,6 +261,7 @@ function App() {
                         <Route path="/estimates/:id" element={<EstimateDetail />} />
                         <Route path="/bookings" element={<BookingCalendar />} />
                         <Route path="/bookings/create" element={<BookingForm />} />
+                        <Route path="/estimates" element={<JobList />} /> {/* Temporary fallback or specific page if found */}
                         <Route path="/leads" element={<LeadList />} />
                         <Route path="/leads/:id" element={<LeadDetail />} />
                         <Route path="/leads/create" element={<LeadForm />} />
@@ -300,6 +303,9 @@ function App() {
                         <Route path="/finance/petty-cash" element={<PettyCashVoucher />} />
                         <Route path="/finance/petty-cash/approve" element={<PettyCashVoucher />} />
                         <Route path="/workshop-diary" element={<WorkshopDiary />} />
+                        <Route path="/finance/groups" element={<ChartOfAccounts />} />
+                        <Route path="/finance/account-groups" element={<ChartOfAccounts />} />
+                        <Route path="/finance/ledgers" element={<ChartOfAccounts />} />
                         <Route path="/analytics" element={<AnalyticsDashboard />} />
                         <Route path="/hr" element={<HRHub />} />
                         <Route path="/hr/directory" element={<EmployeeDirectory />} />
@@ -361,6 +367,7 @@ function App() {
                         } />
                         <Route path="/ppf/warranty" element={<PPFWarrantyForm />} />
 
+                        <Route path="/customers" element={<CustomerList />} />
                         <Route path="/customers/:id" element={<CustomerDetail />} />
                         <Route path="/customers/create" element={<CustomerForm />} />
                         <Route path="/customers/:id/edit" element={<CustomerForm />} />

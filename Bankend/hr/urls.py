@@ -27,5 +27,5 @@ router.register(r'notifications', NotificationViewSet)
 router.register(r'performance', PerformanceViewSet, basename='performance')
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]

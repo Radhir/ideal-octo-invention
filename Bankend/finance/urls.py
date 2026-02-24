@@ -12,5 +12,5 @@ router.register(r'reports', FinancialReportViewSet, basename='financial-reports'
 router.register(r'fixed-assets', FixedAssetViewSet)
 
 urlpatterns = [
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]

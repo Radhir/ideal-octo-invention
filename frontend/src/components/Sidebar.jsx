@@ -84,11 +84,11 @@ const Sidebar = ({ isOpen }) => {
             category: 'ADVISOR', items: [
                 { icon: Users, label: 'CUSTOMERS', path: '/customers' },
                 { icon: Calendar, label: 'JOB APPOINTMENT', path: '/bookings/create' },
-                { icon: FileText, label: 'ESTIMATION', path: '/estimates' },
+                { icon: FileText, label: 'ESTIMATION', path: '/job-cards' },
                 { icon: Briefcase, label: 'JOB CARD', path: '/job-cards/create' },
                 { icon: CreditCard, label: 'BILLING JOB CARD', path: '/invoices/create' },
                 { icon: Package, label: 'IMAGES UPLOAD', path: '/job-cards/media' },
-                { icon: ShieldCheck, label: 'GATE PASS', path: '/vouchers/gate' },
+                { icon: ShieldCheck, label: 'GATE PASS', path: '/construction' },
             ]
         },
         {
