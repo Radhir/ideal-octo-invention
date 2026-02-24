@@ -19,20 +19,28 @@ class VehicleModel(models.Model):
     def __str__(self):
         return f"{self.brand.name} {self.name}"
 
+class VehicleType(models.Model):
+    name = models.CharField(max_length=50, unique=True) # e.g. Sedan, SUV, Luxury
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
 class Vehicle(models.Model):
     vin = models.CharField(max_length=100, unique=True, verbose_name="VIN/Chassis")
     registration_number = models.CharField(max_length=50, unique=True, verbose_name="Plate Number")
     plate_emirate = models.CharField(max_length=50, default="Dubai")
     plate_code = models.CharField(max_length=20, blank=True)
     
-    brand = models.CharField(max_length=100)
-    model = models.CharField(max_length=100)
+    brand = models.CharField(max_length=100, blank=True)
+    model = models.CharField(max_length=100, blank=True)
     
     # New relationships for managed registry
     brand_node = models.ForeignKey(VehicleBrand, on_delete=models.SET_NULL, null=True, blank=True)
     model_node = models.ForeignKey(VehicleModel, on_delete=models.SET_NULL, null=True, blank=True)
+    vehicle_type = models.ForeignKey(VehicleType, on_delete=models.SET_NULL, null=True, blank=True)
     
-    year = models.IntegerField()
+    year = models.IntegerField(null=True, blank=True)
     color = models.CharField(max_length=50, blank=True)
     
     engine_number = models.CharField(max_length=100, blank=True)
@@ -52,6 +60,7 @@ class Vehicle(models.Model):
         return f"{self.brand} {self.model} ({self.registration_number})"
 
 class InsuranceCompany(models.Model):
+    # ... (remains same)
     name = models.CharField(max_length=255, unique=True)
     address = models.TextField(blank=True)
     contact_person = models.CharField(max_length=255, blank=True)
@@ -73,5 +82,17 @@ class VehicleColor(models.Model):
     name = models.CharField(max_length=50, unique=True)
     hex_code = models.CharField(max_length=7, default="#000000", help_text="Hex color code (e.g. #FF0000)")
     
+    def __str__(self):
+        return self.name
+
+class Service(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    department = models.ForeignKey('hr.Department', on_delete=models.SET_NULL, null=True, blank=True)
+    base_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    description = models.TextField(blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         return self.name

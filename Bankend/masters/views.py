@@ -1,9 +1,9 @@
 from rest_framework import viewsets
 from core.permissions import IsAdminOrOwner
-from .models import Vehicle, VehicleBrand, VehicleModel, InsuranceCompany, VehicleColor
+from .models import Vehicle, VehicleBrand, VehicleModel, InsuranceCompany, VehicleColor, VehicleType, Service
 from .serializers import (
     VehicleSerializer, VehicleBrandSerializer, VehicleModelSerializer,
-    InsuranceCompanySerializer, VehicleColorSerializer
+    InsuranceCompanySerializer, VehicleColorSerializer, VehicleTypeSerializer, ServiceSerializer
 )
 
 class VehicleBrandViewSet(viewsets.ModelViewSet):
@@ -34,4 +34,15 @@ class VehicleColorViewSet(viewsets.ModelViewSet):
     module_name = 'Masters'
     queryset = VehicleColor.objects.all().order_by('name')
     serializer_class = VehicleColorSerializer
+    permission_classes = [IsAdminOrOwner]
+class VehicleTypeViewSet(viewsets.ModelViewSet):
+    module_name = 'Masters'
+    queryset = VehicleType.objects.all().order_by('name')
+    serializer_class = VehicleTypeSerializer
+    permission_classes = [IsAdminOrOwner]
+
+class ServiceViewSet(viewsets.ModelViewSet):
+    module_name = 'Masters'
+    queryset = Service.objects.all().order_by('name')
+    serializer_class = ServiceSerializer
     permission_classes = [IsAdminOrOwner]

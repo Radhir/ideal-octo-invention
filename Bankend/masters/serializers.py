@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Vehicle, VehicleBrand, VehicleModel, VehicleColor, InsuranceCompany
+from .models import Vehicle, VehicleBrand, VehicleModel, VehicleColor, InsuranceCompany, VehicleType, Service
 from customers.models import Customer
 
 class VehicleBrandSerializer(serializers.ModelSerializer):
@@ -59,4 +59,14 @@ class InsuranceCompanySerializer(serializers.ModelSerializer):
 class VehicleColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = VehicleColor
+        fields = '__all__'
+class VehicleTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VehicleType
+        fields = '__all__'
+
+class ServiceSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source='department.name', read_only=True)
+    class Meta:
+        model = Service
         fields = '__all__'

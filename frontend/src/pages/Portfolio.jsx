@@ -26,7 +26,7 @@ const Portfolio = () => {
     const fetchAttendance = async () => {
         try {
             const today = new Date().toISOString().split('T')[0];
-            const res = await api.get(`/hr/api/attendance/?date=${today}`);
+            const res = await api.get(`/api/hr/attendance/?date=${today}`);
             if (res.data.results && res.data.results.length > 0) {
                 setAttendance(res.data.results[0]);
             }
@@ -38,7 +38,7 @@ const Portfolio = () => {
     const handleClockIn = async () => {
         setLoading(true);
         try {
-            const res = await api.post('/hr/api/attendance/clock_in/');
+            const res = await api.post('/api/hr/attendance/clock_in/');
             setAttendance(res.data);
             alert('Clocked In Successfully');
         } catch (err) {
@@ -51,7 +51,7 @@ const Portfolio = () => {
     const handleClockOut = async () => {
         setLoading(true);
         try {
-            const res = await api.post('/hr/api/attendance/clock_out/');
+            const res = await api.post('/api/hr/attendance/clock_out/');
             setAttendance(res.data);
             alert('Clocked Out Successfully');
         } catch (err) {
