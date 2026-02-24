@@ -28,7 +28,7 @@ const WorkshopPortal = () => {
         setLoading(true);
         try {
             const [jobsRes, delayRes, incidentRes] = await Promise.all([
-                api.get('/forms/job-cards/api/jobs/'),
+                api.get('/api/job-cards/api/jobs/'),
                 api.get('/workshop/api/delays/'),
                 api.get('/workshop/api/incidents/')
             ]);

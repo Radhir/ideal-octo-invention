@@ -270,7 +270,7 @@ const ManagementPortal = () => {
                 setLoading(true);
                 const [mgmtRes, hrRes, slaSumRes, slaViolRes] = await Promise.all([
                     api.get('/dashboard/api/management/stats/'),
-                    api.get('/hr/api/employees/'),
+                    api.get('/api/hr/employees/'),
                     api.get('/api/contracts/sla/agreements/summary/'),
                     api.get('/api/contracts/sla/violations/')
                 ]);

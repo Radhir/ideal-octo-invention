@@ -27,7 +27,7 @@ const HRRoster = () => {
     const fetchRoster = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/hr/api/roster/?date=${selectedDate}`);
+            const res = await api.get(`/api/hr/roster/?date=${selectedDate}`);
             setRoster(res.data);
         } catch (err) {
             console.error('Error fetching roster', err);

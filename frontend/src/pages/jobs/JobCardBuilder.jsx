@@ -333,7 +333,7 @@ const JobCardBuilder = () => {
                     selectedServices.map(s => `- ${s.name} (AED ${s.price})`).join('\n')
             };
 
-            const res = await api.post('/forms/job-cards/api/jobs/', payload);
+            const res = await api.post('/api/job-cards/api/jobs/', payload);
             const jobId = res.data.id;
 
             // Upload Photos
@@ -343,7 +343,7 @@ const JobCardBuilder = () => {
                 photoFormData.append('image', data.file);
                 photoFormData.append('panel_name', panel);
                 photoFormData.append('caption', data.comment || `Inspection: ${panel}`);
-                return api.post('/forms/job-cards/api/photos/', photoFormData);
+                return api.post('/api/job-cards/api/photos/', photoFormData);
             });
 
             await Promise.all(photoPromises);
@@ -364,7 +364,7 @@ const JobCardBuilder = () => {
             return;
         }
         try {
-            const res = await api.get(`/forms/job-cards/api/jobs/?q=${formData.vin || formData.phone}`);
+            const res = await api.get(`/api/job-cards/api/jobs/?q=${formData.vin || formData.phone}`);
             setHistory(res.data.filter(j => j.id)); // Ensure we don't show current being built if it existed
             setShowHistory(true);
         } catch (err) {

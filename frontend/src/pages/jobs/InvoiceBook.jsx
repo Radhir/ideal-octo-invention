@@ -26,7 +26,7 @@ const InvoiceBook = () => {
     const fetchInvoicedJobs = async () => {
         setLoading(true);
         try {
-            let url = '/forms/job-cards/api/jobs/?status=INVOICED';
+            let url = '/api/job-cards/api/jobs/?status=INVOICED';
             const params = new URLSearchParams();
             if (searchQuery) params.append('q', searchQuery);
             if (startDate && endDate) {

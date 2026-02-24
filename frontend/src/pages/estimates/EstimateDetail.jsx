@@ -25,7 +25,7 @@ const EstimateDetail = () => {
     const fetchEstimate = async () => {
         try {
             // Estimates are actually Job Cards in the early stages
-            const res = await api.get(`/forms/job-cards/api/jobs/${id}/`);
+            const res = await api.get(`/api/job-cards/api/jobs/${id}/`);
             setEstimate(res.data);
         } catch (err) {
             console.error('Error fetching estimate', err);
@@ -178,7 +178,7 @@ const EstimateDetail = () => {
                                         title="Sign to Accept Quotation"
                                         onSave={async (data) => {
                                             try {
-                                                await api.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
+                                                await api.patch(`/api/job-cards/api/jobs/${id}/`, { signature_data: data });
                                                 setEstimate({ ...estimate, signature_data: data });
                                                 alert('Quotation Accepted!');
                                             } catch (err) {

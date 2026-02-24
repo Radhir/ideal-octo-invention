@@ -34,7 +34,7 @@ const AdvisorDailyReport = () => {
             const [leadsRes, bookingsRes, jobsRes] = await Promise.all([
                 api.get('/forms/leads/api/list/').catch(() => ({ data: [] })),
                 api.get('/forms/bookings/api/list/').catch(() => ({ data: [] })),
-                api.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] }))
+                api.get('/api/job-cards/api/jobs/').catch(() => ({ data: [] }))
             ]);
 
             const leadsData = Array.isArray(leadsRes.data) ? leadsRes.data : leadsRes.data.results || [];

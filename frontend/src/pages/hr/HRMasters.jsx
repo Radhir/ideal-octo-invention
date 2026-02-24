@@ -14,13 +14,13 @@ const HRMasters = () => {
     const masters = {
         marital: {
             title: 'Marital Status Registry',
-            endpoint: '/hr/api/marital-statuses/',
+            endpoint: '/api/hr/marital-statuses/',
             icon: Heart,
             description: 'Define official marital categories for employee records.'
         },
         deduction: {
             title: 'Deduction Type Registry',
-            endpoint: '/hr/api/deduction-types/',
+            endpoint: '/api/hr/deduction-types/',
             icon: ShieldAlert,
             description: 'Define standardized categories for salary deductions (e.g. Fines, Advances).'
         },

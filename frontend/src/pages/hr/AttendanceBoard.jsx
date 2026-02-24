@@ -20,7 +20,7 @@ const AttendanceBoard = () => {
 
     const fetchInitialData = async () => {
         try {
-            const empRes = await api.get('/hr/api/employees/');
+            const empRes = await api.get('/api/hr/employees/');
             setEmployees(empRes.data);
         } catch (err) {
             console.error('Error fetching employees', err);
@@ -31,11 +31,11 @@ const AttendanceBoard = () => {
 
     const fetchAttendance = async () => {
         try {
-            const res = await api.get(`/forms/attendance/api/records/?date=${selectedDate}`);
+            const res = await api.get(`/api/attendance/records/?date=${selectedDate}`);
             setLogs(res.data);
 
             if (selectedDate === new Date().toISOString().split('T')[0]) {
-                const todayRes = await api.get('/forms/attendance/api/today/');
+                const todayRes = await api.get('/api/attendance/today/');
                 if (todayRes.data?.id) {
                     setStatus(todayRes.data.check_out_time ? 'CHECKED_OUT' : 'CHECKED_IN');
                 } else {
@@ -49,7 +49,7 @@ const AttendanceBoard = () => {
 
     const handleCheckIn = async () => {
         try {
-            await api.post('/forms/attendance/api/check-in/');
+            await api.post('/api/attendance/check-in/');
             setStatus('CHECKED_IN');
             fetchAttendance();
         } catch (err) {
@@ -59,7 +59,7 @@ const AttendanceBoard = () => {
 
     const handleCheckOut = async () => {
         try {
-            await api.post('/forms/attendance/api/check-out/');
+            await api.post('/api/attendance/check-out/');
             setStatus('CHECKED_OUT');
             fetchAttendance();
         } catch (err) {

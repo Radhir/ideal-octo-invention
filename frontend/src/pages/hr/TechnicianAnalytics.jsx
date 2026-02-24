@@ -12,7 +12,7 @@ const TechnicianAnalytics = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const response = await api.get('/hr/api/employees/technician_leaderboard/');
+            const response = await api.get('/api/hr/employees/technician_leaderboard/');
             setLeaderboard(response.data);
         } catch (err) {
             console.error('Leaderboard fetch failed', err);

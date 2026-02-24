@@ -12,7 +12,7 @@ const EmployeeDocumentRegistry = () => {
     useEffect(() => {
         const fetchDocs = async () => {
             try {
-                const res = await api.get('/hr/api/employee-documents/');
+                const res = await api.get('/api/hr/employee-documents/');
                 setDocuments(res.data.results || res.data);
             } catch (err) {
                 console.error("Failed to fetch documents", err);

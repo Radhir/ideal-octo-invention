@@ -24,7 +24,7 @@ const EmployeeDashboard = () => {
 
     const fetchTodayAttendance = async () => {
         try {
-            const res = await api.get('/forms/attendance/api/today/');
+            const res = await api.get('/api/attendance/today/');
             setAttendance(res.data);
         } catch (err) {
             // No record for today - that's fine
@@ -35,7 +35,7 @@ const EmployeeDashboard = () => {
     const handleClockIn = async () => {
         setLoading(true);
         try {
-            const res = await api.post('/forms/attendance/api/check-in/');
+            const res = await api.post('/api/attendance/check-in/');
             setAttendance(res.data.data || res.data);
         } catch (err) {
             alert(err.response?.data?.error || 'Clock in failed');
@@ -46,7 +46,7 @@ const EmployeeDashboard = () => {
     const handleClockOut = async () => {
         setLoading(true);
         try {
-            const res = await api.post('/forms/attendance/api/check-out/');
+            const res = await api.post('/api/attendance/check-out/');
             setAttendance(res.data.data || res.data);
         } catch (err) {
             alert(err.response?.data?.error || 'Clock out failed');

@@ -185,7 +185,7 @@ const SalesPortal = () => {
                 setLoading(true);
                 const [leadsRes, customersRes] = await Promise.all([
                     api.get('/forms/leads/api/list/'),
-                    api.get('/customers/api/')
+                    api.get('/api/customers/')
                 ]);
                 const leadsData = leadsRes.data.results || leadsRes.data || [];
                 const customersData = customersRes.data.results || customersRes.data || [];

@@ -22,7 +22,7 @@ const HRRules = () => {
     const fetchRules = async () => {
         try {
             setLoading(true);
-            const res = await api.get('/hr/api/rules/');
+            const res = await api.get('/api/hr/rules/');
             // Transform backend data to match UI expectations
             const transformed = res.data.map(r => ({
                 id: r.id,
@@ -45,7 +45,7 @@ const HRRules = () => {
     const deleteRule = async (id) => {
         if (!window.confirm("Are you sure you want to decommission this regulation?")) return;
         try {
-            await api.delete(`/hr/api/rules/${id}/`);
+            await api.delete(`/api/hr/rules/${id}/`);
             fetchRules();
         } catch (err) {
             console.error('Error deleting rule', err);

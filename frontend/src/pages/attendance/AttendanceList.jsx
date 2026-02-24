@@ -30,7 +30,7 @@ const AttendanceList = () => {
         setLoading(true);
         try {
             // Fetch roster for today (simulated)
-            const rostersRes = await api.get('/hr/api/roster/');
+            const rostersRes = await api.get('/api/hr/roster/');
             // Find roster for today or use a default 10-hour shift
             const todayStr = new Date().toISOString().split('T')[0];
             const myRoster = rostersRes.data.length > 0 ? rostersRes.data[0] : {
@@ -41,7 +41,7 @@ const AttendanceList = () => {
             setRoster(myRoster);
 
             // Fetch current attendance
-            const attendRes = await api.get('/forms/attendance/api/records/');
+            const attendRes = await api.get('/api/attendance/records/');
             const todayAttend = attendRes.data.find(a => a.date === todayStr);
             setAttendance(todayAttend);
             setAllLogs(attendRes.data);
@@ -79,7 +79,7 @@ const AttendanceList = () => {
 
     const handleClockIn = async () => {
         try {
-            const res = await api.post('/forms/attendance/api/check-in/');
+            const res = await api.post('/api/attendance/check-in/');
             setAttendance(res.data.data || res.data);
             if (res.data.data?.check_in_time || res.data.check_in_time) {
                 startTimer(res.data.data?.check_in_time || res.data.check_in_time);
@@ -93,7 +93,7 @@ const AttendanceList = () => {
 
     const handleClockOut = async () => {
         try {
-            const res = await api.post('/forms/attendance/api/check-out/');
+            const res = await api.post('/api/attendance/check-out/');
             setAttendance(res.data.data || res.data);
             clearInterval(timerRef.current);
             fetchInitialData();

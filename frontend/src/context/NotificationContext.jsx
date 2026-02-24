@@ -14,7 +14,7 @@ export const NotificationProvider = ({ children }) => {
         if (!user) return;
         setLoading(true);
         try {
-            const res = await api.get('/hr/api/notifications/');
+            const res = await api.get('/api/hr/notifications/');
             setNotifications(res.data);
             setUnreadCount(res.data.filter(n => !n.is_read).length);
         } catch (err) {
@@ -33,7 +33,7 @@ export const NotificationProvider = ({ children }) => {
 
     const markAsRead = useCallback(async (id) => {
         try {
-            await api.post(`/hr/api/notifications/${id}/mark_as_read/`);
+            await api.post(`/api/hr/notifications/${id}/mark_as_read/`);
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
             setUnreadCount(prev => Math.max(0, prev - 1));
         } catch (err) {
@@ -43,7 +43,7 @@ export const NotificationProvider = ({ children }) => {
 
     const markAllAsRead = useCallback(async () => {
         try {
-            await api.post('/hr/api/notifications/mark_all_as_read/');
+            await api.post('/api/hr/notifications/mark_all_as_read/');
             setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
             setUnreadCount(0);
         } catch (err) {

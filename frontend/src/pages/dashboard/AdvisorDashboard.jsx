@@ -39,7 +39,7 @@ const AdvisorDashboard = () => {
             const [leadsRes, bookingsRes, jobsRes] = await Promise.all([
                 api.get('/forms/leads/api/list/'),
                 api.get('/forms/bookings/api/list/'),
-                api.get('/forms/job-cards/api/jobs/')
+                api.get('/api/job-cards/api/jobs/')
             ]);
 
             setStats({

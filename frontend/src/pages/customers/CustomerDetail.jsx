@@ -29,8 +29,8 @@ const CustomerDetail = () => {
             try {
                 setLoading(true);
                 const [custRes, jobsRes] = await Promise.all([
-                    api.get(`/customers/api/${id}/`),
-                    api.get(`/forms/job-cards/api/jobs/?customer_id=${id}`)
+                    api.get(`/api/customers/${id}/`),
+                    api.get(`/api/job-cards/api/jobs/?customer_id=${id}`)
                 ]);
                 setCustomer(custRes.data);
                 setJobs(jobsRes.data.results || jobsRes.data || []);

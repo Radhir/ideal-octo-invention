@@ -21,7 +21,7 @@ const BackgroundCarousel = () => {
             await new Promise(r => setTimeout(r, 1500));
             try {
                 // Reduced limit from 8 to 3 for faster initial load
-                const response = await fetch('/forms/job-cards/api/photos/random_backgrounds/?limit=3');
+                const response = await fetch('/api/job-cards/api/photos/random_backgrounds/?limit=3');
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.length > 0) {

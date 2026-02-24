@@ -32,7 +32,7 @@ const EmployeeDirectory = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await api.get('/hr/api/employees/');
+            const res = await api.get('/api/hr/employees/');
             setEmployees(res.data);
         } catch (err) {
             console.error('Error fetching employees', err);

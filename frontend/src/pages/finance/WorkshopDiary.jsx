@@ -47,7 +47,7 @@ const WorkshopDiary = () => {
             try {
                 const [usersRes, branchesRes] = await Promise.all([
                     api.get('/api/auth/users/').catch(() => ({ data: [] })),
-                    api.get('/api/locations/branches/').catch(() => ({ data: [] })) // Ensure this endpoint is active
+                    api.get('/api/locations/branches/').catch(() => ({ data: [] }))
                 ]);
 
                 const users = Array.isArray(usersRes.data) ? usersRes.data : (usersRes.data.results || []);
@@ -84,7 +84,7 @@ const WorkshopDiary = () => {
                 search: filters.search
             }).toString();
 
-            const res = await api.get(`/reports/api/workshop-diary/?${query}`);
+            const res = await api.get(`/api/reports/api/workshop-diary/?${query}`);
             setEntries(res.data.entries);
             setSummary(res.data.summary);
         } catch (err) {

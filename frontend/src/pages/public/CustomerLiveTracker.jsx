@@ -29,7 +29,7 @@ const CustomerLiveTracker = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`/forms/job-cards/api/portal/${token}/`);
+                const response = await axios.get(`/api/job-cards/api/portal/${token}/`);
                 setData(response.data);
                 setLoading(false);
             } catch (err) {

@@ -36,7 +36,7 @@ const JobReport = () => {
 
     const fetchJobs = async () => {
         try {
-            const res = await api.get('/forms/job-cards/api/jobs/');
+            const res = await api.get('/api/job-cards/api/jobs/');
             setJobs(Array.isArray(res.data) ? res.data : res.data.results || []);
             setLoading(false);
         } catch (err) {

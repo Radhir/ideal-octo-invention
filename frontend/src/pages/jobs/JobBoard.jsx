@@ -46,7 +46,7 @@ const JobBoard = () => {
 
     const fetchJobs = async () => {
         try {
-            let url = '/forms/job-cards/api/jobs/';
+            let url = '/api/job-cards/api/jobs/';
             const params = new URLSearchParams();
             if (searchQuery) params.append('q', searchQuery);
             if (startDate && endDate) {
@@ -66,7 +66,7 @@ const JobBoard = () => {
 
     const advanceJob = async (jobId) => {
         try {
-            await api.post(`/forms/job-cards/api/jobs/${jobId}/advance_status/`);
+            await api.post(`/api/job-cards/api/jobs/${jobId}/advance_status/`);
             fetchJobs();
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to advance workflow');

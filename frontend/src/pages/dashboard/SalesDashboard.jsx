@@ -42,7 +42,7 @@ const SalesDashboard = () => {
         try {
             const [leadsRes, jobsRes] = await Promise.all([
                 api.get('/forms/leads/api/list/'),
-                api.get('/forms/job-cards/api/jobs/')
+                api.get('/api/job-cards/api/jobs/')
             ]);
 
             const leads = leadsRes.data;

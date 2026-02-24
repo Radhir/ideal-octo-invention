@@ -36,7 +36,7 @@ const OperationsDashboard = () => {
     const fetchOperationsData = async () => {
         try {
             // In production, these would be dedicated aggregate endpoints
-            const jobsRes = await api.get('/forms/job-cards/api/jobs/');
+            const jobsRes = await api.get('/api/job-cards/api/jobs/');
 
             const jobs = jobsRes.data;
             const wipJobs = jobs.filter(j => j.status !== 'CLOSED' && j.status !== 'DELIVERED');

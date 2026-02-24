@@ -164,7 +164,7 @@ const JobCreate = () => {
             if (formData.lead_id) submissionData.lead_id = formData.lead_id;
             if (formData.booking_id) submissionData.booking_id = formData.booking_id;
 
-            const res = await api.post('/forms/job-cards/api/jobs/', submissionData);
+            const res = await api.post('/api/job-cards/api/jobs/', submissionData);
             alert('Job Card Created successfully!');
             navigate(`/service-advisor/form?jobId=${res.data.id}`);
         } catch (err) {

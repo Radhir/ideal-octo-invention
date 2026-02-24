@@ -34,7 +34,7 @@ const PettyCashVoucher = () => {
         try {
             const [accRes, branchRes] = await Promise.all([
                 api.get('/finance/api/accounts/'),
-                api.get('/hr/api/branches/')
+                api.get('/api/hr/branches/')
             ]);
             setAccounts(accRes.data.results || accRes.data);
             setBranches(branchRes.data.results || branchRes.data);

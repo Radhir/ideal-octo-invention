@@ -26,7 +26,7 @@ const ServiceAdvisorForm = () => {
     const fetchJobData = useCallback(async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/forms/job-cards/api/jobs/${jobId}/`);
+            const res = await api.get(`/api/job-cards/api/jobs/${jobId}/`);
             const job = res.data;
             setVehicleData({
                 name: job.customer_name || '',

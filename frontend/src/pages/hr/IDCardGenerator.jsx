@@ -38,7 +38,7 @@ const IDCardGenerator = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await api.get('/hr/api/employees/');
+            const res = await api.get('/api/hr/employees/');
             setEmployees(res.data);
             setLoading(false);
         } catch (err) {

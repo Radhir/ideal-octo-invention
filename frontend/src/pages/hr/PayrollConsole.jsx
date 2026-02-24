@@ -94,7 +94,7 @@ const PayrollConsole = () => {
     const fetchSlips = async () => {
         setLoading(true);
         try {
-            const res = await api.get(`/hr/api/salary-slips/?month=${selectedMonth}`);
+            const res = await api.get(`/api/hr/salary-slips/?month=${selectedMonth}`);
             setSlips(res.data.results || res.data);
         } catch (err) {
             console.error('Error fetching slips', err);
@@ -108,7 +108,7 @@ const PayrollConsole = () => {
 
         setLoading(true);
         try {
-            await api.post('/hr/api/payroll/generate_payroll_cycle/', { month: selectedMonth });
+            await api.post('/api/hr/payroll/generate_payroll_cycle/', { month: selectedMonth });
             fetchSlips();
         } catch (err) {
             console.error('Payroll generation failed', err);
@@ -121,7 +121,7 @@ const PayrollConsole = () => {
     const markAsPaid = async (id) => {
         if (!window.confirm("Mark as PAID and record ledger voucher?")) return;
         try {
-            await api.patch(`/hr/api/salary-slips/${id}/`, { payment_status: 'PAID' });
+            await api.patch(`/api/hr/salary-slips/${id}/`, { payment_status: 'PAID' });
             fetchSlips();
         } catch (err) {
             console.error('Payout failed', err);

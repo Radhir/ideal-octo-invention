@@ -27,7 +27,7 @@ const HRReports = () => {
 
     const fetchDepartments = async () => {
         try {
-            const res = await api.get('/hr/api/departments/');
+            const res = await api.get('/api/hr/departments/');
             setDepartments(res.data);
         } catch (err) {
             console.error(err);

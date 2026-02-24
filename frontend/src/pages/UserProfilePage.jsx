@@ -59,7 +59,7 @@ const UserProfilePage = () => {
             });
             if (photo) formData.append('profile_image', photo);
 
-            await api.patch('/hr/api/employees/me/profile_update/', formData, {
+            await api.patch('/api/hr/employees/me/profile_update/', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 

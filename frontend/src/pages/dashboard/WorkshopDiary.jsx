@@ -136,7 +136,7 @@ const ActiveOperations = () => {
 
     const fetchPending = async () => {
         try {
-            const res = await api.get('/forms/job-cards/api/jobs/');
+            const res = await api.get('/api/job-cards/api/jobs/');
             setPendingJobs(res.data.filter(j => !j.is_released));
         } catch (err) {
             console.error('Error fetching pending jobs', err);
@@ -152,7 +152,7 @@ const ActiveOperations = () => {
     const releaseJob = async (jobId) => {
         if (!confirm('Authorize this job card for workshop scheduling?')) return;
         try {
-            await api.post(`/forms/job-cards/api/jobs/${jobId}/release/`);
+            await api.post(`/api/job-cards/api/jobs/${jobId}/release/`);
             fetchPending();
         } catch (err) {
             alert('Authorization failed: ' + (err.response?.data?.error || 'Unknown error'));

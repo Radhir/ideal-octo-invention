@@ -27,8 +27,8 @@ const OperationForm = () => {
         const fetchData = async () => {
             try {
                 const [empRes, jcRes] = await Promise.all([
-                    api.get('/hr/api/employees/'),
-                    api.get('/forms/job-cards/api/jobs/')
+                    api.get('/api/hr/employees/'),
+                    api.get('/api/job-cards/api/jobs/')
                 ]);
                 setEmployees(empRes.data);
                 setJobCards(jcRes.data);

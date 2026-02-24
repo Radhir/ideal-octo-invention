@@ -18,7 +18,7 @@ const TeamManagement = () => {
 
     const fetchTeams = async () => {
         try {
-            const res = await api.get('/hr/api/teams/');
+            const res = await api.get('/api/hr/teams/');
             setTeams(res.data);
         } catch (err) {
             console.error('Error fetching teams', err);
@@ -29,7 +29,7 @@ const TeamManagement = () => {
 
     const fetchEmployees = async () => {
         try {
-            const res = await api.get('/hr/api/employees/');
+            const res = await api.get('/api/hr/employees/');
             setEmployees(res.data);
         } catch (err) {
             console.error('Error fetching employees', err);
@@ -46,9 +46,9 @@ const TeamManagement = () => {
                 members: form.members
             };
             if (editingId) {
-                await api.put(`/hr/api/teams/${editingId}/`, payload);
+                await api.put(`/api/hr/teams/${editingId}/`, payload);
             } else {
-                await api.post('/hr/api/teams/', payload);
+                await api.post('/api/hr/teams/', payload);
             }
             setShowForm(false);
             setForm({ name: '', description: '', leader: '', members: [] });
@@ -76,7 +76,7 @@ const TeamManagement = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Delete this team?')) return;
         try {
-            await api.delete(`/hr/api/teams/${id}/`);
+            await api.delete(`/api/hr/teams/${id}/`);
             fetchTeams();
         } catch (err) {
             console.error('Error deleting team', err);
@@ -85,7 +85,7 @@ const TeamManagement = () => {
 
     const handleAddMember = async (teamId, employeeId) => {
         try {
-            await api.post(`/hr/api/teams/${teamId}/add_member/`, { employee_id: employeeId });
+            await api.post(`/api/hr/teams/${teamId}/add_member/`, { employee_id: employeeId });
             fetchTeams();
         } catch (err) {
             console.error('Error adding member', err);
@@ -94,7 +94,7 @@ const TeamManagement = () => {
 
     const handleRemoveMember = async (teamId, employeeId) => {
         try {
-            await api.post(`/hr/api/teams/${teamId}/remove_member/`, { employee_id: employeeId });
+            await api.post(`/api/hr/teams/${teamId}/remove_member/`, { employee_id: employeeId });
             fetchTeams();
         } catch (err) {
             console.error('Error removing member', err);

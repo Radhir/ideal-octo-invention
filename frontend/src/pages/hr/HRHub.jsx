@@ -19,9 +19,9 @@ const HRHub = () => {
         setLoading(true);
         try {
             const [slipRes, docRes, warnRes] = await Promise.all([
-                api.get('/hr/api/salary-slips/'),
-                api.get('/hr/api/employee-documents/'),
-                api.get('/hr/api/warning-letters/')
+                api.get('/api/hr/salary-slips/'),
+                api.get('/api/hr/employee-documents/'),
+                api.get('/api/hr/warning-letters/')
             ]);
             setSlips(slipRes.data);
             setDocuments(docRes.data);

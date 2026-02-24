@@ -47,7 +47,7 @@ const AccessManagement = () => {
     const fetchPermissions = async (employeeId) => {
         setLoadingPermissions(true);
         try {
-            const res = await api.get(`/hr/api/permissions/?employee=${employeeId}`);
+            const res = await api.get(`/api/hr/permissions/?employee=${employeeId}`);
             const existingPermissions = res.data.results || res.data;
 
             // Map standard modules to existing permissions or create default structure
@@ -110,12 +110,12 @@ const AccessManagement = () => {
             const promises = permissions.map(perm => {
                 // If it has an ID, it's an existing record -> PUT
                 if (perm.id) {
-                    return api.put(`/hr/api/permissions/${perm.id}/`, perm);
+                    return api.put(`/api/hr/permissions/${perm.id}/`, perm);
                 }
                 // If no ID, but has any true permission -> POST
                 // Optimization: Don't save if all false and new (optional, but cleaner db)
                 else if (perm.can_view || perm.can_create || perm.can_edit || perm.can_delete) {
-                    return api.post(`/hr/api/permissions/`, {
+                    return api.post(`/api/hr/permissions/`, {
                         ...perm,
                         employee: selectedUser.hr_profile.id
                     });

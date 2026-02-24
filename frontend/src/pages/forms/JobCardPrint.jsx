@@ -17,7 +17,7 @@ const JobCardPrint = ({ jobCardData: propData }) => {
 
     const fetchJobCard = async () => {
         try {
-            const res = await api.get(`/forms/job-cards/api/jobs/${id}/`);
+            const res = await api.get(`/api/job-cards/api/jobs/${id}/`);
             const jc = res.data;
             setData({
                 id: jc.job_card_number || `JC-${jc.id}`,

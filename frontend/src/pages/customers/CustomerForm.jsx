@@ -43,7 +43,7 @@ const CustomerForm = () => {
 
     const fetchCustomer = async () => {
         try {
-            const res = await api.get(`/customers/api/${id}/`);
+            const res = await api.get(`/api/customers/${id}/`);
             setFormData(res.data);
         } catch (err) {
             console.error("Failed to fetch customer", err);
@@ -57,9 +57,9 @@ const CustomerForm = () => {
         setSaving(true);
         try {
             if (isEdit) {
-                await api.put(`/customers/api/${id}/`, formData);
+                await api.put(`/api/customers/${id}/`, formData);
             } else {
-                await api.post('/customers/api/', formData);
+                await api.post('/api/customers/', formData);
             }
             navigate('/customers');
         } catch (err) {

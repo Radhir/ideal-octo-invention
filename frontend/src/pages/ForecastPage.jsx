@@ -20,7 +20,7 @@ const ForecastPage = () => {
     const fetchData = async () => {
         try {
             const [jobsRes, invoicesRes, bookingsRes] = await Promise.all([
-                api.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
+                api.get('/api/job-cards/api/jobs/').catch(() => ({ data: [] })),
                 api.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
                 api.get('/forms/bookings/api/list/').catch(() => ({ data: [] })),
             ]);

@@ -39,7 +39,7 @@ const ProcurementManager = () => {
 
     const fetchForecasts = async () => {
         try {
-            const res = await api.get('/stock/api/items/forecast_stock/');
+            const res = await api.get('/api/stock/api/items/forecast_stock/');
             setForecasts(res.data.forecasts.filter(f => f.status !== 'OK'));
             setLoading(false);
         } catch (err) {

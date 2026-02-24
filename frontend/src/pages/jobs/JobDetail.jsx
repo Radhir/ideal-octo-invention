@@ -35,7 +35,7 @@ const JobDetail = () => {
 
     const fetchJob = async () => {
         try {
-            const res = await api.get(`/forms/job-cards/api/jobs/${id}/`);
+            const res = await api.get(`/api/job-cards/api/jobs/${id}/`);
             setJob(res.data);
         } catch (err) {
             console.error('Error fetching job', err);
@@ -46,7 +46,7 @@ const JobDetail = () => {
 
     const fetchHistory = async () => {
         try {
-            const res = await api.get(`/forms/job-cards/api/jobs/?vin=${job.vin}`);
+            const res = await api.get(`/api/job-cards/api/jobs/?vin=${job.vin}`);
             setHistory(res.data.filter(h => h.id !== job.id));
             setShowHistory(true);
         } catch (err) {
@@ -56,7 +56,7 @@ const JobDetail = () => {
 
     const advanceWorkflow = async () => {
         try {
-            const res = await api.post(`/forms/job-cards/api/jobs/${id}/advance_status/`);
+            const res = await api.post(`/api/job-cards/api/jobs/${id}/advance_status/`);
             await fetchJob();
         } catch (err) {
             alert(err.response?.data?.error || 'Failed to advance workflow');
@@ -65,7 +65,7 @@ const JobDetail = () => {
 
     const generateInvoice = async () => {
         try {
-            const res = await api.post(`/forms/job-cards/api/jobs/${id}/create_invoice/`);
+            const res = await api.post(`/api/job-cards/api/jobs/${id}/create_invoice/`);
             alert(`Invoice ${res.data.invoice_number} generated!`);
             await fetchJob();
         } catch (err) {
@@ -308,7 +308,7 @@ const JobDetail = () => {
                                 <SignaturePad
                                     onSave={async (data) => {
                                         try {
-                                            await api.patch(`/forms/job-cards/api/jobs/${id}/`, { signature_data: data });
+                                            await api.patch(`/api/job-cards/api/jobs/${id}/`, { signature_data: data });
                                             setJob({ ...job, signature_data: data });
                                         } catch (err) {
                                             alert('Authentication failure');

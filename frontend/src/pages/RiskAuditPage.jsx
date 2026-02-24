@@ -24,7 +24,7 @@ const RiskAuditPage = () => {
     const fetchAuditData = async () => {
         try {
             const [jobsRes, invoicesRes] = await Promise.all([
-                api.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
+                api.get('/api/job-cards/api/jobs/').catch(() => ({ data: [] })),
                 api.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
             ]);
             setJobs(Array.isArray(jobsRes.data) ? jobsRes.data : jobsRes.data.results || []);

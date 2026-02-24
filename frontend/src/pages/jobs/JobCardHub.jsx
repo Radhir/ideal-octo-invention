@@ -26,7 +26,7 @@ const JobCardHub = () => {
     const fetchJobs = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/forms/job-cards/api/jobs/');
+            const res = await api.get('/api/job-cards/api/jobs/');
             setJobs(res.data);
         } catch (err) {
             console.error('Error fetching jobs', err);

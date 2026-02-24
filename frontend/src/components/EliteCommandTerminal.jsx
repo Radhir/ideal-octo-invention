@@ -60,7 +60,7 @@ const EliteCommandTerminal = ({ isOpen, onClose }) => {
             }
         } else if (cleanCmd === 'stock') {
             try {
-                const res = await fetch('/stock/api/items/forecast_stock/');
+                const res = await fetch('/api/stock/api/items/forecast_stock/');
                 const data = await res.json();
                 response = { type: 'info', text: `INVENTORY HEALTH: ${data.critical_count} CRITICAL ITEMS. RECOMMENDED: ${data.recommendations.join(', ')}` };
             } catch (e) {

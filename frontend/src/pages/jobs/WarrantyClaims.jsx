@@ -22,7 +22,7 @@ const WarrantyClaims = () => {
     const fetchClaims = async () => {
         setLoading(true);
         try {
-            const res = await api.get('/forms/job-cards/api/warranty-claims/');
+            const res = await api.get('/api/job-cards/api/warranty-claims/');
             setClaims(res.data);
         } catch (err) {
             console.error('Error fetching claims', err);
@@ -33,7 +33,7 @@ const WarrantyClaims = () => {
 
     const handleStatusUpdate = async (id, newStatus) => {
         try {
-            await api.patch(`/forms/job-cards/api/warranty-claims/${id}/`, { status: newStatus });
+            await api.patch(`/api/job-cards/api/warranty-claims/${id}/`, { status: newStatus });
             fetchClaims();
         } catch (err) {
             console.error('Error updating claim status', err);

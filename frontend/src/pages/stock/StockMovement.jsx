@@ -38,7 +38,7 @@ const StockMovementEntry = () => {
         try {
             const [itemRes, jobRes] = await Promise.all([
                 api.get('/forms/stock/api/items/'),
-                api.get('/forms/job-cards/api/jobs/')
+                api.get('/api/job-cards/api/jobs/')
             ]);
             setItems(itemRes.data);
             setJobs(jobRes.data);

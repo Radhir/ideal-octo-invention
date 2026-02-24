@@ -34,8 +34,8 @@ const DepartmentMaster = () => {
     const fetchInitialData = async () => {
         try {
             const [deptRes, empRes, accRes] = await Promise.all([
-                api.get('/hr/api/departments/'),
-                api.get('/hr/api/employees/'),
+                api.get('/api/hr/departments/'),
+                api.get('/api/hr/employees/'),
                 api.get('/finance/api/accounts/')
             ]);
             setDepartments(deptRes.data.results || deptRes.data);
@@ -50,7 +50,7 @@ const DepartmentMaster = () => {
 
     const fetchDepartments = async () => {
         try {
-            const res = await api.get('/hr/api/departments/');
+            const res = await api.get('/api/hr/departments/');
             setDepartments(res.data.results || res.data);
         } catch (err) {
             console.error("Failed to fetch departments", err);
@@ -94,9 +94,9 @@ const DepartmentMaster = () => {
             };
 
             if (isEdit) {
-                await api.put(`/hr/api/departments/${editId}/`, payload);
+                await api.put(`/api/hr/departments/${editId}/`, payload);
             } else {
-                await api.post('/hr/api/departments/', payload);
+                await api.post('/api/hr/departments/', payload);
             }
             fetchDepartments();
             setShowForm(false);

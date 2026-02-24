@@ -29,7 +29,7 @@ const MissionControl = () => {
     const fetchLiveData = async () => {
         try {
             const [jobsRes, bookingsRes, invoicesRes] = await Promise.all([
-                api.get('/forms/job-cards/api/jobs/').catch(() => ({ data: [] })),
+                api.get('/api/job-cards/api/jobs/').catch(() => ({ data: [] })),
                 api.get('/forms/bookings/api/list/').catch(() => ({ data: [] })),
                 api.get('/forms/invoices/api/list/').catch(() => ({ data: [] })),
             ]);

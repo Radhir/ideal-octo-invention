@@ -54,7 +54,7 @@ const EmployeeEdit = () => {
     useEffect(() => {
         const fetchEmployee = async () => {
             try {
-                const res = await api.get(`/hr/api/employees/${id}/`);
+                const res = await api.get(`/api/hr/employees/${id}/`);
                 const data = res.data;
                 // Map API keys to form keys if needed, but since they match in Registration mostly:
                 setFormData({
@@ -98,7 +98,7 @@ const EmployeeEdit = () => {
         }
 
         try {
-            await api.patch(`/hr/api/employees/${id}/`, submitData, {
+            await api.patch(`/api/hr/employees/${id}/`, submitData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             navigate('/hr');

@@ -57,7 +57,7 @@ const EmployeeRegistration = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await api.post('/hr/api/employees/', formData);
+            await api.post('/api/hr/employees/', formData);
             // alert('Personnel Node Secured in Master Database.'); // Removing alert for more premium feel
             navigate('/hr');
         } catch (err) {
