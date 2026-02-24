@@ -89,6 +89,8 @@ const Sidebar = ({ isOpen }) => {
                 { icon: CreditCard, label: 'BILLING JOB CARD', path: '/invoices/create' },
                 { icon: Package, label: 'IMAGES UPLOAD', path: '/job-cards/media' },
                 { icon: ShieldCheck, label: 'GATE PASS', path: '/construction' },
+                { icon: Car, label: 'VEHICLE MASTER', path: '/masters/vehicles' },
+                { icon: Settings, label: 'SERVICE MASTER', path: '/masters/services' },
             ]
         },
         {

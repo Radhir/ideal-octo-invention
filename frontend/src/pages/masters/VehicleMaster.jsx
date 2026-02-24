@@ -1,266 +1,214 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-    Car, Search, Filter, Download, MoreVertical,
-    Calendar, Hash, User, Activity, Shield, ArrowRight
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/axios';
+import { Car, Tag, Layers, Plus, Trash2, Edit2, Search, ChevronRight } from 'lucide-react';
 import {
-    PortfolioPage,
-    PortfolioTitle,
-    PortfolioCard,
-    PortfolioGrid,
-    PortfolioStats,
-    PortfolioInput,
-    PortfolioSelect
+    PortfolioPage, PortfolioTitle, PortfolioButton,
+    PortfolioStats, PortfolioGrid, PortfolioCard
 } from '../../components/PortfolioComponents';
 
 const VehicleMaster = () => {
-    const navigate = useNavigate();
-    const [vehicles, setVehicles] = useState([]);
+    const [brands, setBrands] = useState([]);
+    const [models, setModels] = useState([]);
+    const [types, setTypes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [filterBrand, setFilterBrand] = useState('All');
+    const [activeTab, setActiveTab] = useState('brands');
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        const fetchVehicles = async () => {
-            try {
-                // Fetch from new registry first
-                const [registryRes, jobRes] = await Promise.all([
-                    api.get('/forms/masters/api/vehicles/'),
-                    api.get('/forms/job-cards/api/jobs/')
-                ]);
-
-                const registryVehicles = registryRes.data;
-                const jobCards = jobRes.data;
-
-                const vehicleMap = new Map();
-
-                // 1. Populate from real registry
-                registryVehicles.forEach(v => {
-                    vehicleMap.set(v.vin || v.registration_number || `REG-${v.id}`, {
-                        ...v,
-                        registration: v.registration_number,
-                        lastKms: 0,
-                        lastService: v.created_at,
-                        customer: v.customer_name || 'REGISTERED',
-                        jobCount: 0,
-                        isFromRegistry: true
-                    });
-                });
-
-                // 2. Supplement/Update with Job Card data
-                jobCards.forEach(job => {
-                    const vehicleId = job.vin || job.registration_number || `V-${job.id}`;
-                    if (!vehicleMap.has(vehicleId)) {
-                        vehicleMap.set(vehicleId, {
-                            id: vehicleId,
-                            vin: job.vin,
-                            registration: job.registration_number,
-                            plate_emirate: job.plate_emirate,
-                            plate_code: job.plate_code,
-                            brand: job.brand,
-                            model: job.model,
-                            year: job.year,
-                            color: job.color,
-                            lastKms: job.kilometers,
-                            lastService: job.date,
-                            customer: job.customer_name,
-                            jobCount: 1
-                        });
-                    } else {
-                        const existing = vehicleMap.get(vehicleId);
-                        existing.jobCount += 1;
-                        if (new Date(job.date) > new Date(existing.lastService)) {
-                            existing.lastService = job.date;
-                            existing.lastKms = job.kilometers;
-                            existing.customer = job.customer_name;
-                        }
-                    }
-                });
-
-                setVehicles(Array.from(vehicleMap.values()));
-            } catch (error) {
-                console.error('Error fetching vehicle master data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchVehicles();
+        fetchData();
     }, []);
 
-    const brands = ['All', ...new Set(vehicles.map(v => v.brand).filter(Boolean))];
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [bRes, mRes, tRes] = await Promise.all([
+                api.get('/api/masters/brands/'),
+                api.get('/api/masters/models/'),
+                api.get('/api/masters/types/')
+            ]);
+            setBrands(bRes.data);
+            setModels(mRes.data);
+            setTypes(tRes.data);
+        } catch (err) {
+            console.error('Error fetching master data', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const filteredVehicles = vehicles.filter(v => {
-        const matchesSearch =
-            (v.brand?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (v.model?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (v.registration?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (v.vin?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-            (v.customer?.toLowerCase() || '').includes(searchTerm.toLowerCase());
+    const handleAdd = () => {
+        // Implementation for modal/form to add
+        alert('Form integration in progress...');
+    };
 
-        const matchesBrand = filterBrand === 'All' || v.brand === filterBrand;
-
-        return matchesSearch && matchesBrand;
-    });
-
-    const stats = [
-        { label: 'Total Registry Nodes', value: vehicles.length, color: 'var(--gold)' },
-        { label: 'Active Service Nodes', value: vehicles.reduce((acc, v) => acc + v.jobCount, 0), color: 'var(--blue)' },
-        { label: 'Brands Managed', value: brands.length - 1, color: 'var(--purple)' }
-    ];
+    if (loading) return <PortfolioPage><div style={{ color: 'var(--cream)' }}>DECODING REGISTRY...</div></PortfolioPage>;
 
     return (
-        <PortfolioPage breadcrumb="SYSTEM REGISTRY / VEHICLE MASTER">
-            <PortfolioTitle subtitle="Manage and track every vehicle node across the Elite Shine production ecosystem. High-fidelity registry control for operational excellence.">
-                Vehicle Master
-            </PortfolioTitle>
+        <PortfolioPage breadcrumb="System Master / Vehicle Configuration">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '60px' }}>
+                <PortfolioTitle subtitle="Architectural registry for elite automotive specifications.">
+                    Asset Hierarchy
+                </PortfolioTitle>
+                <PortfolioButton variant="primary" onClick={handleAdd}>
+                    <Plus size={18} /> INITIALIZE NODE
+                </PortfolioButton>
+            </div>
 
-            <PortfolioStats stats={stats} />
-
-            {/* Premium Controls */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '20px', marginBottom: '60px' }}>
-                <PortfolioInput
-                    placeholder="Search by Brand, Model, VIN, registration..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{ background: 'rgba(232, 230, 227, 0.03)', border: '1px solid rgba(232, 230, 227, 0.1)' }}
-                />
-                <PortfolioSelect
-                    value={filterBrand}
-                    onChange={(e) => setFilterBrand(e.target.value)}
-                    style={{ background: 'rgba(232, 230, 227, 0.03)', border: '1px solid rgba(232, 230, 227, 0.1)' }}
+            <div style={tabContainerStyle}>
+                <button
+                    style={activeTab === 'brands' ? activeTabStyle : tabStyle}
+                    onClick={() => setActiveTab('brands')}
                 >
-                    {brands.map(b => <option key={b} value={b}>{b === 'All' ? 'All Brands' : b}</option>)}
-                </PortfolioSelect>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                        onClick={() => navigate('/masters/vehicles/config')}
-                        style={{
-                            flex: 1,
-                            background: 'rgba(232, 230, 227, 0.05)',
-                            color: 'var(--gold)',
-                            border: '1px solid rgba(232, 230, 227, 0.1)',
-                            borderRadius: '10px',
-                            fontWeight: '700',
-                            fontSize: '11px',
-                            letterSpacing: '1px',
-                            textTransform: 'uppercase',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <Layers size={14} /> Config Registry
-                    </button>
-                    <button
-                        onClick={() => navigate('/masters/vehicles/create')}
-                        style={{
-                            flex: 1,
-                            background: 'var(--gold)',
-                            color: '#0a0a0a',
-                            border: 'none',
-                            borderRadius: '10px',
-                            fontWeight: '700',
-                            fontSize: '11px',
-                            letterSpacing: '1px',
-                            textTransform: 'uppercase',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        <Car size={14} /> Add Node
-                    </button>
+                    <Car size={16} /> BRANDS
+                </button>
+                <button
+                    style={activeTab === 'models' ? activeTabStyle : tabStyle}
+                    onClick={() => setActiveTab('models')}
+                >
+                    <Layers size={16} /> MODELS
+                </button>
+                <button
+                    style={activeTab === 'types' ? activeTabStyle : tabStyle}
+                    onClick={() => setActiveTab('types')}
+                >
+                    <Tag size={16} /> TYPES
+                </button>
+            </div>
+
+            <div style={{ marginBottom: '40px' }}>
+                <div style={searchContainerStyle}>
+                    <Search size={18} color="rgba(232, 230, 227, 0.2)" />
+                    <input
+                        type="text"
+                        placeholder="Search Registry..."
+                        style={searchInputStyle}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
             </div>
 
-            {/* List Display */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                <AnimatePresence>
-                    {filteredVehicles.map((vehicle, idx) => (
-                        <motion.div
-                            key={vehicle.id}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: idx * 0.03 }}
-                        >
-                            <PortfolioCard>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', gap: '30px', alignItems: 'center' }}>
-                                        <div style={{
-                                            width: '60px',
-                                            height: '60px',
-                                            borderRadius: '15px',
-                                            background: 'rgba(232, 230, 227, 0.05)',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            border: '1px solid rgba(232, 230, 227, 0.1)'
-                                        }}>
-                                            <Car size={24} color="var(--gold)" strokeWidth={1} />
-                                        </div>
-
-                                        <div>
-                                            <h3 style={{ fontSize: '20px', fontFamily: 'var(--font-serif)', color: 'var(--cream)', marginBottom: '5px' }}>
-                                                {vehicle.brand} {vehicle.model}
-                                            </h3>
-                                            <div style={{ display: 'flex', gap: '15px', fontSize: '12px', color: 'rgba(232, 230, 227, 0.5)', letterSpacing: '1px' }}>
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Hash size={12} /> {vehicle.vin || 'NO VIN'}</span>
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Calendar size={12} /> {vehicle.year}</span>
-                                                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><User size={12} /> {vehicle.customer}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--cream)' }}>{vehicle.registration}</div>
-                                            <div style={{ fontSize: '10px', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '1px', marginTop: '4px' }}>
-                                                {vehicle.plate_emirate} {vehicle.plate_code}
-                                            </div>
-                                        </div>
-
-                                        <div style={{ width: '1px', height: '40px', background: 'rgba(232, 230, 227, 0.1)' }}></div>
-
-                                        <div style={{ textAlign: 'center' }}>
-                                            <div style={{ fontSize: '20px', fontFamily: 'var(--font-serif)', color: 'var(--cream)' }}>{vehicle.jobCount}</div>
-                                            <div style={{ fontSize: '9px', color: 'rgba(232, 230, 227, 0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>Jobs</div>
-                                        </div>
-
-                                        <ArrowRight size={20} color="rgba(232, 230, 227, 0.3)" />
-                                    </div>
-                                </div>
-                            </PortfolioCard>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-
-                {filteredVehicles.length === 0 && !loading && (
-                    <div style={{ textAlign: 'center', padding: '100px 0', color: 'rgba(232, 230, 227, 0.3)' }}>
-                        <Car size={48} style={{ marginBottom: '20px', opacity: 0.2 }} />
-                        <div style={{ fontSize: '18px', fontFamily: 'var(--font-serif)' }}>No neural matches found in registry</div>
+                {activeTab === 'brands' && brands.map(brand => (
+                    <div key={brand.id} style={listItemStyle}>
+                        <div style={iconBoxStyle}><Car size={18} /></div>
+                        <div style={{ flex: 1 }}>
+                            <div style={itemNameStyle}>{brand.name}</div>
+                            <div style={itemSubStyle}>{brand.is_active ? 'ACTIVE STATUS' : 'INACTIVE'}</div>
+                        </div>
+                        <PortfolioButton variant="secondary" style={{ padding: '10px' }}><Edit2 size={14} /></PortfolioButton>
                     </div>
-                )}
-            </div>
+                ))}
 
-            <footer style={{ marginTop: '100px', paddingBottom: '40px', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(232, 230, 227, 0.05)', paddingTop: '40px' }}>
-                <div style={{ fontSize: '11px', color: 'rgba(232, 230, 227, 0.3)', letterSpacing: '2px' }}>
-                    ELITE SHINE OPERATIONAL REGISTRY v4.0
-                </div>
-                <div style={{ display: 'flex', gap: '20px' }}>
-                    <Shield size={16} color="rgba(232, 230, 227, 0.2)" />
-                    <Activity size={16} color="rgba(232, 230, 227, 0.2)" />
-                </div>
-            </footer>
+                {activeTab === 'models' && models.map(model => (
+                    <div key={model.id} style={listItemStyle}>
+                        <div style={iconBoxStyle}><Layers size={18} /></div>
+                        <div style={{ flex: 1 }}>
+                            <div style={itemNameStyle}>{model.name}</div>
+                            <div style={itemSubStyle}>{model.brand_name || 'GENERIC BRAND'}</div>
+                        </div>
+                        <PortfolioButton variant="secondary" style={{ padding: '10px' }}><Edit2 size={14} /></PortfolioButton>
+                    </div>
+                ))}
+
+                {activeTab === 'types' && types.map(type => (
+                    <div key={type.id} style={listItemStyle}>
+                        <div style={iconBoxStyle}><Tag size={18} /></div>
+                        <div style={{ flex: 1 }}>
+                            <div style={itemNameStyle}>{type.name}</div>
+                            <div style={itemSubStyle}>{type.is_active ? 'ACTIVE SPEC' : 'ARCHIVED'}</div>
+                        </div>
+                        <PortfolioButton variant="secondary" style={{ padding: '10px' }}><Edit2 size={14} /></PortfolioButton>
+                    </div>
+                ))}
+            </div>
         </PortfolioPage>
     );
+};
+
+const tabContainerStyle = {
+    display: 'flex',
+    gap: '10px',
+    marginBottom: '40px',
+    borderBottom: '1px solid rgba(232, 230, 227, 0.05)',
+    paddingBottom: '10px'
+};
+
+const tabStyle = {
+    background: 'none',
+    border: 'none',
+    color: 'rgba(232, 230, 227, 0.4)',
+    fontSize: '11px',
+    fontWeight: '900',
+    letterSpacing: '2px',
+    padding: '10px 20px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    transition: 'all 0.3s'
+};
+
+const activeTabStyle = {
+    ...tabStyle,
+    color: 'var(--gold)',
+    borderBottom: '2px solid var(--gold)'
+};
+
+const listItemStyle = {
+    padding: '20px 30px',
+    background: 'rgba(232, 230, 227, 0.01)',
+    border: '1px solid rgba(232, 230, 227, 0.04)',
+    borderRadius: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px'
+};
+
+const iconBoxStyle = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '10px',
+    background: 'rgba(176, 141, 87, 0.05)',
+    border: '1px solid rgba(176, 141, 87, 0.1)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--gold)'
+};
+
+const itemNameStyle = {
+    fontSize: '16px',
+    color: 'var(--cream)',
+    fontFamily: 'var(--font-serif)'
+};
+
+const itemSubStyle = {
+    fontSize: '9px',
+    color: 'rgba(232, 230, 227, 0.2)',
+    fontWeight: '900',
+    letterSpacing: '1px',
+    marginTop: '4px'
+};
+
+const searchContainerStyle = {
+    background: 'rgba(232, 230, 227, 0.02)',
+    border: '1px solid rgba(232, 230, 227, 0.05)',
+    borderRadius: '12px',
+    padding: '0 20px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '15px',
+    height: '45px'
+};
+
+const searchInputStyle = {
+    background: 'none',
+    border: 'none',
+    color: 'var(--cream)',
+    width: '100%',
+    outline: 'none',
+    fontSize: '13px'
 };
 
 export default VehicleMaster;

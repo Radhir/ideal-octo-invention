@@ -64,14 +64,16 @@ const BookingForm = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [empRes, catRes, svcRes] = await Promise.all([
-                    api.get('/hr/api/employees/'),
-                    api.get('/forms/job-cards/api/service-categories/'),
-                    api.get('/forms/job-cards/api/services/')
+                const [empRes, svcRes] = await Promise.all([
+                    api.get('/api/hr/employees/'),
+                    api.get('/api/masters/services/')
                 ]);
                 setEmployees(empRes.data);
-                setCategories(catRes.data);
                 setServices(svcRes.data);
+                // Dynamically derive categories from services if needed, 
+                // or just set a flat list for now.
+                const uniqueCats = [...new Set(svcRes.data.map(s => s.department_name))].filter(Boolean);
+                setCategories(uniqueCats.map((c, i) => ({ id: i + 1, name: c })));
             } catch (err) {
                 console.error('Error fetching form metadata', err);
             }
@@ -91,7 +93,7 @@ const BookingForm = () => {
                 phone: `${formData.phone_prefix}${formData.phone_suffix_code}${formData.phone}`,
                 vehicle_details: `${formData.brand} ${formData.model} - ${formData.color}`
             };
-            await api.post('/forms/bookings/api/list/', submissionData);
+            await api.post('/api/bookings/', submissionData);
             alert('Executive Appointment Scheduled Successfully');
             navigate('/bookings');
         } catch (err) {

@@ -120,7 +120,7 @@ const LeadForm = () => {
     // Fetch Employees
     const fetchEmployees = useCallback(async () => {
         try {
-            const res = await api.get('/hr/api/employees/');
+            const res = await api.get('/api/hr/employees/');
             setEmployees(res.data);
         } catch (err) {
             console.error('Error fetching employees', err);
@@ -240,7 +240,7 @@ const LeadForm = () => {
                 formDataPayload.append('captions', photo.label);
             });
 
-            await api.post('/forms/leads/api/list/', formDataPayload, {
+            await api.post('/api/leads/', formDataPayload, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             alert('Lead Captured Successfully');

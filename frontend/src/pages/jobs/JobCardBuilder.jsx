@@ -77,12 +77,13 @@ const JobCardBuilder = () => {
             setLoading(true);
             try {
                 // Fetch Core Data in Parallel
-                const [servicesRes, usersRes, branchesRes, brandsRes, modelsRes] = await Promise.all([
-                    api.get('/forms/job-cards/api/services/'),
+                const [servicesRes, usersRes, branchesRes, brandsRes, modelsRes, typesRes] = await Promise.all([
+                    api.get('/api/masters/services/'),
                     api.get('/api/auth/users/'),
                     api.get('/api/locations/branches/'),
-                    api.get('/forms/masters/api/brands/').catch(() => ({ data: [] })),
-                    api.get('/forms/masters/api/models/').catch(() => ({ data: [] }))
+                    api.get('/api/masters/brands/').catch(() => ({ data: [] })),
+                    api.get('/api/masters/models/').catch(() => ({ data: [] })),
+                    api.get('/api/masters/types/').catch(() => ({ data: [] }))
                 ]);
 
                 // Process Dynamic Registry
