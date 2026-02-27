@@ -1,0 +1,357 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;600;700&display=swap');
+
+:root {
+    --print-bg-color: #1a1a1a;
+    --print-card-bg: #222222;
+    --print-gold: #d4af37;
+    /* Metallic Gold */
+    --print-gold-dim: #aa8c2c;
+    --print-text-main: #f0f0f0;
+    --print-text-muted: #aaaaaa;
+    --print-border-color: #d4af37;
+}
+
+.shared-print-body {
+    background-color: #111;
+    /* Dark surroundings */
+    background-image: radial-gradient(#333 1px, transparent 1px);
+    background-size: 20px 20px;
+    font-family: 'Lato', sans-serif;
+    color: var(--print-text-main);
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+.document-container {
+    width: 100%;
+    max-width: 900px;
+    /* A4-ish ratio width */
+    background-color: var(--print-bg-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    border: 1px solid #333;
+    position: relative;
+    margin: 0 auto;
+}
+
+/* Decorative Gold Border Line (Left side like reference) */
+.document-container::before {
+    content: '';
+    position: absolute;
+    left: 40px;
+    top: 40px;
+    bottom: 40px;
+    width: 2px;
+    background-color: var(--print-gold);
+}
+
+.content-wrapper {
+    padding: 60px 60px 60px 80px;
+    /* Extra left padding for the gold line */
+}
+
+/* --- Header & Logo --- */
+.print-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 50px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+}
+
+.print-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--print-gold);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1;
+}
+
+.print-logo span {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--print-text-muted);
+    font-family: 'Lato', sans-serif;
+    letter-spacing: 4px;
+    margin-top: 5px;
+}
+
+.doc-title {
+    text-align: right;
+}
+
+.doc-title h2 {
+    font-family: 'Playfair Display', serif;
+    color: var(--print-text-main);
+    font-weight: 400;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+
+.doc-title p {
+    color: var(--print-gold);
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+/* --- Sections --- */
+.print-section {
+    margin-bottom: 40px;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--print-gold);
+    font-size: 1.2rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    margin-top: 0;
+    display: inline-block;
+    min-width: 200px;
+}
+
+/* --- Form Grids --- */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 40px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--print-text-muted);
+    margin-bottom: 5px;
+}
+
+.form-control-static {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #444;
+    color: var(--print-text-main);
+    font-family: 'Playfair Display', serif;
+    /* Serif for input looks luxurious */
+    font-size: 1rem;
+    padding: 5px 0;
+    width: 100%;
+    min-height: 28px;
+    word-break: break-word;
+}
+
+/* --- Checkbox Groups --- */
+.checkbox-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--print-text-main);
+}
+
+.custom-checkbox .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--print-gold);
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-checkbox .check-box.checked::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background-color: var(--print-gold);
+}
+
+/* --- Service History Table --- */
+.service-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.service-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--print-gold);
+    text-transform: uppercase;
+    padding: 10px;
+    border-bottom: 1px solid var(--print-gold);
+}
+
+.service-table td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #333;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+/* --- Financials (for Invoice/JobCard) --- */
+.financial-rows {
+    margin-top: 20px;
+    width: 300px;
+    margin-left: auto;
+}
+
+.fin-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.fin-row.grand-total {
+    border-top: 1px solid var(--print-gold);
+    color: var(--print-gold);
+    font-size: 1.2rem;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+/* --- Footer / Signature --- */
+.advisor-section {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.signatures-row {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.signature-block {
+    width: 250px;
+    text-align: center;
+}
+
+.signature-line {
+    border-bottom: 1px solid var(--print-gold);
+    margin-bottom: 10px;
+    height: 30px;
+    /* Space for signature */
+}
+
+/* --- Terms Page Separator --- */
+.page-break {
+    margin: 60px 0;
+    border-top: 1px dashed #333;
+    position: relative;
+    page-break-before: always;
+}
+
+.page-break::after {
+    content: 'TERMS & CONDITIONS';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--print-bg-color);
+    padding: 0 15px;
+    color: #444;
+    font-size: 0.8rem;
+}
+
+/* --- Terms & Conditions Text --- */
+.terms-list {
+    list-style: none;
+    padding: 0;
+}
+
+.terms-list li {
+    margin-bottom: 25px;
+}
+
+.term-title {
+    color: var(--print-gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.terms-list p,
+.terms-list li {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.terms-sub-list {
+    padding-left: 15px;
+    margin-top: 5px;
+    list-style-type: disc;
+    color: var(--print-gold-dim);
+}
+
+.terms-sub-list li {
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+/* Controls */
+.export-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+@media print {
+
+    .export-controls,
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        /* Browsers strip background colors in print by default unless exact-color is enabled */
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-color: var(--print-bg-color) !important;
+        background-image: none !important;
+    }
+
+    .shared-print-body {
+        padding: 0;
+        background: transparent !important;
+        background-image: none !important;
+    }
+
+    .document-container {
+        box-shadow: none !important;
+        border: none !important;
+    }
+
+    .page-break {
+        page-break-before: always;
+    }
+}

@@ -40,6 +40,9 @@ const AdvisorDashboard = lazy(() => import('./pages/dashboard/AdvisorDashboard')
 const OperationsDashboard = lazy(() => import('./pages/dashboard/OperationsDashboard')); // NEW
 const ManagementDashboard = lazy(() => import('./pages/dashboard/ManagementDashboard')); // NEW
 const TradingDashboard = lazy(() => import('./pages/dashboard/TradingDashboard')); // NEW
+const SalesDashboard = lazy(() => import('./pages/dashboard/SalesDashboard')); // NEW
+const EmployeeDashboard = lazy(() => import('./pages/dashboard/EmployeeDashboard')); // NEW
+import RoleBasedRouter from './components/RoleBasedRouter';
 const LogisticsDashboard = lazy(() => import('./pages/dashboard/LogisticsDashboard')); // NEW
 const AdvisorDailyReport = lazy(() => import('./pages/dashboard/AdvisorDailyReport'));
 const AnalyticsDashboard = lazy(() => import('./pages/dashboard/AnalyticsDashboard'));
@@ -53,6 +56,7 @@ const JobCardHub = lazy(() => import('./pages/jobs/JobCardHub'));
 const JobCardBuilder = lazy(() => import('./pages/jobs/JobCardBuilder'));
 const JobDetail = lazy(() => import('./pages/jobs/JobDetail'));
 const JobBoard = lazy(() => import('./pages/jobs/JobBoard'));
+const FinalWorkshopDiary = lazy(() => import('./pages/jobs/FinalWorkshopDiary'));
 const EstimateDetail = lazy(() => import('./pages/estimates/EstimateDetail'));
 const JobInvoiceBook = lazy(() => import('./pages/jobs/InvoiceBook')); // New import for jobs-related InvoiceBook
 const WarrantyClaims = lazy(() => import('./pages/jobs/WarrantyClaims')); // New import
@@ -236,11 +240,18 @@ function App() {
 
                       {/* Main App Routes */}
                       <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+                        <Route path="/" element={<RoleBasedRouter />} />
                         <Route path="/portfolio" element={<Portfolio />} />
-
                         <Route path="/profile" element={<UserProfilePage />} />
                         <Route path="/mission-control" element={<MissionControl />} />
-                        <Route path="/" element={<Portfolio />} />
+
+                        {/* Dashboards */}
+                        <Route path="/dashboard/advisor" element={<AdvisorDashboard />} />
+                        <Route path="/dashboard/operations" element={<OperationsDashboard />} />
+                        <Route path="/dashboard/sales" element={<SalesDashboard />} />
+                        <Route path="/dashboard/trading" element={<TradingDashboard />} />
+                        <Route path="/dashboard/management" element={<ManagementDashboard />} />
+                        <Route path="/dashboard/employee" element={<EmployeeDashboard />} />
                         <Route path="/ceo/command" element={<CEOConsole />} />
                         <Route path="/ppf" element={<PPFList />} />
                         <Route path="/ppf/create" element={<PPFForm />} />
@@ -255,6 +266,7 @@ function App() {
                         <Route path="/job-board" element={<JobBoard />} />
                         <Route path="/job-cards/create" element={<JobCardBuilder />} />
                         <Route path="/job-cards/board" element={<JobBoard />} />
+                        <Route path="/job-cards/legacy-diary" element={<FinalWorkshopDiary />} />
                         <Route path="/job-cards/invoice-book" element={<JobInvoiceBook />} />
                         <Route path="/job-cards/warranty" element={<WarrantyClaims />} />
                         <Route path="/job-cards/:id" element={<JobDetail />} />

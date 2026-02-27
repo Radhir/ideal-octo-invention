@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import {
     LayoutDashboard, BarChart3, Briefcase, Activity, Calendar,
     Users, Package, FileText, CreditCard, ShieldCheck,
-    MessageSquare, Settings, LogOut, ChevronRight, Paintbrush
+    MessageSquare, Settings, LogOut, ChevronRight, Paintbrush, Car, ClipboardList
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
@@ -83,6 +83,8 @@ const Sidebar = ({ isOpen }) => {
         {
             category: 'ADVISOR', items: [
                 { icon: Users, label: 'CUSTOMERS', path: '/customers' },
+                { icon: ClipboardList, label: 'WORKSHOP DIARY', path: '/job-cards/board' },
+                { icon: FileText, label: 'FINAL WORKSHOP DIARY', path: '/job-cards/legacy-diary' },
                 { icon: Calendar, label: 'JOB APPOINTMENT', path: '/bookings/create' },
                 { icon: FileText, label: 'ESTIMATION', path: '/job-cards' },
                 { icon: Briefcase, label: 'JOB CARD', path: '/job-cards/create' },

@@ -54,7 +54,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'id', 'employee_id', 'username', 'full_name', 'full_name_passport', 'department', 'department_name',
             'company', 'company_name', 'branch', 'branch_name', 'pin_code', 'role', 
             'basic_salary', 'housing_allowance', 'transport_allowance', 'date_joined', 
-            'is_active', 'bio', 'profile_image', 'accent_color', 'module_permissions',
+            'is_active', 'bio', 'profile_image', 'accent_color', 'module_permissions', 'permissions_config',
             'nationality', 'gender', 'dob', 'marital_status', 'salary_type',
             'passport_no', 'passport_expiry', 'visa_uid', 'visa_expiry', 'skills',
             'uae_address', 'uae_mobile', 'home_country', 'home_address', 'home_mobile',

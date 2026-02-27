@@ -43,9 +43,11 @@ def get_field_changes(instance, created):
 def audit_post_save(sender, instance, created, **kwargs):
     if IS_MIGRATING:
         return
+    if sender.__name__ in ('AuditLog', 'CacheEntry', 'ErrorLog', 'LoginHistory', 'CacheCollectorLog', 'SystemChangeLog', 'DataAccessLog'):
+        return
     if sender == AuditLog or issubclass(sender, NoAudit):
         return
-    if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
+    if getattr(sender._meta, 'app_label', '') in ('admin', 'contenttypes', 'sessions', 'auth'):
         return
 
     meta = get_request_metadata()
@@ -74,9 +76,11 @@ def audit_post_save(sender, instance, created, **kwargs):
 def audit_post_delete(sender, instance, **kwargs):
     if IS_MIGRATING:
         return
+    if sender.__name__ in ('AuditLog', 'CacheEntry', 'ErrorLog', 'LoginHistory', 'CacheCollectorLog', 'SystemChangeLog', 'DataAccessLog'):
+        return
     if sender == AuditLog or issubclass(sender, NoAudit):
         return
-    if sender._meta.app_label in ('admin', 'contenttypes', 'sessions', 'auth'):
+    if getattr(sender._meta, 'app_label', '') in ('admin', 'contenttypes', 'sessions', 'auth'):
         return
 
     meta = get_request_metadata()

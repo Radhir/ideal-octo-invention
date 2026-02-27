@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Printer, Car, User, FileText } from 'lucide-react';
+import { Printer, FileDown, Image } from 'lucide-react';
 import api from '../../api/axios';
-import './JobCardPrint.css';
+import { useExport } from '../../utils/useExport';
+import './SharedPrintTemplate.css';
 
 const JobCardPrint = ({ jobCardData: propData }) => {
     const { id } = useParams();
     const [data, setData] = useState(propData || null);
     const [loading, setLoading] = useState(!propData);
+    const { exportToPDF, exportToJPG } = useExport();
 
     useEffect(() => {
         if (!propData && id) {
@@ -67,128 +69,164 @@ const JobCardPrint = ({ jobCardData: propData }) => {
     };
 
     return (
-        <div className="job-card-print-container" style={{ maxWidth: '210mm', margin: '0 auto', background: 'white', color: 'black' }}>
-            <div className="print-controls no-print">
-                <button onClick={() => window.print()} className="print-btn">
-                    <Printer size={16} /> Print Job Card
+        <div className="shared-print-body">
+            <div style={{ position: 'fixed', top: '20px', left: '0', width: '100%', zIndex: 1000 }} className="export-controls no-print">
+                <button onClick={() => window.print()} className="print-btn" style={{ padding: '10px 20px', background: '#222', color: '#fff', border: '1px solid #d4af37', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Printer size={16} /> Print Native
+                </button>
+                <button onClick={() => exportToPDF('job-card-pdf-area', `JobCard_${displayData.id}.pdf`)} className="print-btn" style={{ padding: '10px 20px', background: '#222', color: '#d4af37', border: '1px solid #d4af37', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <FileDown size={16} /> Export PDF
+                </button>
+                <button onClick={() => exportToJPG('job-card-pdf-area', `JobCard_${displayData.id}.jpg`)} className="print-btn" style={{ padding: '10px 20px', background: '#222', color: '#d4af37', border: '1px solid #d4af37', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Image size={16} /> Export JPG
                 </button>
             </div>
 
-            <div className="job-card-document">
-                {/* Header */}
-                <div className="job-card-header" style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #000', paddingBottom: '20px', marginBottom: '30px' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '28px', textTransform: 'uppercase' }}>Elite SHINE</h1>
-                        <p style={{ margin: 0, fontSize: '10px', letterSpacing: '4px', textTransform: 'uppercase' }}>CAR POLISH SERVICES LLC</p>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <h2 style={{ margin: 0, fontSize: '18px', textTransform: 'uppercase' }}>Job Card</h2>
-                        <p style={{ margin: 0, fontSize: '14px', fontWeight: 'bold' }}>#{displayData.id}</p>
-                        <p style={{ margin: 0, fontSize: '12px' }}>{displayData.date}</p>
-                    </div>
-                </div>
+            <div id="job-card-pdf-area" className="document-container">
+                <div className="content-wrapper">
 
-                {/* Info Grid */}
-                <div className="info-grid">
-                    {/* Customer Info */}
-                    <div className="info-section">
-                        <div className="section-header">
-                            <User size={18} />
-                            <h3>Customer Information</h3>
+                    <header className="print-header">
+                        <div className="print-logo">
+                            Elite Shine
+                            <span>GROUP OF COMPANIES</span>
                         </div>
-                        <div className="info-fields">
-                            <div className="field-row">
-                                <label>Name</label>
-                                <div className="field-value">{displayData.customer.name}</div>
-                            </div>
-                            <div className="field-row">
-                                <label>Phone</label>
-                                <div className="field-value">{displayData.customer.phone}</div>
-                            </div>
-                            <div className="field-row">
-                                <label>Address</label>
-                                <div className="field-value">{displayData.customer.address || "N/A"}</div>
-                            </div>
+                        <div className="doc-title">
+                            <h2>Workshop Job Card</h2>
+                            <p>#{displayData.id}</p>
+                            <p style={{ fontSize: '0.8rem', color: '#aaa', marginTop: '5px' }}>Date: {displayData.date}</p>
                         </div>
-                    </div>
+                    </header>
 
-                    {/* Vehicle Info */}
-                    <div className="info-section">
-                        <div className="section-header">
-                            <Car size={18} />
-                            <h3>Vehicle Details</h3>
+                    <section className="print-section">
+                        <h3 className="section-title">Customer Details</h3>
+                        <div className="form-grid">
+                            <div className="form-group full-width">
+                                <label>Full Name</label>
+                                <div className="form-control-static">{displayData.customer.name}</div>
+                            </div>
+                            <div className="form-group">
+                                <label>Contact Number</label>
+                                <div className="form-control-static">{displayData.customer.phone}</div>
+                            </div>
+                            <div className="form-group">
+                                <label>Address / Email</label>
+                                <div className="form-control-static">{displayData.customer.address}</div>
+                            </div>
                         </div>
-                        <div className="vehicle-grid">
-                            <div className="field-col">
+                    </section>
+
+                    <section className="print-section">
+                        <h3 className="section-title">Vehicle Information</h3>
+                        <div className="form-grid">
+                            <div className="form-group">
                                 <label>Brand</label>
-                                <div className="field-value">{displayData.vehicle.brand}</div>
+                                <div className="form-control-static">{displayData.vehicle.brand}</div>
                             </div>
-                            <div className="field-col">
+                            <div className="form-group">
                                 <label>Model</label>
-                                <div className="field-value">{displayData.vehicle.model}</div>
+                                <div className="form-control-static">{displayData.vehicle.model}</div>
                             </div>
-                            <div className="field-col">
-                                <label>Reg #</label>
-                                <div className="field-value">{displayData.vehicle.reg}</div>
+                            <div className="form-group">
+                                <label>Year</label>
+                                <div className="form-control-static">{displayData.vehicle.year}</div>
                             </div>
-                            <div className="field-col">
-                                <label>KM</label>
-                                <div className="field-value">{displayData.vehicle.km}</div>
+                            <div className="form-group">
+                                <label>Color</label>
+                                <div className="form-control-static">{displayData.vehicle.color}</div>
+                            </div>
+                            <div className="form-group">
+                                <label>License Plate Number</label>
+                                <div className="form-control-static">{displayData.vehicle.reg}</div>
+                            </div>
+                            <div className="form-group">
+                                <label>Mileage (KM)</label>
+                                <div className="form-control-static">{displayData.vehicle.km}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </section>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginBottom: '40px' }}>
-                    {/* Job Description */}
-                    <div className="job-description">
-                        <div className="section-header">
-                            <FileText size={18} />
-                            <h3>Job Description</h3>
+                    <section className="print-section">
+                        <h3 className="section-title">Job Instructions</h3>
+                        <div style={{
+                            padding: '20px',
+                            border: '1px solid #333',
+                            background: '#1a1a1a',
+                            color: '#ccc',
+                            lineHeight: '1.6',
+                            whiteSpace: 'pre-wrap',
+                            fontFamily: 'Lato, sans-serif'
+                        }}>
+                            {displayData.description || "No specific instructions provided."}
                         </div>
-                        <div className="description-field" style={{ whiteSpace: 'pre-wrap', padding: '15px', background: '#f9f9f9', borderRadius: '8px', minHeight: '80px', fontSize: '13px' }}>
-                            {displayData.description}
+                    </section>
+
+                    <section className="print-section">
+                        <h3 className="section-title">Financial Summary</h3>
+                        <div className="financial-rows">
+                            <div className="fin-row">
+                                <span>Subtotal:</span>
+                                <span>AED {displayData.financials.total}</span>
+                            </div>
+                            <div className="fin-row">
+                                <span>VAT (5%):</span>
+                                <span>AED {displayData.financials.vat}</span>
+                            </div>
+                            <div className="fin-row">
+                                <span>Discount:</span>
+                                <span>AED {displayData.financials.discount}</span>
+                            </div>
+                            <div className="fin-row grand-total">
+                                <span>Total Amount:</span>
+                                <span>AED {displayData.financials.net}</span>
+                            </div>
+                            <div className="fin-row" style={{ marginTop: '10px' }}>
+                                <span>Advance Paid:</span>
+                                <span>AED {displayData.financials.advance}</span>
+                            </div>
+                            <div className="fin-row" style={{ color: '#da3e3e' }}>
+                                <span>Balance Remaining:</span>
+                                <span>AED {displayData.financials.balance}</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div className="signatures-row">
+                        <div className="signature-block">
+                            <div className="signature-line"></div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--print-gold)' }}>CUSTOMER SIGNATURE</p>
+                            <p style={{ fontSize: '0.7rem', color: '#666' }}>I authorize the repair work herein set forth to be done along with the necessary material.</p>
+                        </div>
+                        <div className="signature-block">
+                            <div className="signature-line"></div>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--print-gold)' }}>SERVICE ADVISOR</p>
+                            <p style={{ fontSize: '0.7rem', color: '#666' }}>Elite Shine Group</p>
                         </div>
                     </div>
 
-                    {/* Inspection Notes */}
-                    <div className="job-description">
-                        <div className="section-header">
-                            <FileText size={18} />
-                            <h3>Internal Inspection Notes</h3>
-                        </div>
-                        <div className="description-field" style={{ whiteSpace: 'pre-wrap', padding: '15px', background: '#f9f9f9', borderRadius: '8px', minHeight: '80px', fontSize: '13px' }}>
-                            {displayData.inspection_notes || "No internal notes provided."}
-                        </div>
-                    </div>
-                </div>
+                    <div className="page-break"></div>
 
-                {/* Financial Summary */}
-                <div className="financial-summary-container">
-                    <div className="financial-summary">
-                        <div className="summary-header">Financial Summary</div>
-                        <div className="summary-rows">
-                            <div className="summary-row"><span>Total</span> <span>{displayData.financials.total}</span></div>
-                            <div className="summary-row"><span>VAT</span> <span>{displayData.financials.vat}</span></div>
-                            <div className="summary-row discount"><span>Discount</span> <span>{displayData.financials.discount}</span></div>
-                            <div className="summary-divider"></div>
-                            <div className="summary-row net"><span>Net</span> <span>{displayData.financials.net}</span></div>
-                            <div className="summary-row advance"><span>Advance</span> <span>{displayData.financials.advance}</span></div>
-                            <div className="summary-row balance"><span>Balance</span> <span>{displayData.financials.balance}</span></div>
-                        </div>
-                    </div>
-                </div>
+                    <section className="print-section">
+                        <h3 className="section-title">Job Card Terms & Conditions</h3>
+                        <ol className="terms-list">
+                            <li>
+                                <span className="term-title">1. Authorization</span>
+                                <p>I hereby authorize the above repair work to be done along with the necessary materials. You and your employees may operate the vehicle for purposes of testing, inspection or delivery at my risk.</p>
+                            </li>
+                            <li>
+                                <span className="term-title">2. Valuables</span>
+                                <p>Elite Shine will not be held responsible for loss or damage to the vehicle or articles left in the vehicle in case of fire, theft or any other cause beyond our control.</p>
+                            </li>
+                            <li>
+                                <span className="term-title">3. Estimate Changes</span>
+                                <p>The initial estimate is an approximation. If further damage or required parts are discovered during repair, the customer will be notified of any additional costs.</p>
+                            </li>
+                            <li>
+                                <span className="term-title">4. Payment & Delivery</span>
+                                <p>All charges must be paid in full upon delivery of the vehicle. Vehicles left for more than 3 days after completion may incur storage charges.</p>
+                            </li>
+                        </ol>
+                    </section>
 
-                {/* Signature */}
-                <div className="signature-section">
-                    <div className="signature-box">
-                        <div className="signature-line"></div>
-                        <p>Customer Signature</p>
-                    </div>
-                    <div className="signature-box">
-                        <div className="signature-line"></div>
-                        <p>Advisor Signature</p>
-                    </div>
                 </div>
             </div>
         </div>

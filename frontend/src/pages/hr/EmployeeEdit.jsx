@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserPlus, Save, Shield, LayoutGrid, RotateCcw, MapPin, Globe, CreditCard } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import {
     PortfolioPage,
     PortfolioTitle,
@@ -48,8 +49,11 @@ const EmployeeEdit = () => {
         passport_expiry: '',
         visa_uid: '',
         visa_expiry: '',
-        skills: ''
+        skills: '',
+        permissions_config: { dashboard: '' }
     });
+
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchEmployee = async () => {
@@ -59,7 +63,8 @@ const EmployeeEdit = () => {
                 // Map API keys to form keys if needed, but since they match in Registration mostly:
                 setFormData({
                     ...data,
-                    fullName: data.full_name // for consistency with reg form if used
+                    fullName: data.full_name, // for consistency with reg form if used
+                    permissions_config: data.permissions_config || { dashboard: '' }
                 });
             } catch (err) {
                 console.error('Error fetching employee', err);
@@ -89,7 +94,16 @@ const EmployeeEdit = () => {
         const submitData = new FormData();
         Object.keys(formData).forEach(key => {
             if (formData[key] !== null && formData[key] !== undefined) {
-                submitData.append(key, formData[key]);
+                if (key === 'permissions_config') {
+                    submitData.append(key, JSON.stringify(formData[key]));
+                } else if (typeof formData[key] === 'object' && !(formData[key] instanceof File)) {
+                    // Skip nested objects that might cause issues if not stringified explicitly
+                    if (key !== 'module_permissions') {
+                        submitData.append(key, JSON.stringify(formData[key]));
+                    }
+                } else {
+                    submitData.append(key, formData[key]);
+                }
             }
         });
 
@@ -283,6 +297,43 @@ const EmployeeEdit = () => {
                                 onChange={handleChange}
                             />
                         </PortfolioGrid>
+
+                        {user?.is_superuser && (
+                            <div style={{
+                                background: 'rgba(212, 175, 55, 0.05)',
+                                padding: '20px',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(212, 175, 55, 0.3)',
+                                marginTop: '20px',
+                                marginBottom: '20px'
+                            }}>
+                                <div style={{ fontSize: '12px', color: 'var(--gold)', marginBottom: '15px', fontWeight: '900', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <Shield size={14} /> Superuser Access Control
+                                </div>
+                                <PortfolioSelect
+                                    label="Dashboard Access Assignment"
+                                    name="dashboard"
+                                    value={formData.permissions_config?.dashboard || ''}
+                                    onChange={(e) => setFormData(prev => ({
+                                        ...prev,
+                                        permissions_config: { ...prev.permissions_config, dashboard: e.target.value }
+                                    }))}
+                                >
+                                    <option value="">Default (Floor Staff)</option>
+                                    <option value="AdvisorDashboard">Service Advisor Dashboard</option>
+                                    <option value="OperationsDashboard">Operations Dashboard</option>
+                                    <option value="DriverDashboard">Drivers & Logistics Dashboard</option>
+                                    <option value="SalesDashboard">Sales Dashboard</option>
+                                    <option value="TradingDashboard">Inventory & Trading Dashboard</option>
+                                    <option value="ManagementDashboard">Branch Manager Dashboard</option>
+                                    <option value="CEOConsole">General Manager (CEO) Console</option>
+                                    <option value="EmployeeDashboard">Basic Employee Dashboard</option>
+                                </PortfolioSelect>
+                                <p style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', marginTop: '10px' }}>
+                                    Explicitly route this employee to a specific dashboard upon login regardless of their operational department or job title.
+                                </p>
+                            </div>
+                        )}
 
                         <PortfolioGrid columns="1fr 1fr">
                             <PortfolioInput

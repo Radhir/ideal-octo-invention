@@ -15,6 +15,7 @@ urlpatterns = [
     path('create/', views.job_card_create, name='job_card_create'),
     path('<int:pk>/', views.job_card_detail, name='job_card_detail'),
     path('<int:pk>/invoice/', views.create_invoice_from_job, name='create_invoice_from_job'),
+    path('export/excel/', views.export_jobs_excel, name='export_jobs_excel'),
     # API endpoints
     path('api/', include(router.urls)),
     path('api/portal/<uuid:token>/', views.CustomerPortalDetailView.as_view(), name='customer_portal_api'),

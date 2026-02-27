@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import JobCard, JobCardPhoto, JobCardTask, ServiceCategory, Service
 from .forms import (
     JobCardReceptionForm, JobCardEstimationForm, 
@@ -114,6 +114,49 @@ def create_invoice_from_job(request, pk):
     return redirect('job_card_detail', pk=pk)
 
 # API Views
+def export_jobs_excel(request):
+    """
+    Universally exports jobs in the EXACT legacy WorkShopDiaryReport.xls HTML table format requested by user.
+    """
+    jobs = JobCard.objects.all().order_by('-created_at')
+    
+    html = ["<table border='1'>"]
+    # Exact legacy column headers required
+    html.append("<tr>")
+    cols = ['JobCardNo', 'JDate', 'CustName', 'VehicleNo', 'Advisor', 'JStatus', 'Remark', 
+            'Insurance', 'Category', 'SalesMan', 'DriverName', 'LeadDource', 'OrderType', 'OrgName', 'TotalAmt']
+    for c in cols:
+        html.append(f"<th style='background-color:#5cb85c; color:white;'>{c}</th>")
+    html.append("</tr>")
+    
+    for job in jobs:
+        html.append("<tr>")
+        html.append(f"<td>{job.job_card_number}</td>")
+        html.append(f"<td>{job.date.strftime('%d/%m/%Y') if job.date else ''}</td>")
+        html.append(f"<td>{job.customer_name or ''}</td>")
+        
+        plate = f"{job.plate_emirate or ''} {job.plate_code or ''} {job.registration_number or ''}".strip()
+        html.append(f"<td>{plate}</td>")
+        
+        html.append(f"<td>{job.service_advisor_legacy or 'RAVIT ADHIR'}</td>")
+        html.append(f"<td>{job.get_status_display()}</td>")
+        html.append(f"<td>{job.job_description or ''}</td>")
+        html.append(f"<td></td>") # Insurance
+        html.append(f"<td>{job.job_category or 'Regular'}</td>")
+        html.append(f"<td>{job.salesman or 'RAVIT'}</td>")
+        html.append(f"<td>{job.driver or '--Select--'}</td>")
+        html.append(f"<td>--Select--</td>") # LeadDource
+        html.append(f"<td>{job.order_type or ''}</td>") # OrderType
+        html.append(f"<td>ELITE SHINE CAR POLISH SERVICES LLC(BRANCH)</td>") # OrgName
+        html.append(f"<td>{job.net_amount or '0.00'}</td>")
+        html.append("</tr>")
+        
+    html.append("</table>")
+    
+    response = HttpResponse("\n".join(html), content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="WorkShopDiaryReport.xls"'
+    return response
+
 class JobCardViewSet(viewsets.ModelViewSet):
     module_name = 'Operations'
     serializer_class = JobCardSerializer

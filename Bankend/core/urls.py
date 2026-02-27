@@ -20,12 +20,13 @@ from django.shortcuts import redirect
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import JsonResponse
-from .views import MaintenanceView
+from .views import MaintenanceView, generate_pdf
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 urlpatterns = [
     path('', lambda request: redirect('admin:index', permanent=False)),
     path('admin/', admin.site.urls),
+    path('generate-pdf/<str:doc_type>/<int:pk>/', generate_pdf, name='generate_pdf'),
     path('api/health/', lambda request: JsonResponse({"status": "ok"}), name='health-check'),
     path('api/auth/', include('authentication.urls')),
     path('api/dashboard/', include('dashboard.urls')),

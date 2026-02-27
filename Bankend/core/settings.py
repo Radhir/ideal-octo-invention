@@ -313,12 +313,8 @@ WEASYPRINT_BASEURL = '/'
 # Cache Configuration (Database Backend)
 CACHES = {
     'default': {
-        'BACKEND': 'core.cache_backend.DatabaseCache',
-        'LOCATION': 'cache_table',
-        'TIMEOUT': 300,  # 5 minutes default
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000
-        }
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }
 
@@ -331,15 +327,22 @@ STRIPE_SECRET_KEY = 'sk_test_placeholder'
 STRIPE_PUBLISHABLE_KEY = 'pk_test_placeholder'
 STRIPE_WEBHOOK_SECRET = 'whsec_placeholder'
 
-# Channels
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [os.environ.get('REDIS_URL', 'redis://redis:6379/0')],
+# Channels (Disabled locally if no Redis)
+if os.environ.get('USE_REDIS', 'False').lower() == 'true':
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels_redis.core.RedisChannelLayer',
+            'CONFIG': {
+                'hosts': [os.environ.get('REDIS_URL', 'redis://redis:6379/0')],
+            },
         },
-    },
-}
+    }
+else:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        },
+    }
 
 # Celery
 CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://redis:6379/0')
